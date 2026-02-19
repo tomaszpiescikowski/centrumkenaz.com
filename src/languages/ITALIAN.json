@@ -9,7 +9,10 @@
     "more": "di più",
     "close": "Chiudi",
     "empty": "Nessun evento",
-    "today": "Oggi"
+    "today": "Oggi",
+    "theme": "Tema",
+    "themeLight": "Chiaro",
+    "themeDark": "Scuro"
   },
   "shop": {
     "label": "Kenaz shop",

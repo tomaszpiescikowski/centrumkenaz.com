@@ -124,7 +124,7 @@ function App() {
                     <Route path="/admin/manual-payments" element={<AdminManualPayments />} />
                   </Route>
                   <Route element={<RequireAuth />}>
-                    <Route path="/me" element={<Account />} />
+                    <Route path="/me" element={<Account darkMode={darkMode} setDarkMode={setDarkMode} />} />
                     <Route path="/plans" element={<Plans />} />
                     <Route path="/pending-approval" element={<PendingApproval />} />
                     <Route path="/people/:userId" element={<UserProfile />} />

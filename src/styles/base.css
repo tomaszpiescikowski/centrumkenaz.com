@@ -9,6 +9,12 @@ body,
 html {
   /* Prevent pull-to-refresh in standalone PWA */
   overscroll-behavior-y: contain;
+  /* Background color visible behind overscroll / pull-to-refresh */
+  background-color: #FFF5E1;
+}
+
+html.dark {
+  background-color: #1a1a4e;
 }
 
 body {

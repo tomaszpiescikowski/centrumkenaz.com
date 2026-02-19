@@ -9,7 +9,10 @@
     "more": "wiyncyj",
     "close": "Zawrzij",
     "empty": "Brak wydarzyń",
-    "today": "Dziś"
+    "today": "Dziś",
+    "theme": "Motyw",
+    "themeLight": "Jasny",
+    "themeDark": "Ciymny"
   },
   "shop": {
     "label": "Kenaz sklep",

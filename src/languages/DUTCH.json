@@ -9,7 +9,10 @@
     "more": "meer",
     "close": "Sluiten",
     "empty": "Geen evenementen",
-    "today": "Vandaag"
+    "today": "Vandaag",
+    "theme": "Thema",
+    "themeLight": "Licht",
+    "themeDark": "Donker"
   },
   "shop": {
     "label": "Kenaz shop",

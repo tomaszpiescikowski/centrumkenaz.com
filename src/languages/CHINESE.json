@@ -9,7 +9,10 @@
     "more": "更多",
     "close": "关闭",
     "empty": "暂无活动",
-    "today": "今天"
+    "today": "今天",
+    "theme": "主题",
+    "themeLight": "浅色",
+    "themeDark": "深色"
   },
   "shop": {
     "label": "Kenaz 商店",
