@@ -3,12 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/static/pwa-192.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0f172a" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f8f6ef" media="(prefers-color-scheme: light)" />
+    <!-- iOS PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Kenaz" />
     <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-180.png" />
+    <!-- Misc mobile -->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="Kenaz" />
+    <meta name="msapplication-TileColor" content="#0f172a" />
+    <meta name="msapplication-tap-highlight" content="no" />
     <title>Kenaz Centrum</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

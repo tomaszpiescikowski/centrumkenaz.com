@@ -21,10 +21,14 @@ export default defineConfig({
         theme_color: '#0f172a',
         background_color: '#f8f6ef',
         display: 'standalone',
+        display_override: ['standalone', 'minimal-ui'],
         orientation: 'portrait',
         start_url: '/',
         scope: '/',
         lang: 'pl',
+        dir: 'ltr',
+        categories: ['lifestyle', 'social'],
+        prefer_related_applications: false,
         icons: [
           {
             src: 'static/pwa-192.png',

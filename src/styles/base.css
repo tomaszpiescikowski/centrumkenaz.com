@@ -5,12 +5,48 @@ body,
   max-width: 100%;
 }
 
+/* ── PWA native-app feel ── */
+html {
+  /* Prevent pull-to-refresh in standalone PWA */
+  overscroll-behavior-y: contain;
+}
+
 body {
   margin: 0;
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  /* Disable text selection on UI elements (not content) */
+  -webkit-user-select: none;
+  user-select: none;
+  /* Remove tap highlight on mobile WebKit */
+  -webkit-tap-highlight-color: transparent;
+  /* Prevent overscroll bounce (iOS Safari) */
+  overscroll-behavior: none;
+  /* Respect notch / dynamic island safe areas */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+}
+
+/* Allow text selection inside actual content areas */
+p, span, h1, h2, h3, h4, h5, h6,
+article, section, blockquote, pre, code,
+.selectable {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Disable long-press callout on images/links in PWA */
+img, a, button {
+  -webkit-touch-callout: none;
+}
+
+/* Smooth momentum scrolling in all scrollable containers */
+[class*="overflow-auto"],
+[class*="overflow-y-auto"],
+[class*="overflow-scroll"] {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 .app-shell,
