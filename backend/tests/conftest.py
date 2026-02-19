@@ -42,9 +42,12 @@ def clear_rate_limits_between_tests():
 async def db_engine():
     """Create PostgreSQL engine for testing."""
     def _port_open(host: str, port: int) -> bool:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.settimeout(0.5)
-            return sock.connect_ex((host, port)) == 0
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                sock.settimeout(0.5)
+                return sock.connect_ex((host, port)) == 0
+        except (socket.gaierror, OSError):
+            return False
 
     default_test_url = "postgresql+asyncpg://postgres:postgres@localhost:5432/kenaz_test"
     if _port_open("db", 5432):
