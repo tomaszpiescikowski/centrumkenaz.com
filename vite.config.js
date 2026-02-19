@@ -7,32 +7,39 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['static/render.png', 'static/pwa-192.png', 'static/pwa-512.png', 'static/apple-touch-180.png'],
+      includeAssets: [
+        'static/pwa-192.png',
+        'static/pwa-512.png',
+        'static/apple-touch-180.png',
+        'static/render.png',
+      ],
       manifest: {
+        id: '/',
         name: 'Kenaz Centrum',
         short_name: 'Kenaz',
         description: 'Kenaz - kalendarz wydarzen i spolecznosc offline.',
         theme_color: '#0f172a',
         background_color: '#f8f6ef',
         display: 'standalone',
+        orientation: 'portrait',
         start_url: '/',
         scope: '/',
         lang: 'pl',
         icons: [
           {
-            src: '/static/pwa-192.png',
+            src: 'static/pwa-192.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any',
           },
           {
-            src: '/static/pwa-512.png',
+            src: 'static/pwa-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any',
           },
           {
-            src: '/static/pwa-512.png',
+            src: 'static/pwa-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',
@@ -40,7 +47,33 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,png,jpg,svg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,woff2}'],
+        runtimeCaching: [
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|webp)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images',
+              expiration: {
+                maxEntries: 60,
+                maxAgeSeconds: 30 * 24 * 60 * 60,
+              },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.(?:googleapis|gstatic)\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 365 * 24 * 60 * 60,
+              },
+            },
+          },
+        ],
+        navigateFallback: 'index.html',
+        navigateFallbackDenylist: [/^\/api/, /^\/docs/, /^\/uploads/],
       },
     }),
   ],

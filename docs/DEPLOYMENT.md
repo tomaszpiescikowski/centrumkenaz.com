@@ -170,7 +170,23 @@ server {
     root /opt/kenaz/dist;
     index index.html;
 
-    # Static uploads
+    # MIME type for PWA manifest
+    types {
+        application/manifest+json webmanifest;
+    }
+
+    # Service worker - never cache
+    location = /sw.js {
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
+        add_header Service-Worker-Allowed "/";
+    }
+
+    # PWA manifest - short cache
+    location = /manifest.webmanifest {
+        add_header Cache-Control "public, max-age=3600";
+    }
+
+    # Static assets (images, logos, icons)
     location /static/ {
         alias /opt/kenaz/static/;
         access_log off;

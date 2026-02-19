@@ -164,7 +164,7 @@ sync_files() {
     log_info "Syncing static files..."
     rsync -avz \
         -e "ssh ${SSH_KEY_OPT} -o StrictHostKeyChecking=accept-new" \
-        static/ "${SSH_USER}@${SSH_HOST}:${STATIC_DIR}/"
+        public/static/ "${SSH_USER}@${SSH_HOST}:${STATIC_DIR}/"
     
     log_success "Files synced successfully"
 }
