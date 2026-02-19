@@ -1,0 +1,781 @@
+{
+  "common": {
+    "appName": "KENAZ",
+    "appSubtitle": "centrum",
+    "backToCalendar": "Back to calendar",
+    "loading": "",
+    "free": "Free",
+    "currency": "PLN",
+    "more": "more",
+    "close": "Close",
+    "empty": "No events",
+    "today": "Today"
+  },
+  "shop": {
+    "label": "Kenaz shop",
+    "title": "Kenaz Shop",
+    "subtitle": "Pieces made for shared moments — simple, comfortable, ours.",
+    "cta": "Add to cart",
+    "empty": "Products are coming soon."
+  },
+  "footer": {
+    "tagline": "Offline community. Movement, connection, growth in one rhythm.",
+    "contactTitle": "Contact",
+    "address": "Wyżyny 16, 61-654 Poznań, Poland",
+    "email": "[email protected]",
+    "orgTitle": "Foundation",
+    "legalName": "Fundacja Centrum Kenaz",
+    "krs": "KRS 0001211548",
+    "nip": "NIP 9721373428",
+    "regon": "REGON 543498710",
+    "linksTitle": "Quick links",
+    "links": {
+      "home": "Home",
+      "calendar": "Calendar",
+      "about": "About Kenaz",
+      "shop": "Shop",
+      "privacy": "Privacy policy",
+      "terms": "Terms"
+    },
+    "copyright": "© {year} Fundacja Centrum Kenaz"
+  },
+  "privacy": {
+    "title": "Privacy policy",
+    "body": "We care about privacy and data security. A full policy will be published soon."
+  },
+  "terms": {
+    "title": "Terms",
+    "body": "The full terms of service will be published soon."
+  },
+  "nav": {
+    "home": "Home",
+    "calendar": "Calendar",
+    "shop": "Shop",
+    "myAccount": "My account",
+    "admin": "Admin",
+    "city": "City",
+    "addEvent": "Add"
+  },
+  "pwa": {
+    "installCta": "Install the app on your phone",
+    "installButton": "Install",
+    "installManualTitle": "Manual install",
+    "installManualHint": "In Chrome open the ⋮ menu and choose \"Add to Home screen\".",
+    "installRequiresHttps": "Install in Chrome requires a secure HTTPS address. Open the app over https://."
+  },
+  "home": {
+    "demoLabel": "demo",
+    "tagline": "A private offline community. Events, integrations, shared passions.",
+    "viewCalendar": "View calendar",
+    "aboutCta": "Get to know us!",
+    "features": {
+      "events": {
+        "title": "Events",
+        "description": "Karate, winter swimming, board games, bonfires and more"
+      },
+      "community": {
+        "title": "Community",
+        "description": "Meet people with similar interests"
+      },
+      "trips": {
+        "title": "Trips",
+        "description": "Finnish saunas, Norwegian cabins, shared adventures"
+      }
+    }
+  },
+  "about": {
+    "label": "Discover Kenaz",
+    "backHome": "Back to home",
+    "title": "Why Kenaz?",
+    "subtitle": "A place where movement, connection, and growth share one rhythm. Join when it fits — stay because it feels right.",
+    "ctaMessage": "Join now and see what Kenaz feels like from the inside.",
+    "joinNow": "Join now",
+    "joinSecondary": "I want to try",
+    "followUs": "Stay close:",
+    "socialTitle": "Feel the Kenaz vibe",
+    "socialSubtitle": "See the people and the atmosphere before you join.",
+    "shopTitle": "Kenaz Shop",
+    "shopBody": "Simple, comfortable pieces made for shared moments. If you want a bit of Kenaz in everyday life — check the shop.",
+    "shopButton": "Go to the shop",
+    "legalTitle": "Foundation details",
+    "legalNameLabel": "Name",
+    "legalName": "Fundacja Centrum Kenaz",
+    "legalKrsLabel": "KRS",
+    "legalKrs": "0001211548",
+    "legalNipLabel": "NIP",
+    "legalNip": "9721373428",
+    "legalRegonLabel": "REGON",
+    "legalRegon": "543498710",
+    "legalAddressLabel": "Address",
+    "legalAddress": "Wyżyny 16, 61-654 Poznań, Poland",
+    "legalEmailLabel": "Email",
+    "legalEmail": "[email protected]",
+    "legalBoardLabel": "Board",
+    "legalBoard": "Sebastian Andrzejewski, Franciszek Kwame Awuku",
+    "legalRepresentationLabel": "Representation",
+    "legalRepresentation": "Two board members acting jointly",
+    "legalLinkLabel": "View in registry",
+    "mediaTitle": "In the media",
+    "mediaBody": "A radio interview presents Kenaz as an offline community: shared running, cold plunges, trips, and bonfires without the internet. It’s for people who want more than just home and work.",
+    "mediaArticleLabel": "Read the interview",
+    "mediaVideoTitle": "Watch the video",
+    "sponsorsTitle": "Partners & sponsors",
+    "sponsorsBody": "We work with brands that support active, healthy lifestyles and community growth.",
+    "sponsorsPrimary": "Decathlon",
+    "social": {
+      "facebook": "Facebook",
+      "instagram": "Instagram"
+    },
+    "highlightLabel": "Essence",
+    "sliderTitle": "Moments that connect us",
+    "sliderHint": "photo slider",
+    "sliderItem": "Frame placeholder #{index}",
+    "stats": {
+      "members": {
+        "value": "312",
+        "label": "active Kenaz Premium members"
+      },
+      "attendees": {
+        "value": "2,480",
+        "label": "people who have joined our events"
+      },
+      "events": {
+        "value": "84",
+        "label": "events this year"
+      },
+      "items": [
+        {
+          "value": "312",
+          "label": "active Kenaz Premium members"
+        },
+        {
+          "value": "2,480",
+          "label": "total event registrations"
+        },
+        {
+          "value": "84",
+          "label": "events organized this year"
+        },
+        {
+          "value": "27",
+          "label": "avg. participants per event"
+        }
+      ]
+    },
+    "stories": [
+      {
+        "title": "Events that create rhythm",
+        "body": "Kenaz is a steady cadence of meetups that gives your week energy. You don’t need experience or peak form — just a willingness to show up and do something good for yourself."
+      },
+      {
+        "title": "Movement that brings balance",
+        "body": "We mix activities that strengthen body and mind. Training here isn’t a race — it’s calm, consistent progress. We meet offline because real bonds happen in real moments."
+      },
+      {
+        "title": "A community with values",
+        "body": "Kenaz is more than an event list. It’s people who care about growth, health, and good relationships. Smaller groups make it easy to connect and feel at home."
+      },
+      {
+        "title": "Motivation for real change",
+        "body": "Shared energy is the best accelerator. It’s easier to keep healthy habits when the people around you choose movement, calm, and honest connection."
+      },
+      {
+        "title": "Trips that stay with you",
+        "body": "From time to time we go bigger — a trip, a focused weekend, a shared adventure. These moments bond the group and create stories for years."
+      },
+      {
+        "title": "The power of shared energy",
+        "body": "What makes Kenaz special is how real it feels. Support, conversation, laughter, effort — that’s the atmosphere you want to return to."
+      }
+    ],
+    "sections": {
+      "events": {
+        "title": "Events",
+        "subtitle": "Regular gatherings that set the rhythm and energy of our community.",
+        "highlights": [
+          "Kenaz is a rhythm that helps you break routine and do something for yourself — without pressure, in good company.",
+          "Our trainings and activities aren’t for show. It’s steady, grounded work on energy and wellbeing.",
+          "We meet offline because real relationships are built in real moments — talk, laughter, shared effort.",
+          "Each event has a vibe: sometimes sporty, sometimes social, sometimes purely restorative.",
+          "We keep groups small, so it’s easy to meet people and feel like you belong.",
+          "Join when it fits you — pick the activities that match your pace.",
+          "If you want growth that feels natural and a supportive atmosphere, Kenaz is for you."
+        ]
+      },
+      "community": {
+        "title": "Community",
+        "subtitle": "Relationships that last — a circle of people with shared values.",
+        "highlights": [
+          "Offline meetups without pressure or pretense",
+          "A strong sense of belonging and support",
+          "New connections that grow into friendships"
+        ]
+      },
+      "trips": {
+        "title": "Trips",
+        "subtitle": "Immersive, curated trips that stay with you for years.",
+        "highlights": [
+          "Saunas, mountain lodges, and themed expeditions",
+          "Handpicked destinations and intimate groups",
+          "No boredom — maximum shared stories"
+        ]
+      }
+    }
+  },
+  "calendar": {
+    "title": "calendar",
+    "subtitle": "events",
+    "registered": "You are registered",
+    "days": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+    ],
+    "months": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "legend": "Legend",
+    "karateGroup": "KARATE GROUP",
+    "karateSchedule": "Mondays and Wednesdays at 8:00 PM - 9:30 PM",
+    "contactDM": "DM us for details!",
+    "loginRequiredTitle": "Log in to unlock the calendar",
+    "loginRequiredBody": "Only authenticated users can browse and register for events.",
+    "loginRequiredButton": "Log in",
+    "pendingRequiredTitle": "Account pending approval",
+    "pendingRequiredBody": "Until admin approval, calendar access and event registration are blocked.",
+    "pendingRequiredButton": "Check account status",
+    "mobileSelectedDay": "Events",
+    "mobileNoEvents": "No events on selected day."
+  },
+  "event": {
+    "notFound": "Event not found",
+    "loadError": "Failed to load event",
+    "registrationSuccessTitle": "Registered successfully!",
+    "registrationSuccessSubtitle": "Your spot has been reserved.",
+    "awaitsOnSite": "on-site awaits:",
+    "price": "price:",
+    "priceGuest": "Guests",
+    "priceMember": "KENAZ Members",
+    "subscriptionRequired": "Subscription required to register.",
+    "location": "Location",
+    "signUp": "Sign up",
+    "requiresLogin": "(requires login)",
+    "interested": "sounds like something for you? write to us!",
+    "adminEdit": "Edit event",
+    "adminDelete": "Delete event",
+    "adminSave": "Save changes",
+    "adminCancelEdit": "Cancel edit",
+    "adminDeleteConfirm": "Delete this event? This action cannot be undone.",
+    "adminUpdateSuccess": "Event updated.",
+    "adminUpdateError": "Could not update event.",
+    "adminDeleteSuccess": "Event deleted.",
+    "adminDeleteError": "Could not delete event."
+  },
+  "registration": {
+    "noSpots": "No spots left",
+    "submitting": "Registering...",
+    "pastEvent": "Event finished",
+    "errorPastEvent": "You cannot register for an event that has already started.",
+    "alreadyRegistered": "Already registered",
+    "waitlistTitle": "Waitlist",
+    "waitlistSuccess": "You have been added to this event waitlist.",
+    "ctaWaitlist": "Join waitlist",
+    "ctaPaid": "Sign up - {price} {currency}",
+    "ctaFree": "Sign up (free)",
+    "ctaLogin": "Log in to register",
+    "mustBeLoggedIn": "You must be logged in to register",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorFailed": "Registration failed",
+    "errorSubscriptionRequired": "You need an active subscription to register for this event.",
+    "manualPaymentRedirectTitle": "Complete manual payment",
+    "manualPaymentRedirectSuccess": "Open transfer instructions and confirm your payment."
+  },
+  "manualPayment": {
+    "title": "Manual payment",
+    "subtitle": "Make a bank transfer and confirm it in the app.",
+    "loginRequired": "Log in to continue manual payment.",
+    "loginButton": "Log in",
+    "notFoundTitle": "Payment details unavailable",
+    "notFoundBody": "No active manual payment was found for this registration.",
+    "backToAccount": "Back to account",
+    "loadError": "Failed to load manual payment details.",
+    "copyButton": "Copy transfer message",
+    "copySuccess": "Transfer message copied.",
+    "copyError": "Could not copy the transfer message.",
+    "eventLabel": "Event",
+    "amountLabel": "Amount",
+    "deadlineLabel": "Payment deadline",
+    "stepsIntro": "Complete the following steps:",
+    "stepOpenTransfer": "Open transfer page:",
+    "openTransferLink": "go to payment page",
+    "missingTransferLink": "payment link missing",
+    "stepPasteReference": "Paste the text below into the transfer message field.",
+    "stepConfirm": "After making the transfer, click “I confirm payment”.",
+    "referenceLabel": "Transfer message",
+    "confirmButton": "I confirm payment",
+    "confirming": "Confirming...",
+    "confirmSuccess": "Your payment now awaits admin verification.",
+    "confirmError": "Could not confirm manual payment.",
+    "waitingVerification": "Payment declaration submitted. Waiting for admin verification.",
+    "alreadyPaid": "Payment has been approved. Your status is paid.",
+    "promotedNoticeTitle": "Promoted from waitlist",
+    "promotedNoticeBody": "You were moved from the waitlist and now have limited time to pay."
+  },
+  "account": {
+    "title": "My account",
+    "subtitle": "Your profile, points, and registrations.",
+    "loginRequired": "Log in to view your account.",
+    "loginButton": "Log in",
+    "logout": "Log out",
+    "manageSubscription": "Membership plans",
+    "profileTitle": "Profile",
+    "aboutMe": "About me",
+    "aboutMePlaceholder": "Write a short intro about yourself",
+    "interests": "Interests",
+    "profileSave": "Save profile",
+    "profileSaved": "Profile updated.",
+    "profileSaveError": "Failed to update profile.",
+    "name": "Name",
+    "email": "Email",
+    "points": "Points",
+    "subscriptionPlan": "Current plan",
+    "subscription": "Subscription",
+    "subscriptionActive": "Active",
+    "subscriptionInactive": "Inactive",
+    "myEvents": "My events",
+    "noEvents": "You are not registered for any events yet.",
+    "viewEvent": "View event",
+    "status": "Status",
+    "statuses": {
+      "pending": "Pending payment",
+      "confirmed": "Confirmed",
+      "manual_payment_required": "Manual payment required",
+      "manual_payment_verification": "Waiting payment verification",
+      "waitlist": "Waitlist",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded"
+    },
+    "cancellationWindow": "Cancellation",
+    "cancellationOpen": "Open",
+    "cancellationClosed": "Closed",
+    "cancellationClosedMessage": "Cancellation window closed.",
+    "cancelStandard": "Cancel registration",
+    "cancelRescue": "Use rescue to cancel",
+    "openManualPayment": "Complete payment",
+    "rescue": "Rescue",
+    "rescueAvailable": "{count} left",
+    "rescueTooltip": "Rescue allows subscribers to cancel close to the event. It is limited per month.",
+    "loadError": "Failed to load account data",
+    "cancelError": "Failed to cancel registration",
+    "cancelSuccess": "Registration cancelled successfully."
+  },
+  "plans": {
+    "backToAccount": "Back to account",
+    "title": "Membership plans",
+    "subtitle": "Choose a plan and purchase your subscription directly from your account.",
+    "subscriptionActiveUntil": "Subscription active until: {date}",
+    "subscriptionInactive": "No active subscription.",
+    "monthlyLabel": "/mo",
+    "includes": "Includes",
+    "buyPlan": "Get {plan}",
+    "freePlanCta": "Default plan",
+    "processing": "Processing...",
+    "paymentSuccessTitle": "Subscription activated",
+    "paymentSuccessBody": "Payment completed. Your subscription is now active.",
+    "paymentCancelled": "Payment has been cancelled.",
+    "loadError": "Failed to load plans.",
+    "checkoutError": "Failed to start payment.",
+    "pendingApproval": "Account pending admin approval.",
+    "currentPlan": "Current plan",
+    "plan": {
+      "free": {
+        "title": "Free",
+        "summary": "Starter",
+        "features": [
+          "Basic access to the calendar",
+          "Browse events and registrations",
+          "No active subscription"
+        ]
+      },
+      "pro": {
+        "title": "Pro membership",
+        "summary": "Most popular",
+        "features": [
+          "Access to subscriber-only events",
+          "Member pricing on events",
+          "Active subscription for 30 days"
+        ]
+      },
+      "ultimate": {
+        "title": "Ultimate membership",
+        "summary": "Maximum package",
+        "features": [
+          "Everything in Pro",
+          "Priority organizational support",
+          "Active subscription for 365 days"
+        ]
+      }
+    },
+    "mostPopular": "Most popular",
+    "freePlanCurrent": "Current free plan",
+    "freePlanSwitch": "Switch to free plan",
+    "switchedToFree": "Switched to free plan."
+  },
+  "admin": {
+    "createEventTitle": "Create a new event",
+    "createEventSubtitle": "Admin-only form for adding events to the calendar.",
+    "createEventButton": "Create event",
+    "saving": "Saving...",
+    "dashboardTitle": "Admin dashboard",
+    "dashboardSubtitle": "Choose what you want to manage.",
+    "loginRequired": "Log in to access admin tools.",
+    "loginButton": "Log in",
+    "backToDashboard": "Back to dashboard",
+    "paymentsTitle": "Payments & stats",
+    "paymentsSubtitle": "Track revenue, fill rates, and top members.",
+    "eventStatsTitle": "Current event stats",
+    "userStatsTitle": "Users ranked by payments & attendance",
+    "paymentStatsTitle": "Payments summary",
+    "registrationStatsTitle": "Registrations summary",
+    "viewEvent": "View event",
+    "stats": {
+      "fill": "Fill rate",
+      "registered": "Confirmed",
+      "totalPaid": "Total paid",
+      "prevMonth": "Previous month",
+      "nextMonth": "Next month",
+      "pricing": "Guest / member",
+      "empty": "No data yet"
+    },
+    "tables": {
+      "event": "Event",
+      "user": "User",
+      "attendance": "Attendance",
+      "count": "Count",
+      "countShare": "Count share",
+      "amount": "Amount",
+      "averageAmount": "Average amount",
+      "amountShare": "Amount share",
+      "limit": "Limit",
+      "share": "Share",
+      "confirmed": "Confirmed",
+      "sortBy": "Sort by column: {column}"
+    },
+    "statsCards": {
+      "eventsTitle": "Events",
+      "eventsDesc": "Fill rate, prices, and revenue by event",
+      "eventsConfirmed": "{count} confirmed",
+      "eventsRevenue": "Revenue {amount} PLN",
+      "usersTitle": "Users",
+      "usersDesc": "Participation, payments, roles, and status",
+      "usersActive": "{count} active",
+      "usersPending": "{count} pending",
+      "usersMembers": "{count} members",
+      "paymentsTitle": "Payments",
+      "paymentsDesc": "Totals, refunds, and type breakdown",
+      "paymentsTotal": "Total {amount} PLN",
+      "paymentsCompleted": "Completed {amount} PLN",
+      "paymentsRefunded": "Refunded {amount} PLN",
+      "registrationsTitle": "Registrations",
+      "registrationsDesc": "Statuses, unique users, and top events",
+      "registrationsConfirmed": "{count} confirmed",
+      "registrationsUsers": "{count} users",
+      "registrationsEvents": "{count} events",
+      "viewDetails": "View details",
+      "pickView": "Select a tile to view statistics."
+    },
+    "paymentStatsSummary": "Overview",
+    "paymentStatsByType": "By type",
+    "paymentStatsByStatus": "By status",
+    "paymentStats": {
+      "totalCount": "Payments: {count}",
+      "totalAmount": "Total: {amount}",
+      "completed": "Completed: {count} ({amount})",
+      "refunded": "Refunded: {count} ({amount})",
+      "average": "Avg payment: {amount}"
+    },
+    "registrationStatsSummary": "Overview",
+    "registrationStatsTopEvents": "Top events",
+    "registrationStats": {
+      "total": "Registrations: {count}",
+      "confirmed": "Confirmed: {count}",
+      "pending": "Pending: {count}",
+      "cancelled": "Cancelled: {count}",
+      "refunded": "Refunded: {count}",
+      "uniqueUsers": "Unique users: {count}",
+      "uniqueEvents": "Unique events: {count}"
+    },
+    "userStats": {
+      "name": "Name",
+      "email": "Email",
+      "events": "Events",
+      "totalPaid": "Total paid",
+      "points": "Points",
+      "role": "Role",
+      "status": "Status",
+      "subscription": "Subscription ends",
+      "lastPayment": "Last payment"
+    },
+    "userRoles": {
+      "guest": "Guest",
+      "member": "Member",
+      "admin": "Admin"
+    },
+    "userStatuses": {
+      "pending": "Pending",
+      "active": "Active",
+      "banned": "Banned"
+    },
+    "paymentStatuses": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed",
+      "refunded": "Refunded",
+      "cancelled": "Cancelled"
+    },
+    "paymentTypes": {
+      "event": "Event",
+      "subscription": "Subscription"
+    },
+    "approvalTitle": "Approve users",
+    "approvalSubtitle": "Review new accounts before they join.",
+    "approvalPlaceholder": "User approval queue will appear here.",
+    "approvalLoadError": "Failed to load pending users",
+    "approvalActionError": "Failed to approve user",
+    "approvalEmpty": "No users waiting for approval.",
+    "approveButton": "Approve",
+    "pendingUserNoName": "No name provided",
+    "pendingUserCreated": "Submitted: {date}",
+    "recurringTitle": "Recurring events",
+    "recurringSubtitle": "Manage schedules that repeat automatically.",
+    "recurringEmpty": "No recurring events configured.",
+    "recurringEdit": "Edit",
+    "recurringDelete": "Delete",
+    "recurringSave": "Save changes",
+    "recurringLoadError": "Failed to load recurring events",
+    "recurringUpdateError": "Failed to update recurring event",
+    "recurringDeleteError": "Failed to delete recurring event",
+    "recurringDeleteConfirm": "Delete this recurring event?",
+    "recurringDeleteConfirmAction": "Delete permanently",
+    "recurringRuleLabel": "{frequency} · every {interval}x",
+    "cards": {
+      "createEvent": {
+        "title": "Add new event",
+        "description": "Create a new event and publish it to the calendar."
+      },
+      "recurringEvents": {
+        "title": "Recurring events",
+        "description": "Manage repeating schedules and templates."
+      },
+      "approveUsers": {
+        "title": "Approve users",
+        "description": "Review new accounts and grant access."
+      },
+      "payments": {
+        "title": "Payments & stats",
+        "description": "Revenue, fill rates, and top members."
+      },
+      "manualPayments": {
+        "title": "Manual payments",
+        "description": "Transfer verification, refunds, and waitlist promotions."
+      }
+    },
+    "notAuthorizedTitle": "Access denied",
+    "notAuthorized": "You do not have permission to access this area.",
+    "createError": "Failed to create event",
+    "statsError": "Failed to load stats",
+    "validationRequired": "Fill in the required fields.",
+    "validation": {
+      "nonNegative": "Value cannot be negative.",
+      "minOne": "Value must be at least 1.",
+      "maxValue": "Value exceeds allowed limit.",
+      "notPastDate": "Start date cannot be in the past."
+    },
+    "fields": {
+      "title": "Title",
+      "titlePlaceholder": "e.g. Morning run",
+      "description": "Description",
+      "descriptionPlaceholder": "Short description of the event",
+      "eventType": "Event type",
+      "type": "Type",
+      "startDate": "Start date",
+      "endDate": "End date (optional)",
+      "timeInfo": "Time info",
+      "timeInfoPlaceholder": "e.g. 19:00-21:00",
+      "recurrenceFrequency": "Frequency",
+      "recurrenceInterval": "Interval",
+      "recurrenceUntil": "Repeat until",
+      "recurrenceDaily": "Daily",
+      "recurrenceWeekly": "Weekly",
+      "recurrenceMonthly": "Monthly",
+      "city": "City",
+      "location": "Location",
+      "locationPlaceholder": "e.g. Poznań, Jezioro Rusałka",
+      "showMap": "Map: show location",
+      "showVideo": "Video: show YouTube embed",
+      "youtubeUrl": "YouTube link",
+      "youtubeUrlPlaceholder": "https://www.youtube.com/watch?v=...",
+      "locationPreview": "Location preview",
+      "openInMaps": "Open in Google Maps",
+      "requiresSubscription": "Subscription required to register",
+      "pointsValue": "Points for attendance",
+      "priceGuest": "Guest price",
+      "priceGuestPlaceholder": "e.g. 50",
+      "priceMember": "Member price",
+      "priceMemberPlaceholder": "e.g. 30",
+      "manualPaymentVerification": "Manual payment verification",
+      "manualPaymentVerificationLockedHint": "Payment gateways are temporarily disabled, so manual payment verification is always enabled.",
+      "manualPaymentUrl": "Transfer page URL",
+      "manualPaymentUrlPlaceholder": "https://...",
+      "manualPaymentDueHours": "Hours to pay",
+      "manualPaymentDueHoursHint": "Range: 1-168 hours (up to 7 days).",
+      "maxParticipants": "Max participants",
+      "maxParticipantsPlaceholder": "e.g. 20",
+      "cancelCutoffHours": "Cancellation cutoff (hours)",
+      "rescueCutoffHours": "Rescue cutoff (hours)",
+      "rescueMonthlyLimit": "Rescue limit per month",
+      "rescueRequiresSubscription": "Rescue only for subscribers",
+      "isBigEvent": "Big event (show features list)",
+      "isRecurring": "Recurring event",
+      "features": "Features (one per line)",
+      "featuresPlaceholder": "Sauna\\nHot tea\\nInstructor",
+      "paymentInfo": "Payment info",
+      "paymentInfoPlaceholder": "e.g. Bank transfer details",
+      "pointsValuePlaceholder": "e.g. 1"
+    },
+    "manualPayments": {
+      "title": "Manual payments",
+      "subtitle": "Manage offline transfers, refunds, and waitlist promotions.",
+      "loadError": "Failed to load manual payment data.",
+      "pendingTitle": "Payments waiting approval",
+      "pendingSubtitle": "Users declared transfer completion and await admin approval.",
+      "pendingEmpty": "No payments waiting for approval.",
+      "referenceColumn": "Transfer message",
+      "actionsColumn": "Actions",
+      "approveButton": "Approve",
+      "approving": "Approving...",
+      "approveSuccess": "Payment approved.",
+      "approveError": "Could not approve payment.",
+      "refundsTitle": "Cancellations and refunds",
+      "refundsSubtitle": "Decide whether to refund and mark completed refunds.",
+      "refundsEmpty": "No refund tasks.",
+      "refundsSummary": "Entries: {total} • To refund: {to_refund} • Refunded: {refunded}",
+      "recommendedColumn": "Recommendation",
+      "shouldRefundColumn": "Refund decision",
+      "refundedColumn": "Refund done",
+      "overrideReasonColumn": "Override reason",
+      "recommendRefund": "Refund",
+      "recommendNoRefund": "No refund",
+      "shouldRefundLabel": "Refund required",
+      "refundedLabel": "Money refunded",
+      "overrideRequiredPlaceholder": "Reason required (min 8 chars)",
+      "overrideReasonRequired": "Provide an override reason (at least 8 characters).",
+      "saveButton": "Save",
+      "saving": "Saving...",
+      "refundSaveSuccess": "Refund settings saved.",
+      "refundSaveError": "Could not save refund settings.",
+      "promotionsTitle": "Users promoted from waitlist",
+      "promotionsSubtitle": "Mark users who were already notified to pay.",
+      "promotionsEmpty": "No waitlist promotions.",
+      "deadlineColumn": "Payment deadline",
+      "notificationColumn": "Notification",
+      "notifiedLabel": "Notified",
+      "promotionSaveSuccess": "Notification status updated.",
+      "promotionSaveError": "Could not update notification status."
+    },
+    "approvalSuccess": "User has been approved.",
+    "recurringUpdateSuccess": "Recurring event updated.",
+    "recurringDeleteSuccess": "Recurring event deleted."
+  },
+  "approval": {
+    "title": "Awaiting approval",
+    "subtitle": "Your account is waiting for admin approval.",
+    "description": "We received your request. To speed things up, contact the founders directly.",
+    "loginRequired": "Log in to see your approval status.",
+    "loginButton": "Log in",
+    "foundersLabel": "Founders:",
+    "foundersNames": "Sebastian Andrzejewski, Franciszek Kwame Awuku",
+    "emailLabel": "Email:",
+    "emailValue": "[email protected]",
+    "socialLabel": "Instagram:",
+    "socialValue": "@kenaz",
+    "waitingHint": "Once approved, refresh the page or log in again.",
+    "profileRequiredBody": "Before your request can be reviewed, complete your profile and submit the join request.",
+    "submitJoinRequest": "Submit join request",
+    "joinRequestSent": "Join request sent. Wait for admin approval.",
+    "joinRequestError": "Failed to submit join request."
+  },
+  "participants": {
+    "title": "Participants",
+    "spotsAvailable": "{count} spots available",
+    "noSpots": "No spots available",
+    "emptyTitle": "No participants yet",
+    "emptySubtitle": "Be the first!",
+    "freeSpot": "free",
+    "pointsAbbr": "pts"
+  },
+  "profile": {
+    "notFound": "User profile not found.",
+    "about": "About",
+    "interests": "Interests",
+    "noAbout": "No description yet.",
+    "noInterests": "No interests selected."
+  },
+  "eventTypes": {
+    "karate": "Karate",
+    "mors": "Winter Swimming",
+    "planszowki": "Board Games",
+    "ognisko": "Bonfire",
+    "spacer": "Walk",
+    "joga": "Yoga",
+    "wyjazd": "Trip",
+    "inne": "Other"
+  },
+  "notifications": {
+    "successTitle": "Success",
+    "errorTitle": "Action failed",
+    "infoTitle": "Notice",
+    "confirmTitle": "Confirm action"
+  },
+  "auth": {
+    "title": "Sign in",
+    "subtitle": "Use Google or your username and password.",
+    "modeLogin": "Sign in",
+    "modeRegister": "Create account",
+    "loginWithGoogle": "Continue with Google",
+    "loginLabel": "Username or email",
+    "loginPlaceholder": "e.g. jane.doe or [email protected]",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "e.g. jane.doe",
+    "emailLabel": "Email",
+    "emailPlaceholder": "e.g. [email protected]",
+    "fullNameLabel": "Full name",
+    "fullNamePlaceholder": "e.g. Jane Doe",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Minimum 8 characters",
+    "confirmPasswordLabel": "Confirm password",
+    "confirmPasswordPlaceholder": "Repeat your password",
+    "submitLogin": "Sign in",
+    "submitRegister": "Create account",
+    "submitting": "Signing in...",
+    "passwordMismatch": "Passwords do not match.",
+    "genericError": "Unable to sign in.",
+    "openLogin": "Log in"
+  }
+}

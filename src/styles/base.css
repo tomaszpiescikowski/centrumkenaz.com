@@ -1,0 +1,82 @@
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+.app-shell,
+.app-main {
+  width: 100%;
+  max-width: 100%;
+}
+
+.app-shell,
+.app-main {
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+.app-main > * {
+  min-width: 0;
+}
+
+@media (max-width: 639px) {
+  .app-main > * {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.app-main :where(.flex, .grid) > * {
+  min-width: 0;
+}
+
+.app-main img,
+.app-main video,
+.app-main iframe,
+.app-main canvas {
+  max-width: 100%;
+}
+
+.theme-transition,
+.theme-transition * {
+  transition-property: background-color, color, border-color, fill, stroke;
+  transition-duration: 300ms;
+  transition-timing-function: ease;
+}
+
+.route-transition {
+  animation: route-enter 260ms ease both;
+}
+
+@keyframes route-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-transition,
+  .theme-transition * {
+    transition-duration: 1ms;
+  }
+
+  .route-transition {
+    animation: none;
+  }
+}

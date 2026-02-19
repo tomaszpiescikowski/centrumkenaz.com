@@ -1,0 +1,48 @@
+{
+  "name": "Kenaz Development",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+
+  "forwardPorts": [5173, 8000, 5432, 1455],
+  "portsAttributes": {
+    "5173": {
+      "label": "Frontend (Vite)",
+      "onAutoForward": "notify"
+    },
+    "8000": {
+      "label": "Backend (FastAPI)",
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "silent"
+    },
+    "1455": {
+      "label": "Codex Sign-in Callback",
+      "onAutoForward": "notify"
+    }
+  },
+
+  "containerEnv": {
+    "SHELL": "/bin/zsh",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONUNBUFFERED": "1"
+  },
+
+  "remoteEnv": {
+    "PATH": "/workspace/backend/venv/bin:${containerEnv:PATH}",
+    "PYTHONPATH": "/workspace"
+  },
+
+  "postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
+  "postStartCommand": "bash .devcontainer/postStartCommand.sh",
+  "shutdownAction": "stopContainer",
+
+  "features": {},
+
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "4gb"
+  }
+}

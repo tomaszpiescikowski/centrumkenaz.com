@@ -1,0 +1,683 @@
+{
+  "common": {
+    "appName": "KENAZ",
+    "appSubtitle": "centrum",
+    "backToCalendar": "Wróć do kalyndarza",
+    "loading": "",
+    "free": "Darmo",
+    "currency": "PLN",
+    "more": "wiyncyj",
+    "close": "Zawrzij",
+    "empty": "Brak wydarzyń",
+    "today": "Dziś"
+  },
+  "shop": {
+    "label": "Kenaz sklep",
+    "title": "Kenaz Sklep",
+    "subtitle": "Rzecy na wspólne chwile — proste, wygodne i nasze.",
+    "cta": "Dodej do koszyka",
+    "empty": "Produkty bydōm wkrōtce."
+  },
+  "footer": {
+    "tagline": "Offline społeczność. Ruch, relacyje i rozwōj w jednym rytmie.",
+    "contactTitle": "Kontakt",
+    "address": "Wyżyny 16, 61-654 Poznań, Poland",
+    "email": "[email protected]",
+    "orgTitle": "Fundacyjŏ",
+    "legalName": "Fundacja Centrum Kenaz",
+    "krs": "KRS 0001211548",
+    "nip": "NIP 9721373428",
+    "regon": "REGON 543498710",
+    "linksTitle": "Linki",
+    "links": {
+      "home": "Start",
+      "calendar": "Kalyndarz",
+      "about": "O Kenaz",
+      "shop": "Sklep",
+      "privacy": "Polityka prywatności",
+      "terms": "Regulamin"
+    },
+    "copyright": "© {year} Fundacja Centrum Kenaz"
+  },
+  "privacy": {
+    "title": "Polityka prywatności",
+    "body": "Ōdziywōmy sie ô prywatność i bezpekyństwo danych. Piyńno policyjŏ bydzie wkrōtce."
+  },
+  "terms": {
+    "title": "Regulamin",
+    "body": "Piyłny regulamin bydzie wkrōtce."
+  },
+  "nav": {
+    "home": "Start",
+    "calendar": "Kalyndarz",
+    "shop": "Sklep",
+    "myAccount": "Moje kōnto",
+    "admin": "Admin",
+    "city": "Miasto",
+    "addEvent": "Przidej"
+  },
+  "pwa": {
+    "installCta": "Zainstaluj apka na telefonie",
+    "installButton": "Zainstaluj",
+    "installManualTitle": "Rynczno instalacyjŏ",
+    "installManualHint": "W Chrome ôtwōrz myni ⋮ i wybiyrz „Dodŏj do ekranu głōwnego”.",
+    "installRequiresHttps": "Instalacyjŏ w Chrome fołdruje bezpieczny adres HTTPS. Ôtwōrz aplikacyjŏ bez https://."
+  },
+  "home": {
+    "demoLabel": "demo",
+    "tagline": "Zamkniynto społeczność offline. Wydarzyńa, integracyje, wspólne pasyje.",
+    "viewCalendar": "Zobocz kalyndarz",
+    "aboutCta": "Poznej Kenaz",
+    "aboutCtaHint": "Kliknij i ôbocz, jak wyglōndŏ naszo społeczność ôd środka.",
+    "features": {
+      "events": {
+        "title": "Wydarzyńa",
+        "description": "Karate, morsowanie, planszōwki, ogniska i wiyncyj"
+      },
+      "community": {
+        "title": "Społeczność",
+        "description": "Poznej ludzi ô podobnych zainteresiōniach"
+      },
+      "trips": {
+        "title": "Wyjazdy",
+        "description": "Fińske sauny, norweske domki, wspólne przigody"
+      }
+    }
+  },
+  "about": {
+    "label": "Poznej Kenaz",
+    "backHome": "Wróć na start",
+    "title": "Czamu Kenaz?",
+    "subtitle": "Miyjsce, kaj ruch, relacyje i rozwōj idōm tym samym rytmem. Dołōnczysz, kej chcesz — ôstŏwŏsz, bo je dobrze.",
+    "ctaMessage": "Dołōncz terŏz i zobŏcz Kenaz ôd środka.",
+    "joinNow": "Dołōncz terŏz",
+    "joinSecondary": "Chca sprōbować",
+    "followUs": "Bōndź z nōmi:",
+    "socialTitle": "Poczuj klimat Kenaz",
+    "socialSubtitle": "Zajerzij do nos i ôbocz ludzi oraz atmosferã.",
+    "shopTitle": "Kenaz Sklep",
+    "shopBody": "Proste, wygodne rzeczy na wspólne chwile. Jak chcesz mieć Kenaz na co dziyń — wejdzij do sklepu.",
+    "shopButton": "Idź do sklepu",
+    "legalTitle": "Dane fundacyjŏ",
+    "legalNameLabel": "Nōzwa",
+    "legalName": "Fundacja Centrum Kenaz",
+    "legalKrsLabel": "KRS",
+    "legalKrs": "0001211548",
+    "legalNipLabel": "NIP",
+    "legalNip": "9721373428",
+    "legalRegonLabel": "REGON",
+    "legalRegon": "543498710",
+    "legalAddressLabel": "Adres",
+    "legalAddress": "Wyżyny 16, 61-654 Poznań, Poland",
+    "legalEmailLabel": "E-mail",
+    "legalEmail": "[email protected]",
+    "legalBoardLabel": "Zarzōnd",
+    "legalBoard": "Sebastian Andrzejewski, Franciszek Kwame Awuku",
+    "legalRepresentationLabel": "Reprezentacyjŏ",
+    "legalRepresentation": "Dwōch człōnkōw zarzōndu łącznie",
+    "legalLinkLabel": "Zobŏcz wpis w rejestrze",
+    "mediaTitle": "W mediach",
+    "mediaBody": "Wywiad radiowy ô Kenaz jako społeczności offline: wspólne bieganie, morsowanie, wyjazdy i ogniska bez internetu. Dlo tych, co chcōm wiyncyj niż dom i robota.",
+    "mediaArticleLabel": "Przeczytej wywiad",
+    "mediaVideoTitle": "Zobŏcz film",
+    "sponsorsTitle": "Partnerzy i sponsorzi",
+    "sponsorsBody": "Wspōłprŏcujemy z markami, kere wspierajōm aktywny, zdrowy styl życiŏ i rozwōj społeczności.",
+    "sponsorsPrimary": "Decathlon",
+    "social": {
+      "facebook": "Facebook",
+      "instagram": "Instagram"
+    },
+    "highlightLabel": "Esyncyja",
+    "sliderTitle": "Chwile, kere nos łōnczōm",
+    "sliderHint": "slider zdjynciów",
+    "sliderItem": "Miyjsce na kadr #{index}",
+    "stats": {
+      "members": {
+        "value": "312",
+        "label": "aktywnych człōnkōw Kenaz Premium"
+      },
+      "attendees": {
+        "value": "2 480",
+        "label": "ludzi, co przewinyli sie bez wydarzyńa"
+      },
+      "events": {
+        "value": "84",
+        "label": "wydarzyńa w tym roku"
+      },
+      "items": [
+        {
+          "value": "312",
+          "label": "aktywnych człōnkōw Kenaz Premium"
+        },
+        {
+          "value": "2 480",
+          "label": "wszyjske zapisy na wydarzyńa"
+        },
+        {
+          "value": "84",
+          "label": "wydarzyńa w tym roku"
+        },
+        {
+          "value": "27",
+          "label": "średnio uczestnikōw na wydarzyńe"
+        }
+      ]
+    },
+    "stories": [
+      {
+        "title": "Wydarzyńa, kere dŏjōm rytm",
+        "body": "Kenaz to regularne spotkania, kere dŏjōm energia na co dziyń. Niy musisz być w formie — wystarczy chcieć być z ludźmi i zrobić coś dobrego dlo siebie."
+      },
+      {
+        "title": "Ruch, kere daje balans",
+        "body": "Łōnczymy aktywności dlo ciała i głowy. To niy wyścig — ino spokojno, konsekwentno robota nad sobōm."
+      },
+      {
+        "title": "Społeczność z wartościami",
+        "body": "Kenaz to niy ino eventy. To ludzie, co wybierajōm rozwōj, zdrowie i relacyje."
+      },
+      {
+        "title": "Motywacyjo do zmian",
+        "body": "Wspólno energia pomaga utrzymać dobre nawyki. Tu wsparcie je prawdziwe."
+      },
+      {
+        "title": "Wyjazdy, co ôstŏwajōm",
+        "body": "Ôd czasu do czasu robimy coś większego: wyjazd, weekend, przygoda. To spaja ekipã i buduje wspomnienia."
+      },
+      {
+        "title": "Siła wspólnej energii",
+        "body": "Kenaz je wyjątkowy, bo je prawdziwy: rozmowy, śmiych, wysiłek i wsparcie."
+      }
+    ],
+    "sections": {
+      "events": {
+        "title": "Wydarzyńa",
+        "subtitle": "Regulary spotkania, co budujōm rytm i energia społeczności.",
+        "highlights": [
+          "Kenaz to rytm, co wyciōngŏ z rutyny — bez presyje, w dobrym towarzystwie.",
+          "Nasze aktywności niy som na pokaz. To spokojno, konsekwentno robota nad formōm i energijōm.",
+          "Spotykōmy sie offline, bo prawdziwe relacyje rosnōm z prawdziwych chwil.",
+          "Kożde wydarzyńe mo swōj klimat: rŏz sportowy, rŏz społeczny, rŏz regeneracyjny.",
+          "Małe grupy ułŏtwiōm poznŏnie ludzi i poczucie, że sie tu pasuje.",
+          "Dołōnczŏsz, kej chcesz — wybiyrŏsz aktywności, co sōm dla Ciebie.",
+          "Jak szukŏsz naturalnego rozwoju i wspierajōncej atmosfery, Kenaz je dla Ciebie."
+        ]
+      },
+      "community": {
+        "title": "Społeczność",
+        "subtitle": "Relacyje, kere ôstajōm – wspōlnota ludzi ô podobnych wertach.",
+        "highlights": [
+          "Spotkania offline bez presyje i sztuczności",
+          "Mocne poczucie przynŏleżności i wsparcio",
+          "Nowe znojōmości, kere przerōstajōm we przijŏźnie"
+        ]
+      },
+      "trips": {
+        "title": "Wyjazdy",
+        "subtitle": "Intensywne, zaplanowane wyjazdy, kere ôstajōm w pamiyńci na lata.",
+        "highlights": [
+          "Sauny, gōrske schroniska i wyprawy tymatyczne",
+          "Wyselekcjonowane miyjsca i kameralne grupy",
+          "Zero nudy – maksymalne wspólne historyje"
+        ]
+      }
+    }
+  },
+  "calendar": {
+    "title": "kalyndarz",
+    "subtitle": "eventy",
+    "registered": "Jeś zapisany",
+    "days": [
+      "pon",
+      "wt",
+      "śr",
+      "czw",
+      "pt",
+      "sob",
+      "niedz"
+    ],
+    "months": [
+      "styczyń",
+      "luty",
+      "marzec",
+      "kwiecień",
+      "mōj",
+      "czerwiyc",
+      "lipiyc",
+      "siyrpiyń",
+      "wrzesiyń",
+      "paździyrnik",
+      "listopŏd",
+      "grudziyń"
+    ],
+    "legend": "Legenda",
+    "karateGroup": "GRUPA KARATE",
+    "karateSchedule": "pōniedziałki i środy ô 20:00 - 21:30",
+    "contactDM": "po szczegōły napisz DM!",
+    "loginRequiredTitle": "Zaloguj sie, coby ôdblokować kalyndarz",
+    "loginRequiredBody": "Ino zalogowane ôsoby mogōm przeglōndać i zapisywać sie na wydarzyńa.",
+    "loginRequiredButton": "Zaloguj sie",
+    "pendingRequiredTitle": "Kōnto czeko na akceptacyjo",
+    "pendingRequiredBody": "Aż do akceptacyje bez admina dostymp do kalyndarza i zapisy sōm zablokowane.",
+    "pendingRequiredButton": "Sprawdź status kōnta",
+    "mobileSelectedDay": "Wydarzyńa",
+    "mobileNoEvents": "Brak wydarzyń we wybranym dniu."
+  },
+  "event": {
+    "notFound": "Wydarzyńe niy znŏleziōne",
+    "loadError": "Niy idzie wczytać wydarzyńa",
+    "registrationSuccessTitle": "Zapisano!",
+    "registrationSuccessSubtitle": "Twoje miyjsce je zarezerwowane.",
+    "awaitsOnSite": "na miyjscu czekajōm:",
+    "price": "cyna:",
+    "priceGuest": "Goście",
+    "priceMember": "Człōnkowie KENAZ",
+    "subscriptionRequired": "Wymagano subskrypcyjo, coby sie zapisać.",
+    "location": "Lokalizacyjo",
+    "signUp": "Zapisz sie",
+    "requiresLogin": "(wymŏgo logōniŏ)",
+    "interested": "brzmi jak coś dlo Ciebie? napisz do nos!",
+    "adminEdit": "Edytuj wydarzynie",
+    "adminDelete": "Skasuj wydarzynie",
+    "adminSave": "Spamiyntej zmiany",
+    "adminCancelEdit": "Pociep edycyjo",
+    "adminDeleteConfirm": "Skasować to wydarzynie? Tego niy idzie cofnōńć.",
+    "adminUpdateSuccess": "Wydarzynie zaktualizowane.",
+    "adminUpdateError": "Niy idzie zaktualizować wydarzynio.",
+    "adminDeleteSuccess": "Wydarzynie skasowane.",
+    "adminDeleteError": "Niy idzie skasować wydarzynio."
+  },
+  "registration": {
+    "noSpots": "Brak miyjsc",
+    "submitting": "Zapisowanie...",
+    "pastEvent": "Wydarzyńe skończōne",
+    "errorPastEvent": "Niy idzie sie zapisać na wydarzynie, kere sie już zaczło.",
+    "alreadyRegistered": "Jeś zapisany",
+    "waitlistTitle": "Lista rezerwowo",
+    "waitlistSuccess": "Dōdali my Cie na lista rezerwowo tego wydarzynio.",
+    "ctaWaitlist": "Dojdź do listy rezerwowyj",
+    "ctaPaid": "Zapisz sie - {price} {currency}",
+    "ctaFree": "Zapisz sie (darmo)",
+    "ctaLogin": "Zaloguj sie, coby sie zapisać",
+    "mustBeLoggedIn": "Musiś sie zalogować, coby sie zapisać",
+    "errorGeneric": "Cosik poszło niy tak. Sprōbuj zaś.",
+    "errorFailed": "Błōnd rejestracyje",
+    "errorSubscriptionRequired": "Do zapisu na to wydarzynie trza mieć aktywno subskrypcyjõ."
+  },
+  "account": {
+    "title": "Moje kōnto",
+    "subtitle": "Twoje dane, punkty i zapisy.",
+    "loginRequired": "Zaloguj sie, coby ôboczyć kōnto.",
+    "loginButton": "Zaloguj sie",
+    "logout": "Wyloguj",
+    "manageSubscription": "Plany człōnkostwa",
+    "profileTitle": "Profil",
+    "aboutMe": "Ô mie",
+    "aboutMePlaceholder": "Napisz krōtko ô sobie",
+    "interests": "Zainteresowania",
+    "profileSave": "Zapisz profil",
+    "profileSaved": "Profil zaktualizowany.",
+    "profileSaveError": "Niy szło zapisać profilu.",
+    "name": "Miano i nazwisko",
+    "email": "Email",
+    "points": "Punkty",
+    "subscriptionPlan": "Aktualny plan",
+    "subscription": "Subskrypcyjo",
+    "subscriptionActive": "Aktywnŏ",
+    "subscriptionInactive": "Niyaktywnŏ",
+    "myEvents": "Moje wydarzyńa",
+    "noEvents": "Jeszcze niy mosz zapisōw na żŏdne wydarzyńe.",
+    "viewEvent": "Ôbocz wydarzyńe",
+    "status": "Status",
+    "statuses": {
+      "pending": "Czeko na płatność",
+      "confirmed": "Potwierdzōne",
+      "waitlist": "Lista rezerwowo",
+      "cancelled": "Anulowane",
+      "refunded": "Zwrōcōne"
+    },
+    "cancellationWindow": "Rezygnacyjo",
+    "cancellationOpen": "Możliwŏ",
+    "cancellationClosed": "Zamkniyntŏ",
+    "cancellationClosedMessage": "Ôkno rezygnacyje zamkniynte.",
+    "cancelStandard": "Zrezygnuj",
+    "cancelRescue": "Użyj koła ratunkowego",
+    "rescue": "Koło ratunkowe",
+    "rescueAvailable": "Zostoło: {count}",
+    "rescueTooltip": "Koło ratunkowe pozwŏlŏ subskrybentōm zrezygnować bliżyj terminu. Limit je miesiyczny.",
+    "loadError": "Niy idzie wczytać danych kōnta",
+    "cancelError": "Niy idzie anulować zapisu",
+    "cancelSuccess": "Zapis ôstoł anulowany."
+  },
+  "plans": {
+    "backToAccount": "Wroć do kōnta",
+    "title": "Plany człōnkostwa",
+    "subtitle": "Ôbier plan i kup subskrypcyjõ prosto z kōnta.",
+    "subscriptionActiveUntil": "Subskrypcyjo aktywnŏ do: {date}",
+    "subscriptionInactive": "Brak aktywnyj subskrypcyje.",
+    "monthlyLabel": "/mies.",
+    "includes": "Zawiyro",
+    "buyPlan": "Kup {plan}",
+    "freePlanCta": "Plan bazowy",
+    "processing": "Przetwŏrzanie...",
+    "paymentSuccessTitle": "Subskrypcyjo aktywowano",
+    "paymentSuccessBody": "Płatność skończōno. Twoja subskrypcyjo je aktywnŏ.",
+    "paymentCancelled": "Płatność ôstała anulowano.",
+    "loadError": "Niy idzie wczytać planōw.",
+    "checkoutError": "Niy idzie zaczōnć płatności.",
+    "pendingApproval": "Kōnto czeko na akceptacyjo admina.",
+    "currentPlan": "Aktualny plan",
+    "plan": {
+      "free": {
+        "title": "Free",
+        "summary": "Start",
+        "features": [
+          "Bazowy dostymp do kalyndarza",
+          "Podglōnd wydarzyń i zapisōw",
+          "Brak aktywnyj subskrypcyje"
+        ]
+      },
+      "pro": {
+        "title": "Człōnkostwo Pro",
+        "summary": "Nŏjczyńściyj wybiyrane",
+        "features": [
+          "Dostymp do wydarzyń ino dlo subskrybentōw",
+          "Cyny człōnkowskie na wydarzyniŏch",
+          "Aktywnŏ subskrypcyjo na 30 dni"
+        ]
+      },
+      "ultimate": {
+        "title": "Człōnkostwo Ultimate",
+        "summary": "Maksymalny pakiet",
+        "features": [
+          "Wszyjsko z planu Pro",
+          "Priorytetowe wsparcie ôrganizacyjne",
+          "Aktywnŏ subskrypcyjo na 365 dni"
+        ]
+      }
+    },
+    "mostPopular": "Nŏjpopularniyjszy",
+    "freePlanCurrent": "Aktualny darmowy plan",
+    "freePlanSwitch": "Przełōncz na darmowy plan",
+    "switchedToFree": "Przełōnczōno na darmowy plan."
+  },
+  "admin": {
+    "createEventTitle": "Dodej nowe wydarzyńe",
+    "createEventSubtitle": "Formularz ino dlo admina - tworzenie wydarzyń w kalyndarzu.",
+    "createEventButton": "Stwōrz wydarzyńe",
+    "saving": "Zapisowanie...",
+    "dashboardTitle": "Panel admina",
+    "dashboardSubtitle": "Wybierz, czym chcesz rzōndzić.",
+    "loginRequired": "Zaloguj sie, coby przejść do admina.",
+    "loginButton": "Zaloguj sie",
+    "backToDashboard": "Wróć do panelu",
+    "paymentsTitle": "Płatności i statystyki",
+    "paymentsSubtitle": "Przychody, procent wypołniynia i top człōnkowie.",
+    "eventStatsTitle": "Statystyki bieżōncych wydarzyń",
+    "userStatsTitle": "Użytkownicy wg wpłat i udziołu",
+    "paymentStatsTitle": "Payments summary",
+    "registrationStatsTitle": "Registrations summary",
+    "viewEvent": "Ôbocz wydarzyńe",
+    "stats": {
+      "fill": "Wypołniynie",
+      "registered": "Zapisani",
+      "totalPaid": "Suma wpłat",
+      "prevMonth": "Piyrwszy miesiōnc",
+      "nextMonth": "Nastympny miesiōnc",
+      "pricing": "Guest / member",
+      "empty": "No data yet"
+    },
+    "tables": {
+      "event": "Wydarzyńe",
+      "user": "Użytkownik",
+      "attendance": "Frekwyncyjo",
+      "count": "Liczba",
+      "countShare": "Udzioł liczby",
+      "amount": "Kwota",
+      "averageAmount": "Strzednio kwota",
+      "amountShare": "Udzioł kwoty",
+      "limit": "Limit",
+      "share": "Udzioł",
+      "confirmed": "Potwierdzone",
+      "sortBy": "Sortuj po kolumnie: {column}"
+    },
+    "statsCards": {
+      "eventsTitle": "Events",
+      "eventsDesc": "Fill rate, prices, and revenue by event",
+      "eventsConfirmed": "{count} confirmed",
+      "eventsRevenue": "Revenue {amount} PLN",
+      "usersTitle": "Users",
+      "usersDesc": "Participation, payments, roles, and status",
+      "usersActive": "{count} active",
+      "usersPending": "{count} pending",
+      "usersMembers": "{count} members",
+      "paymentsTitle": "Payments",
+      "paymentsDesc": "Totals, refunds, and type breakdown",
+      "paymentsTotal": "Total {amount} PLN",
+      "paymentsCompleted": "Completed {amount} PLN",
+      "paymentsRefunded": "Refunded {amount} PLN",
+      "registrationsTitle": "Registrations",
+      "registrationsDesc": "Statuses, unique users, and top events",
+      "registrationsConfirmed": "{count} confirmed",
+      "registrationsUsers": "{count} users",
+      "registrationsEvents": "{count} events",
+      "viewDetails": "View details",
+      "pickView": "Select a tile to view statistics."
+    },
+    "paymentStatsSummary": "Overview",
+    "paymentStatsByType": "By type",
+    "paymentStatsByStatus": "By status",
+    "paymentStats": {
+      "totalCount": "Payments: {count}",
+      "totalAmount": "Total: {amount}",
+      "completed": "Completed: {count} ({amount})",
+      "refunded": "Refunded: {count} ({amount})",
+      "average": "Avg payment: {amount}"
+    },
+    "registrationStatsSummary": "Overview",
+    "registrationStatsTopEvents": "Top events",
+    "registrationStats": {
+      "total": "Registrations: {count}",
+      "confirmed": "Confirmed: {count}",
+      "pending": "Pending: {count}",
+      "cancelled": "Cancelled: {count}",
+      "refunded": "Refunded: {count}",
+      "uniqueUsers": "Unique users: {count}",
+      "uniqueEvents": "Unique events: {count}"
+    },
+    "userStats": {
+      "name": "Miano i nazwisko",
+      "email": "Email",
+      "events": "Wydarzyńa",
+      "totalPaid": "Suma wpłat",
+      "points": "Punkty",
+      "role": "Role",
+      "status": "Status",
+      "subscription": "Subscription ends",
+      "lastPayment": "Last payment"
+    },
+    "userRoles": {
+      "guest": "Guest",
+      "member": "Member",
+      "admin": "Admin"
+    },
+    "userStatuses": {
+      "pending": "Pending",
+      "active": "Active",
+      "banned": "Banned"
+    },
+    "paymentStatuses": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed",
+      "refunded": "Refunded",
+      "cancelled": "Cancelled"
+    },
+    "paymentTypes": {
+      "event": "Event",
+      "subscription": "Subscription"
+    },
+    "approvalTitle": "Zatwierdzanie użytkownikōw",
+    "approvalSubtitle": "Sprawdź nowe kōnta przed dołōnczyniym.",
+    "approvalPlaceholder": "Kolejka zatwierdzania pojawi sie tu.",
+    "approvalLoadError": "Failed to load pending users",
+    "approvalActionError": "Failed to approve user",
+    "approvalEmpty": "No users waiting for approval.",
+    "approveButton": "Approve",
+    "pendingUserNoName": "No name provided",
+    "pendingUserCreated": "Submitted: {date}",
+    "recurringTitle": "Recurring events",
+    "recurringSubtitle": "Manage schedules that repeat automatically.",
+    "recurringEmpty": "No recurring events configured.",
+    "recurringEdit": "Edit",
+    "recurringDelete": "Delete",
+    "recurringSave": "Save changes",
+    "recurringLoadError": "Failed to load recurring events",
+    "recurringUpdateError": "Failed to update recurring event",
+    "recurringDeleteError": "Failed to delete recurring event",
+    "recurringDeleteConfirm": "Delete this recurring event?",
+    "recurringDeleteConfirmAction": "Delete permanently",
+    "recurringRuleLabel": "{frequency} · every {interval}x",
+    "cards": {
+      "createEvent": {
+        "title": "Dodej nowe wydarzyńe",
+        "description": "Stwōrz nowe wydarzyńe i opublikuj je w kalyndarzu."
+      },
+      "recurringEvents": {
+        "title": "Recurring events",
+        "description": "Manage repeating schedules and templates."
+      },
+      "approveUsers": {
+        "title": "Zatwierdzanie użytkownikōw",
+        "description": "Sprawdź nowe kōnta i dej dostymp."
+      },
+      "payments": {
+        "title": "Płatności i statystyki",
+        "description": "Przychody, wypołniynie i top człōnkowie."
+      }
+    },
+    "notAuthorizedTitle": "Brak dostympu",
+    "notAuthorized": "Niy mosz praw do tygo miyjsca.",
+    "createError": "Niy idzie stworzyć wydarzyńa",
+    "statsError": "Niy idzie wczytać statystyk",
+    "validationRequired": "Wypołnij wymagane pola.",
+    "validation": {
+      "nonNegative": "Wartość niy może być ujemno.",
+      "minOne": "Wartość musi być co nojmyńij 1.",
+      "notPastDate": "Data poczōntku niy może być z przeszłości."
+    },
+    "fields": {
+      "title": "Tytuł",
+      "titlePlaceholder": "e.g. Morning run",
+      "description": "Ôpis",
+      "descriptionPlaceholder": "Short description of the event",
+      "eventType": "Typ wydarzyńa",
+      "type": "Type",
+      "startDate": "Data poczōntkowo",
+      "endDate": "Data kōńcowo (ôpcyjŏ)",
+      "timeInfo": "Godziny",
+      "timeInfoPlaceholder": "np. 19:00-21:00",
+      "recurrenceFrequency": "Frequency",
+      "recurrenceInterval": "Interval",
+      "recurrenceUntil": "Repeat until",
+      "recurrenceDaily": "Daily",
+      "recurrenceWeekly": "Weekly",
+      "recurrenceMonthly": "Monthly",
+      "city": "Miasto",
+      "location": "Lokalizacyjo",
+      "locationPlaceholder": "np. Poznań, Jezioro Rusałka",
+      "showMap": "Mapa: pokaż lokalizacyjo",
+      "showVideo": "Video: pokaż YouTube",
+      "youtubeUrl": "Link do YouTube",
+      "youtubeUrlPlaceholder": "https://www.youtube.com/watch?v=...",
+      "locationPreview": "Podglōnd lokalizacyje",
+      "openInMaps": "Ôtwōrz w Google Maps",
+      "requiresSubscription": "Subskrypcyjo wymŏgano do zapisu",
+      "pointsValue": "Punkty za udzioł",
+      "priceGuest": "Cyna gościa",
+      "priceGuestPlaceholder": "e.g. 50",
+      "priceMember": "Cyna człōnka",
+      "priceMemberPlaceholder": "e.g. 30",
+      "maxParticipants": "Limit miyjsc",
+      "maxParticipantsPlaceholder": "e.g. 20",
+      "cancelCutoffHours": "Limit rezygnacyje (godziny)",
+      "rescueCutoffHours": "Limit koła ratunkowego (godziny)",
+      "rescueMonthlyLimit": "Limit ratunku na miesiōnc",
+      "rescueRequiresSubscription": "Ratunek ino dlo subskrybentōw",
+      "isBigEvent": "Srogie wydarzyńe (pokoż cechy)",
+      "isRecurring": "Powtorzalne wydarzyńe",
+      "features": "Cechy (jedyn na linijka)",
+      "featuresPlaceholder": "Sauna\nGōnco herbata\nInstruktōr",
+      "paymentInfo": "Informacyje ô płatnościach",
+      "paymentInfoPlaceholder": "e.g. Bank transfer details",
+      "pointsValuePlaceholder": "e.g. 1"
+    },
+    "approvalSuccess": "Używoc sie ôstał zaakceptowany.",
+    "recurringUpdateSuccess": "Cykliczne wydarzynie ôstało zaktualizowane.",
+    "recurringDeleteSuccess": "Cykliczne wydarzynie ôstało usuniynte."
+  },
+  "participants": {
+    "title": "Uczestnicy",
+    "spotsAvailable": "{count} wolnych miyjsc",
+    "noSpots": "Brak miyjsc",
+    "emptyTitle": "Jeszcze niy mo uczestnikōw",
+    "emptySubtitle": "Bōndź piyrszy!",
+    "freeSpot": "wolne",
+    "pointsAbbr": "pkt"
+  },
+  "profile": {
+    "notFound": "Niy idzie znojś profilu użytkownika.",
+    "about": "Ô osobie",
+    "interests": "Zainteresowania",
+    "noAbout": "Brak opisu.",
+    "noInterests": "Brak wybranych zainteresowań."
+  },
+  "eventTypes": {
+    "karate": "Karate",
+    "mors": "Morsowanie",
+    "planszowki": "Planszōwki",
+    "ognisko": "Ognisko",
+    "spacer": "Spacyr",
+    "joga": "Joga",
+    "wyjazd": "Wyjazd",
+    "inne": "Inne"
+  },
+  "notifications": {
+    "successTitle": "Sukces",
+    "errorTitle": "Akcyjo niy wyszła",
+    "infoTitle": "Informacyjo",
+    "confirmTitle": "Potwiyrdź akcyjo"
+  },
+  "approval": {
+    "profileRequiredBody": "Before your request can be reviewed, complete your profile and submit the join request.",
+    "submitJoinRequest": "Submit join request",
+    "joinRequestSent": "Join request sent. Wait for admin approval.",
+    "joinRequestError": "Failed to submit join request."
+  },
+  "auth": {
+    "title": "Zaloguj sie",
+    "subtitle": "Mōżesz użyć Google abo loginu i hasła.",
+    "modeLogin": "Logowanie",
+    "modeRegister": "Nowe kōnto",
+    "loginWithGoogle": "Kōntynuuj bez Google",
+    "loginLabel": "Login abo e-mail",
+    "loginPlaceholder": "np. jan.kowalski abo [email protected]",
+    "usernameLabel": "Login",
+    "usernamePlaceholder": "np. jan.kowalski",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "np. [email protected]",
+    "fullNameLabel": "Imiã i nazwisko",
+    "fullNamePlaceholder": "np. Jan Kowalski",
+    "passwordLabel": "Hasło",
+    "passwordPlaceholder": "Minimum 8 znakōw",
+    "confirmPasswordLabel": "Powtōrz hasło",
+    "confirmPasswordPlaceholder": "Wpisz hasło jeszcze roz",
+    "submitLogin": "Zaloguj sie",
+    "submitRegister": "Utwōrz kōnto",
+    "submitting": "Trwo logowanie...",
+    "passwordMismatch": "Hasła niy som take same.",
+    "genericError": "Niy szło sie zalogować.",
+    "openLogin": "Zaloguj sie"
+  }
+}

@@ -1,0 +1,681 @@
+{
+  "common": {
+    "appName": "KENAZ",
+    "appSubtitle": "centrum",
+    "backToCalendar": "Terug naar kalender",
+    "loading": "",
+    "free": "Gratis",
+    "currency": "PLN",
+    "more": "meer",
+    "close": "Sluiten",
+    "empty": "Geen evenementen",
+    "today": "Vandaag"
+  },
+  "shop": {
+    "label": "Kenaz shop",
+    "title": "Kenaz Shop",
+    "subtitle": "Items voor gedeelde momenten — eenvoudig, comfortabel, van ons.",
+    "cta": "In winkelwagen",
+    "empty": "Producten volgen binnenkort."
+  },
+  "footer": {
+    "tagline": "Offline community. Beweging, verbinding en groei in één ritme.",
+    "contactTitle": "Contact",
+    "address": "Wyżyny 16, 61-654 Poznań, Poland",
+    "email": "[email protected]",
+    "orgTitle": "Stichting",
+    "legalName": "Fundacja Centrum Kenaz",
+    "krs": "KRS 0001211548",
+    "nip": "NIP 9721373428",
+    "regon": "REGON 543498710",
+    "linksTitle": "Snelkoppelingen",
+    "links": {
+      "home": "Home",
+      "calendar": "Kalender",
+      "about": "Over Kenaz",
+      "shop": "Shop",
+      "privacy": "Privacybeleid",
+      "terms": "Voorwaarden"
+    },
+    "copyright": "© {year} Fundacja Centrum Kenaz"
+  },
+  "privacy": {
+    "title": "Privacybeleid",
+    "body": "We hechten waarde aan privacy en gegevensbeveiliging. De volledige policy volgt binnenkort."
+  },
+  "terms": {
+    "title": "Voorwaarden",
+    "body": "De volledige voorwaarden worden binnenkort gepubliceerd."
+  },
+  "nav": {
+    "home": "Home",
+    "calendar": "Kalender",
+    "shop": "Shop",
+    "myAccount": "Mijn account",
+    "admin": "Admin",
+    "city": "Stad",
+    "addEvent": "Toevoegen"
+  },
+  "pwa": {
+    "installCta": "Installeer de app op je telefoon",
+    "installButton": "Installeren",
+    "installManualTitle": "Handmatige installatie",
+    "installManualHint": "Open in Chrome het ⋮ menu en kies \"Toevoegen aan startscherm\".",
+    "installRequiresHttps": "Installatie in Chrome vereist een veilig HTTPS-adres. Open de app via https://."
+  },
+  "home": {
+    "demoLabel": "demo",
+    "tagline": "Een besloten offline community. Events, verbindingen, gedeelde passies.",
+    "viewCalendar": "Bekijk kalender",
+    "aboutCta": "Leer ons kennen!",
+    "features": {
+      "events": {
+        "title": "Events",
+        "description": "Karate, winterzwemmen, bordspellen, kampvuren en meer"
+      },
+      "community": {
+        "title": "Community",
+        "description": "Ontmoet mensen met vergelijkbare interesses"
+      },
+      "trips": {
+        "title": "Trips",
+        "description": "Finse sauna's, Noorse hutten, gedeelde avonturen"
+      }
+    }
+  },
+  "about": {
+    "label": "Ontdek Kenaz",
+    "backHome": "Terug naar home",
+    "title": "Waarom Kenaz?",
+    "subtitle": "Een plek waar beweging, verbinding en groei één ritme delen. Sluit aan wanneer het past — blijf omdat het goed voelt.",
+    "ctaMessage": "Doe nu mee en ervaar Kenaz van binnenuit.",
+    "joinNow": "Doe nu mee",
+    "joinSecondary": "Ik wil het proberen",
+    "followUs": "Blijf bij ons:",
+    "socialTitle": "Voel de Kenaz-sfeer",
+    "socialSubtitle": "Bekijk de mensen en de energie voordat je meedoet.",
+    "shopTitle": "Kenaz Shop",
+    "shopBody": "Eenvoudige, comfortabele items voor gedeelde momenten. Wil je Kenaz in je dagelijks leven? Kijk in de shop.",
+    "shopButton": "Ga naar de shop",
+    "legalTitle": "Stichtingsgegevens",
+    "legalNameLabel": "Naam",
+    "legalName": "Fundacja Centrum Kenaz",
+    "legalKrsLabel": "KRS",
+    "legalKrs": "0001211548",
+    "legalNipLabel": "NIP",
+    "legalNip": "9721373428",
+    "legalRegonLabel": "REGON",
+    "legalRegon": "543498710",
+    "legalAddressLabel": "Adres",
+    "legalAddress": "Wyżyny 16, 61-654 Poznań, Poland",
+    "legalEmailLabel": "E-mail",
+    "legalEmail": "[email protected]",
+    "legalBoardLabel": "Bestuur",
+    "legalBoard": "Sebastian Andrzejewski, Franciszek Kwame Awuku",
+    "legalRepresentationLabel": "Vertegenwoordiging",
+    "legalRepresentation": "Twee bestuursleden gezamenlijk",
+    "legalLinkLabel": "Bekijk in register",
+    "mediaTitle": "In de media",
+    "mediaBody": "Een radio-interview schetst Kenaz als offline community: samen hardlopen, ijsbaden, trips en kampvuren zonder internet. Voor mensen die meer willen dan alleen thuis en werk.",
+    "mediaArticleLabel": "Lees het interview",
+    "mediaVideoTitle": "Bekijk de video",
+    "sponsorsTitle": "Partners & sponsors",
+    "sponsorsBody": "We werken samen met merken die een actieve, gezonde levensstijl en community-groei ondersteunen.",
+    "sponsorsPrimary": "Decathlon",
+    "social": {
+      "facebook": "Facebook",
+      "instagram": "Instagram"
+    },
+    "highlightLabel": "Essentie",
+    "sliderTitle": "Momenten die ons verbinden",
+    "sliderHint": "fotocarrousel",
+    "sliderItem": "Kaderplek #{index}",
+    "stats": {
+      "members": {
+        "value": "312",
+        "label": "actieve Kenaz Premium-leden"
+      },
+      "attendees": {
+        "value": "2.480",
+        "label": "mensen die aan onze events deelnamen"
+      },
+      "events": {
+        "value": "84",
+        "label": "events dit jaar"
+      },
+      "items": [
+        {
+          "value": "312",
+          "label": "actieve Kenaz Premium-leden"
+        },
+        {
+          "value": "2.480",
+          "label": "totaal aantal inschrijvingen"
+        },
+        {
+          "value": "84",
+          "label": "events dit jaar"
+        },
+        {
+          "value": "27",
+          "label": "gem. deelnemers per event"
+        }
+      ]
+    },
+    "stories": [
+      {
+        "title": "Events met ritme",
+        "body": "Kenaz geeft je week structuur en energie. Je hebt geen topvorm nodig — alleen de wil om te komen en iets goeds voor jezelf te doen."
+      },
+      {
+        "title": "Beweging die balans brengt",
+        "body": "We combineren activiteiten die lichaam en hoofd versterken. Het is geen wedstrijd, maar rustige, consequente groei."
+      },
+      {
+        "title": "Een community met waarden",
+        "body": "Kenaz draait om mensen die willen groeien, gezond willen leven en echte relaties waarderen. Kleine groepen maken het persoonlijk."
+      },
+      {
+        "title": "Motivatie voor verandering",
+        "body": "Samen is het makkelijker om gezonde keuzes vol te houden. De energie van de groep werkt aanstekelijk."
+      },
+      {
+        "title": "Trips die je bijblijven",
+        "body": "Af en toe gaan we groter: een trip, een intens weekend, een gedeelde ervaring die je niet vergeet."
+      },
+      {
+        "title": "De kracht van samen",
+        "body": "Wat Kenaz bijzonder maakt is hoe echt het voelt — steun, gesprekken, lachen en samen moeite doen."
+      }
+    ],
+    "sections": {
+      "events": {
+        "title": "Events",
+        "subtitle": "Regelmatige bijeenkomsten die het ritme en de energie van de community bepalen.",
+        "highlights": [
+          "Kenaz geeft je een ritme dat je uit de sleur haalt — zonder druk, in goed gezelschap.",
+          "Onze trainingen en activiteiten zijn niet voor de show. Het is rustig, consequent werken aan energie en welzijn.",
+          "We ontmoeten elkaar offline, omdat echte relaties ontstaan in echte momenten.",
+          "Elke bijeenkomst heeft een eigen vibe: soms sportief, soms sociaal, soms herstellend.",
+          "We houden groepen klein, zodat je mensen echt leert kennen en je thuis voelt.",
+          "Je sluit aan wanneer het jou past — kies de activiteiten die bij je tempo passen.",
+          "Zoek je natuurlijke groei en een steunende sfeer? Dan is Kenaz voor jou."
+        ]
+      },
+      "community": {
+        "title": "Community",
+        "subtitle": "Relaties die blijven — een kring van mensen met gedeelde waarden.",
+        "highlights": [
+          "Offline ontmoetingen zonder druk of schijn",
+          "Een sterk gevoel van verbondenheid en steun",
+          "Nieuwe connecties die uitgroeien tot vriendschappen"
+        ]
+      },
+      "trips": {
+        "title": "Trips",
+        "subtitle": "Intensieve, zorgvuldig geplande trips die je jarenlang bijblijven.",
+        "highlights": [
+          "Sauna's, berghutten en themareizen",
+          "Geselecteerde locaties en intieme groepen",
+          "Geen verveling — maximale gedeelde verhalen"
+        ]
+      }
+    }
+  },
+  "calendar": {
+    "title": "kalender",
+    "subtitle": "events",
+    "registered": "Je bent ingeschreven",
+    "days": [
+      "ma",
+      "di",
+      "wo",
+      "do",
+      "vr",
+      "za",
+      "zo"
+    ],
+    "months": [
+      "januari",
+      "februari",
+      "maart",
+      "april",
+      "mei",
+      "juni",
+      "juli",
+      "augustus",
+      "september",
+      "oktober",
+      "november",
+      "december"
+    ],
+    "legend": "Legenda",
+    "karateGroup": "KARATEGROEP",
+    "karateSchedule": "maandagen en woensdagen om 20:00 - 21:30",
+    "contactDM": "Stuur ons een DM voor details!",
+    "loginRequiredTitle": "Log in om de kalender te ontgrendelen",
+    "loginRequiredBody": "Alleen ingelogde gebruikers kunnen evenementen bekijken en zich inschrijven.",
+    "loginRequiredButton": "Log in",
+    "pendingRequiredTitle": "Account wacht op goedkeuring",
+    "pendingRequiredBody": "Tot admin-goedkeuring zijn kalendertoegang en eventinschrijvingen geblokkeerd.",
+    "pendingRequiredButton": "Controleer accountstatus",
+    "mobileSelectedDay": "Events",
+    "mobileNoEvents": "Geen events op de geselecteerde dag."
+  },
+  "event": {
+    "notFound": "Event niet gevonden",
+    "loadError": "Kon event niet laden",
+    "registrationSuccessTitle": "Succesvol ingeschreven!",
+    "registrationSuccessSubtitle": "Je plek is gereserveerd.",
+    "awaitsOnSite": "ter plaatse wacht:",
+    "price": "prijs:",
+    "priceGuest": "Gasten",
+    "priceMember": "KENAZ-leden",
+    "subscriptionRequired": "Abonnement vereist om in te schrijven.",
+    "location": "Locatie",
+    "signUp": "Schrijf je in",
+    "requiresLogin": "(inloggen vereist)",
+    "interested": "klinkt dit als iets voor jou? stuur ons een bericht!",
+    "adminEdit": "Event bewerken",
+    "adminDelete": "Event verwijderen",
+    "adminSave": "Wijzigingen opslaan",
+    "adminCancelEdit": "Bewerken annuleren",
+    "adminDeleteConfirm": "Dit event verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+    "adminUpdateSuccess": "Event bijgewerkt.",
+    "adminUpdateError": "Kon event niet bijwerken.",
+    "adminDeleteSuccess": "Event verwijderd.",
+    "adminDeleteError": "Kon event niet verwijderen."
+  },
+  "registration": {
+    "noSpots": "Geen plaatsen",
+    "submitting": "Bezig met inschrijven...",
+    "pastEvent": "Event is voorbij",
+    "errorPastEvent": "Je kunt je niet inschrijven voor een evenement dat al is begonnen.",
+    "alreadyRegistered": "Je bent ingeschreven",
+    "waitlistTitle": "Wachtlijst",
+    "waitlistSuccess": "Je bent toegevoegd aan de wachtlijst van dit evenement.",
+    "ctaWaitlist": "Ga op de wachtlijst",
+    "ctaPaid": "Schrijf je in - {price} {currency}",
+    "ctaFree": "Schrijf je in (gratis)",
+    "ctaLogin": "Log in om in te schrijven",
+    "mustBeLoggedIn": "Je moet ingelogd zijn om in te schrijven",
+    "errorGeneric": "Er ging iets mis. Probeer opnieuw.",
+    "errorFailed": "Inschrijving mislukt",
+    "errorSubscriptionRequired": "Je hebt een actief abonnement nodig om je voor dit evenement in te schrijven."
+  },
+  "account": {
+    "title": "Mijn account",
+    "subtitle": "Je profiel, punten en inschrijvingen.",
+    "loginRequired": "Log in om je account te bekijken.",
+    "loginButton": "Log in",
+    "logout": "Uitloggen",
+    "manageSubscription": "Membership-plannen",
+    "profileTitle": "Profiel",
+    "aboutMe": "Over mij",
+    "aboutMePlaceholder": "Schrijf kort iets over jezelf",
+    "interests": "Interesses",
+    "profileSave": "Profiel opslaan",
+    "profileSaved": "Profiel bijgewerkt.",
+    "profileSaveError": "Kon profiel niet opslaan.",
+    "name": "Naam",
+    "email": "E-mail",
+    "points": "Punten",
+    "subscriptionPlan": "Huidig plan",
+    "subscription": "Abonnement",
+    "subscriptionActive": "Actief",
+    "subscriptionInactive": "Inactief",
+    "myEvents": "Mijn events",
+    "noEvents": "Je bent nog niet ingeschreven voor events.",
+    "viewEvent": "Bekijk event",
+    "status": "Status",
+    "statuses": {
+      "pending": "Wacht op betaling",
+      "confirmed": "Bevestigd",
+      "waitlist": "Wachtlijst",
+      "cancelled": "Geannuleerd",
+      "refunded": "Terugbetaald"
+    },
+    "cancellationWindow": "Annuleren",
+    "cancellationOpen": "Mogelijk",
+    "cancellationClosed": "Gesloten",
+    "cancellationClosedMessage": "Annuleringsvenster gesloten.",
+    "cancelStandard": "Annuleer inschrijving",
+    "cancelRescue": "Gebruik rescue",
+    "rescue": "Rescue",
+    "rescueAvailable": "Nog {count}",
+    "rescueTooltip": "Rescue laat abonnees kort voor het event annuleren. Maandlimiet van toepassing.",
+    "loadError": "Kon accountgegevens niet laden",
+    "cancelError": "Kon inschrijving niet annuleren",
+    "cancelSuccess": "Inschrijving succesvol geannuleerd."
+  },
+  "plans": {
+    "backToAccount": "Terug naar account",
+    "title": "Membership-plannen",
+    "subtitle": "Kies een plan en koop je abonnement direct vanuit je account.",
+    "subscriptionActiveUntil": "Abonnement actief tot: {date}",
+    "subscriptionInactive": "Geen actief abonnement.",
+    "monthlyLabel": "/mnd",
+    "includes": "Inbegrepen",
+    "buyPlan": "Koop {plan}",
+    "freePlanCta": "Standaardplan",
+    "processing": "Verwerken...",
+    "paymentSuccessTitle": "Abonnement geactiveerd",
+    "paymentSuccessBody": "Betaling voltooid. Je abonnement is nu actief.",
+    "paymentCancelled": "Betaling is geannuleerd.",
+    "loadError": "Kon plannen niet laden.",
+    "checkoutError": "Kon betaling niet starten.",
+    "pendingApproval": "Account wacht op goedkeuring van admin.",
+    "currentPlan": "Current plan",
+    "plan": {
+      "free": {
+        "title": "Free",
+        "summary": "Start",
+        "features": [
+          "Basistoegang tot de kalender",
+          "Events en inschrijvingen bekijken",
+          "Geen actief abonnement"
+        ]
+      },
+      "pro": {
+        "title": "Pro membership",
+        "summary": "Meest gekozen",
+        "features": [
+          "Toegang tot events voor abonnees",
+          "Ledenprijzen voor events",
+          "Actief abonnement voor 30 dagen"
+        ]
+      },
+      "ultimate": {
+        "title": "Ultimate membership",
+        "summary": "Maximaal pakket",
+        "features": [
+          "Alles van Pro",
+          "Prioritaire organisatorische support",
+          "Actief abonnement voor 365 dagen"
+        ]
+      }
+    },
+    "mostPopular": "Meest populair",
+    "freePlanCurrent": "Huidig gratis plan",
+    "freePlanSwitch": "Schakel naar gratis plan",
+    "switchedToFree": "Overgeschakeld naar gratis plan."
+  },
+  "admin": {
+    "createEventTitle": "Nieuw event toevoegen",
+    "createEventSubtitle": "Admin-only formulier om events aan de kalender toe te voegen.",
+    "createEventButton": "Event aanmaken",
+    "saving": "Opslaan...",
+    "dashboardTitle": "Admin-dashboard",
+    "dashboardSubtitle": "Kies wat je wilt beheren.",
+    "loginRequired": "Log in om admin-tools te gebruiken.",
+    "loginButton": "Log in",
+    "backToDashboard": "Terug naar dashboard",
+    "paymentsTitle": "Betalingen & stats",
+    "paymentsSubtitle": "Volg inkomsten, vullingsgraad en top-leden.",
+    "eventStatsTitle": "Huidige eventstatistieken",
+    "userStatsTitle": "Gebruikers op basis van betalingen & deelname",
+    "paymentStatsTitle": "Payments summary",
+    "registrationStatsTitle": "Registrations summary",
+    "viewEvent": "Bekijk event",
+    "stats": {
+      "fill": "Vullingsgraad",
+      "registered": "Ingeschreven",
+      "totalPaid": "Totaal betaald",
+      "prevMonth": "Vorige maand",
+      "nextMonth": "Volgende maand",
+      "pricing": "Guest / member",
+      "empty": "No data yet"
+    },
+    "tables": {
+      "event": "Evenement",
+      "user": "Gebruiker",
+      "attendance": "Bezetting",
+      "count": "Aantal",
+      "countShare": "Aandeel aantal",
+      "amount": "Bedrag",
+      "averageAmount": "Gemiddeld bedrag",
+      "amountShare": "Aandeel bedrag",
+      "limit": "Limiet",
+      "share": "Aandeel",
+      "confirmed": "Bevestigd",
+      "sortBy": "Sorteer op kolom: {column}"
+    },
+    "statsCards": {
+      "eventsTitle": "Events",
+      "eventsDesc": "Fill rate, prices, and revenue by event",
+      "eventsConfirmed": "{count} confirmed",
+      "eventsRevenue": "Revenue {amount} PLN",
+      "usersTitle": "Users",
+      "usersDesc": "Participation, payments, roles, and status",
+      "usersActive": "{count} active",
+      "usersPending": "{count} pending",
+      "usersMembers": "{count} members",
+      "paymentsTitle": "Payments",
+      "paymentsDesc": "Totals, refunds, and type breakdown",
+      "paymentsTotal": "Total {amount} PLN",
+      "paymentsCompleted": "Completed {amount} PLN",
+      "paymentsRefunded": "Refunded {amount} PLN",
+      "registrationsTitle": "Registrations",
+      "registrationsDesc": "Statuses, unique users, and top events",
+      "registrationsConfirmed": "{count} confirmed",
+      "registrationsUsers": "{count} users",
+      "registrationsEvents": "{count} events",
+      "viewDetails": "View details",
+      "pickView": "Select a tile to view statistics."
+    },
+    "paymentStatsSummary": "Overview",
+    "paymentStatsByType": "By type",
+    "paymentStatsByStatus": "By status",
+    "paymentStats": {
+      "totalCount": "Payments: {count}",
+      "totalAmount": "Total: {amount}",
+      "completed": "Completed: {count} ({amount})",
+      "refunded": "Refunded: {count} ({amount})",
+      "average": "Avg payment: {amount}"
+    },
+    "registrationStatsSummary": "Overview",
+    "registrationStatsTopEvents": "Top events",
+    "registrationStats": {
+      "total": "Registrations: {count}",
+      "confirmed": "Confirmed: {count}",
+      "pending": "Pending: {count}",
+      "cancelled": "Cancelled: {count}",
+      "refunded": "Refunded: {count}",
+      "uniqueUsers": "Unique users: {count}",
+      "uniqueEvents": "Unique events: {count}"
+    },
+    "userStats": {
+      "name": "Naam",
+      "email": "E-mail",
+      "events": "Events",
+      "totalPaid": "Totaal betaald",
+      "points": "Punten",
+      "role": "Role",
+      "status": "Status",
+      "subscription": "Subscription ends",
+      "lastPayment": "Last payment"
+    },
+    "userRoles": {
+      "guest": "Guest",
+      "member": "Member",
+      "admin": "Admin"
+    },
+    "userStatuses": {
+      "pending": "Pending",
+      "active": "Active",
+      "banned": "Banned"
+    },
+    "paymentStatuses": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed",
+      "refunded": "Refunded",
+      "cancelled": "Cancelled"
+    },
+    "paymentTypes": {
+      "event": "Event",
+      "subscription": "Subscription"
+    },
+    "approvalTitle": "Gebruikers goedkeuren",
+    "approvalSubtitle": "Beoordeel nieuwe accounts voordat ze toetreden.",
+    "approvalPlaceholder": "De goedkeuringswachtrij verschijnt hier.",
+    "approvalLoadError": "Failed to load pending users",
+    "approvalActionError": "Failed to approve user",
+    "approvalEmpty": "No users waiting for approval.",
+    "approveButton": "Approve",
+    "pendingUserNoName": "No name provided",
+    "pendingUserCreated": "Submitted: {date}",
+    "recurringTitle": "Recurring events",
+    "recurringSubtitle": "Manage schedules that repeat automatically.",
+    "recurringEmpty": "No recurring events configured.",
+    "recurringEdit": "Edit",
+    "recurringDelete": "Delete",
+    "recurringSave": "Save changes",
+    "recurringLoadError": "Failed to load recurring events",
+    "recurringUpdateError": "Failed to update recurring event",
+    "recurringDeleteError": "Failed to delete recurring event",
+    "recurringDeleteConfirm": "Delete this recurring event?",
+    "recurringDeleteConfirmAction": "Delete permanently",
+    "recurringRuleLabel": "{frequency} · every {interval}x",
+    "cards": {
+      "createEvent": {
+        "title": "Nieuw event toevoegen",
+        "description": "Maak een nieuw event en publiceer het in de kalender."
+      },
+      "recurringEvents": {
+        "title": "Recurring events",
+        "description": "Manage repeating schedules and templates."
+      },
+      "approveUsers": {
+        "title": "Gebruikers goedkeuren",
+        "description": "Beoordeel nieuwe accounts en verleen toegang."
+      },
+      "payments": {
+        "title": "Betalingen & stats",
+        "description": "Inkomsten, vullingsgraad en top-leden."
+      }
+    },
+    "notAuthorizedTitle": "Toegang geweigerd",
+    "notAuthorized": "Je hebt geen toestemming om dit gebied te openen.",
+    "createError": "Kon event niet aanmaken",
+    "statsError": "Kon statistieken niet laden",
+    "validationRequired": "Vul de verplichte velden in.",
+    "validation": {
+      "nonNegative": "Waarde mag niet negatief zijn.",
+      "minOne": "Waarde moet minimaal 1 zijn.",
+      "notPastDate": "Startdatum mag niet in het verleden liggen."
+    },
+    "fields": {
+      "title": "Titel",
+      "titlePlaceholder": "e.g. Morning run",
+      "description": "Beschrijving",
+      "descriptionPlaceholder": "Short description of the event",
+      "eventType": "Eventtype",
+      "type": "Type",
+      "startDate": "Startdatum",
+      "endDate": "Einddatum (optioneel)",
+      "timeInfo": "Tijdinformatie",
+      "timeInfoPlaceholder": "bijv. 19:00-21:00",
+      "recurrenceFrequency": "Frequency",
+      "recurrenceInterval": "Interval",
+      "recurrenceUntil": "Repeat until",
+      "recurrenceDaily": "Daily",
+      "recurrenceWeekly": "Weekly",
+      "recurrenceMonthly": "Monthly",
+      "city": "Stad",
+      "location": "Locatie",
+      "locationPlaceholder": "bijv. Poznań, Jezioro Rusałka",
+      "showMap": "Kaart: locatie tonen",
+      "showVideo": "Video: YouTube tonen",
+      "youtubeUrl": "YouTube-link",
+      "youtubeUrlPlaceholder": "https://www.youtube.com/watch?v=...",
+      "locationPreview": "Locatievoorbeeld",
+      "openInMaps": "Openen in Google Maps",
+      "requiresSubscription": "Abonnement vereist om in te schrijven",
+      "pointsValue": "Punten voor deelname",
+      "priceGuest": "Prijs voor gasten",
+      "priceGuestPlaceholder": "e.g. 50",
+      "priceMember": "Prijs voor leden",
+      "priceMemberPlaceholder": "e.g. 30",
+      "maxParticipants": "Max deelnemers",
+      "maxParticipantsPlaceholder": "e.g. 20",
+      "cancelCutoffHours": "Annuleringstermijn (uren)",
+      "rescueCutoffHours": "Rescue-termijn (uren)",
+      "rescueMonthlyLimit": "Rescue-limiet per maand",
+      "rescueRequiresSubscription": "Rescue alleen voor abonnees",
+      "isBigEvent": "Groot event (toon features)",
+      "isRecurring": "Terugkerend event",
+      "features": "Features (één per regel)",
+      "featuresPlaceholder": "Sauna\nWarme thee\nInstructeur",
+      "paymentInfo": "Betalingsinfo",
+      "paymentInfoPlaceholder": "e.g. Bank transfer details",
+      "pointsValuePlaceholder": "e.g. 1"
+    },
+    "approvalSuccess": "Gebruiker is goedgekeurd.",
+    "recurringUpdateSuccess": "Terugkerend evenement bijgewerkt.",
+    "recurringDeleteSuccess": "Terugkerend evenement verwijderd."
+  },
+  "participants": {
+    "title": "Deelnemers",
+    "spotsAvailable": "{count} plekken beschikbaar",
+    "noSpots": "Geen plekken",
+    "emptyTitle": "Nog geen deelnemers",
+    "emptySubtitle": "Wees de eerste!",
+    "freeSpot": "vrij",
+    "pointsAbbr": "pt"
+  },
+  "profile": {
+    "notFound": "Gebruikersprofiel niet gevonden.",
+    "about": "Over",
+    "interests": "Interesses",
+    "noAbout": "Nog geen beschrijving.",
+    "noInterests": "Geen interesses geselecteerd."
+  },
+  "eventTypes": {
+    "karate": "Karate",
+    "mors": "Winterzwemmen",
+    "planszowki": "Bordspellen",
+    "ognisko": "Kampvuur",
+    "spacer": "Wandeling",
+    "joga": "Yoga",
+    "wyjazd": "Trip",
+    "inne": "Overig"
+  },
+  "notifications": {
+    "successTitle": "Gelukt",
+    "errorTitle": "Actie mislukt",
+    "infoTitle": "Melding"
+  },
+  "approval": {
+    "profileRequiredBody": "Before your request can be reviewed, complete your profile and submit the join request.",
+    "submitJoinRequest": "Submit join request",
+    "joinRequestSent": "Join request sent. Wait for admin approval.",
+    "joinRequestError": "Failed to submit join request."
+  },
+  "auth": {
+    "title": "Inloggen",
+    "subtitle": "Gebruik Google of je gebruikersnaam en wachtwoord.",
+    "modeLogin": "Inloggen",
+    "modeRegister": "Account maken",
+    "loginWithGoogle": "Doorgaan met Google",
+    "loginLabel": "Gebruikersnaam of e-mail",
+    "loginPlaceholder": "bijv. jane.doe of [email protected]",
+    "usernameLabel": "Gebruikersnaam",
+    "usernamePlaceholder": "bijv. jane.doe",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "bijv. [email protected]",
+    "fullNameLabel": "Volledige naam",
+    "fullNamePlaceholder": "bijv. Jane Doe",
+    "passwordLabel": "Wachtwoord",
+    "passwordPlaceholder": "Minimaal 8 tekens",
+    "confirmPasswordLabel": "Bevestig wachtwoord",
+    "confirmPasswordPlaceholder": "Voer je wachtwoord opnieuw in",
+    "submitLogin": "Inloggen",
+    "submitRegister": "Account maken",
+    "submitting": "Bezig met inloggen...",
+    "passwordMismatch": "Wachtwoorden komen niet overeen.",
+    "genericError": "Inloggen mislukt.",
+    "openLogin": "Inloggen"
+  }
+}

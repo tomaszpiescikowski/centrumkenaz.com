@@ -1,0 +1,156 @@
+@layer components {
+  .page-shell {
+    @apply mx-auto w-full max-w-4xl px-3 py-3 sm:px-4 sm:py-6;
+  }
+
+  .page-card {
+    @apply rounded-2xl border border-navy/10 bg-cream/75 p-5 dark:border-cream/15 dark:bg-navy/75;
+  }
+
+  .page-card-tight {
+    @apply rounded-2xl border border-navy/10 bg-cream/75 p-4 dark:border-cream/15 dark:bg-navy/75;
+  }
+
+  .page-subcard {
+    @apply rounded-2xl border border-navy/10 bg-cream/60 p-4 dark:border-cream/10 dark:bg-navy/60;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-full border border-navy/25 bg-transparent
+      px-5 py-2.5 text-sm font-semibold text-navy dark:border-cream/30 dark:text-cream;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-full border border-navy/20 bg-transparent
+      px-4 py-2 text-sm font-semibold text-navy/80 dark:border-cream/25 dark:text-cream/85;
+  }
+
+  .btn-nav {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-full border border-navy/20 bg-transparent
+      px-3 text-sm font-medium text-navy dark:border-cream/25 dark:text-cream lg:px-4;
+  }
+
+  .btn-disabled {
+    @apply cursor-not-allowed bg-navy/20 text-navy/50 dark:bg-cream/20 dark:text-cream/50;
+  }
+
+  .ui-table-wrap {
+    @apply max-h-[32rem] overflow-auto rounded-2xl border border-navy/10 dark:border-cream/10;
+  }
+
+  .ui-table {
+    @apply min-w-full text-left text-xs;
+  }
+
+  .ui-table-head {
+    @apply bg-navy/5 dark:bg-cream/10;
+  }
+
+  .ui-table-th {
+    @apply px-3 py-2 font-semibold uppercase tracking-wide;
+  }
+
+  .ui-table-row {
+    @apply border-t border-navy/10 dark:border-cream/10 leading-tight;
+  }
+
+  .ui-table-cell {
+    @apply px-2 py-1.5 text-navy dark:text-cream;
+  }
+
+  .ui-table-empty {
+    @apply px-2 py-2 text-navy/60 dark:text-cream/60;
+  }
+
+  .ui-table-sort-indicator {
+    @apply text-[10px] text-navy/60 dark:text-cream/60;
+  }
+
+  .ui-view-card {
+    @apply w-full rounded-2xl border p-6 text-left transition;
+  }
+
+  .ui-view-card-active {
+    @apply border-navy/45 bg-transparent dark:border-cream/45 dark:bg-transparent;
+  }
+
+  .ui-view-card-idle {
+    @apply border-navy/10 bg-transparent dark:border-cream/15 dark:bg-transparent;
+  }
+
+  .ui-view-card-title {
+    @apply mb-2 text-xl font-black text-navy dark:text-cream;
+  }
+
+  .ui-view-card-description {
+    @apply text-sm text-navy/70 dark:text-cream/70;
+  }
+
+  .form-checkbox {
+    @apply h-4 w-4 rounded border border-navy/30 bg-transparent align-middle accent-navy
+      focus:ring-2 focus:ring-navy/25 dark:border-cream/35 dark:accent-cream dark:focus:ring-cream/25;
+  }
+
+  .ui-input {
+    @apply w-full rounded-xl border border-navy/20 bg-cream/60 px-4 py-3 text-base text-navy shadow-sm transition
+      focus:border-navy/50 focus:outline-none focus:ring-2 focus:ring-navy/20
+      dark:border-cream/20 dark:bg-navy/60 dark:text-cream dark:focus:border-cream/50 dark:focus:ring-cream/20;
+  }
+
+  .ui-input-compact {
+    @apply px-3 py-2 text-sm focus:border-navy/40 focus:ring-0 dark:focus:border-cream/40 dark:focus:ring-0;
+  }
+
+  .ui-input-auth {
+    @apply bg-cream/80 text-sm dark:bg-navy/70;
+  }
+
+  .ui-input-invalid {
+    @apply border-red-500 focus:border-red-500 focus:ring-red-200 dark:border-red-400 dark:focus:border-red-400 dark:focus:ring-red-900/40;
+  }
+
+  .ui-field-hint {
+    @apply text-xs text-red-600 dark:text-red-400;
+  }
+
+  .ui-tag-list {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .ui-tag-chip {
+    @apply inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold transition;
+  }
+
+  .ui-tag-chip-active {
+    @apply border-navy bg-navy text-cream dark:border-cream dark:bg-cream dark:text-navy;
+  }
+
+  .ui-tag-chip-idle {
+    @apply border-navy/20 text-navy/70 hover:bg-navy/5 dark:border-cream/25 dark:text-cream/70 dark:hover:bg-cream/10;
+  }
+
+  .ui-input-date {
+    @apply pr-12 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0;
+  }
+
+  .ui-input-picker-button {
+    @apply absolute inset-y-1.5 right-1.5 flex w-9 items-center justify-center rounded-lg bg-navy/10 text-navy transition
+      hover:bg-navy/20 dark:bg-cream/10 dark:text-cream dark:hover:bg-cream/20;
+  }
+
+  /*
+   * Unified hover tint for clickable UI elements.
+   * Mirrors the subtle "events list" hover from calendar across views.
+   */
+  .app-shell :where(a, button, [role='button'], summary, [data-clickable='true']) {
+    @apply transition-colors duration-200;
+  }
+
+  .app-shell :where(a, button, [role='button'], summary, [data-clickable='true']):not(:disabled):hover {
+    box-shadow: inset 0 0 0 9999px rgba(26, 26, 78, 0.08);
+  }
+
+  .dark .app-shell :where(a, button, [role='button'], summary, [data-clickable='true']):not(:disabled):hover {
+    box-shadow: inset 0 0 0 9999px rgba(255, 245, 225, 0.06);
+  }
+}

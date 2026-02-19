@@ -1,0 +1,28 @@
+:root {
+  /* Core brand colors */
+  --token-color-navy-rgb: 26 26 78;
+  --token-color-cream-rgb: 255 245 225;
+
+  /* Semantic text colors */
+  --token-text-primary: rgb(var(--token-color-navy-rgb));
+  --token-text-secondary: rgb(var(--token-color-navy-rgb) / 0.7);
+  --token-text-tertiary: rgb(var(--token-color-navy-rgb) / 0.6);
+
+  /* Semantic surfaces */
+  --token-surface-base: rgb(var(--token-color-cream-rgb));
+  --token-surface-elevated: rgb(var(--token-color-cream-rgb));
+
+  /* Shared focus ring */
+  --token-focus-ring: rgb(var(--token-color-navy-rgb) / 0.2);
+}
+
+.dark {
+  --token-text-primary: rgb(var(--token-color-cream-rgb));
+  --token-text-secondary: rgb(var(--token-color-cream-rgb) / 0.7);
+  --token-text-tertiary: rgb(var(--token-color-cream-rgb) / 0.6);
+
+  --token-surface-base: rgb(var(--token-color-navy-rgb));
+  --token-surface-elevated: rgb(var(--token-color-navy-rgb));
+
+  --token-focus-ring: rgb(var(--token-color-cream-rgb) / 0.2);
+}

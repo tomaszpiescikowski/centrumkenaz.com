@@ -1,0 +1,22 @@
+.icon {
+  inline-size: var(--event-icon-size, 1.5rem);
+  block-size: var(--event-icon-size, 1.5rem);
+  stroke-width: var(--event-icon-stroke-width, 2);
+  flex: none;
+}
+
+.sizeXs {
+  --event-icon-size: 0.75rem;
+}
+
+.sizeSm {
+  --event-icon-size: 1rem;
+}
+
+.sizeMd {
+  --event-icon-size: 1.5rem;
+}
+
+.sizeLg {
+  --event-icon-size: 2rem;
+}

@@ -1,0 +1,351 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      skip_tests:
+        description: 'Skip tests'
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '20'
+  PYTHON_VERSION: '3.14'
+  APP_DIR: /opt/kenaz
+  BACKEND_DIR: /opt/kenaz/backend
+  FRONTEND_DIR: /opt/kenaz/dist
+  STATIC_DIR: /opt/kenaz/static
+
+jobs:
+  validate:
+    name: Validate Configuration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check required secrets
+        run: |
+          if [ -z "${{ secrets.SSH_HOST }}" ]; then
+            echo "❌ SSH_HOST secret is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.SSH_USER }}" ]; then
+            echo "❌ SSH_USER secret is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
+            echo "❌ SSH_PRIVATE_KEY secret is not set"
+            exit 1
+          fi
+          echo "✅ All required secrets are configured"
+
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        env:
+          VITE_API_URL: ""
+        run: npm run build
+
+      - name: Upload frontend build
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: dist/
+          retention-days: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Run backend tests
+        if: ${{ !inputs.skip_tests }}
+        run: |
+          cd backend
+          pytest tests/ -v --tb=short
+
+      - name: Validate Alembic migration files
+        run: |
+          cd backend
+          echo "Checking migration chain consistency..."
+          python -m alembic heads | grep -q ' (head)' && echo "✅ Single migration head found" || { echo "❌ Multiple or missing migration heads"; exit 1; }
+          python -m alembic branches | grep -q 'No branches' && echo "✅ No divergent branches" || echo "⚠️  Warning: Divergent migration branches detected"
+
+  deploy:
+    name: Deploy to Lightsail
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download frontend build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: dist/
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          
+          # Add host to known_hosts
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+          
+          # Create SSH config
+          cat >> ~/.ssh/config <<EOF
+          Host deploy-server
+            HostName ${{ secrets.SSH_HOST }}
+            User ${{ secrets.SSH_USER }}
+            IdentityFile ~/.ssh/deploy_key
+            StrictHostKeyChecking accept-new
+            ServerAliveInterval 60
+            ServerAliveCountMax 3
+          EOF
+          
+          chmod 600 ~/.ssh/config
+
+      - name: Test SSH connection
+        run: |
+          echo "Testing SSH connection..."
+          ssh deploy-server "echo '✅ SSH connection successful' && whoami && uname -a"
+
+      - name: Backup current deployment
+        run: |
+          ssh deploy-server <<'ENDSSH'
+          set -euo pipefail
+          if [ -f "${{ env.BACKEND_DIR }}/main.py" ] || [ -f "${{ env.FRONTEND_DIR }}/index.html" ]; then
+            BACKUP_DIR="/opt/kenaz-backup-$(date +%Y%m%d-%H%M%S)"
+            echo "Creating backup at $BACKUP_DIR..."
+            sudo cp -r ${{ env.APP_DIR }} $BACKUP_DIR
+            echo "✅ Backup created: $BACKUP_DIR"
+            # Keep only last 3 backups
+            sudo ls -dt /opt/kenaz-backup-* 2>/dev/null | tail -n +4 | xargs -r sudo rm -rf
+          else
+            echo "ℹ️  First deployment, no backup needed"
+          fi
+          ENDSSH
+
+      - name: Create deployment directories
+        run: |
+          ssh deploy-server <<'ENDSSH'
+          set -euo pipefail
+          echo "Creating deployment directories..."
+          sudo mkdir -p ${{ env.APP_DIR }}
+          sudo mkdir -p ${{ env.BACKEND_DIR }}
+          sudo mkdir -p ${{ env.FRONTEND_DIR }}
+          sudo mkdir -p ${{ env.STATIC_DIR }}
+          sudo chown -R $USER:$USER ${{ env.APP_DIR }}
+          echo "✅ Directories created"
+          ENDSSH
+
+      - name: Sync backend files
+        run: |
+          echo "Syncing backend files..."
+          rsync -avz --delete \
+            --exclude '.git/' \
+            --exclude '__pycache__/' \
+            --exclude '*.pyc' \
+            --exclude '.env' \
+            --exclude '.env.*' \
+            --exclude 'venv/' \
+            --exclude '.pytest_cache/' \
+            --exclude '.mypy_cache/' \
+            --exclude '*.db' \
+            --exclude '*.db-shm' \
+            --exclude '*.db-wal' \
+            --exclude 'static/uploads/' \
+            -e "ssh -F ~/.ssh/config" \
+            backend/ deploy-server:${{ env.BACKEND_DIR }}/
+          echo "✅ Backend files synced"
+
+      - name: Sync frontend files
+        run: |
+          echo "Syncing frontend files..."
+          rsync -avz --delete \
+            -e "ssh -F ~/.ssh/config" \
+            dist/ deploy-server:${{ env.FRONTEND_DIR }}/
+          echo "✅ Frontend files synced"
+
+      - name: Sync static files
+        run: |
+          echo "Syncing static files..."
+          rsync -avz \
+            -e "ssh -F ~/.ssh/config" \
+            static/ deploy-server:${{ env.STATIC_DIR }}/
+          echo "✅ Static files synced"
+
+      - name: Setup Python environment
+        run: |
+          ssh deploy-server <<'ENDSSH'
+          set -euo pipefail
+          cd ${{ env.BACKEND_DIR }}
+          
+          echo "Checking Python version..."
+          if ! command -v ~/.local/bin/python3.14 &> /dev/null; then
+            echo "❌ Python 3.14 not found at ~/.local/bin/python3.14"
+            echo "Install from source: https://www.python.org/downloads/"
+            exit 1
+          fi
+          
+          echo "Setting up virtual environment..."
+          if [ -d venv ]; then
+            VENV_VERSION=$(venv/bin/python --version 2>&1 | grep -oP '\d+\.\d+' | head -1)
+            if [ "$VENV_VERSION" != "3.14" ]; then
+              echo "Removing old venv (Python $VENV_VERSION)..."
+              rm -rf venv
+            fi
+          fi
+          
+          if [ ! -d venv ]; then
+            echo "Creating new virtual environment..."
+            ~/.local/bin/python3.14 -m venv venv
+          fi
+          
+          echo "Installing dependencies..."
+          venv/bin/pip install --upgrade pip
+          venv/bin/pip install -r requirements.txt
+          
+          echo "✅ Python environment ready"
+          ENDSSH
+
+      - name: Run database migrations
+        run: |
+          ssh deploy-server <<'ENDSSH'
+          set -euo pipefail
+          cd ${{ env.BACKEND_DIR }}
+          
+          if [ ! -f .env ]; then
+            echo "❌ .env file not found on server"
+            echo "Please create ${{ env.BACKEND_DIR }}/.env with required configuration"
+            exit 1
+          fi
+          
+          echo "Running database migrations..."
+          venv/bin/alembic upgrade head
+          echo "✅ Migrations completed"
+          ENDSSH
+
+      - name: Restart backend service
+        run: |
+          ssh deploy-server <<'ENDSSH'
+          set -euo pipefail
+          
+          echo "Restarting backend service..."
+          sudo systemctl restart kenaz-backend
+          
+          echo "Waiting for service to start..."
+          sleep 3
+          
+          if sudo systemctl is-active --quiet kenaz-backend; then
+            echo "✅ Backend service is running"
+          else
+            echo "❌ Backend service failed to start"
+            sudo systemctl status kenaz-backend --no-pager
+            exit 1
+          fi
+          ENDSSH
+
+      - name: Reload nginx
+        run: |
+          ssh deploy-server <<'ENDSSH'
+          set -euo pipefail
+          
+          echo "Testing nginx configuration..."
+          sudo nginx -t
+          
+          echo "Reloading nginx..."
+          sudo systemctl reload nginx
+          
+          if sudo systemctl is-active --quiet nginx; then
+            echo "✅ Nginx reloaded successfully"
+          else
+            echo "❌ Nginx failed to reload"
+            sudo systemctl status nginx --no-pager
+            exit 1
+          fi
+          ENDSSH
+
+      - name: Health check
+        run: |
+          echo "Performing health check..."
+          sleep 5
+          
+          # Check if backend is responding
+          HEALTH_URL="http://${{ secrets.SSH_HOST }}/docs"
+          for i in {1..5}; do
+            if curl -f -s -o /dev/null "$HEALTH_URL"; then
+              echo "✅ Health check passed: $HEALTH_URL"
+              exit 0
+            fi
+            echo "Attempt $i/5 failed, waiting..."
+            sleep 3
+          done
+          
+          echo "❌ Health check failed after 5 attempts"
+          echo "Check manually: $HEALTH_URL"
+          exit 1
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          echo "⚠️  Deployment failed — attempting rollback..."
+          LATEST_BACKUP=$(ssh deploy-server "sudo ls -dt /opt/kenaz-backup-* 2>/dev/null | head -1" || true)
+          if [ -n "$LATEST_BACKUP" ]; then
+            ssh deploy-server <<ENDSSH
+          set -euo pipefail
+          echo "Restoring from $LATEST_BACKUP..."
+          sudo rm -rf ${{ env.APP_DIR }}
+          sudo cp -r $LATEST_BACKUP ${{ env.APP_DIR }}
+          sudo chown -R \$USER:\$USER ${{ env.APP_DIR }}
+          sudo systemctl restart kenaz-backend
+          sudo systemctl reload nginx
+          echo "✅ Rollback completed"
+          ENDSSH
+          else
+            echo "❌ No backup found for rollback"
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f ~/.ssh/deploy_key
+          echo "✅ Cleanup completed"
+
+      - name: Deployment summary
+        if: success()
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🚀 Deployment completed successfully!"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

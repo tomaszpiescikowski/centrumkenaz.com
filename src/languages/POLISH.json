@@ -1,0 +1,782 @@
+{
+  "common": {
+    "appName": "KENAZ",
+    "appSubtitle": "centrum",
+    "backToCalendar": "Wróć do kalendarza",
+    "loading": "",
+    "free": "Bezpłatne",
+    "currency": "zł",
+    "more": "więcej",
+    "close": "Zamknij",
+    "empty": "Brak wydarzeń",
+    "today": "Dzisiaj"
+  },
+  "shop": {
+    "label": "Kenaz sklep",
+    "title": "Kenaz Sklep",
+    "subtitle": "Rzeczy stworzone do wspólnych chwil — proste, wygodne i nasze.",
+    "cta": "Dodaj do koszyka",
+    "empty": "Produkty pojawią się wkrótce."
+  },
+  "footer": {
+    "tagline": "Społeczność offline. Ruch, relacje i rozwój w jednym rytmie.",
+    "contactTitle": "Kontakt",
+    "address": "Wyżyny 16, 61-654 Poznań, Polska",
+    "email": "[email protected]",
+    "orgTitle": "Fundacja",
+    "legalName": "Fundacja Centrum Kenaz",
+    "krs": "KRS 0001211548",
+    "nip": "NIP 9721373428",
+    "regon": "REGON 543498710",
+    "linksTitle": "Na skróty",
+    "links": {
+      "home": "Start",
+      "calendar": "Kalendarz",
+      "about": "O Kenaz",
+      "shop": "Sklep",
+      "privacy": "Polityka prywatności",
+      "terms": "Regulamin"
+    },
+    "copyright": "© {year} Fundacja Centrum Kenaz"
+  },
+  "privacy": {
+    "title": "Polityka prywatności",
+    "body": "Dbamy o prywatność i bezpieczeństwo danych. Szczegółowe informacje dotyczące przetwarzania danych zostaną udostępnione w pełnej wersji polityki."
+  },
+  "terms": {
+    "title": "Regulamin",
+    "body": "Zasady korzystania z serwisu zostaną udostępnione w pełnej wersji regulaminu."
+  },
+  "nav": {
+    "home": "Start",
+    "calendar": "Kalendarz",
+    "shop": "Sklep",
+    "myAccount": "Moje konto",
+    "admin": "Admin",
+    "city": "Miasto",
+    "addEvent": "Dodaj"
+  },
+  "pwa": {
+    "installCta": "Zainstaluj aplikację na telefonie",
+    "installButton": "Zainstaluj",
+    "installManualTitle": "Instalacja ręczna",
+    "installManualHint": "W Chrome otwórz menu ⋮ i wybierz „Dodaj do ekranu głównego”.",
+    "installRequiresHttps": "Instalacja w Chrome wymaga bezpiecznego adresu HTTPS. Otwórz aplikację przez https://."
+  },
+  "home": {
+    "demoLabel": "demo",
+    "tagline": "Zamknięta społeczność offline. Wydarzenia, integracje, wspólne pasje.",
+    "viewCalendar": "Zobacz kalendarz",
+    "aboutCta": "Poznaj nas!",
+    "aboutCtaHint": "Kliknij i zobacz, jak wygląda nasza społeczność od środka.",
+    "features": {
+      "events": {
+        "title": "Wydarzenia",
+        "description": "Karate, morsowanie, planszówki, ogniska i wiele więcej"
+      },
+      "community": {
+        "title": "Społeczność",
+        "description": "Poznaj ludzi o podobnych zainteresowaniach"
+      },
+      "trips": {
+        "title": "Wyjazdy",
+        "description": "Fińskie sauny, norweskie domki, wspólne przygody"
+      }
+    }
+  },
+  "about": {
+    "label": "Poznaj Kenaz",
+    "backHome": "Wróć na start",
+    "title": "Dlaczego Kenaz?",
+    "subtitle": "To miejsce, w którym ruch, relacje i rozwój spotykają się w jednym rytmie. Dołączysz kiedy chcesz — zostajesz, bo tu jest dobrze.",
+    "ctaMessage": "Dołącz teraz i zobacz, jak wygląda Kenaz od środka.",
+    "joinNow": "Dołącz teraz",
+    "joinSecondary": "Chcę spróbować",
+    "followUs": "Bądź z nami:",
+    "socialTitle": "Poczuj klimat Kenaz",
+    "socialSubtitle": "Zajrzyj do nas, zobacz ludzi i atmosferę, zanim dołączysz.",
+    "shopTitle": "Kenaz Sklep",
+    "shopBody": "Nasze rzeczy są proste, wygodne i tworzone z myślą o wspólnych momentach. Jeśli chcesz mieć kawałek Kenaz na co dzień — zerknij do sklepu.",
+    "shopButton": "Przejdź do sklepu",
+    "legalTitle": "Dane fundacji",
+    "legalNameLabel": "Nazwa",
+    "legalName": "Fundacja Centrum Kenaz",
+    "legalKrsLabel": "KRS",
+    "legalKrs": "0001211548",
+    "legalNipLabel": "NIP",
+    "legalNip": "9721373428",
+    "legalRegonLabel": "REGON",
+    "legalRegon": "543498710",
+    "legalAddressLabel": "Adres",
+    "legalAddress": "Wyżyny 16, 61-654 Poznań, Polska",
+    "legalEmailLabel": "E-mail",
+    "legalEmail": "[email protected]",
+    "legalBoardLabel": "Zarząd",
+    "legalBoard": "Sebastian Andrzejewski, Franciszek Kwame Awuku",
+    "legalRepresentationLabel": "Reprezentacja",
+    "legalRepresentation": "Dwóch członków zarządu działających łącznie",
+    "legalLinkLabel": "Zobacz wpis w rejestrze",
+    "mediaTitle": "Wspomniani w mediach",
+    "mediaBody": "Wywiad radiowy opowiada o Kenaz jako społeczności offline: wspólne bieganie, morsowanie, wyjazdy i ogniska bez internetu. To propozycja dla osób, które chcą czegoś więcej niż tylko domu i pracy.",
+    "mediaArticleLabel": "Przeczytaj wywiad",
+    "mediaVideoTitle": "Zobacz film",
+    "sponsorsTitle": "Współprace i partnerzy",
+    "sponsorsBody": "Współpracujemy z markami, które wspierają aktywny, zdrowy styl życia i rozwój społeczności.",
+    "sponsorsPrimary": "Decathlon",
+    "social": {
+      "facebook": "Facebook",
+      "instagram": "Instagram"
+    },
+    "highlightLabel": "Esencja",
+    "sliderTitle": "Chwile, które nas łączą",
+    "sliderHint": "slider zdjęć",
+    "sliderItem": "Miejsce na kadr #{index}",
+    "stats": {
+      "members": {
+        "value": "312",
+        "label": "aktywnych członków Kenaz Premium"
+      },
+      "attendees": {
+        "value": "2 480",
+        "label": "osób przewinęło się przez nasze wydarzenia"
+      },
+      "events": {
+        "value": "84",
+        "label": "wydarzenia w tym roku"
+      },
+      "items": [
+        {
+          "value": "312",
+          "label": "aktywnych członków Kenaz Premium"
+        },
+        {
+          "value": "2 480",
+          "label": "łączna liczba zapisów na wydarzenia"
+        },
+        {
+          "value": "84",
+          "label": "wydarzenia zorganizowane w tym roku"
+        },
+        {
+          "value": "27",
+          "label": "śr. liczba uczestników na wydarzeniu"
+        }
+      ]
+    },
+    "stories": [
+      {
+        "title": "Wydarzenia, które budują rytm",
+        "body": "Kenaz to regularne spotkania, które porządkują tydzień i dają energię. Nie musisz mieć formy ani doświadczenia — wystarczy chęć, żeby być z ludźmi i zrobić coś dobrego dla siebie. Z czasem ten rytm wchodzi naturalnie w życie."
+      },
+      {
+        "title": "Ruch, który daje balans",
+        "body": "Łączymy aktywności, które wzmacniają ciało i głowę. Trening to nie wyścig, tylko spokojna praca nad sobą. Spotykamy się offline, bo prawdziwe relacje rodzą się z obecności, rozmowy i wspólnego wysiłku."
+      },
+      {
+        "title": "Społeczność z wartościami",
+        "body": "Kenaz to ludzie, którzy chcą czegoś więcej niż tylko eventu. Liczą się relacje, rozwój i zdrowe nawyki. W małych grupach łatwo o poznanie i o to, by poczuć się częścią całości."
+      },
+      {
+        "title": "Motywacja do zmian",
+        "body": "Wspólna energia działa jak najlepszy impuls. Łatwiej utrzymać zdrowy styl życia, kiedy widzisz, że inni też wybierają ruch, spokój i dobre relacje. Tu nikt nie udaje — jesteśmy normalni, ale konsekwentni."
+      },
+      {
+        "title": "Wyjazdy, które zostają w pamięci",
+        "body": "Raz na jakiś czas robimy coś większego: wyjazd, intensywny weekend, wspólną przygodę. To momenty, które spajają ekipę i zostawiają historie na lata."
+      },
+      {
+        "title": "Siła wspólnej energii",
+        "body": "Najbardziej wyjątkowe w Kenaz jest to, że czujesz się częścią czegoś prawdziwego. Wsparcie, rozmowy, śmiech i wysiłek — to właśnie buduje klimat, do którego chce się wracać."
+      }
+    ],
+    "sections": {
+      "events": {
+        "title": "Wydarzenia",
+        "subtitle": "Regularne spotkania, które budują rytm i energię społeczności.",
+        "highlights": [
+          "Kenaz to rytuał, który pozwala wyrwać się z rutyny i zrobić coś dla siebie — bez presji, za to w dobrym towarzystwie.",
+          "Wspólne treningi i aktywności nie są „na pokaz”. To spokojna, konsekwentna praca nad formą i energią na co dzień.",
+          "Spotykamy się offline, bo relacje buduje się naprawdę — rozmową, śmiechem, wspólnym wysiłkiem.",
+          "Każde wydarzenie ma klimat: czasem sportowy, czasem integracyjny, czasem po prostu regeneracyjny.",
+          "Działamy w małych grupach, dlatego łatwo o poznanie ludzi i poczucie, że tu się pasuje.",
+          "Dołączasz wtedy, kiedy chcesz — wybierasz aktywności, które są dla Ciebie.",
+          "Jeśli szukasz miejsca, w którym rozwój jest naturalny, a atmosfera wspierająca — Kenaz jest dla Ciebie."
+        ]
+      },
+      "community": {
+        "title": "Społeczność",
+        "subtitle": "Relacje, które zostają – wspólnota ludzi o podobnych wartościach.",
+        "highlights": [
+          "Spotkania offline bez presji i sztuczności",
+          "Mocne poczucie przynależności i wsparcia",
+          "Nowe znajomości, które przeradzają się w przyjaźnie"
+        ]
+      },
+      "trips": {
+        "title": "Wyjazdy",
+        "subtitle": "Intensywne, zaplanowane wyjazdy, które zostają w pamięci na lata.",
+        "highlights": [
+          "Sauny, górskie schroniska i wyprawy tematyczne",
+          "Wyselekcjonowane miejsca i kameralne grupy",
+          "Zero nudy – maksimum wspólnych historii"
+        ]
+      }
+    }
+  },
+  "calendar": {
+    "title": "kalendarz",
+    "subtitle": "eventy",
+    "registered": "Jesteś zapisany",
+    "days": [
+      "pon",
+      "wt",
+      "śr",
+      "czw",
+      "pt",
+      "sob",
+      "nied"
+    ],
+    "months": [
+      "styczeń",
+      "luty",
+      "marzec",
+      "kwiecień",
+      "maj",
+      "czerwiec",
+      "lipiec",
+      "sierpień",
+      "wrzesień",
+      "październik",
+      "listopad",
+      "grudzień"
+    ],
+    "legend": "Legenda",
+    "karateGroup": "GRUPA KARATE",
+    "karateSchedule": "poniedziałki i środy o godz. 20:00 - 21:30",
+    "contactDM": "po szczegóły napisz DM!",
+    "loginRequiredTitle": "Zaloguj się, aby odblokować kalendarz",
+    "loginRequiredBody": "Tylko zalogowani użytkownicy mogą przeglądać i zapisywać się na wydarzenia.",
+    "loginRequiredButton": "Zaloguj się",
+    "pendingRequiredTitle": "Konto czeka na akceptację",
+    "pendingRequiredBody": "Do czasu akceptacji przez admina kalendarz i zapisy są zablokowane.",
+    "pendingRequiredButton": "Sprawdź status konta",
+    "mobileSelectedDay": "Wydarzenia",
+    "mobileNoEvents": "Brak wydarzeń w wybranym dniu."
+  },
+  "event": {
+    "notFound": "Wydarzenie nie znalezione",
+    "loadError": "Nie udało się wczytać wydarzenia",
+    "registrationSuccessTitle": "Zapisano pomyślnie!",
+    "registrationSuccessSubtitle": "Twoje miejsce zostało zarezerwowane.",
+    "awaitsOnSite": "na miejscu czekają:",
+    "price": "cena:",
+    "priceGuest": "Goście",
+    "priceMember": "Członkowie KENAZ",
+    "subscriptionRequired": "Wymagana subskrypcja, aby się zapisać.",
+    "location": "Lokalizacja",
+    "signUp": "Zapisz się",
+    "requiresLogin": "(wymaga logowania)",
+    "interested": "brzmi jak coś dla Ciebie? napisz do nas!",
+    "adminEdit": "Edytuj wydarzenie",
+    "adminDelete": "Usuń wydarzenie",
+    "adminSave": "Zapisz zmiany",
+    "adminCancelEdit": "Anuluj edycję",
+    "adminDeleteConfirm": "Usunąć to wydarzenie? Tej operacji nie da się cofnąć.",
+    "adminUpdateSuccess": "Wydarzenie zaktualizowane.",
+    "adminUpdateError": "Nie udało się zaktualizować wydarzenia.",
+    "adminDeleteSuccess": "Wydarzenie usunięte.",
+    "adminDeleteError": "Nie udało się usunąć wydarzenia."
+  },
+  "registration": {
+    "noSpots": "Brak miejsc",
+    "submitting": "Zapisuję...",
+    "pastEvent": "Wydarzenie zakończone",
+    "errorPastEvent": "Nie możesz zapisać się na wydarzenie, które już się rozpoczęło.",
+    "alreadyRegistered": "Jesteś zapisany",
+    "waitlistTitle": "Lista rezerwowa",
+    "waitlistSuccess": "Dodano Cię do listy rezerwowej tego wydarzenia.",
+    "ctaWaitlist": "Dołącz do listy rezerwowej",
+    "ctaPaid": "Zapisz się - {price} {currency}",
+    "ctaFree": "Zapisz się (bezpłatne)",
+    "ctaLogin": "Zaloguj się, aby się zapisać",
+    "mustBeLoggedIn": "Musisz być zalogowany, aby zapisać się na wydarzenie",
+    "errorGeneric": "Wystąpił błąd. Spróbuj ponownie.",
+    "errorFailed": "Wystąpił błąd podczas rejestracji",
+    "errorSubscriptionRequired": "Aby zapisać się na to wydarzenie, potrzebujesz aktywnej subskrypcji.",
+    "manualPaymentRedirectTitle": "Dokończ płatność ręczną",
+    "manualPaymentRedirectSuccess": "Przejdź do instrukcji przelewu i potwierdź płatność."
+  },
+  "manualPayment": {
+    "title": "Płatność ręczna",
+    "subtitle": "Wykonaj przelew i potwierdź go w aplikacji.",
+    "loginRequired": "Zaloguj się, aby kontynuować płatność ręczną.",
+    "loginButton": "Zaloguj się",
+    "notFoundTitle": "Brak danych płatności",
+    "notFoundBody": "Nie znaleziono aktywnej płatności ręcznej dla tego zapisu.",
+    "backToAccount": "Wróć do konta",
+    "loadError": "Nie udało się wczytać danych płatności ręcznej.",
+    "copyButton": "Kopiuj wiadomość",
+    "copySuccess": "Skopiowano wiadomość do przelewu.",
+    "copyError": "Nie udało się skopiować tekstu.",
+    "eventLabel": "Wydarzenie",
+    "amountLabel": "Kwota",
+    "deadlineLabel": "Termin opłacenia",
+    "stepsIntro": "Wykonaj poniższe kroki:",
+    "stepOpenTransfer": "Otwórz stronę przelewu:",
+    "openTransferLink": "przejdź do płatności",
+    "missingTransferLink": "brak linku płatności",
+    "stepPasteReference": "W polu wiadomości do przelewu wklej poniższy tekst.",
+    "stepConfirm": "Po wykonaniu przelewu kliknij „Potwierdzam płatność”.",
+    "referenceLabel": "Wiadomość do przelewu",
+    "confirmButton": "Potwierdzam płatność",
+    "confirming": "Potwierdzanie...",
+    "confirmSuccess": "Twoja płatność oczekuje na weryfikację admina.",
+    "confirmError": "Nie udało się potwierdzić płatności.",
+    "waitingVerification": "Płatność została zgłoszona. Czekasz na zatwierdzenie przez administratora.",
+    "alreadyPaid": "Płatność została zatwierdzona. Masz status: opłacone.",
+    "promotedNoticeTitle": "Awans z listy rezerwowej",
+    "promotedNoticeBody": "Wskoczyłeś z listy rezerwowej i masz ograniczony czas na opłacenie wydarzenia."
+  },
+  "account": {
+    "title": "Moje konto",
+    "subtitle": "Twoje dane, punkty i zapisy.",
+    "loginRequired": "Zaloguj się, aby zobaczyć konto.",
+    "loginButton": "Zaloguj się",
+    "logout": "Wyloguj",
+    "manageSubscription": "Plany członkostwa",
+    "profileTitle": "Profil",
+    "aboutMe": "O mnie",
+    "aboutMePlaceholder": "Napisz krótko coś o sobie",
+    "interests": "Zainteresowania",
+    "profileSave": "Zapisz profil",
+    "profileSaved": "Profil zaktualizowany.",
+    "profileSaveError": "Nie udało się zapisać profilu.",
+    "name": "Imię i nazwisko",
+    "email": "Email",
+    "points": "Punkty",
+    "subscriptionPlan": "Aktualny plan",
+    "subscription": "Subskrypcja",
+    "subscriptionActive": "Aktywna",
+    "subscriptionInactive": "Nieaktywna",
+    "myEvents": "Moje wydarzenia",
+    "noEvents": "Nie jesteś jeszcze zapisany na żadne wydarzenia.",
+    "viewEvent": "Zobacz wydarzenie",
+    "status": "Status",
+    "statuses": {
+      "pending": "Oczekuje na płatność",
+      "confirmed": "Potwierdzone",
+      "manual_payment_required": "Wymaga płatności ręcznej",
+      "manual_payment_verification": "Oczekuje na potwierdzenie płatności",
+      "waitlist": "Lista rezerwowa",
+      "cancelled": "Anulowane",
+      "refunded": "Zwrócone"
+    },
+    "cancellationWindow": "Rezygnacja",
+    "cancellationOpen": "Możliwa",
+    "cancellationClosed": "Zamknięta",
+    "cancellationClosedMessage": "Okno rezygnacji zamknięte.",
+    "cancelStandard": "Zrezygnuj",
+    "cancelRescue": "Użyj koła ratunkowego",
+    "openManualPayment": "Dokończ płatność",
+    "rescue": "Koło ratunkowe",
+    "rescueAvailable": "Pozostało: {count}",
+    "rescueTooltip": "Koło ratunkowe pozwala subskrybentom zrezygnować bliżej terminu wydarzenia. Limit jest miesięczny.",
+    "loadError": "Nie udało się wczytać danych konta",
+    "cancelError": "Nie udało się anulować zapisu",
+    "cancelSuccess": "Pomyślnie anulowano zapis."
+  },
+  "plans": {
+    "backToAccount": "Wróć do konta",
+    "title": "Plany członkostwa",
+    "subtitle": "Wybierz plan i opłać subskrypcję bezpośrednio z konta.",
+    "subscriptionActiveUntil": "Subskrypcja aktywna do: {date}",
+    "subscriptionInactive": "Brak aktywnej subskrypcji.",
+    "monthlyLabel": "/mies.",
+    "includes": "W planie",
+    "buyPlan": "Kup {plan}",
+    "freePlanCta": "Plan domyślny",
+    "processing": "Przetwarzanie...",
+    "paymentSuccessTitle": "Subskrypcja aktywowana",
+    "paymentSuccessBody": "Płatność zakończona. Twoja subskrypcja jest aktywna.",
+    "paymentCancelled": "Płatność została anulowana.",
+    "loadError": "Nie udało się wczytać planów.",
+    "checkoutError": "Nie udało się rozpocząć płatności.",
+    "pendingApproval": "Konto oczekuje na akceptację administratora.",
+    "currentPlan": "Aktualny plan",
+    "plan": {
+      "free": {
+        "title": "Free",
+        "summary": "Start",
+        "features": [
+          "Podstawowy dostęp do kalendarza",
+          "Podgląd wydarzeń i zapisów",
+          "Brak aktywnej subskrypcji"
+        ]
+      },
+      "pro": {
+        "title": "Członkostwo Pro",
+        "summary": "Najczęściej wybierane",
+        "features": [
+          "Dostęp do wydarzeń tylko dla subskrybentów",
+          "Ceny członkowskie na wydarzeniach",
+          "Aktywna subskrypcja na 30 dni"
+        ]
+      },
+      "ultimate": {
+        "title": "Członkostwo Ultimate",
+        "summary": "Maksymalny pakiet",
+        "features": [
+          "Wszystko z planu Pro",
+          "Priorytetowe wsparcie organizacyjne",
+          "Aktywna subskrypcja na 365 dni"
+        ]
+      }
+    },
+    "mostPopular": "Najpopularniejszy",
+    "freePlanCurrent": "Aktualny plan darmowy",
+    "freePlanSwitch": "Przełącz na plan darmowy",
+    "switchedToFree": "Przełączono na plan darmowy."
+  },
+  "admin": {
+    "createEventTitle": "Dodaj nowe wydarzenie",
+    "createEventSubtitle": "Formularz tylko dla admina - tworzenie wydarzeń w kalendarzu.",
+    "createEventButton": "Utwórz wydarzenie",
+    "saving": "Zapisuję...",
+    "dashboardTitle": "Panel admina",
+    "dashboardSubtitle": "Wybierz, czym chcesz zarządzać.",
+    "loginRequired": "Zaloguj się, aby przejść do narzędzi admina.",
+    "loginButton": "Zaloguj się",
+    "backToDashboard": "Wróć do panelu",
+    "paymentsTitle": "Płatności i statystyki",
+    "paymentsSubtitle": "Przychody, procent wypełnienia i top członkowie.",
+    "eventStatsTitle": "Statystyki bieżących wydarzeń",
+    "userStatsTitle": "Użytkownicy wg wpłat i udziału",
+    "paymentStatsTitle": "Podsumowanie płatności",
+    "registrationStatsTitle": "Podsumowanie zapisów",
+    "viewEvent": "Zobacz wydarzenie",
+    "stats": {
+      "fill": "Wypełnienie",
+      "registered": "Zapisani",
+      "totalPaid": "Suma wpłat",
+      "prevMonth": "Poprzedni miesiąc",
+      "nextMonth": "Następny miesiąc",
+      "pricing": "Gość / członek",
+      "empty": "Brak danych"
+    },
+    "tables": {
+      "event": "Wydarzenie",
+      "user": "Użytkownik",
+      "attendance": "Frekwencja",
+      "count": "Liczba",
+      "countShare": "Udział liczby",
+      "amount": "Kwota",
+      "averageAmount": "Średnia kwota",
+      "amountShare": "Udział kwoty",
+      "limit": "Limit",
+      "share": "Udział",
+      "confirmed": "Potwierdzone",
+      "sortBy": "Sortuj po kolumnie: {column}"
+    },
+    "statsCards": {
+      "eventsTitle": "Wydarzenia",
+      "eventsDesc": "Wypełnienie, ceny i przychód per wydarzenie",
+      "eventsConfirmed": "{count} zapisów",
+      "eventsRevenue": "Przychód {amount} PLN",
+      "usersTitle": "Użytkownicy",
+      "usersDesc": "Udział, wpłaty, role i status",
+      "usersActive": "{count} aktywnych",
+      "usersPending": "{count} oczekujących",
+      "usersMembers": "{count} członków",
+      "paymentsTitle": "Płatności",
+      "paymentsDesc": "Sumy, zwroty i podział wg typu",
+      "paymentsTotal": "Suma {amount} PLN",
+      "paymentsCompleted": "Zakończone {amount} PLN",
+      "paymentsRefunded": "Zwroty {amount} PLN",
+      "registrationsTitle": "Zapisy",
+      "registrationsDesc": "Statusy, unikalne osoby i top wydarzenia",
+      "registrationsConfirmed": "{count} potwierdzonych",
+      "registrationsUsers": "{count} osób",
+      "registrationsEvents": "{count} wydarzeń",
+      "viewDetails": "Szczegóły",
+      "pickView": "Wybierz kafelek, aby zobaczyć statystyki."
+    },
+    "paymentStatsSummary": "Podsumowanie",
+    "paymentStatsByType": "Typ płatności",
+    "paymentStatsByStatus": "Statusy płatności",
+    "paymentStats": {
+      "totalCount": "Płatności: {count}",
+      "totalAmount": "Suma: {amount}",
+      "completed": "Zakończone: {count} ({amount})",
+      "refunded": "Zwroty: {count} ({amount})",
+      "average": "Średnia wpłata: {amount}"
+    },
+    "registrationStatsSummary": "Podsumowanie",
+    "registrationStatsTopEvents": "Top wydarzenia",
+    "registrationStats": {
+      "total": "Zapisy: {count}",
+      "confirmed": "Potwierdzone: {count}",
+      "pending": "Oczekujące: {count}",
+      "cancelled": "Anulowane: {count}",
+      "refunded": "Zwroty: {count}",
+      "uniqueUsers": "Unikalne osoby: {count}",
+      "uniqueEvents": "Unikalne wydarzenia: {count}"
+    },
+    "userStats": {
+      "name": "Imię i nazwisko",
+      "email": "Email",
+      "events": "Wydarzenia",
+      "totalPaid": "Suma wpłat",
+      "points": "Punkty",
+      "role": "Rola",
+      "status": "Status",
+      "subscription": "Subskrypcja do",
+      "lastPayment": "Ostatnia płatność"
+    },
+    "userRoles": {
+      "guest": "Gość",
+      "member": "Członek",
+      "admin": "Admin"
+    },
+    "userStatuses": {
+      "pending": "Oczekuje",
+      "active": "Aktywny",
+      "banned": "Zablokowany"
+    },
+    "paymentStatuses": {
+      "pending": "Oczekuje",
+      "processing": "Przetwarzanie",
+      "completed": "Zakończona",
+      "failed": "Nieudana",
+      "refunded": "Zwrot",
+      "cancelled": "Anulowana"
+    },
+    "paymentTypes": {
+      "event": "Wydarzenie",
+      "subscription": "Subskrypcja"
+    },
+    "approvalTitle": "Zatwierdzaj użytkowników",
+    "approvalSubtitle": "Sprawdzaj nowe konta przed wpuszczeniem do społeczności.",
+    "approvalPlaceholder": "Kolejka do zatwierdzania pojawi się tutaj.",
+    "approvalLoadError": "Nie udało się wczytać nowych osób",
+    "approvalActionError": "Nie udało się zaakceptować użytkownika",
+    "approvalEmpty": "Brak osób oczekujących na akceptację.",
+    "approveButton": "Akceptuj",
+    "pendingUserNoName": "Brak imienia i nazwiska",
+    "pendingUserCreated": "Zgłoszenie: {date}",
+    "recurringTitle": "Wydarzenia cykliczne",
+    "recurringSubtitle": "Zarządzaj automatycznie powtarzającymi się wydarzeniami.",
+    "recurringEmpty": "Brak skonfigurowanych wydarzeń cyklicznych.",
+    "recurringEdit": "Edytuj",
+    "recurringDelete": "Usuń",
+    "recurringSave": "Zapisz zmiany",
+    "recurringLoadError": "Nie udało się wczytać wydarzeń cyklicznych",
+    "recurringUpdateError": "Nie udało się zapisać zmian",
+    "recurringDeleteError": "Nie udało się usunąć wydarzenia cyklicznego",
+    "recurringDeleteConfirm": "Usunąć to wydarzenie cykliczne?",
+    "recurringDeleteConfirmAction": "Usuń na stałe",
+    "recurringRuleLabel": "{frequency} · co {interval}x",
+    "cards": {
+      "createEvent": {
+        "title": "Dodaj nowe wydarzenie",
+        "description": "Utwórz wydarzenie i opublikuj je w kalendarzu."
+      },
+      "recurringEvents": {
+        "title": "Wydarzenia cykliczne",
+        "description": "Zarządzaj powtarzającymi się harmonogramami."
+      },
+      "approveUsers": {
+        "title": "Zatwierdzaj użytkowników",
+        "description": "Przeglądaj nowe konta i nadawaj dostęp."
+      },
+      "payments": {
+        "title": "Płatności i statystyki",
+        "description": "Przychody, wypełnienie i top członkowie."
+      },
+      "manualPayments": {
+        "title": "Manualne płatności",
+        "description": "Weryfikacja wpłat, zwroty i awanse z rezerwy."
+      }
+    },
+    "notAuthorizedTitle": "Brak dostępu",
+    "notAuthorized": "Nie masz uprawnień do tego obszaru.",
+    "createError": "Nie udało się utworzyć wydarzenia",
+    "statsError": "Nie udało się wczytać statystyk",
+    "validationRequired": "Uzupełnij wymagane pola.",
+    "validation": {
+      "nonNegative": "Wartość nie może być ujemna.",
+      "minOne": "Wartość musi być większa lub równa 1.",
+      "maxValue": "Wartość przekracza dozwolony limit.",
+      "notPastDate": "Data rozpoczęcia nie może być z przeszłości."
+    },
+    "fields": {
+      "title": "Tytuł",
+      "titlePlaceholder": "np. Poranny bieg",
+      "description": "Opis",
+      "descriptionPlaceholder": "Krótki opis wydarzenia",
+      "eventType": "Typ wydarzenia",
+      "type": "Typ",
+      "startDate": "Data rozpoczęcia",
+      "endDate": "Data zakończenia (opcjonalnie)",
+      "timeInfo": "Godziny",
+      "timeInfoPlaceholder": "np. 19:00-21:00",
+      "recurrenceFrequency": "Częstotliwość",
+      "recurrenceInterval": "Interwał",
+      "recurrenceUntil": "Powtarzaj do",
+      "recurrenceDaily": "Codziennie",
+      "recurrenceWeekly": "Co tydzień",
+      "recurrenceMonthly": "Co miesiąc",
+      "city": "Miasto",
+      "location": "Lokalizacja",
+      "locationPlaceholder": "np. Poznań, Jezioro Rusałka",
+      "showMap": "Mapa: pokaż lokalizację",
+      "showVideo": "Wideo: pokaż film z YouTube",
+      "youtubeUrl": "Link do YouTube",
+      "youtubeUrlPlaceholder": "https://www.youtube.com/watch?v=...",
+      "locationPreview": "Podgląd lokalizacji",
+      "openInMaps": "Otwórz w Google Maps",
+      "requiresSubscription": "Wymagana subskrypcja do zapisu",
+      "pointsValue": "Punkty za udział",
+      "priceGuest": "Cena gościa",
+      "priceGuestPlaceholder": "np. 50",
+      "priceMember": "Cena członka",
+      "priceMemberPlaceholder": "np. 30",
+      "manualPaymentVerification": "Manualna weryfikacja płatności",
+      "manualPaymentVerificationLockedHint": "Tymczasowo bramki płatnicze są wyłączone, więc manualna weryfikacja płatności jest zawsze włączona.",
+      "manualPaymentUrl": "Link do strony przelewu",
+      "manualPaymentUrlPlaceholder": "https://...",
+      "manualPaymentDueHours": "Ile godzin na opłacenie",
+      "manualPaymentDueHoursHint": "Zakres: 1-168 godzin (do 7 dni).",
+      "maxParticipants": "Limit miejsc",
+      "maxParticipantsPlaceholder": "np. 20",
+      "cancelCutoffHours": "Limit rezygnacji (godziny)",
+      "rescueCutoffHours": "Limit koła ratunkowego (godziny)",
+      "rescueMonthlyLimit": "Limit kół ratunkowych / mies.",
+      "rescueRequiresSubscription": "Koło ratunkowe tylko dla subskrybentów",
+      "isBigEvent": "Duże wydarzenie (lista atrakcji)",
+      "isRecurring": "Wydarzenie cykliczne",
+      "features": "Atrakcje (po jednej w linii)",
+      "featuresPlaceholder": "Sauna\\nGorąca herbata\\nInstruktor",
+      "paymentInfo": "Informacje o płatności",
+      "paymentInfoPlaceholder": "np. Dane do przelewu",
+      "pointsValuePlaceholder": "np. 1"
+    },
+    "manualPayments": {
+      "title": "Manualne płatności",
+      "subtitle": "Zarządzanie przelewami offline, zwrotami i awansami z listy rezerwowej.",
+      "loadError": "Nie udało się wczytać danych manualnych płatności.",
+      "pendingTitle": "Płatności oczekujące na zatwierdzenie",
+      "pendingSubtitle": "Użytkownicy potwierdzili wykonanie przelewu i czekają na akceptację.",
+      "pendingEmpty": "Brak płatności oczekujących na zatwierdzenie.",
+      "referenceColumn": "Wiadomość przelewu",
+      "actionsColumn": "Akcje",
+      "approveButton": "Zatwierdź",
+      "approving": "Zatwierdzanie...",
+      "approveSuccess": "Płatność została zatwierdzona.",
+      "approveError": "Nie udało się zatwierdzić płatności.",
+      "refundsTitle": "Rezygnacje i zwroty",
+      "refundsSubtitle": "Zdecyduj, czy zwracać środki i oznacz wykonane zwroty.",
+      "refundsEmpty": "Brak zadań zwrotów.",
+      "refundsSummary": "Wpisy: {total} • Do zwrotu: {to_refund} • Zwrócone: {refunded}",
+      "recommendedColumn": "Rekomendacja",
+      "shouldRefundColumn": "Czy zwracać",
+      "refundedColumn": "Zwrot wykonany",
+      "overrideReasonColumn": "Powód zmiany",
+      "recommendRefund": "Zwrócić",
+      "recommendNoRefund": "Nie zwracać",
+      "shouldRefundLabel": "Zwrot wymagany",
+      "refundedLabel": "Środki zwrócone",
+      "overrideRequiredPlaceholder": "Wymagany powód (min. 8 znaków)",
+      "overrideReasonRequired": "Podaj powód zmiany decyzji o zwrocie (min. 8 znaków).",
+      "saveButton": "Zapisz",
+      "saving": "Zapisywanie...",
+      "refundSaveSuccess": "Zapisano ustawienia zwrotu.",
+      "refundSaveError": "Nie udało się zapisać ustawień zwrotu.",
+      "promotionsTitle": "Osoby awansowane z listy rezerwowej",
+      "promotionsSubtitle": "Oznaczaj osoby, które zostały już poinformowane o obowiązku płatności.",
+      "promotionsEmpty": "Brak awansów z listy rezerwowej.",
+      "deadlineColumn": "Termin płatności",
+      "notificationColumn": "Powiadomienie",
+      "notifiedLabel": "Wysłano info",
+      "promotionSaveSuccess": "Zaktualizowano status powiadomienia.",
+      "promotionSaveError": "Nie udało się zaktualizować statusu powiadomienia."
+    },
+    "approvalSuccess": "Użytkownik został zaakceptowany.",
+    "recurringUpdateSuccess": "Wydarzenie cykliczne zostało zaktualizowane.",
+    "recurringDeleteSuccess": "Wydarzenie cykliczne zostało usunięte."
+  },
+  "approval": {
+    "title": "Oczekiwanie na akceptację",
+    "subtitle": "Twoje konto czeka na akceptację administratora.",
+    "description": "Otrzymaliśmy Twoje zgłoszenie. Jeśli chcesz przyspieszyć decyzję, skontaktuj się bezpośrednio z założycielami.",
+    "loginRequired": "Zaloguj się, aby zobaczyć status akceptacji.",
+    "loginButton": "Zaloguj się",
+    "foundersLabel": "Założyciele:",
+    "foundersNames": "Sebastian Andrzejewski, Franciszek Kwame Awuku",
+    "emailLabel": "E-mail:",
+    "emailValue": "[email protected]",
+    "socialLabel": "Instagram:",
+    "socialValue": "@kenaz",
+    "waitingHint": "Po akceptacji odśwież stronę lub zaloguj się ponownie.",
+    "profileRequiredBody": "Zanim Twoje zgłoszenie zostanie rozpatrzone, uzupełnij profil i wyślij prośbę o dołączenie.",
+    "submitJoinRequest": "Wyślij prośbę o dołączenie",
+    "joinRequestSent": "Prośba o dołączenie została wysłana. Poczekaj na akceptację administratora.",
+    "joinRequestError": "Nie udało się wysłać prośby o dołączenie."
+  },
+  "participants": {
+    "title": "Zapisani uczestnicy",
+    "spotsAvailable": "{count} miejsc wolnych",
+    "noSpots": "Brak wolnych miejsc",
+    "emptyTitle": "Brak zapisanych uczestników",
+    "emptySubtitle": "Bądź pierwszy!",
+    "freeSpot": "wolne",
+    "pointsAbbr": "pkt"
+  },
+  "profile": {
+    "notFound": "Nie znaleziono profilu użytkownika.",
+    "about": "O osobie",
+    "interests": "Zainteresowania",
+    "noAbout": "Brak opisu.",
+    "noInterests": "Brak wybranych zainteresowań."
+  },
+  "eventTypes": {
+    "karate": "Karate",
+    "mors": "Mors",
+    "planszowki": "Planszówki",
+    "ognisko": "Ognisko",
+    "spacer": "Spacer",
+    "joga": "Joga",
+    "wyjazd": "Wyjazd",
+    "inne": "Inne"
+  },
+  "notifications": {
+    "successTitle": "Sukces",
+    "errorTitle": "Operacja nieudana",
+    "infoTitle": "Informacja",
+    "confirmTitle": "Potwierdź akcję"
+  },
+  "auth": {
+    "title": "Zaloguj się",
+    "subtitle": "Wybierz Google albo login i hasło.",
+    "modeLogin": "Logowanie",
+    "modeRegister": "Nowe konto",
+    "loginWithGoogle": "Kontynuuj przez Google",
+    "loginLabel": "Login lub e-mail",
+    "loginPlaceholder": "np. jan.kowalski lub [email protected]",
+    "usernameLabel": "Login",
+    "usernamePlaceholder": "np. jan.kowalski",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "np. [email protected]",
+    "fullNameLabel": "Imię i nazwisko",
+    "fullNamePlaceholder": "np. Jan Kowalski",
+    "passwordLabel": "Hasło",
+    "passwordPlaceholder": "Minimum 8 znaków",
+    "confirmPasswordLabel": "Powtórz hasło",
+    "confirmPasswordPlaceholder": "Wpisz hasło ponownie",
+    "submitLogin": "Zaloguj się",
+    "submitRegister": "Utwórz konto",
+    "submitting": "Trwa logowanie...",
+    "passwordMismatch": "Hasła nie są takie same.",
+    "genericError": "Nie udało się zalogować.",
+    "openLogin": "Zaloguj się"
+  }
+}

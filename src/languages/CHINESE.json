@@ -1,0 +1,681 @@
+{
+  "common": {
+    "appName": "KENAZ",
+    "appSubtitle": "中心",
+    "backToCalendar": "返回日历",
+    "loading": "",
+    "free": "免费",
+    "currency": "PLN",
+    "more": "更多",
+    "close": "关闭",
+    "empty": "暂无活动",
+    "today": "今天"
+  },
+  "shop": {
+    "label": "Kenaz 商店",
+    "title": "Kenaz 商店",
+    "subtitle": "为共享时刻而生的单品 — 简洁、舒适、属于我们。",
+    "cta": "加入购物车",
+    "empty": "产品即将上线。"
+  },
+  "footer": {
+    "tagline": "线下社群。运动、连接与成长同频。",
+    "contactTitle": "联系方式",
+    "address": "Wyżyny 16, 61-654 Poznań, Poland",
+    "email": "[email protected]",
+    "orgTitle": "基金会",
+    "legalName": "Fundacja Centrum Kenaz",
+    "krs": "KRS 0001211548",
+    "nip": "NIP 9721373428",
+    "regon": "REGON 543498710",
+    "linksTitle": "快速入口",
+    "links": {
+      "home": "首页",
+      "calendar": "日历",
+      "about": "关于 Kenaz",
+      "shop": "商店",
+      "privacy": "隐私政策",
+      "terms": "服务条款"
+    },
+    "copyright": "© {year} Fundacja Centrum Kenaz"
+  },
+  "privacy": {
+    "title": "隐私政策",
+    "body": "我们重视隐私与数据安全，完整政策将尽快发布。"
+  },
+  "terms": {
+    "title": "服务条款",
+    "body": "完整服务条款将尽快发布。"
+  },
+  "nav": {
+    "home": "首页",
+    "calendar": "日历",
+    "shop": "商店",
+    "myAccount": "我的账户",
+    "admin": "管理",
+    "city": "城市",
+    "addEvent": "新增"
+  },
+  "pwa": {
+    "installCta": "在手机上安装应用",
+    "installButton": "安装",
+    "installManualTitle": "手动安装",
+    "installManualHint": "在 Chrome 中打开 ⋮ 菜单，然后选择“添加到主屏幕”。",
+    "installRequiresHttps": "在 Chrome 中安装需要 HTTPS 安全地址。请通过 https:// 打开应用。"
+  },
+  "home": {
+    "demoLabel": "演示",
+    "tagline": "私密线下社群。活动、联结、共同热爱。",
+    "viewCalendar": "查看日历",
+    "aboutCta": "认识我们！",
+    "features": {
+      "events": {
+        "title": "活动",
+        "description": "空手道、冬泳、桌游、篝火等"
+      },
+      "community": {
+        "title": "社群",
+        "description": "结识兴趣相投的人"
+      },
+      "trips": {
+        "title": "出行",
+        "description": "芬兰桑拿、挪威小屋、共同冒险"
+      }
+    }
+  },
+  "about": {
+    "label": "了解 Kenaz",
+    "backHome": "返回首页",
+    "title": "为什么是 Kenaz？",
+    "subtitle": "这里让运动、连接与成长保持同一个节奏。你可以随时加入，也会因为氛围而留下。",
+    "ctaMessage": "现在加入，亲身感受 Kenaz 的节奏。",
+    "joinNow": "现在加入",
+    "joinSecondary": "我想试试",
+    "followUs": "关注我们：",
+    "socialTitle": "感受 Kenaz 氛围",
+    "socialSubtitle": "先看看我们的日常与人群，再决定加入。",
+    "shopTitle": "Kenaz 商店",
+    "shopBody": "简单舒适的日常单品，为一起的时刻而生。想把 Kenaz 带回生活，就去商店看看。",
+    "shopButton": "前往商店",
+    "legalTitle": "基金会信息",
+    "legalNameLabel": "名称",
+    "legalName": "Fundacja Centrum Kenaz",
+    "legalKrsLabel": "KRS",
+    "legalKrs": "0001211548",
+    "legalNipLabel": "NIP",
+    "legalNip": "9721373428",
+    "legalRegonLabel": "REGON",
+    "legalRegon": "543498710",
+    "legalAddressLabel": "地址",
+    "legalAddress": "Wyżyny 16, 61-654 Poznań, Poland",
+    "legalEmailLabel": "邮箱",
+    "legalEmail": "[email protected]",
+    "legalBoardLabel": "理事会",
+    "legalBoard": "Sebastian Andrzejewski, Franciszek Kwame Awuku",
+    "legalRepresentationLabel": "代表方式",
+    "legalRepresentation": "两位理事共同签署",
+    "legalLinkLabel": "查看注册信息",
+    "mediaTitle": "媒体报道",
+    "mediaBody": "电台采访介绍了 Kenaz 作为线下社群：一起跑步、冬泳、出行与篝火，远离互联网干扰，适合想要不止于工作与家的年轻人。",
+    "mediaArticleLabel": "阅读采访",
+    "mediaVideoTitle": "观看视频",
+    "sponsorsTitle": "合作与赞助",
+    "sponsorsBody": "我们与支持健康生活方式和社群成长的品牌合作。",
+    "sponsorsPrimary": "Decathlon",
+    "social": {
+      "facebook": "Facebook",
+      "instagram": "Instagram"
+    },
+    "highlightLabel": "亮点",
+    "sliderTitle": "连接我们的瞬间",
+    "sliderHint": "照片滑动区",
+    "sliderItem": "图片占位 #{index}",
+    "stats": {
+      "members": {
+        "value": "312",
+        "label": "Kenaz Premium 活跃会员"
+      },
+      "attendees": {
+        "value": "2,480",
+        "label": "参与过我们活动的人次"
+      },
+      "events": {
+        "value": "84",
+        "label": "今年举办的活动"
+      },
+      "items": [
+        {
+          "value": "312",
+          "label": "Kenaz Premium 活跃会员"
+        },
+        {
+          "value": "2,480",
+          "label": "活动报名总次数"
+        },
+        {
+          "value": "84",
+          "label": "今年举办的活动"
+        },
+        {
+          "value": "27",
+          "label": "单场平均参与人数"
+        }
+      ]
+    },
+    "stories": [
+      {
+        "title": "有节奏的活动",
+        "body": "Kenaz 的活动为你的每周带来能量。你不需要经验或很强的体能——只要愿意出现、为自己做点好事。"
+      },
+      {
+        "title": "带来平衡的运动",
+        "body": "我们把身体与内心的训练放在一起。这里不是比赛，而是持续、稳定的成长。线下相聚，因为真实关系来自真实时刻。"
+      },
+      {
+        "title": "有价值观的社群",
+        "body": "Kenaz 不只是活动清单，更是追求成长、健康与关系的人。小型团体更容易建立连接。"
+      },
+      {
+        "title": "让改变更容易",
+        "body": "和对的人在一起，动力会自然而然发生。这里的节奏让健康习惯更容易坚持。"
+      },
+      {
+        "title": "难忘的出行",
+        "body": "我们也会安排旅行与集中式体验，那些共同经历会让彼此更靠近。"
+      },
+      {
+        "title": "共享的能量",
+        "body": "Kenaz 的特别之处在于真实：支持、聊天、笑声与努力——这是你会想回来的氛围。"
+      }
+    ],
+    "sections": {
+      "events": {
+        "title": "活动",
+        "subtitle": "规律的聚会，塑造社群的节奏与能量。",
+        "highlights": [
+          "Kenaz 是一种节奏，帮你跳出惯性，做些真正属于自己的事。",
+          "我们的训练与活动不做表演，而是踏实、持续的身心成长。",
+          "线下相聚，因为真实关系来自真实时刻：交流、笑声与共同努力。",
+          "每场活动都有独特氛围：有时运动，有时社交，有时放松。",
+          "小型团体更容易建立连接，也更容易找到归属感。",
+          "你可以按照自己的节奏加入，选择最适合的活动。",
+          "如果你在寻找自然的成长与支持性的氛围，Kenaz 欢迎你。"
+        ]
+      },
+      "community": {
+        "title": "社群",
+        "subtitle": "持久的关系——共享价值观的圈子。",
+        "highlights": [
+          "线下见面，没有压力与表演",
+          "强烈的归属感与互相支持",
+          "新连接常常发展为友谊"
+        ]
+      },
+      "trips": {
+        "title": "出行",
+        "subtitle": "精心策划的旅行，留下长久回忆。",
+        "highlights": [
+          "桑拿、山间木屋与主题旅程",
+          "精选地点与小型团体",
+          "没有无聊——只有共同故事"
+        ]
+      }
+    }
+  },
+  "calendar": {
+    "title": "日历",
+    "subtitle": "活动",
+    "registered": "你已报名",
+    "days": [
+      "周一",
+      "周二",
+      "周三",
+      "周四",
+      "周五",
+      "周六",
+      "周日"
+    ],
+    "months": [
+      "一月",
+      "二月",
+      "三月",
+      "四月",
+      "五月",
+      "六月",
+      "七月",
+      "八月",
+      "九月",
+      "十月",
+      "十一月",
+      "十二月"
+    ],
+    "legend": "图例",
+    "karateGroup": "空手道组",
+    "karateSchedule": "每周一和周三 20:00 - 21:30",
+    "contactDM": "详情请私信我们！",
+    "loginRequiredTitle": "登录以解锁日历",
+    "loginRequiredBody": "只有已登录用户才能浏览并报名活动。",
+    "loginRequiredButton": "登录",
+    "pendingRequiredTitle": "账户等待审核",
+    "pendingRequiredBody": "在管理员审核通过前，日历访问和活动报名将被阻止。",
+    "pendingRequiredButton": "查看账户状态",
+    "mobileSelectedDay": "当日活动",
+    "mobileNoEvents": "所选日期暂无活动。"
+  },
+  "event": {
+    "notFound": "未找到活动",
+    "loadError": "加载活动失败",
+    "registrationSuccessTitle": "报名成功！",
+    "registrationSuccessSubtitle": "你的名额已保留。",
+    "awaitsOnSite": "现场等待你的是：",
+    "price": "价格：",
+    "priceGuest": "访客",
+    "priceMember": "KENAZ 会员",
+    "subscriptionRequired": "报名需要订阅。",
+    "location": "地点",
+    "signUp": "报名",
+    "requiresLogin": "（需要登录）",
+    "interested": "觉得适合你？给我们留言！",
+    "adminEdit": "编辑活动",
+    "adminDelete": "删除活动",
+    "adminSave": "保存更改",
+    "adminCancelEdit": "取消编辑",
+    "adminDeleteConfirm": "确定删除该活动吗？此操作无法撤销。",
+    "adminUpdateSuccess": "活动已更新。",
+    "adminUpdateError": "更新活动失败。",
+    "adminDeleteSuccess": "活动已删除。",
+    "adminDeleteError": "删除活动失败。"
+  },
+  "registration": {
+    "noSpots": "没有名额",
+    "submitting": "报名中...",
+    "pastEvent": "活动已结束",
+    "errorPastEvent": "活动已经开始，无法报名。",
+    "alreadyRegistered": "已报名",
+    "waitlistTitle": "候补名单",
+    "waitlistSuccess": "你已加入该活动的候补名单。",
+    "ctaWaitlist": "加入候补名单",
+    "ctaPaid": "报名 - {price} {currency}",
+    "ctaFree": "报名（免费）",
+    "ctaLogin": "登录后报名",
+    "mustBeLoggedIn": "必须登录才能报名",
+    "errorGeneric": "发生错误，请重试。",
+    "errorFailed": "报名失败",
+    "errorSubscriptionRequired": "报名此活动需要有效订阅。"
+  },
+  "account": {
+    "title": "我的账户",
+    "subtitle": "你的资料、积分与报名记录。",
+    "loginRequired": "请登录查看账户。",
+    "loginButton": "登录",
+    "logout": "退出登录",
+    "manageSubscription": "会员计划",
+    "profileTitle": "资料",
+    "aboutMe": "关于我",
+    "aboutMePlaceholder": "写一段简短的自我介绍",
+    "interests": "兴趣标签",
+    "profileSave": "保存资料",
+    "profileSaved": "资料已更新。",
+    "profileSaveError": "保存资料失败。",
+    "name": "姓名",
+    "email": "邮箱",
+    "points": "积分",
+    "subscriptionPlan": "当前计划",
+    "subscription": "订阅",
+    "subscriptionActive": "有效",
+    "subscriptionInactive": "无效",
+    "myEvents": "我的活动",
+    "noEvents": "你还没有报名任何活动。",
+    "viewEvent": "查看活动",
+    "status": "状态",
+    "statuses": {
+      "pending": "待付款",
+      "confirmed": "已确认",
+      "waitlist": "候补中",
+      "cancelled": "已取消",
+      "refunded": "已退款"
+    },
+    "cancellationWindow": "取消窗口",
+    "cancellationOpen": "可取消",
+    "cancellationClosed": "已关闭",
+    "cancellationClosedMessage": "取消窗口已关闭。",
+    "cancelStandard": "取消报名",
+    "cancelRescue": "使用救援取消",
+    "rescue": "救援",
+    "rescueAvailable": "剩余 {count}",
+    "rescueTooltip": "救援允许订阅者在临近活动时取消。每月有次数限制。",
+    "loadError": "加载账户数据失败",
+    "cancelError": "取消报名失败",
+    "cancelSuccess": "报名已成功取消。"
+  },
+  "plans": {
+    "backToAccount": "返回账户",
+    "title": "会员计划",
+    "subtitle": "选择一个计划并直接从账户完成订阅购买。",
+    "subscriptionActiveUntil": "订阅有效期至：{date}",
+    "subscriptionInactive": "当前没有有效订阅。",
+    "monthlyLabel": "/月",
+    "includes": "包含内容",
+    "buyPlan": "购买 {plan}",
+    "freePlanCta": "默认计划",
+    "processing": "处理中...",
+    "paymentSuccessTitle": "订阅已激活",
+    "paymentSuccessBody": "付款完成，你的订阅已生效。",
+    "paymentCancelled": "付款已取消。",
+    "loadError": "加载计划失败。",
+    "checkoutError": "发起付款失败。",
+    "pendingApproval": "账户仍在等待管理员审核。",
+    "currentPlan": "Current plan",
+    "plan": {
+      "free": {
+        "title": "Free",
+        "summary": "入门",
+        "features": [
+          "基础日历访问权限",
+          "查看活动与报名记录",
+          "无有效订阅"
+        ]
+      },
+      "pro": {
+        "title": "Pro 会员",
+        "summary": "最受欢迎",
+        "features": [
+          "可参加订阅者专属活动",
+          "活动享受会员价",
+          "订阅有效期 30 天"
+        ]
+      },
+      "ultimate": {
+        "title": "Ultimate 会员",
+        "summary": "最高套餐",
+        "features": [
+          "包含 Pro 的全部权益",
+          "优先组织支持",
+          "订阅有效期 365 天"
+        ]
+      }
+    },
+    "mostPopular": "最受欢迎",
+    "freePlanCurrent": "当前免费计划",
+    "freePlanSwitch": "切换到免费计划",
+    "switchedToFree": "已切换到免费计划。"
+  },
+  "admin": {
+    "createEventTitle": "创建新活动",
+    "createEventSubtitle": "仅管理员可用，用于将活动加入日历。",
+    "createEventButton": "创建活动",
+    "saving": "保存中...",
+    "dashboardTitle": "管理员面板",
+    "dashboardSubtitle": "选择要管理的内容。",
+    "loginRequired": "请登录以访问管理工具。",
+    "loginButton": "登录",
+    "backToDashboard": "返回面板",
+    "paymentsTitle": "付款与统计",
+    "paymentsSubtitle": "跟踪收入、填充率与热门会员。",
+    "eventStatsTitle": "当前活动统计",
+    "userStatsTitle": "按付款与出席排序的用户",
+    "paymentStatsTitle": "Payments summary",
+    "registrationStatsTitle": "Registrations summary",
+    "viewEvent": "查看活动",
+    "stats": {
+      "fill": "填充率",
+      "registered": "已确认",
+      "totalPaid": "总付款",
+      "prevMonth": "上个月",
+      "nextMonth": "下个月",
+      "pricing": "Guest / member",
+      "empty": "No data yet"
+    },
+    "tables": {
+      "event": "活动",
+      "user": "用户",
+      "attendance": "出席",
+      "count": "数量",
+      "countShare": "数量占比",
+      "amount": "金额",
+      "averageAmount": "平均金额",
+      "amountShare": "金额占比",
+      "limit": "限额",
+      "share": "占比",
+      "confirmed": "已确认",
+      "sortBy": "按列排序：{column}"
+    },
+    "statsCards": {
+      "eventsTitle": "Events",
+      "eventsDesc": "Fill rate, prices, and revenue by event",
+      "eventsConfirmed": "{count} confirmed",
+      "eventsRevenue": "Revenue {amount} PLN",
+      "usersTitle": "Users",
+      "usersDesc": "Participation, payments, roles, and status",
+      "usersActive": "{count} active",
+      "usersPending": "{count} pending",
+      "usersMembers": "{count} members",
+      "paymentsTitle": "Payments",
+      "paymentsDesc": "Totals, refunds, and type breakdown",
+      "paymentsTotal": "Total {amount} PLN",
+      "paymentsCompleted": "Completed {amount} PLN",
+      "paymentsRefunded": "Refunded {amount} PLN",
+      "registrationsTitle": "Registrations",
+      "registrationsDesc": "Statuses, unique users, and top events",
+      "registrationsConfirmed": "{count} confirmed",
+      "registrationsUsers": "{count} users",
+      "registrationsEvents": "{count} events",
+      "viewDetails": "View details",
+      "pickView": "Select a tile to view statistics."
+    },
+    "paymentStatsSummary": "Overview",
+    "paymentStatsByType": "By type",
+    "paymentStatsByStatus": "By status",
+    "paymentStats": {
+      "totalCount": "Payments: {count}",
+      "totalAmount": "Total: {amount}",
+      "completed": "Completed: {count} ({amount})",
+      "refunded": "Refunded: {count} ({amount})",
+      "average": "Avg payment: {amount}"
+    },
+    "registrationStatsSummary": "Overview",
+    "registrationStatsTopEvents": "Top events",
+    "registrationStats": {
+      "total": "Registrations: {count}",
+      "confirmed": "Confirmed: {count}",
+      "pending": "Pending: {count}",
+      "cancelled": "Cancelled: {count}",
+      "refunded": "Refunded: {count}",
+      "uniqueUsers": "Unique users: {count}",
+      "uniqueEvents": "Unique events: {count}"
+    },
+    "userStats": {
+      "name": "姓名",
+      "email": "邮箱",
+      "events": "活动",
+      "totalPaid": "总付款",
+      "points": "积分",
+      "role": "Role",
+      "status": "Status",
+      "subscription": "Subscription ends",
+      "lastPayment": "Last payment"
+    },
+    "userRoles": {
+      "guest": "Guest",
+      "member": "Member",
+      "admin": "Admin"
+    },
+    "userStatuses": {
+      "pending": "Pending",
+      "active": "Active",
+      "banned": "Banned"
+    },
+    "paymentStatuses": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed",
+      "refunded": "Refunded",
+      "cancelled": "Cancelled"
+    },
+    "paymentTypes": {
+      "event": "Event",
+      "subscription": "Subscription"
+    },
+    "approvalTitle": "审核用户",
+    "approvalSubtitle": "加入前审核新账户。",
+    "approvalPlaceholder": "用户审核列表将显示在这里。",
+    "approvalLoadError": "Failed to load pending users",
+    "approvalActionError": "Failed to approve user",
+    "approvalEmpty": "No users waiting for approval.",
+    "approveButton": "Approve",
+    "pendingUserNoName": "No name provided",
+    "pendingUserCreated": "Submitted: {date}",
+    "recurringTitle": "Recurring events",
+    "recurringSubtitle": "Manage schedules that repeat automatically.",
+    "recurringEmpty": "No recurring events configured.",
+    "recurringEdit": "Edit",
+    "recurringDelete": "Delete",
+    "recurringSave": "Save changes",
+    "recurringLoadError": "Failed to load recurring events",
+    "recurringUpdateError": "Failed to update recurring event",
+    "recurringDeleteError": "Failed to delete recurring event",
+    "recurringDeleteConfirm": "Delete this recurring event?",
+    "recurringDeleteConfirmAction": "Delete permanently",
+    "recurringRuleLabel": "{frequency} · every {interval}x",
+    "cards": {
+      "createEvent": {
+        "title": "添加新活动",
+        "description": "创建新活动并发布到日历。"
+      },
+      "recurringEvents": {
+        "title": "Recurring events",
+        "description": "Manage repeating schedules and templates."
+      },
+      "approveUsers": {
+        "title": "审核用户",
+        "description": "审核新账户并授予访问权限。"
+      },
+      "payments": {
+        "title": "付款与统计",
+        "description": "收入、填充率与热门会员。"
+      }
+    },
+    "notAuthorizedTitle": "拒绝访问",
+    "notAuthorized": "你无权限访问此区域。",
+    "createError": "创建活动失败",
+    "statsError": "加载统计失败",
+    "validationRequired": "请填写必填字段。",
+    "validation": {
+      "nonNegative": "数值不能为负数。",
+      "minOne": "数值必须至少为 1。",
+      "notPastDate": "开始日期不能早于当前时间。"
+    },
+    "fields": {
+      "title": "标题",
+      "titlePlaceholder": "e.g. Morning run",
+      "description": "描述",
+      "descriptionPlaceholder": "Short description of the event",
+      "eventType": "活动类型",
+      "type": "Type",
+      "startDate": "开始日期",
+      "endDate": "结束日期（可选）",
+      "timeInfo": "时间信息",
+      "timeInfoPlaceholder": "例如 19:00-21:00",
+      "recurrenceFrequency": "Frequency",
+      "recurrenceInterval": "Interval",
+      "recurrenceUntil": "Repeat until",
+      "recurrenceDaily": "Daily",
+      "recurrenceWeekly": "Weekly",
+      "recurrenceMonthly": "Monthly",
+      "city": "城市",
+      "location": "地点",
+      "locationPlaceholder": "例如 Poznań, Jezioro Rusałka",
+      "showMap": "地图：显示位置",
+      "showVideo": "视频：显示 YouTube",
+      "youtubeUrl": "YouTube 链接",
+      "youtubeUrlPlaceholder": "https://www.youtube.com/watch?v=...",
+      "locationPreview": "地点预览",
+      "openInMaps": "在谷歌地图打开",
+      "requiresSubscription": "报名需要订阅",
+      "pointsValue": "出席积分",
+      "priceGuest": "访客价格",
+      "priceGuestPlaceholder": "e.g. 50",
+      "priceMember": "会员价格",
+      "priceMemberPlaceholder": "e.g. 30",
+      "maxParticipants": "人数上限",
+      "maxParticipantsPlaceholder": "e.g. 20",
+      "cancelCutoffHours": "取消截止（小时）",
+      "rescueCutoffHours": "救援截止（小时）",
+      "rescueMonthlyLimit": "每月救援次数",
+      "rescueRequiresSubscription": "仅订阅者可用救援",
+      "isBigEvent": "大型活动（显示特色列表）",
+      "isRecurring": "重复活动",
+      "features": "特色（每行一项）",
+      "featuresPlaceholder": "桑拿\n热茶\n教练",
+      "paymentInfo": "付款信息",
+      "paymentInfoPlaceholder": "e.g. Bank transfer details",
+      "pointsValuePlaceholder": "e.g. 1"
+    },
+    "approvalSuccess": "用户已通过审核。",
+    "recurringUpdateSuccess": "周期活动已更新。",
+    "recurringDeleteSuccess": "周期活动已删除。"
+  },
+  "participants": {
+    "title": "参与者",
+    "spotsAvailable": "剩余 {count} 个名额",
+    "noSpots": "无可用名额",
+    "emptyTitle": "暂无参与者",
+    "emptySubtitle": "做第一个吧！",
+    "freeSpot": "空位",
+    "pointsAbbr": "分"
+  },
+  "profile": {
+    "notFound": "未找到该用户资料。",
+    "about": "简介",
+    "interests": "兴趣",
+    "noAbout": "暂无简介。",
+    "noInterests": "暂无兴趣标签。"
+  },
+  "eventTypes": {
+    "karate": "空手道",
+    "mors": "冬泳",
+    "planszowki": "桌游",
+    "ognisko": "篝火",
+    "spacer": "散步",
+    "joga": "瑜伽",
+    "wyjazd": "出行",
+    "inne": "其他"
+  },
+  "notifications": {
+    "successTitle": "成功",
+    "errorTitle": "操作失败",
+    "infoTitle": "提示"
+  },
+  "approval": {
+    "profileRequiredBody": "Before your request can be reviewed, complete your profile and submit the join request.",
+    "submitJoinRequest": "Submit join request",
+    "joinRequestSent": "Join request sent. Wait for admin approval.",
+    "joinRequestError": "Failed to submit join request."
+  },
+  "auth": {
+    "title": "登录",
+    "subtitle": "可使用 Google 或账号密码。",
+    "modeLogin": "登录",
+    "modeRegister": "创建账号",
+    "loginWithGoogle": "使用 Google 继续",
+    "loginLabel": "用户名或邮箱",
+    "loginPlaceholder": "例如 jane.doe 或 [email protected]",
+    "usernameLabel": "用户名",
+    "usernamePlaceholder": "例如 jane.doe",
+    "emailLabel": "邮箱",
+    "emailPlaceholder": "例如 [email protected]",
+    "fullNameLabel": "姓名",
+    "fullNamePlaceholder": "例如 Jane Doe",
+    "passwordLabel": "密码",
+    "passwordPlaceholder": "至少 8 个字符",
+    "confirmPasswordLabel": "确认密码",
+    "confirmPasswordPlaceholder": "再次输入密码",
+    "submitLogin": "登录",
+    "submitRegister": "创建账号",
+    "submitting": "正在登录...",
+    "passwordMismatch": "两次输入的密码不一致。",
+    "genericError": "登录失败。",
+    "openLogin": "登录"
+  }
+}

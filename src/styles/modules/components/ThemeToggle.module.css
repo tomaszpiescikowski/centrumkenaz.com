@@ -1,0 +1,66 @@
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.regular {
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  background: rgb(var(--token-color-navy-rgb, 26 26 78));
+  color: rgb(var(--token-color-cream-rgb, 255 245 225));
+}
+
+.compact {
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  border: 1px solid rgb(var(--token-color-navy-rgb, 26 26 78) / 0.15);
+  background: transparent;
+  color: var(--token-text-primary, rgb(26 26 78));
+}
+
+.compact:hover {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.iconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  border-radius: 9999px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.iconWrapCompact {
+  background: transparent;
+  color: currentColor;
+}
+
+.iconWrapDark {
+  background: rgb(var(--token-color-navy-rgb, 26 26 78));
+  color: rgb(var(--token-color-cream-rgb, 255 245 225));
+}
+
+.iconWrapLight {
+  background: rgb(var(--token-color-cream-rgb, 255 245 225));
+  color: rgb(var(--token-color-navy-rgb, 26 26 78));
+}
+
+.icon {
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+}
+
+:global(.dark) .regular {
+  background: rgb(var(--token-color-cream-rgb, 255 245 225));
+  color: rgb(var(--token-color-navy-rgb, 26 26 78));
+}
+
+:global(.dark) .compact {
+  border-color: rgb(var(--token-color-cream-rgb, 255 245 225) / 0.2);
+}

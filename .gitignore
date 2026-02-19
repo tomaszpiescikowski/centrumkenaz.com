@@ -1,0 +1,86 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+backend/venv/
+env/
+ENV/
+*.egg-info/
+.eggs/
+*.egg
+
+# Node
+node_modules/
+dist/
+build/
+.cache/
+*.tsbuildinfo
+
+# Logs / runtime
+logs/
+*.log
+.backend.pid
+.frontend.pid
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Secrets / env
+.env
+.env.*
+backend/.env
+backend/.env.*
+.secrets/
+!backend/.env.example
+!.env.example
+
+# SSH keys
+*.pem
+*.key
+*.pub
+
+# Local databases
+*.db
+*.db-shm
+*.db-wal
+kenaz.db*
+backend/kenaz.db*
+*.sqlite
+*.sqlite3
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage/
+*.cover
+.hypothesis/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+Thumbs.db
+
+# AI assistant local settings
+.claude/
+.aider*
+
+# Static uploads (if contains user data)
+backend/static/uploads/*
+!backend/static/uploads/.gitkeep
+
+# Build artifacts
+*.pyc
+*.pyo
