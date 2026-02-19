@@ -202,7 +202,7 @@ jobs:
             --exclude '*.db-shm' \
             --exclude '*.db-wal' \
             --exclude 'static/uploads/' \
-            -e "ssh -F ~/.ssh/config" \
+            -e "ssh -F $HOME/.ssh/config" 
             backend/ deploy-server:${{ env.BACKEND_DIR }}/
           echo "✅ Backend files synced"
 
@@ -210,7 +210,7 @@ jobs:
         run: |
           echo "Syncing frontend files..."
           rsync -avz --delete \
-            -e "ssh -F ~/.ssh/config" \
+            -e "ssh -F $HOME/.ssh/config" \
             dist/ deploy-server:${{ env.FRONTEND_DIR }}/
           echo "✅ Frontend files synced"
 
@@ -218,7 +218,7 @@ jobs:
         run: |
           echo "Syncing static files..."
           rsync -avz \
-            -e "ssh -F ~/.ssh/config" \
+            -e "ssh -F $HOME/.ssh/config" \
             static/ deploy-server:${{ env.STATIC_DIR }}/
           echo "✅ Static files synced"
 
