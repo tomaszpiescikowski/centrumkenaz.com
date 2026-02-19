@@ -266,6 +266,12 @@ jobs:
           fi
           
           echo "Running database migrations..."
+          CURRENT=$(venv/bin/alembic current 2>&1 || true)
+          HEAD=$(venv/bin/alembic heads 2>&1 | awk '{print $1}')
+          if echo "$CURRENT" | grep -q "Can't locate revision"; then
+            echo "⚠️  Database points to unknown revision — stamping to current head ($HEAD)"
+            venv/bin/alembic stamp head
+          fi
           venv/bin/alembic upgrade head
           echo "✅ Migrations completed"
           ENDSSH
