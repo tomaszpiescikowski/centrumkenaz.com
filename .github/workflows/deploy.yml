@@ -216,7 +216,7 @@ jobs:
         run: |
           echo "Syncing static files..."
           rsync -avz \
-            static/ deploy-server:${{ env.STATIC_DIR }}/
+            public/static/ deploy-server:${{ env.STATIC_DIR }}/
           echo "✅ Static files synced"
 
       - name: Setup Python environment
