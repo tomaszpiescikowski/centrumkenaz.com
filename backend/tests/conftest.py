@@ -64,9 +64,13 @@ async def db_engine():
 
     engine = create_async_engine(test_db_url)
 
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.drop_all)
+            await conn.run_sync(Base.metadata.create_all)
+    except OSError:
+        await engine.dispose()
+        pytest.skip("PostgreSQL is not available – skipping database tests")
 
     yield engine
 
