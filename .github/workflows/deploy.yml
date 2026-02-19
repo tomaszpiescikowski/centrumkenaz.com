@@ -269,8 +269,15 @@ jobs:
           CURRENT=$(venv/bin/alembic current 2>&1 || true)
           HEAD=$(venv/bin/alembic heads 2>&1 | awk '{print $1}')
           if echo "$CURRENT" | grep -q "Can't locate revision"; then
-            echo "⚠️  Database points to unknown revision — stamping to current head ($HEAD)"
-            venv/bin/alembic stamp head
+            echo "⚠️  Database points to unknown revision — fixing alembic_version table directly"
+            # Source DB URL from .env and update alembic_version via psql
+            DB_URL=$(grep -E '^DATABASE_URL=' .env | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+            if [ -z "$DB_URL" ]; then
+              DB_URL=$(grep -E '^SQLALCHEMY_DATABASE_URL=' .env | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+            fi
+            echo "Updating alembic_version to $HEAD..."
+            psql "$DB_URL" -c "UPDATE alembic_version SET version_num = '$HEAD';"
+            echo "✅ alembic_version stamped to $HEAD"
           fi
           venv/bin/alembic upgrade head
           echo "✅ Migrations completed"
