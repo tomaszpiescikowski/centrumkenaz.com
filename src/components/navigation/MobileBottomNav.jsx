@@ -3,9 +3,9 @@ import { useLanguage } from '../../context/LanguageContext'
 import { useAuth } from '../../context/AuthContext'
 
 const ICON_CLASS = 'h-6 w-6'
-const ITEM_BASE = 'flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition-colors'
-const ITEM_ACTIVE = 'text-navy dark:text-cream'
-const ITEM_IDLE = 'text-navy/40 dark:text-cream/40'
+const ITEM_BASE = 'flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium'
+const ICON_ACTIVE = 'text-navy dark:text-cream'
+const ICON_IDLE = 'text-navy/35 dark:text-cream/35'
 
 function HomeIcon() {
   return (
@@ -52,10 +52,10 @@ function NavItem({ to, label, icon, active }) {
     <Link
       to={to}
       aria-label={label}
-      className={`${ITEM_BASE} ${active ? ITEM_ACTIVE : ITEM_IDLE}`}
+      className={ITEM_BASE}
     >
-      {icon}
-      <span className="truncate">{label}</span>
+      <span className={`transition-colors ${active ? ICON_ACTIVE : ICON_IDLE}`}>{icon}</span>
+      <span className={`truncate transition-colors ${active ? ICON_ACTIVE : ICON_IDLE}`}>{label}</span>
     </Link>
   )
 }
@@ -66,7 +66,7 @@ function MobileBottomNav() {
   const location = useLocation()
   const navigate = useNavigate()
 
-  if (location.pathname.startsWith('/auth/') || location.pathname === '/login') return null
+  if (location.pathname.startsWith('/auth/')) return null
 
   const isAdmin = user?.role === 'admin' && user?.account_status === 'active'
   const accountActive = (
@@ -141,10 +141,10 @@ function MobileBottomNav() {
           type="button"
           onClick={handleAccountClick}
           aria-label={t('nav.myAccount')}
-          className={`${ITEM_BASE} ${accountActive ? ITEM_ACTIVE : ITEM_IDLE}`}
+          className={ITEM_BASE}
         >
-          <AccountIcon />
-          <span className="truncate">{t('nav.myAccount')}</span>
+          <span className={`transition-colors ${accountActive ? ICON_ACTIVE : ICON_IDLE}`}><AccountIcon /></span>
+          <span className={`truncate transition-colors ${accountActive ? ICON_ACTIVE : ICON_IDLE}`}>{t('nav.myAccount')}</span>
         </button>
       </div>
     </nav>

@@ -1,6 +1,6 @@
 @layer components {
   .page-shell {
-    @apply mx-auto w-full max-w-4xl px-3 py-3 sm:px-4 sm:py-6;
+    @apply mx-auto w-full max-w-4xl px-5 py-4 sm:px-4 sm:py-6;
   }
 
   .page-card {

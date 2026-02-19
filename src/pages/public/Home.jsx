@@ -5,7 +5,7 @@ function Home() {
   const { t } = useLanguage()
 
   return (
-    <div className="page-shell flex h-full min-h-0 flex-col items-center justify-center pb-[calc(env(safe-area-inset-bottom)+5.25rem)] text-center sm:min-h-[calc(100vh-4rem)] sm:pb-12">
+    <div className="page-shell flex h-full min-h-0 flex-col items-center justify-center pt-[12vh] sm:pt-0 pb-[calc(env(safe-area-inset-bottom)+5.25rem)] text-center sm:min-h-[calc(100vh-4rem)] sm:pb-12">
       <div
         role="img"
         aria-label="Kenaz Centrum"
