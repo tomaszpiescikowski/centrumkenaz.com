@@ -45,13 +45,9 @@ class EventResponse(BaseModel):
     end_date: datetime | None = Field(default=None, description="End datetime if provided.")
     time_info: str | None = Field(default=None, description="Free-form time label.")
 
-    features: list[str] | None = Field(default=None, description="Optional feature list for UI.")
-    payment_info: str | None = Field(default=None, description="Additional payment instructions.")
     city: str = Field(description="City name.")
     location: str | None = Field(default=None, description="Optional venue/location string.")
     show_map: bool = Field(default=True, description="Whether to show map in UI.")
-    show_video: bool = Field(default=False, description="Whether to show video embed.")
-    youtube_url: str | None = Field(default=None, description="Optional YouTube URL.")
     price_guest: Decimal = Field(description="Price for non-subscribers.")
     price_member: Decimal = Field(description="Price for subscribers.")
     manual_payment_verification: bool = Field(
@@ -64,7 +60,6 @@ class EventResponse(BaseModel):
     )
     manual_payment_due_hours: int = Field(description="Hours allowed to confirm manual payment.")
     max_participants: int | None = Field(default=None, description="Capacity limit if configured.")
-    is_big_event: bool = Field(description="Whether event is marked as big.")
     requires_subscription: bool = Field(description="Whether subscription is required to register.")
     cancel_cutoff_hours: int = Field(description="Cancellation cutoff in hours.")
     rescue_cutoff_hours: int | None = Field(
@@ -139,13 +134,9 @@ class EventCreateRequest(BaseModel):
     start_date: datetime = Field(description="Start datetime.")
     end_date: datetime | None = Field(default=None, description="End datetime if provided.")
     time_info: str | None = Field(default=None, max_length=100, description="Free-form time label.")
-    features: list[str] | None = Field(default=None, description="Optional feature list.")
-    payment_info: str | None = Field(default=None, description="Additional payment instructions.")
     city: str = Field(min_length=1, max_length=100, description="City name.")
     location: str | None = Field(default=None, max_length=255, description="Venue or location string.")
     show_map: bool = Field(default=True, description="Whether to show map in UI.")
-    show_video: bool = Field(default=False, description="Whether to show video embed.")
-    youtube_url: str | None = Field(default=None, max_length=500, description="Optional YouTube URL.")
     price_guest: Decimal = Field(default=Decimal("0"), ge=0, description="Guest price.")
     price_member: Decimal = Field(default=Decimal("0"), ge=0, description="Member price.")
     manual_payment_verification: bool = Field(
@@ -160,7 +151,6 @@ class EventCreateRequest(BaseModel):
         description="Hours allowed to confirm manual payment.",
     )
     max_participants: int | None = Field(default=None, ge=1, description="Capacity limit if set.")
-    is_big_event: bool = Field(default=False, description="Whether event is marked as big.")
     requires_subscription: bool = Field(default=False, description="Whether subscription is required.")
     cancel_cutoff_hours: int = Field(default=24, ge=0, description="Cancellation cutoff in hours.")
     rescue_cutoff_hours: int | None = Field(default=None, ge=0, description="Rescue cutoff window in hours.")
@@ -210,13 +200,9 @@ class EventUpdateRequest(BaseModel):
     start_date: datetime | None = Field(default=None, description="Start datetime.")
     end_date: datetime | None = Field(default=None, description="End datetime if provided.")
     time_info: str | None = Field(default=None, max_length=100, description="Free-form time label.")
-    features: list[str] | None = Field(default=None, description="Optional feature list.")
-    payment_info: str | None = Field(default=None, description="Additional payment instructions.")
     city: str | None = Field(default=None, min_length=1, max_length=100, description="City name.")
     location: str | None = Field(default=None, max_length=255, description="Venue or location string.")
     show_map: bool | None = Field(default=None, description="Whether to show map in UI.")
-    show_video: bool | None = Field(default=None, description="Whether to show video embed.")
-    youtube_url: str | None = Field(default=None, max_length=500, description="Optional YouTube URL.")
     price_guest: Decimal | None = Field(default=None, ge=0, description="Guest price.")
     price_member: Decimal | None = Field(default=None, ge=0, description="Member price.")
     manual_payment_verification: bool | None = Field(
@@ -231,7 +217,6 @@ class EventUpdateRequest(BaseModel):
         description="Hours allowed to confirm manual payment.",
     )
     max_participants: int | None = Field(default=None, ge=1, description="Capacity limit if set.")
-    is_big_event: bool | None = Field(default=None, description="Whether event is marked as big.")
     requires_subscription: bool | None = Field(default=None, description="Whether subscription is required.")
     cancel_cutoff_hours: int | None = Field(default=None, ge=0, description="Cancellation cutoff in hours.")
     rescue_cutoff_hours: int | None = Field(default=None, ge=0, description="Rescue cutoff window in hours.")
@@ -428,8 +413,6 @@ async def create_event(
         start_date=payload.start_date,
         end_date=payload.end_date,
         time_info=payload.time_info,
-        features=payload.features,
-        payment_info=payload.payment_info,
         city=payload.city,
         location=payload.location,
         # Guest price is not applicable for subscription-only events.
@@ -439,7 +422,6 @@ async def create_event(
         manual_payment_url=manual_payment_url,
         manual_payment_due_hours=payload.manual_payment_due_hours,
         max_participants=payload.max_participants,
-        is_big_event=payload.is_big_event,
         requires_subscription=payload.requires_subscription,
         cancel_cutoff_hours=payload.cancel_cutoff_hours,
         rescue_cutoff_hours=payload.rescue_cutoff_hours,

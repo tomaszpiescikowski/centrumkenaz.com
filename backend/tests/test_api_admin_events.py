@@ -157,7 +157,6 @@ def _event_create_payload(**overrides):
         "price_guest": "20.00",
         "price_member": "10.00",
         "max_participants": 20,
-        "payment_info": None,
         "requires_subscription": False,
         "cancel_cutoff_hours": 24,
         "points_value": 1,

@@ -48,7 +48,7 @@ EDGE_CASE_EVENT_KEYS = [
     "mors_empty",
     "planszowki_almost_full",
     "ognisko_waitlist",
-    "spacer_video",
+    "spacer",
     "joga_map",
     "wyjazd_subscription_only",
     "inne_manual_payment",
@@ -202,10 +202,10 @@ def _event_seed_specs(base_now: datetime | None = None) -> list[dict]:
             },
         },
         {
-            "key": "spacer_video",
+            "key": "spacer",
             "payload": {
                 "title": "Spacer Historyczny po Starym Mieście",
-                "description": "DANE TESTOWE (CASE_VIDEO): wydarzenie z osadzonym materiałem wideo.",
+                "description": "DANE TESTOWE (CASE_SPACER): spacer z wolnymi miejscami.",
                 "event_type": "spacer",
                 "start_date": _future_dt(now, days_from_now=6, hour=19, minute=0),
                 "time_info": "19:00-21:00",
@@ -247,7 +247,6 @@ def _event_seed_specs(base_now: datetime | None = None) -> list[dict]:
                 "city": "Norwegia",
                 "location": "Arendal, Agder, Norwegia",
                 "show_map": True,
-                "payment_info": "DANE TESTOWE: wariant subskrypcyjny (bez płatności gościa).",
                 "price_guest": Decimal("0.00"),
                 "price_member": Decimal("199.00"),
                 "max_participants": 5,
@@ -320,7 +319,6 @@ def _event_seed_specs(base_now: datetime | None = None) -> list[dict]:
                 "city": "Wetlina",
                 "location": "Baza Wypadowa Wetlina, Bieszczady",
                 "show_map": True,
-                "payment_info": "DANE TESTOWE: marcowy wyjazd wielodniowy.",
                 "price_guest": Decimal("420.00"),
                 "price_member": Decimal("360.00"),
                 "max_participants": 5,
@@ -942,7 +940,7 @@ async def _seed_registrations(per_event: int, reset: bool) -> None:
         mors = _get_required_event(events_by_title, expected_titles_by_key["mors_empty"])
         planszowki = _get_required_event(events_by_title, expected_titles_by_key["planszowki_almost_full"])
         ognisko = _get_required_event(events_by_title, expected_titles_by_key["ognisko_waitlist"])
-        spacer = _get_required_event(events_by_title, expected_titles_by_key["spacer_video"])
+        spacer = _get_required_event(events_by_title, expected_titles_by_key["spacer"])
         joga = _get_required_event(events_by_title, expected_titles_by_key["joga_map"])
         wyjazd = _get_required_event(events_by_title, expected_titles_by_key["wyjazd_subscription_only"])
         manual = _get_required_event(events_by_title, expected_titles_by_key["inne_manual_payment"])
@@ -995,7 +993,7 @@ async def _seed_registrations(per_event: int, reset: bool) -> None:
         add_registration(guest_three, ognisko, RegistrationStatus.WAITLIST.value)
         add_registration(guest_four, ognisko, RegistrationStatus.WAITLIST.value)
 
-        # 5) VIDEO
+        # 5) SPACER
         add_registration(pro_one, spacer, RegistrationStatus.CONFIRMED.value)
         add_registration(guest_five, spacer, RegistrationStatus.CONFIRMED.value)
 

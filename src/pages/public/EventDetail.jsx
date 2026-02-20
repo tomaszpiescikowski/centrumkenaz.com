@@ -720,13 +720,6 @@ function EventDetail() {
             </span>
           </div>
         </div>
-
-        {event.paymentInfo && (
-          <div className="mt-6 pt-6 border-t whitespace-pre-line text-sm
-            border-navy/20 dark:border-cream/20 text-navy/70 dark:text-cream/70">
-            {event.paymentInfo}
-          </div>
-        )}
           </div>
         </div>
 

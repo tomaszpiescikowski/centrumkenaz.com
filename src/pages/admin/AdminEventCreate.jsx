@@ -54,17 +54,12 @@ function AdminEventCreate() {
     city: '',
     location: '',
     showMap: true,
-    showVideo: false,
-    youtubeUrl: '',
     priceGuest: '0',
     priceMember: '0',
     manualPaymentVerification: true,
     manualPaymentUrl: '',
     manualPaymentDueHours: '24',
     maxParticipants: '',
-    isBigEvent: false,
-    featuresText: '',
-    paymentInfo: '',
     requiresSubscription: false,
     cancelCutoffHours: '24',
     rescueCutoffHours: '',
@@ -216,9 +211,6 @@ function AdminEventCreate() {
     if (!form.title.trim()) requiredHints.title = 'admin.validationRequired'
     if (!form.startDate) requiredHints.startDate = 'admin.validationRequired'
     if (!form.city.trim()) requiredHints.city = 'admin.validationRequired'
-    if (form.showVideo && !form.youtubeUrl.trim()) {
-      requiredHints.youtubeUrl = 'admin.validationRequired'
-    }
     const hasPaidPrice = Number(form.requiresSubscription ? form.priceMember : form.priceGuest) > 0
       || Number(form.priceMember) > 0
     if (form.manualPaymentVerification && hasPaidPrice && !form.manualPaymentUrl.trim()) {
@@ -231,11 +223,6 @@ function AdminEventCreate() {
       return
     }
 
-    const features = form.featuresText
-      .split('\n')
-      .map((line) => line.trim())
-      .filter(Boolean)
-
     const payload = {
       title: form.title.trim(),
       description: form.description.trim() || null,
@@ -246,8 +233,6 @@ function AdminEventCreate() {
       city: form.city.trim(),
       location: form.location.trim() || null,
       show_map: form.showMap,
-      show_video: form.showVideo,
-      youtube_url: form.youtubeUrl.trim() || null,
       price_guest: form.requiresSubscription ? 0 : Number(form.priceGuest || 0),
       price_member: Number(form.priceMember || 0),
       manual_payment_verification: true,
@@ -256,9 +241,6 @@ function AdminEventCreate() {
         : null,
       manual_payment_due_hours: Number(form.manualPaymentDueHours || 24),
       max_participants: form.maxParticipants ? Number(form.maxParticipants) : null,
-      is_big_event: form.isBigEvent,
-      features: features.length ? features : null,
-      payment_info: form.paymentInfo.trim() || null,
       requires_subscription: form.requiresSubscription,
       cancel_cutoff_hours: Number(form.cancelCutoffHours || 24),
       rescue_cutoff_hours: form.rescueCutoffHours ? Number(form.rescueCutoffHours) : null,
@@ -445,33 +427,8 @@ function AdminEventCreate() {
             {t('admin.fields.showMap')}
           </label>
 
-          <label className="flex items-center gap-3 text-sm text-navy dark:text-cream">
-            <input
-              type="checkbox"
-              className="form-checkbox"
-              checked={form.showVideo}
-              onChange={(e) => updateField('showVideo', e.target.checked)}
-            />
-            {t('admin.fields.showVideo')}
           </label>
         </div>
-
-        {form.showVideo && (
-          <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
-            {t('admin.fields.youtubeUrl')}
-            <input
-              type="url"
-              className={inputClassFor('youtubeUrl')}
-              value={form.youtubeUrl}
-              onChange={(e) => updateField('youtubeUrl', e.target.value)}
-              placeholder={t('admin.fields.youtubeUrlPlaceholder')}
-              required
-            />
-            {fieldHints.youtubeUrl && (
-              <p className={validationHintClass}>{t(fieldHints.youtubeUrl)}</p>
-            )}
-          </label>
-        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <label className="flex items-center gap-3 text-sm text-navy dark:text-cream">
@@ -568,9 +525,10 @@ function AdminEventCreate() {
               {t('admin.fields.manualPaymentVerification')}
             </label>
             <span
-              className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-navy/20 text-[10px] font-bold text-navy/70 dark:border-cream/20 dark:text-cream/70"
+              className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-navy/20 text-[10px] font-bold text-navy/70 dark:border-cream/20 dark:text-cream/70 cursor-help select-none"
               title={t('admin.fields.manualPaymentVerificationLockedHint')}
               aria-label={t('admin.fields.manualPaymentVerificationLockedHint')}
+              role="img"
             >
               i
             </span>
@@ -592,7 +550,16 @@ function AdminEventCreate() {
         </div>
 
         <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream max-w-xs">
-          {t('admin.fields.manualPaymentDueHours')}
+          <span className="flex items-center gap-1.5">
+            {t('admin.fields.manualPaymentDueHours')}
+            <span
+              className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-navy/20 text-[10px] font-bold text-navy/70 dark:border-cream/20 dark:text-cream/70 cursor-help"
+              title={t('admin.fields.manualPaymentDueHoursTooltip')}
+              aria-label={t('admin.fields.manualPaymentDueHoursTooltip')}
+            >
+              i
+            </span>
+          </span>
           <input
             type="number"
             min="1"
@@ -611,7 +578,16 @@ function AdminEventCreate() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
-            {t('admin.fields.cancelCutoffHours')}
+            <span className="flex items-center gap-1.5">
+              {t('admin.fields.cancelCutoffHours')}
+              <span
+                className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-navy/20 text-[10px] font-bold text-navy/70 dark:border-cream/20 dark:text-cream/70 cursor-help"
+                title={t('admin.fields.cancelCutoffHoursTooltip')}
+                aria-label={t('admin.fields.cancelCutoffHoursTooltip')}
+              >
+                i
+              </span>
+            </span>
             <input
               type="number"
               min="0"
@@ -625,7 +601,16 @@ function AdminEventCreate() {
           </label>
 
           <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
-            {t('admin.fields.rescueCutoffHours')}
+            <span className="flex items-center gap-1.5">
+              {t('admin.fields.rescueCutoffHours')}
+              <span
+                className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-navy/20 text-[10px] font-bold text-navy/70 dark:border-cream/20 dark:text-cream/70 cursor-help"
+                title={t('admin.fields.rescueCutoffHoursTooltip')}
+                aria-label={t('admin.fields.rescueCutoffHoursTooltip')}
+              >
+                i
+              </span>
+            </span>
             <input
               type="number"
               min="0"
@@ -639,7 +624,16 @@ function AdminEventCreate() {
           </label>
 
           <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
-            {t('admin.fields.rescueMonthlyLimit')}
+            <span className="flex items-center gap-1.5">
+              {t('admin.fields.rescueMonthlyLimit')}
+              <span
+                className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-navy/20 text-[10px] font-bold text-navy/70 dark:border-cream/20 dark:text-cream/70 cursor-help"
+                title={t('admin.fields.rescueMonthlyLimitTooltip')}
+                aria-label={t('admin.fields.rescueMonthlyLimitTooltip')}
+              >
+                i
+              </span>
+            </span>
             <input
               type="number"
               min="0"
@@ -661,40 +655,6 @@ function AdminEventCreate() {
             onChange={(e) => updateField('rescueRequiresSubscription', e.target.checked)}
           />
           {t('admin.fields.rescueRequiresSubscription')}
-        </label>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label className="flex items-center gap-3 text-sm text-navy dark:text-cream">
-            <input
-              type="checkbox"
-              className="form-checkbox"
-              checked={form.isBigEvent}
-              onChange={(e) => updateField('isBigEvent', e.target.checked)}
-            />
-            {t('admin.fields.isBigEvent')}
-          </label>
-        </div>
-
-        <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
-          {t('admin.fields.features')}
-          <textarea
-            rows="3"
-            className={inputClassName}
-            value={form.featuresText}
-            onChange={(e) => updateField('featuresText', e.target.value)}
-            placeholder={t('admin.fields.featuresPlaceholder')}
-          />
-        </label>
-
-        <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
-          {t('admin.fields.paymentInfo')}
-          <textarea
-            rows="2"
-            className={inputClassName}
-            value={form.paymentInfo}
-            onChange={(e) => updateField('paymentInfo', e.target.value)}
-            placeholder={t('admin.fields.paymentInfoPlaceholder')}
-          />
         </label>
 
         <div className="flex flex-wrap gap-3">
