@@ -9,6 +9,9 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# Set test admin email BEFORE any project import triggers get_settings().
+os.environ["ROOT_ADMIN_EMAIL"] = "tomek.piescikowski@gmail.com"
+
 from database import Base
 from models.user import User, UserRole, AccountStatus
 from models.subscription import Subscription
