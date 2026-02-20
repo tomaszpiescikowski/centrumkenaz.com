@@ -200,7 +200,7 @@ function Account({ darkMode, setDarkMode }) {
                     <div className="group relative">
                       <div
                         onClick={handleEditAboutMe}
-                        className="min-h-[100px] cursor-pointer rounded-xl bg-navy/5 px-4 py-3 text-navy transition-colors dark:bg-cream/8 dark:text-cream"
+                        className="min-h-[100px] cursor-pointer rounded-xl border border-navy/15 bg-navy/5 px-4 py-3 text-navy transition-colors dark:border-cream/15 dark:bg-cream/8 dark:text-cream"
                       >
                         {aboutMe || (
                           <span className="text-navy/50 dark:text-cream/50">
@@ -312,7 +312,7 @@ function Account({ darkMode, setDarkMode }) {
             </div>
           </div>
 
-          <aside className="rounded-2xl border border-navy/10 bg-cream/50 p-4 dark:border-cream/15 dark:bg-navy/50">
+          <aside className="flex flex-col rounded-2xl border border-navy/10 bg-cream/50 p-4 dark:border-cream/15 dark:bg-navy/50">
             <h3 className="text-lg font-black text-navy dark:text-cream">
               {t('account.manageSubscription')}
             </h3>
@@ -329,22 +329,24 @@ function Account({ darkMode, setDarkMode }) {
               />
             </div>
 
-            <div className="mt-4 flex flex-col rounded-xl bg-navy/5 px-3 py-2 text-sm text-navy/80 dark:bg-cream/10 dark:text-cream/80">
-              <span>{activeSubscription ? t('plans.subscriptionActiveUntilLabel') : t('plans.subscriptionInactive')}</span>
-              {activeSubscription && user?.subscription_end_date && (
-                <span className="font-semibold text-navy dark:text-cream">
-                  {formatShortDate(user.subscription_end_date)}
-                </span>
-              )}
-            </div>
+            <div className="xl:mt-auto">
+              <div className="mt-4 flex flex-col rounded-xl bg-navy/5 px-3 py-2 text-sm text-navy/80 dark:bg-cream/10 dark:text-cream/80">
+                <span>{activeSubscription ? t('plans.subscriptionActiveUntilLabel') : t('plans.subscriptionInactive')}</span>
+                {activeSubscription && user?.subscription_end_date && (
+                  <span className="font-semibold text-navy dark:text-cream">
+                    {formatShortDate(user.subscription_end_date)}
+                  </span>
+                )}
+              </div>
 
-            <div className="mt-4">
-              <Link
-                to="/plans"
-                className="btn-primary h-10 w-full px-5 text-sm"
-              >
-                {t('account.manageSubscription')}
-              </Link>
+              <div className="mt-4">
+                <Link
+                  to="/plans"
+                  className="btn-primary h-10 w-full px-5 text-sm"
+                >
+                  {t('account.manageSubscription')}
+                </Link>
+              </div>
             </div>
           </aside>
         </div>

@@ -185,7 +185,7 @@ function Plans() {
         cancel_url: `${basePath}?payment=cancelled`,
       }
       const data = await startSubscriptionCheckout(authFetch, payload)
-      if (data.redirect_url) {
+      if (data.redirect_url && data.status !== 'completed') {
         window.location.href = data.redirect_url
         return
       }
