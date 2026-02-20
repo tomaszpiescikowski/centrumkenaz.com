@@ -69,7 +69,7 @@ function ManualPaymentPage() {
     return () => {
       cancelled = true
     }
-  }, [authFetch, isAuthenticated, navigate, registrationId, showError, t, user])
+  }, [authFetch, isAuthenticated, navigate, registrationId, showError, t, user?.account_status])
 
   const copyReference = async () => {
     if (!details?.transfer_reference) return

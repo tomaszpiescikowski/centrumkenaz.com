@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import { languages, defaultLanguage, getTranslation } from '../languages'
 
 const LanguageContext = createContext()
@@ -10,29 +10,31 @@ export function LanguageProvider({ children }) {
     return stored && languages[stored] ? stored : defaultLanguage
   })
 
-  const t = (path, params = null) => {
+  const t = useCallback((path, params = null) => {
     const translations = languages[currentLanguage].translations
     const value = getTranslation(translations, path)
     if (!params || typeof value !== 'string') return value
     return Object.entries(params).reduce((acc, [key, replacement]) => (
       acc.replace(new RegExp(`\\{${key}\\}`, 'g'), String(replacement))
     ), value)
-  }
+  }, [currentLanguage])
 
-  const changeLanguage = (langCode) => {
+  const changeLanguage = useCallback((langCode) => {
     if (languages[langCode]) {
       setCurrentLanguage(langCode)
       localStorage.setItem(LANGUAGE_STORAGE_KEY, langCode)
     }
-  }
+  }, [])
 
-  const value = {
+  const currentLanguageData = languages[currentLanguage]
+
+  const value = useMemo(() => ({
     currentLanguage,
     changeLanguage,
     t,
     languages,
-    currentLanguageData: languages[currentLanguage]
-  }
+    currentLanguageData,
+  }), [currentLanguage, changeLanguage, t, currentLanguageData])
 
   return (
     <LanguageContext.Provider value={value}>

@@ -1,8 +1,28 @@
-import { createContext, useCallback, useContext, useRef, useState, useEffect } from 'react'
+import { createContext, useCallback, useContext, useRef, useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API_URL } from '../api/config'
 
 const AuthContext = createContext()
+
+const POST_LOGIN_REDIRECT_KEY = 'postLoginRedirect'
+
+const normalizeReturnTo = (returnTo, fallbackReturnTo) => (
+  typeof returnTo === 'string' && returnTo.startsWith('/')
+    ? returnTo
+    : fallbackReturnTo
+)
+
+const parseErrorDetail = async (response, fallbackMessage) => {
+  try {
+    const payload = await response.json()
+    if (typeof payload?.detail === 'string' && payload.detail.trim()) {
+      return payload.detail
+    }
+  } catch (error) {
+    console.error('Failed to parse auth error payload:', error)
+  }
+  return fallbackMessage
+}
 
 export function AuthProvider({ children }) {
   const navigate = useNavigate()
@@ -10,85 +30,30 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
   const [accessToken, setAccessToken] = useState(null)
   const accessTokenRef = useRef(accessToken)
+  const fetchUserRef = useRef(null)
 
-  const POST_LOGIN_REDIRECT_KEY = 'postLoginRedirect'
+  const logout = useCallback(() => {
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
+    accessTokenRef.current = null
+    setAccessToken(null)
+    setUser(null)
+  }, [])
 
-  const normalizeReturnTo = (returnTo, fallbackReturnTo) => (
-    typeof returnTo === 'string' && returnTo.startsWith('/')
-      ? returnTo
-      : fallbackReturnTo
-  )
-
-  const setPostLoginRedirect = (returnTo) => {
-    const fallbackReturnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`
-    const target = normalizeReturnTo(returnTo, fallbackReturnTo)
-    localStorage.setItem(POST_LOGIN_REDIRECT_KEY, target)
-  }
-
-  const storeTokens = (newAccessToken, newRefreshToken) => {
+  const storeTokens = useCallback((newAccessToken, newRefreshToken) => {
     localStorage.setItem('accessToken', newAccessToken)
     localStorage.setItem('refreshToken', newRefreshToken)
     accessTokenRef.current = newAccessToken
     setAccessToken(newAccessToken)
-  }
-
-  const parseErrorDetail = async (response, fallbackMessage) => {
-    try {
-      const payload = await response.json()
-      if (typeof payload?.detail === 'string' && payload.detail.trim()) {
-        return payload.detail
-      }
-    } catch (error) {
-      console.error('Failed to parse auth error payload:', error)
-    }
-    return fallbackMessage
-  }
-
-  useEffect(() => {
-    // Check for tokens in localStorage on mount
-    const storedAccessToken = localStorage.getItem('accessToken')
-
-    if (storedAccessToken) {
-      accessTokenRef.current = storedAccessToken
-      setAccessToken(storedAccessToken)
-      fetchUser(storedAccessToken)
-    } else {
-      setLoading(false)
-    }
   }, [])
 
-  const fetchUser = async (token, options = {}) => {
-    const { allowRefresh = true } = options
+  const setPostLoginRedirect = useCallback((returnTo) => {
+    const fallbackReturnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`
+    const target = normalizeReturnTo(returnTo, fallbackReturnTo)
+    localStorage.setItem(POST_LOGIN_REDIRECT_KEY, target)
+  }, [])
 
-    try {
-      const response = await fetch(`${API_URL}/auth/me`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      })
-
-      if (response.ok) {
-        const userData = await response.json()
-        setUser(userData)
-        return userData
-      } else if (response.status === 401 && allowRefresh) {
-        // Token invalid, try refresh
-        await refreshToken()
-      } else if (response.status === 429) {
-        console.warn('Rate limited while fetching user profile')
-      } else {
-        logout()
-      }
-    } catch (error) {
-      console.error('Failed to fetch user:', error)
-      logout()
-    } finally {
-      setLoading(false)
-    }
-    return null
-  }
-
-  const refreshToken = async () => {
+  const refreshTokenFn = useCallback(async () => {
     const storedRefreshToken = localStorage.getItem('refreshToken')
     if (!storedRefreshToken) {
       logout()
@@ -106,7 +71,7 @@ export function AuthProvider({ children }) {
       if (response.ok) {
         const data = await response.json()
         storeTokens(data.access_token, data.refresh_token)
-        await fetchUser(data.access_token, { allowRefresh: false })
+        await fetchUserRef.current(data.access_token, { allowRefresh: false })
       } else {
         logout()
       }
@@ -114,15 +79,64 @@ export function AuthProvider({ children }) {
       console.error('Failed to refresh token:', error)
       logout()
     }
-  }
+  }, [logout, storeTokens])
 
-  const login = (options = {}) => {
+  const fetchUser = useCallback(async (token, options = {}) => {
+    const { allowRefresh = true } = options
+
+    try {
+      const response = await fetch(`${API_URL}/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+
+      if (response.ok) {
+        const userData = await response.json()
+        setUser(userData)
+        return userData
+      } else if (response.status === 401 && allowRefresh) {
+        await refreshTokenFn()
+      } else if (response.status === 429) {
+        console.warn('Rate limited while fetching user profile')
+      } else {
+        logout()
+      }
+    } catch (error) {
+      console.error('Failed to fetch user:', error)
+      logout()
+    } finally {
+      setLoading(false)
+    }
+    return null
+  }, [logout, refreshTokenFn])
+
+  fetchUserRef.current = fetchUser
+
+  useEffect(() => {
+    const storedAccessToken = localStorage.getItem('accessToken')
+
+    if (storedAccessToken) {
+      accessTokenRef.current = storedAccessToken
+      setAccessToken(storedAccessToken)
+      fetchUser(storedAccessToken)
+    } else {
+      setLoading(false)
+    }
+  }, [fetchUser])
+
+  const handleAuthCallback = useCallback(async (newAccessToken, newRefreshToken) => {
+    storeTokens(newAccessToken, newRefreshToken)
+    return await fetchUser(newAccessToken)
+  }, [storeTokens, fetchUser])
+
+  const login = useCallback((options = {}) => {
     const { returnTo } = options
     setPostLoginRedirect(returnTo)
     navigate('/login')
-  }
+  }, [navigate, setPostLoginRedirect])
 
-  const loginWithGoogle = (options = {}) => {
+  const loginWithGoogle = useCallback((options = {}) => {
     const { returnTo } = options
     const existingRedirect = localStorage.getItem(POST_LOGIN_REDIRECT_KEY)
     if (returnTo) {
@@ -131,21 +145,16 @@ export function AuthProvider({ children }) {
       setPostLoginRedirect('/')
     }
     window.location.href = `${API_URL}/auth/google/login`
-  }
+  }, [setPostLoginRedirect])
 
-  const consumePostLoginRedirect = () => {
+  const consumePostLoginRedirect = useCallback(() => {
     const stored = localStorage.getItem(POST_LOGIN_REDIRECT_KEY)
     if (!stored) return null
     localStorage.removeItem(POST_LOGIN_REDIRECT_KEY)
     return stored
-  }
+  }, [])
 
-  const handleAuthCallback = async (newAccessToken, newRefreshToken) => {
-    storeTokens(newAccessToken, newRefreshToken)
-    return await fetchUser(newAccessToken)
-  }
-
-  const loginWithPassword = async (credentials) => {
+  const loginWithPassword = useCallback(async (credentials) => {
     const response = await fetch(`${API_URL}/auth/password/login`, {
       method: 'POST',
       headers: {
@@ -161,9 +170,9 @@ export function AuthProvider({ children }) {
 
     const data = await response.json()
     return handleAuthCallback(data.access_token, data.refresh_token)
-  }
+  }, [handleAuthCallback])
 
-  const registerWithPassword = async (payload) => {
+  const registerWithPassword = useCallback(async (payload) => {
     const response = await fetch(`${API_URL}/auth/password/register`, {
       method: 'POST',
       headers: {
@@ -179,15 +188,7 @@ export function AuthProvider({ children }) {
 
     const data = await response.json()
     return handleAuthCallback(data.access_token, data.refresh_token)
-  }
-
-  const logout = useCallback(() => {
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
-    accessTokenRef.current = null
-    setAccessToken(null)
-    setUser(null)
-  }, [])
+  }, [handleAuthCallback])
 
   const authFetch = useCallback(async (url, options = {}) => {
     const currentToken = accessTokenRef.current
@@ -199,7 +200,6 @@ export function AuthProvider({ children }) {
     const response = await fetch(url, { ...options, headers })
 
     if (response.status === 401) {
-      // Try refreshing the token
       const storedRefreshToken = localStorage.getItem('refreshToken')
       if (!storedRefreshToken) {
         logout()
@@ -219,7 +219,6 @@ export function AuthProvider({ children }) {
           accessTokenRef.current = data.access_token
           setAccessToken(data.access_token)
 
-          // Retry with new token
           headers['Authorization'] = `Bearer ${data.access_token}`
           return fetch(url, { ...options, headers })
         } else {
@@ -234,7 +233,7 @@ export function AuthProvider({ children }) {
     return response
   }, [logout])
 
-  const value = {
+  const value = useMemo(() => ({
     user,
     loading,
     isAuthenticated: !!user,
@@ -248,7 +247,7 @@ export function AuthProvider({ children }) {
     authFetch,
     accessToken,
     consumePostLoginRedirect,
-  }
+  }), [user, loading, login, loginWithGoogle, loginWithPassword, registerWithPassword, logout, handleAuthCallback, fetchUser, authFetch, accessToken, consumePostLoginRedirect])
 
   return (
     <AuthContext.Provider value={value}>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext'
 import { useAuth } from '../../context/AuthContext'
@@ -31,8 +31,10 @@ function EventDetail() {
   const [deletingAdmin, setDeletingAdmin] = useState(false)
   const isAdmin = user?.role === 'admin'
 
-  const refreshRegisteredIds = async () => {
-    if (!isAuthenticated || user?.account_status !== 'active') {
+  const userAccountStatus = user?.account_status
+
+  const refreshRegisteredIds = useCallback(async () => {
+    if (!isAuthenticated || userAccountStatus !== 'active') {
       setRegisteredIds(new Set())
       return
     }
@@ -42,7 +44,7 @@ function EventDetail() {
     } catch (_error) {
       setRegisteredIds(new Set())
     }
-  }
+  }, [isAuthenticated, userAccountStatus, authFetch])
 
   useEffect(() => {
     // Check for payment success/cancel in URL
@@ -60,7 +62,7 @@ function EventDetail() {
   useEffect(() => {
     let cancelled = false
     const load = async () => {
-      if (!isAuthenticated || user?.account_status !== 'active') {
+      if (!isAuthenticated || userAccountStatus !== 'active') {
         setEvent(null)
         setLoading(false)
         return
@@ -81,11 +83,11 @@ function EventDetail() {
     return () => {
       cancelled = true
     }
-  }, [id, isAuthenticated, user, authFetch])
+  }, [id, isAuthenticated, userAccountStatus, authFetch])
 
   useEffect(() => {
     refreshRegisteredIds()
-  }, [user, isAuthenticated, authFetch])
+  }, [refreshRegisteredIds])
 
   useEffect(() => {
     if (!event) return

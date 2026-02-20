@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext'
 import { useAuth } from '../../context/AuthContext'
@@ -30,11 +30,7 @@ function ParticipantsTable({
     return { first: parts[0], last: parts.slice(1).join(' ') }
   }
 
-  useEffect(() => {
-    fetchParticipants()
-  }, [eventId, refreshKey, isAuthenticated, authFetch])
-
-  const fetchParticipants = async () => {
+  const fetchParticipants = useCallback(async (signal) => {
     if (!isAuthenticated) {
       setParticipants([])
       setWaitlistParticipants([])
@@ -50,6 +46,8 @@ function ParticipantsTable({
         authFetch(`${API_URL}/events/${eventId}/waitlist`),
       ])
 
+      if (signal?.aborted) return
+
       const participantsData = participantsResponse.ok ? await participantsResponse.json() : []
       const waitlistData = waitlistResponse.ok ? await waitlistResponse.json() : []
 
@@ -59,14 +57,21 @@ function ParticipantsTable({
         onUpdate(participantsData.length)
       }
     } catch (error) {
+      if (signal?.aborted) return
       console.error('Failed to fetch participants:', error)
       setParticipants([])
       setWaitlistParticipants([])
       if (onUpdate) onUpdate(0)
     } finally {
-      setLoading(false)
+      if (!signal?.aborted) setLoading(false)
     }
-  }
+  }, [isAuthenticated, authFetch, eventId, onUpdate])
+
+  useEffect(() => {
+    const controller = new AbortController()
+    fetchParticipants(controller.signal)
+    return () => controller.abort()
+  }, [fetchParticipants, refreshKey])
 
   const spotsAvailable = maxParticipants ? maxParticipants - participants.length : null
 

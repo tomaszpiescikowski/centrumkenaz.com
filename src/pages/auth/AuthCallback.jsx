@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useNotification } from '../../context/NotificationContext'
@@ -10,9 +10,12 @@ function AuthCallback() {
   const { handleAuthCallback, consumePostLoginRedirect } = useAuth()
   const { showError } = useNotification()
   const { t } = useLanguage()
+  const processedRef = useRef(false)
 
   useEffect(() => {
-    let cancelled = false
+    if (processedRef.current) return
+    processedRef.current = true
+
     const run = async () => {
       const accessToken = searchParams.get('access_token')
       const refreshToken = searchParams.get('refresh_token')
@@ -20,10 +23,8 @@ function AuthCallback() {
 
       if (error) {
         console.error('Auth error:', error)
-        if (!cancelled) {
-          showError(error, { title: t('notifications.errorTitle') })
-          navigate('/')
-        }
+        showError(error, { title: t('notifications.errorTitle') })
+        navigate('/')
         return
       }
 
@@ -33,24 +34,19 @@ function AuthCallback() {
       }
 
       const returnTo = consumePostLoginRedirect()
-      if (!cancelled) {
-        if (userData?.account_status === 'pending') {
-          navigate('/pending-approval')
-          return
-        }
-        const nextManualPayment = userData?.next_action_manual_payment
-        if (nextManualPayment?.registration_id) {
-          navigate(`/registrations/${nextManualPayment.registration_id}/manual-payment?from=waitlist`)
-          return
-        }
-        navigate(returnTo || '/')
+      if (userData?.account_status === 'pending') {
+        navigate('/pending-approval')
+        return
       }
+      const nextManualPayment = userData?.next_action_manual_payment
+      if (nextManualPayment?.registration_id) {
+        navigate(`/registrations/${nextManualPayment.registration_id}/manual-payment?from=waitlist`)
+        return
+      }
+      navigate(returnTo || '/')
     }
 
     run()
-    return () => {
-      cancelled = true
-    }
   }, [searchParams, handleAuthCallback, consumePostLoginRedirect, navigate, showError, t])
 
   return (

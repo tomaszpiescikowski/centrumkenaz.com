@@ -97,7 +97,7 @@ function Account({ darkMode, setDarkMode }) {
     return () => {
       cancelled = true
     }
-  }, [authFetch, isAuthenticated, user])
+  }, [authFetch, isAuthenticated, user?.id])
 
   const handleCancel = async (registrationId) => {
     try {
