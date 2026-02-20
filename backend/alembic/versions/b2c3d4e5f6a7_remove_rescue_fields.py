@@ -17,10 +17,10 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.drop_column('events', 'rescue_cutoff_hours')
-    op.drop_column('events', 'rescue_monthly_limit')
-    op.drop_column('events', 'rescue_requires_subscription')
-    op.drop_column('registration_refund_tasks', 'cancelled_with_rescue')
+    op.drop_column('events', 'rescue_cutoff_hours', if_exists=True)
+    op.drop_column('events', 'rescue_monthly_limit', if_exists=True)
+    op.drop_column('events', 'rescue_requires_subscription', if_exists=True)
+    op.drop_column('registration_refund_tasks', 'cancelled_with_rescue', if_exists=True)
 
 
 def downgrade() -> None:
