@@ -7,6 +7,7 @@ import { useNotification } from '../../context/NotificationContext'
 import { createEvent } from '../../api/events'
 import DatePickerField from '../../components/forms/DatePickerField'
 import AuthGateCard from '../../components/ui/AuthGateCard'
+import Tooltip from '../../components/ui/Tooltip'
 
 const PREFILL_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
 const DEFAULT_START_TIME = '10:00'
@@ -57,7 +58,7 @@ function AdminEventCreate() {
     priceGuest: '0',
     priceMember: '0',
     manualPaymentVerification: true,
-    manualPaymentUrl: '',
+    manualPaymentUrl: 'https://buycoffee.to/kenazplus',
     manualPaymentDueHours: '24',
     maxParticipants: '',
     requiresSubscription: false,
@@ -79,7 +80,10 @@ function AdminEventCreate() {
     if (!form.city && selectedCity?.name) {
       updateField('city', selectedCity.name)
     }
-  }, [form.city, selectedCity])
+    if (!form.location && selectedCity?.name) {
+      updateField('location', selectedCity.name)
+    }
+  }, [form.city, form.location, selectedCity])
 
   useEffect(() => {
     if (!prefillDate) return
@@ -379,7 +383,17 @@ function AdminEventCreate() {
         </label>
 
         <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
-          {t('admin.fields.location')}
+          <span className="flex items-center gap-1.5">
+            {t('admin.fields.location')}
+            <Tooltip text={t('admin.fields.locationTooltip')}>
+              <span
+                className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-navy/20 text-[10px] font-bold text-navy/70 dark:border-cream/20 dark:text-cream/70 cursor-help"
+                aria-label={t('admin.fields.locationTooltip')}
+              >
+                i
+              </span>
+            </Tooltip>
+          </span>
           <input
             type="text"
             className={inputClassName}
@@ -516,14 +530,15 @@ function AdminEventCreate() {
               />
               {t('admin.fields.manualPaymentVerification')}
             </label>
-            <span
-              className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-navy/20 text-[10px] font-bold text-navy/70 dark:border-cream/20 dark:text-cream/70 cursor-help select-none"
-              title={t('admin.fields.manualPaymentVerificationLockedHint')}
-              aria-label={t('admin.fields.manualPaymentVerificationLockedHint')}
-              role="img"
-            >
-              i
-            </span>
+            <Tooltip text={t('admin.fields.manualPaymentVerificationLockedHint')}>
+              <span
+                className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-navy/20 text-[10px] font-bold text-navy/70 dark:border-cream/20 dark:text-cream/70 cursor-help select-none"
+                aria-label={t('admin.fields.manualPaymentVerificationLockedHint')}
+                role="img"
+              >
+                i
+              </span>
+            </Tooltip>
           </div>
 
           <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream md:col-span-2">
@@ -544,13 +559,14 @@ function AdminEventCreate() {
         <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream max-w-xs">
           <span className="flex items-center gap-1.5">
             {t('admin.fields.manualPaymentDueHours')}
-            <span
-              className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-navy/20 text-[10px] font-bold text-navy/70 dark:border-cream/20 dark:text-cream/70 cursor-help"
-              title={t('admin.fields.manualPaymentDueHoursTooltip')}
-              aria-label={t('admin.fields.manualPaymentDueHoursTooltip')}
-            >
-              i
-            </span>
+            <Tooltip text={t('admin.fields.manualPaymentDueHoursTooltip')}>
+              <span
+                className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-navy/20 text-[10px] font-bold text-navy/70 dark:border-cream/20 dark:text-cream/70 cursor-help"
+                aria-label={t('admin.fields.manualPaymentDueHoursTooltip')}
+              >
+                i
+              </span>
+            </Tooltip>
           </span>
           <input
             type="number"
@@ -572,13 +588,14 @@ function AdminEventCreate() {
           <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
             <span className="flex items-center gap-1.5">
               {t('admin.fields.cancelCutoffHours')}
-              <span
-                className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-navy/20 text-[10px] font-bold text-navy/70 dark:border-cream/20 dark:text-cream/70 cursor-help"
-                title={t('admin.fields.cancelCutoffHoursTooltip')}
-                aria-label={t('admin.fields.cancelCutoffHoursTooltip')}
-              >
-                i
-              </span>
+              <Tooltip text={t('admin.fields.cancelCutoffHoursTooltip')}>
+                <span
+                  className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-navy/20 text-[10px] font-bold text-navy/70 dark:border-cream/20 dark:text-cream/70 cursor-help"
+                  aria-label={t('admin.fields.cancelCutoffHoursTooltip')}
+                >
+                  i
+                </span>
+              </Tooltip>
             </span>
             <input
               type="number"
