@@ -201,7 +201,11 @@ jobs:
           if [ -f "${{ env.BACKEND_DIR }}/main.py" ] || [ -f "${{ env.FRONTEND_DIR }}/index.html" ]; then
             BACKUP_DIR="/opt/kenaz-backup-$(date +%Y%m%d-%H%M%S)"
             echo "Creating backup at $BACKUP_DIR..."
-            sudo cp -r ${{ env.APP_DIR }} $BACKUP_DIR
+            sudo rsync -a \
+              --exclude 'backend/venv/' \
+              --exclude 'backend/__pycache__/' \
+              --exclude 'backend/.pytest_cache/' \
+              ${{ env.APP_DIR }}/ $BACKUP_DIR/
             echo "✅ Backup created: $BACKUP_DIR"
             # Keep only last 3 backups
             sudo ls -dt /opt/kenaz-backup-* 2>/dev/null | tail -n +4 | xargs -r sudo rm -rf
@@ -232,13 +236,18 @@ jobs:
             --exclude '*.pyc' \
             --exclude '.env' \
             --exclude '.env.*' \
+            --exclude '.env.example' \
             --exclude 'venv/' \
             --exclude '.pytest_cache/' \
             --exclude '.mypy_cache/' \
             --exclude '*.db' \
             --exclude '*.db-shm' \
             --exclude '*.db-wal' \
+            --exclude '.coverage' \
             --exclude 'static/uploads/' \
+            --exclude 'tests/' \
+            --exclude 'pytest.ini' \
+            --exclude 'TESTING.md' \
             backend/ deploy-server:${{ env.BACKEND_DIR }}/
           echo "✅ Backend files synced"
 
@@ -252,9 +261,48 @@ jobs:
       - name: Sync static files
         run: |
           echo "Syncing static files..."
-          rsync -avz \
+          rsync -avz --delete \
             public/static/ deploy-server:${{ env.STATIC_DIR }}/
           echo "✅ Static files synced"
+
+      - name: Clean stale files from server
+        run: |
+          ssh deploy-server <<'ENDSSH'
+          set -euo pipefail
+          echo "Cleaning stale files from deployment root..."
+          cd ${{ env.APP_DIR }}
+
+          # Allowed top-level entries in /opt/kenaz/
+          ALLOWED="backend dist static logs"
+
+          for item in *; do
+            KEEP=false
+            for allowed in $ALLOWED; do
+              if [ "$item" = "$allowed" ]; then
+                KEEP=true
+                break
+              fi
+            done
+            if [ "$KEEP" = "false" ]; then
+              echo "  Removing stale: $item"
+              rm -rf "$item"
+            fi
+          done
+
+          # Also remove hidden files/dirs that shouldn't be there (except .env in backend)
+          for item in .[!.]* ..?*; do
+            [ -e "$item" ] || continue
+            echo "  Removing stale hidden: $item"
+            rm -rf "$item"
+          done
+
+          # Ensure logs dir exists
+          mkdir -p logs
+          # Ensure uploads dir exists
+          mkdir -p backend/static/uploads
+
+          echo "✅ Server root cleaned"
+          ENDSSH
 
       - name: Setup Python environment
         run: |
