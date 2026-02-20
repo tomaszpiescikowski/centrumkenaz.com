@@ -395,7 +395,7 @@
     "subscriptionInactive": "No active subscription yet",
     "monthlyLabel": "/ mo",
     "yearlyLabel": "/ year",
-    "yearlyEquivalent": "≈ 27.50 PLN per month",
+    "yearlyEquivalent": "≈ 16.67 PLN per month",
     "includes": "What's included",
     "buyPlan": "Get {plan}",
     "freePlanCta": "Default plan",
@@ -407,6 +407,7 @@
     "checkoutError": "Failed to start payment.",
     "pendingApproval": "Account pending admin approval.",
     "currentPlan": "CURRENT PLAN",
+    "currentPlanCta": "Your current plan",
     "bestPrice": "BEST VALUE",
     "freeBadge": "FREE",
     "securePayment": "Secure payment",
@@ -415,9 +416,9 @@
         "title": "Free account",
         "summary": "Starter",
         "features": [
-          "Access to the events calendar",
-          "Browse upcoming events and registrations",
-          "Tickets at guest prices"
+          "Access to the calendar and upcoming events overview",
+          "View your own registrations list",
+          "Entry tickets at guest prices"
         ],
         "ctaCurrent": "Your current plan",
         "ctaSwitch": "Get started for free"
@@ -426,9 +427,9 @@
         "title": "Kenaz Member",
         "summary": "Most popular",
         "features": [
-          "Register for events via the member panel",
-          "Access to other community members' profiles",
-          "Tickets at member prices"
+          "Register for events directly from the member panel",
+          "Browse other community members' profiles",
+          "Entry tickets at lower member prices"
         ],
         "cta": "Join the community",
         "ctaAriaLabel": "Join the community — 33 PLN per month"
@@ -437,8 +438,8 @@
         "title": "Annual membership",
         "summary": "Full year access",
         "features": [
-          "Everything from Kenaz Member plan",
-          "Save over 60 PLN per year vs monthly plan",
+          "All benefits of the Kenaz Member plan",
+          "Save over 60 PLN per year compared to the monthly plan",
           "Priority registration for quarterly events"
         ],
         "cta": "Choose annual plan",

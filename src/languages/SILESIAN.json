@@ -393,7 +393,7 @@
     "subscriptionInactive": "Niy mŏsz jeszcze aktywnyj subskrypcyje",
     "monthlyLabel": "/ mies.",
     "yearlyLabel": "/ rok",
-    "yearlyEquivalent": "≈ 27,50 PLN miesiyncznie",
+    "yearlyEquivalent": "≈ 16,67 PLN miesiyncznie",
     "includes": "Co zawiyro plan",
     "buyPlan": "Kup {plan}",
     "freePlanCta": "Plan bazowy",
@@ -405,6 +405,7 @@
     "checkoutError": "Niy idzie zaczōnć płatności.",
     "pendingApproval": "Kōnto czeko na akceptacyjo admina.",
     "currentPlan": "AKTUALNY PLAN",
+    "currentPlanCta": "Twój aktualny plan",
     "bestPrice": "NŎJLEPSZŎ CYNA",
     "freeBadge": "BEZPŁATNIE",
     "securePayment": "Bezpiecznŏ płatność",
@@ -413,9 +414,9 @@
         "title": "Kōnto bezpłatne",
         "summary": "Start",
         "features": [
-          "Dostymp do kalyndarza wydarzyń",
-          "Podglōnd nadchodzōncych wydarzyń i zapisōw",
-          "Wejściōwki w cynach dlo gości"
+          "Dostymp do kalyndarza i podglōnd nadchodzōncych wydarzyń",
+          "Wglōnd w lista włŏsnych zapisōw",
+          "Bilety wstympu w cynach gościynnych"
         ],
         "ctaCurrent": "Twōj ôbecny plan",
         "ctaSwitch": "Zacznij bezpłatnie"
@@ -424,9 +425,9 @@
         "title": "Człōnek Kenaz",
         "summary": "Nŏjczyńściyj wybiyrane",
         "features": [
-          "Zapisy na wydarzynia bez panel człōnkowski",
-          "Dostymp do profilōw inkszych człōnkōw społeczności",
-          "Wejściōwki w cynach człōnkowskich"
+          "Zapisy na wydarzynia bezpostrzednio z panelu człōnkowskigo",
+          "Przeglōndanie profilōw inkszych człōnkōw społeczności",
+          "Bilety wstympu w niższych cynach człōnkowskich"
         ],
         "cta": "Dołōncz do społeczności",
         "ctaAriaLabel": "Dołōncz do społeczności — 33 PLN miesiyncznie"
@@ -435,9 +436,9 @@
         "title": "Człōnkostwo roczne",
         "summary": "Całoroczny dostymp",
         "features": [
-          "Wszyjsko z planu Człōnka Kenaz",
-          "Ôszczyndzŏsz wiyncyj jak 60 PLN rocznie",
-          "Pierwyństwo zapisōw na wydarzynia kwartalnie"
+          "Wszyjske benefity planu Człōnek Kenaz",
+          "Ôszczyndzŏsz wiyncyj jak 60 PLN rocznie w porōwnaniu do planu miesiyncznygo",
+          "Pierwyństwo przi zapisach na wydarzynia kwartalne"
         ],
         "cta": "Ôbier plan roczny",
         "ctaAriaLabel": "Ôbier plan roczny — 333 PLN rocznie"

@@ -395,7 +395,7 @@
     "subscriptionInactive": "Non hai ancora un abbonamento attivo",
     "monthlyLabel": "/ mese",
     "yearlyLabel": "/ anno",
-    "yearlyEquivalent": "≈ 27,50 PLN al mese",
+    "yearlyEquivalent": "≈ 16,67 PLN al mese",
     "includes": "Cosa include il piano",
     "buyPlan": "Acquista {plan}",
     "freePlanCta": "Piano predefinito",
@@ -407,6 +407,7 @@
     "checkoutError": "Impossibile avviare il pagamento.",
     "pendingApproval": "L'account è in attesa di approvazione admin.",
     "currentPlan": "PIANO ATTUALE",
+    "currentPlanCta": "Il tuo piano attuale",
     "bestPrice": "MIGLIOR PREZZO",
     "freeBadge": "GRATUITO",
     "securePayment": "Pagamento sicuro",
@@ -415,9 +416,9 @@
         "title": "Account gratuito",
         "summary": "Start",
         "features": [
-          "Accesso al calendario degli eventi",
-          "Panoramica degli eventi e delle iscrizioni in arrivo",
-          "Biglietti a prezzi per ospiti"
+          "Accesso al calendario e panoramica degli eventi in arrivo",
+          "Visualizza l'elenco delle tue iscrizioni",
+          "Biglietti d'ingresso a prezzi per ospiti"
         ],
         "ctaCurrent": "Il tuo piano attuale",
         "ctaSwitch": "Inizia gratuitamente"
@@ -426,9 +427,9 @@
         "title": "Membro Kenaz",
         "summary": "Più scelto",
         "features": [
-          "Iscrizione agli eventi tramite il pannello membro",
-          "Accesso ai profili degli altri membri della comunità",
-          "Biglietti a prezzi per i membri"
+          "Iscrizione agli eventi direttamente dal pannello membro",
+          "Sfoglia i profili degli altri membri della comunità",
+          "Biglietti d'ingresso a prezzi ridotti per i membri"
         ],
         "cta": "Unisciti alla comunità",
         "ctaAriaLabel": "Unisciti alla comunità — 33 PLN al mese"
@@ -437,7 +438,7 @@
         "title": "Abbonamento annuale",
         "summary": "Accesso per tutto l'anno",
         "features": [
-          "Tutto dal piano Membro Kenaz",
+          "Tutti i benefici del piano Membro Kenaz",
           "Risparmia oltre 60 PLN all'anno rispetto al piano mensile",
           "Priorità nelle iscrizioni agli eventi trimestrali"
         ],

@@ -395,7 +395,7 @@
     "subscriptionInactive": "Je hebt nog geen actief abonnement",
     "monthlyLabel": "/ mnd",
     "yearlyLabel": "/ jaar",
-    "yearlyEquivalent": "≈ 27,50 PLN per maand",
+    "yearlyEquivalent": "≈ 16,67 PLN per maand",
     "includes": "Wat zit erin",
     "buyPlan": "Koop {plan}",
     "freePlanCta": "Standaardplan",
@@ -407,6 +407,7 @@
     "checkoutError": "Kon betaling niet starten.",
     "pendingApproval": "Account wacht op goedkeuring van admin.",
     "currentPlan": "HUIDIG PLAN",
+    "currentPlanCta": "Jouw huidige plan",
     "bestPrice": "BESTE PRIJS",
     "freeBadge": "GRATIS",
     "securePayment": "Veilige betaling",
@@ -415,9 +416,9 @@
         "title": "Gratis account",
         "summary": "Start",
         "features": [
-          "Toegang tot de evenementenkalender",
-          "Overzicht van komende evenementen en inschrijvingen",
-          "Tickets tegen gastprijzen"
+          "Toegang tot de kalender en overzicht van komende evenementen",
+          "Bekijk je eigen inschrijvingenlijst",
+          "Toegangskaarten tegen gastprijzen"
         ],
         "ctaCurrent": "Je huidige plan",
         "ctaSwitch": "Begin gratis"
@@ -426,9 +427,9 @@
         "title": "Kenaz Lid",
         "summary": "Meest gekozen",
         "features": [
-          "Inschrijven voor evenementen via het ledenpaneel",
-          "Toegang tot profielen van andere leden",
-          "Tickets tegen ledenprijzen"
+          "Schrijf je in voor evenementen rechtstreeks vanuit het ledenpaneel",
+          "Bekijk profielen van andere communityleden",
+          "Toegangskaarten tegen lagere ledenprijzen"
         ],
         "cta": "Word lid van de gemeenschap",
         "ctaAriaLabel": "Word lid van de gemeenschap — 33 PLN per maand"
@@ -437,7 +438,7 @@
         "title": "Jaarlijks lidmaatschap",
         "summary": "Volledig jaar toegang",
         "features": [
-          "Alles van het Kenaz Lid-plan",
+          "Alle voordelen van het Kenaz Lid-plan",
           "Bespaar meer dan 60 PLN per jaar ten opzichte van het maandplan",
           "Voorrang bij inschrijving voor kwartaalevenementen"
         ],

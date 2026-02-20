@@ -393,7 +393,7 @@
     "subscriptionInactive": "您还没有有效订阅",
     "monthlyLabel": "/ 月",
     "yearlyLabel": "/ 年",
-    "yearlyEquivalent": "≈ 每月 27.50 PLN",
+    "yearlyEquivalent": "≈ 每月 16.67 PLN",
     "includes": "计划包含",
     "buyPlan": "购买 {plan}",
     "freePlanCta": "默认计划",
@@ -405,6 +405,7 @@
     "checkoutError": "发起付款失败。",
     "pendingApproval": "账户仍在等待管理员审核。",
     "currentPlan": "当前计划",
+    "currentPlanCta": "您当前的方案",
     "bestPrice": "最优价格",
     "freeBadge": "免费",
     "securePayment": "安全支付",
@@ -413,9 +414,9 @@
         "title": "免费账户",
         "summary": "入门",
         "features": [
-          "访问活动日历",
-          "查看即将到来的活动和报名",
-          "以访客价格购票"
+          "访问日历和查看即将到来的活动概览",
+          "查看您自己的报名列表",
+          "以访客价格购买入场门票"
         ],
         "ctaCurrent": "您的当前计划",
         "ctaSwitch": "免费开始"
@@ -424,9 +425,9 @@
         "title": "Kenaz 会员",
         "summary": "最受欢迎",
         "features": [
-          "通过会员面板报名活动",
-          "查看其他社区成员的个人资料",
-          "以会员价格购票"
+          "直接从会员面板报名活动",
+          "浏览其他社区成员的个人资料",
+          "以更低的会员价格购买入场门票"
         ],
         "cta": "加入社区",
         "ctaAriaLabel": "加入社区 — 每月 33 PLN"
@@ -435,7 +436,7 @@
         "title": "年度会员",
         "summary": "全年访问",
         "features": [
-          "包含 Kenaz 会员的全部权益",
+          "Kenaz 会员计划的所有权益",
           "相比月度计划每年节省超过 60 PLN",
           "季度活动优先报名"
         ],
