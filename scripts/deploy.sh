@@ -84,7 +84,7 @@ build_frontend() {
     fi
     
     npm ci --quiet
-    npm run build
+    VITE_COMMIT_SHA="$(git rev-parse --short HEAD)" npm run build
     
     if [[ ! -d dist ]]; then
         log_error "Frontend build failed - dist directory not created"

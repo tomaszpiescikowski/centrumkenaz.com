@@ -25,6 +25,11 @@ function Home() {
       <p className="mx-auto mt-3 max-w-xl text-sm text-navy/80 dark:text-cream/80 sm:text-base">
         {t('home.tagline')}
       </p>
+      {__COMMIT_SHA__ && (
+        <p className="mt-2 text-[10px] font-light tracking-wider text-navy/30 dark:text-cream/30">
+          wersja: {__COMMIT_SHA__}
+        </p>
+      )}
 
       <Link
         to="/about"
