@@ -5,6 +5,8 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
   define: {
     __COMMIT_SHA__: JSON.stringify(process.env.VITE_COMMIT_SHA || ''),
+    __COMMIT_SUBJECT__: JSON.stringify(process.env.VITE_COMMIT_SUBJECT || ''),
+    __COMMIT_BODY__: JSON.stringify(process.env.VITE_COMMIT_BODY || ''),
   },
   plugins: [
     react(),
