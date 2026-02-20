@@ -7,12 +7,15 @@ All commit messages MUST follow the Conventional Commits specification.
 ### Format
 
 ```
-<type>(<scope>): <description>
+<type>(<scope>): <summary>
 
-[optional body]
-
-[optional footer]
+<context>
 ```
+
+- **`<type>`** – a valid Conventional Commit type (see Types below).
+- **`<scope>`** – required, consistent with existing commits (e.g. `auth`, `nav`, `pwa`).
+- **`<summary>`** – what changes at a high level, present tense, imperative mood, under 72 chars.
+- **`<context>`** – a few sentences explaining **why** the change was made and what it achieves, so future readers immediately understand the motivation (e.g. "Bottom nav buttons stayed visually pressed on touch devices because hover styles persisted. Wrapped hover rules in @media (hover: hover) so they only apply on real pointer devices.").
 
 ### Types
 
@@ -44,11 +47,28 @@ The scope should be the name of the affected module/component:
 
 ```bash
 feat(auth): add Google OAuth integration
+
+Users needed a way to sign in without creating a separate account.
+Added Google OAuth flow so they can authenticate with their existing
+Google credentials in one click.
+
 fix(payments): correct subscription renewal logic
+
+Subscriptions were silently expiring instead of renewing because the
+renewal job compared dates in the wrong timezone. Fixed to use UTC
+consistently.
+
+fix(nav): remove sticky hover on bottom nav buttons
+
+On mobile PWA, bottom nav buttons stayed visually "pressed" after tap
+because CSS hover styles persisted on touch devices. Wrapped the global
+box-shadow hover rules in @media (hover: hover) so they only fire on
+real pointer devices.
+
 docs(readme): update installation instructions
-refactor(events): simplify registration service
-test(auth): add password validation tests
-chore(deps): update FastAPI to v0.109.0
+
+Added missing step for running database migrations after fresh clone,
+which was causing confusion for new contributors.
 ```
 
 ### Rules
@@ -58,6 +78,8 @@ chore(deps): update FastAPI to v0.109.0
 3. Keep description under 72 characters
 4. Use imperative mood ("add" not "added" or "adds")
 5. Body and footer are optional but recommended for complex changes
+6. **Context body is required** – every commit must include a short paragraph after a blank line explaining *why* the change was made, not just *what* changed
+7. Avoid context that merely restates code actions without motivation (e.g. don't write "Changed X to Y" – explain *why*)
 
 ### Breaking Changes
 
