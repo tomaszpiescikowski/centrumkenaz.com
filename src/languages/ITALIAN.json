@@ -392,6 +392,7 @@
     "title": "Piani membership",
     "subtitle": "Unisciti alla comunità Kenaz e sfrutta al meglio tutto ciò che il centro ha da offrire.",
     "subscriptionActiveUntil": "Abbonamento attivo fino al: {date}",
+    "subscriptionActiveUntilLabel": "Abbonamento attivo fino al:",
     "subscriptionInactive": "Non hai ancora un abbonamento attivo",
     "monthlyLabel": "/ mese",
     "yearlyLabel": "/ anno",

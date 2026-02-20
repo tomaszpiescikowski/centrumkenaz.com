@@ -1,5 +1,5 @@
 import EventIcon from '../common/EventIcon'
-import { INTEREST_TAGS } from '../../constants/interestTags'
+import { INTEREST_TAGS, TAG_COLORS } from '../../constants/interestTags'
 
 function InterestTagsPicker({ value = [], onChange, t }) {
   const selectedTags = Array.isArray(value) ? value : []
@@ -22,7 +22,9 @@ function InterestTagsPicker({ value = [], onChange, t }) {
             onClick={() => toggleTag(tag)}
             className={`ui-tag-chip ${active ? 'ui-tag-chip-active' : 'ui-tag-chip-idle'}`}
           >
-            <EventIcon type={tag} size="xs" />
+            <span className={TAG_COLORS[tag] || ''}>
+              <EventIcon type={tag} size="xs" />
+            </span>
             <span>{t(`eventTypes.${tag}`)}</span>
           </button>
         )

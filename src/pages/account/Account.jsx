@@ -38,13 +38,6 @@ function Account({ darkMode, setDarkMode }) {
     return label || currentPlanCode
   }, [t, currentPlanCode])
 
-  const subscriptionActivationLabel = useMemo(() => {
-    if (activeSubscription && user?.subscription_end_date) {
-      return t('plans.subscriptionActiveUntil', { date: formatShortDate(user.subscription_end_date) })
-    }
-    return t('plans.subscriptionInactive')
-  }, [activeSubscription, user, t])
-
   useEffect(() => {
     if (!isAuthenticated) {
       setLoading(false)
@@ -162,9 +155,9 @@ function Account({ darkMode, setDarkMode }) {
         </button>
       </div>
 
-      <section className="shrink-0 rounded-2xl bg-cream/40 p-6 dark:bg-navy/40">
+      <section className="shrink-0">
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
-          <div className="xl:col-span-2">
+          <div className="xl:col-span-2 rounded-2xl border border-navy/10 bg-cream/50 p-4 dark:border-cream/15 dark:bg-navy/50">
             <h2 className="mb-4 text-xl font-black text-navy dark:text-cream">
               {t('account.profileTitle')}
             </h2>
@@ -336,14 +329,19 @@ function Account({ darkMode, setDarkMode }) {
               />
             </div>
 
-            <p className="mt-4 rounded-xl bg-navy/5 px-3 py-2 text-sm text-navy/80 dark:bg-cream/10 dark:text-cream/80">
-              {subscriptionActivationLabel}
-            </p>
+            <div className="mt-4 flex flex-col rounded-xl bg-navy/5 px-3 py-2 text-sm text-navy/80 dark:bg-cream/10 dark:text-cream/80">
+              <span>{activeSubscription ? t('plans.subscriptionActiveUntilLabel') : t('plans.subscriptionInactive')}</span>
+              {activeSubscription && user?.subscription_end_date && (
+                <span className="font-semibold text-navy dark:text-cream">
+                  {formatShortDate(user.subscription_end_date)}
+                </span>
+              )}
+            </div>
 
             <div className="mt-4">
               <Link
                 to="/plans"
-                className="btn-primary h-10 px-5 text-sm"
+                className="btn-primary h-10 w-full px-5 text-sm"
               >
                 {t('account.manageSubscription')}
               </Link>

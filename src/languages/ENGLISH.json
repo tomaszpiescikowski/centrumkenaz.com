@@ -392,6 +392,7 @@
     "title": "Membership plans",
     "subtitle": "Join the Kenaz community and make the most of what the centre has to offer.",
     "subscriptionActiveUntil": "Subscription active until: {date}",
+    "subscriptionActiveUntilLabel": "Subscription active until:",
     "subscriptionInactive": "No active subscription yet",
     "monthlyLabel": "/ mo",
     "yearlyLabel": "/ year",

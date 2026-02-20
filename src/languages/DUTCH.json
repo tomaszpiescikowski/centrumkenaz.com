@@ -392,6 +392,7 @@
     "title": "Membership-plannen",
     "subtitle": "Word lid van de Kenaz-gemeenschap en maak optimaal gebruik van alles wat het centrum biedt.",
     "subscriptionActiveUntil": "Abonnement actief tot: {date}",
+    "subscriptionActiveUntilLabel": "Abonnement actief tot:",
     "subscriptionInactive": "Je hebt nog geen actief abonnement",
     "monthlyLabel": "/ mnd",
     "yearlyLabel": "/ jaar",

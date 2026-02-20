@@ -5,6 +5,7 @@ import { useLanguage } from '../../context/LanguageContext'
 import { fetchUserProfileById } from '../../api/user'
 import { INTEREST_TAGS } from '../../constants/interestTags'
 import EventIcon from '../../components/common/EventIcon'
+import { TAG_COLORS } from '../../constants/interestTags'
 import AuthGateCard from '../../components/ui/AuthGateCard'
 
 function UserProfile() {
@@ -112,7 +113,9 @@ function UserProfile() {
                   key={tag}
                   className="ui-tag-chip ui-tag-chip-idle"
                 >
-                  <EventIcon type={tag} size="xs" />
+                  <span className={TAG_COLORS[tag] || ''}>
+                    <EventIcon type={tag} size="xs" />
+                  </span>
                   <span>{t(`eventTypes.${tag}`)}</span>
                 </span>
               ))}

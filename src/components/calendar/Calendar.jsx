@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useCity } from '../../context/CityContext'
 import EventIcon from '../common/EventIcon'
 import { toLocalDateKey } from '../../utils/date'
+import { TAG_COLORS as ICON_COLORS } from '../../constants/interestTags'
 
 const DATE_KEY_PATTERN = /^\d{4}-\d{2}-\d{2}$/
 const MAX_EVENTS_PER_DAY = 4
@@ -30,17 +31,6 @@ const EVENT_TONES = {
   joga: { marker: 'bg-pink-500 text-white', line: 'bg-pink-500' },
   wyjazd: { marker: 'bg-amber-500 text-white', line: 'bg-amber-500' },
   inne: { marker: 'bg-slate-500 text-white', line: 'bg-slate-500' },
-}
-
-const ICON_COLORS = {
-  karate: 'text-cyan-500',
-  mors: 'text-blue-500',
-  planszowki: 'text-violet-500',
-  ognisko: 'text-orange-500',
-  spacer: 'text-green-500',
-  joga: 'text-pink-500',
-  wyjazd: 'text-amber-500',
-  inne: 'text-gray-400',
 }
 
 function getTone(type) {

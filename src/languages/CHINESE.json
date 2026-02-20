@@ -390,6 +390,7 @@
     "title": "会员计划",
     "subtitle": "加入 Kenaz 社区，充分享受中心提供的一切。",
     "subscriptionActiveUntil": "订阅有效期至：{date}",
+    "subscriptionActiveUntilLabel": "订阅有效期至：",
     "subscriptionInactive": "您还没有有效订阅",
     "monthlyLabel": "/ 月",
     "yearlyLabel": "/ 年",

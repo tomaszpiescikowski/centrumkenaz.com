@@ -324,7 +324,7 @@ function Plans() {
           <p className="mt-6 text-navy/60 dark:text-cream/60">{t('common.loading')}</p>
         ) : (
           <div className="mt-6 min-h-0 flex-1 overflow-y-auto pb-2">
-            <div className="flex flex-col items-stretch gap-6 md:flex-row md:items-end md:py-4">
+            <div className="flex flex-col items-stretch gap-6 md:flex-row md:items-stretch md:py-4">
               {cards.map((plan) => {
                 const code = plan.code
                 const isCurrentPlan = currentPlanCode === code
@@ -332,7 +332,6 @@ function Plans() {
                 const title = t(`plans.plan.${code}.title`)
                 const summary = t(`plans.plan.${code}.summary`)
                 const isFree = code === 'free'
-                const isHighlighted = code === 'pro'
 
                 return (
                   <article
@@ -341,40 +340,9 @@ function Plans() {
                       'relative flex flex-1 flex-col justify-between overflow-hidden rounded-2xl border p-5 transition-all ' +
                       (isCurrentPlan
                         ? 'border-2 border-emerald-500 dark:border-emerald-400'
-                        : isHighlighted
-                          ? 'z-[1] border-2 border-navy/55 dark:border-cream/50'
-                          : 'border-navy/15 dark:border-cream/20') +
-                      (isHighlighted ? ' md:scale-[1.03]' : '')
+                        : 'border-navy/15 dark:border-cream/20')
                     }
-                    style={isHighlighted ? { boxShadow: '0 0 28px rgba(26,26,78,0.15)' } : undefined}
                   >
-                    {/* Badge row */}
-                    <div className="relative z-10 mb-3 flex min-h-6 flex-wrap justify-end gap-1">
-                      {isHighlighted && (
-                        <span className="rounded-full border border-navy/30 bg-navy/5 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-navy dark:border-cream/35 dark:bg-cream/10 dark:text-cream">
-                          {t('plans.mostPopular')}
-                        </span>
-                      )}
-                      {code === 'ultimate' && (
-                        <span className="rounded-full border border-navy/30 bg-navy/5 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-navy dark:border-cream/35 dark:bg-cream/10 dark:text-cream">
-                          {t('plans.bestPrice')}
-                        </span>
-                      )}
-                      {isCurrentPlan && (
-                        <span className="rounded-full border border-navy/30 bg-navy/5 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-navy dark:border-cream/35 dark:bg-cream/10 dark:text-cream">
-                          {t('plans.currentPlan')}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Decorative glow for highlighted card */}
-                    {isHighlighted && (
-                      <div
-                        aria-hidden="true"
-                        className="pointer-events-none absolute -right-20 -bottom-20 h-52 w-52 rounded-full bg-gradient-to-tr from-rose-400/50 via-lime-300/40 to-cyan-300/40 blur-2xl"
-                      />
-                    )}
-
                     {/* Header section — fixed min-height so features align across cards */}
                     <div className="relative z-10 min-h-[200px] text-left">
                       <p className="text-sm font-semibold text-navy/70 dark:text-cream/70">

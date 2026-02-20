@@ -390,6 +390,7 @@
     "title": "Plany człōnkostwa",
     "subtitle": "Dołōncz do społeczności Kenaz i korzystej z tego, co ôfyruje cyntrōm.",
     "subscriptionActiveUntil": "Subskrypcyjo aktywnŏ do: {date}",
+    "subscriptionActiveUntilLabel": "Subskrypcyjo aktywnŏ do:",
     "subscriptionInactive": "Niy mŏsz jeszcze aktywnyj subskrypcyje",
     "monthlyLabel": "/ mies.",
     "yearlyLabel": "/ rok",
