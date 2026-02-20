@@ -1,9 +1,11 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { API_URL } from '../api/config'
 
 const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
+  const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [accessToken, setAccessToken] = useState(null)
@@ -114,7 +116,7 @@ export function AuthProvider({ children }) {
   const login = (options = {}) => {
     const { returnTo } = options
     setPostLoginRedirect(returnTo)
-    window.location.assign('/login')
+    navigate('/login')
   }
 
   const loginWithGoogle = (options = {}) => {
