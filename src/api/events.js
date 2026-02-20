@@ -113,7 +113,7 @@ export async function fetchEventAvailability(eventId, authFetch = null) {
 }
 
 export async function createEvent(authFetch, payload) {
-  const response = await authFetch(`${API_URL}/events`, {
+  const response = await authFetch(`${API_URL}/events/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

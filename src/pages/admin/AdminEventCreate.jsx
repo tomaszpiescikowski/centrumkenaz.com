@@ -251,6 +251,10 @@ function AdminEventCreate() {
     try {
       setSaving(true)
       const created = await createEvent(authFetch, payload)
+      if (!created?.id) {
+        showError(t('admin.createError'))
+        return
+      }
       navigate(`/event/${created.id}`)
     } catch (err) {
       showError(err.message || t('admin.createError'))
