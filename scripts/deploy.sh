@@ -84,7 +84,7 @@ build_frontend() {
     fi
     
     npm ci --quiet
-    VITE_COMMIT_SHA="$(git rev-parse --short HEAD)" npm run build
+    VITE_COMMIT_SHA="$(git rev-parse --short HEAD)" VITE_API_URL="${VITE_API_URL:-}" npm run build
     
     if [[ ! -d dist ]]; then
         log_error "Frontend build failed - dist directory not created"
@@ -109,11 +109,11 @@ test_ssh_connection() {
 create_backup() {
     log_info "Creating backup on server..."
     
-    ssh ${SSH_KEY_OPT} -o StrictHostKeyChecking=accept-new "${SSH_USER}@${SSH_HOST}" <<'ENDSSH'
+    ssh ${SSH_KEY_OPT} -o StrictHostKeyChecking=accept-new "${SSH_USER}@${SSH_HOST}" <<ENDSSH
 set -euo pipefail
 
-APP_DIR="${1}"
-BACKUP_DIR="/opt/kenaz-backup-$(date +%Y%m%d-%H%M%S)"
+APP_DIR="${APP_DIR}"
+BACKUP_DIR="/opt/kenaz-backup-\$(date +%Y%m%d-%H%M%S)"
 
 if [[ -d "${APP_DIR}" ]]; then
     echo "Creating backup: ${BACKUP_DIR}"

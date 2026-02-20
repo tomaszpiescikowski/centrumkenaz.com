@@ -8,6 +8,7 @@ import { createEvent } from '../../api/events'
 import DatePickerField from '../../components/forms/DatePickerField'
 import AuthGateCard from '../../components/ui/AuthGateCard'
 import Tooltip from '../../components/ui/Tooltip'
+import CustomSelect from '../../components/controls/CustomSelect'
 
 const PREFILL_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
 const DEFAULT_START_TIME = '10:00'
@@ -315,17 +316,11 @@ function AdminEventCreate() {
 
           <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
             {t('admin.fields.eventType')}
-            <select
-              className={inputClassName}
+            <CustomSelect
+              options={eventTypeOptions.map((key) => ({ value: key, label: t(`eventTypes.${key}`) }))}
               value={form.eventType}
-              onChange={(e) => updateField('eventType', e.target.value)}
-            >
-              {eventTypeOptions.map((key) => (
-                <option key={key} value={key}>
-                  {t(`eventTypes.${key}`)}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => updateField('eventType', val)}
+            />
           </label>
         </div>
 
@@ -370,18 +365,12 @@ function AdminEventCreate() {
 
         <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
           {t('admin.fields.city')}
-          <select
-            className={inputClassFor('city')}
+          <CustomSelect
+            options={cities.map((city) => ({ value: city.name, label: city.name }))}
             value={form.city}
-            onChange={(e) => updateField('city', e.target.value)}
-            required
-          >
-            {cities.map((city) => (
-              <option key={city.slug} value={city.name}>
-                {city.name}
-              </option>
-            ))}
-          </select>
+            onChange={(val) => updateField('city', val)}
+            isInvalid={Boolean(fieldHints.city)}
+          />
           {fieldHints.city && (
             <p className={validationHintClass}>{t(fieldHints.city)}</p>
           )}

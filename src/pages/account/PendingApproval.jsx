@@ -16,7 +16,7 @@ function PendingApproval() {
   const navigate = useNavigate()
   const [aboutMe, setAboutMe] = useState(user?.about_me || '')
   const [interestTags, setInterestTags] = useState(Array.isArray(user?.interest_tags) ? user.interest_tags : [])
-  const [phoneCountryCode, setPhoneCountryCode] = useState('+48')
+  const [phoneCountryCode, setPhoneCountryCode] = useState('48')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [adminMessage, setAdminMessage] = useState('')
   const [sending, setSending] = useState(false)
@@ -27,24 +27,15 @@ function PendingApproval() {
     return digits.replace(/(\d{3})(?=\d)/g, '$1 ').trim()
   }
 
+  const handleCountryCodeChange = (e) => {
+    const digits = e.target.value.replace(/\D/g, '').slice(0, 4)
+    setPhoneCountryCode(digits)
+  }
+
   const handlePhoneChange = (e) => {
     const digits = e.target.value.replace(/\D/g, '')
     setPhoneNumber(digits)
   }
-
-  const COUNTRY_CODES = [
-    { code: '+48', label: '🇵🇱 +48' },
-    { code: '+1', label: '🇺🇸 +1' },
-    { code: '+44', label: '🇬🇧 +44' },
-    { code: '+49', label: '🇩🇪 +49' },
-    { code: '+31', label: '🇳🇱 +31' },
-    { code: '+39', label: '🇮🇹 +39' },
-    { code: '+33', label: '🇫🇷 +33' },
-    { code: '+34', label: '🇪🇸 +34' },
-    { code: '+86', label: '🇨🇳 +86' },
-    { code: '+380', label: '🇺🇦 +380' },
-    { code: '+91', label: '🇮🇳 +91' },
-  ]
 
   useEffect(() => {
     setAboutMe(user?.about_me || '')
@@ -87,7 +78,7 @@ function PendingApproval() {
       await submitJoinRequest(authFetch, {
         about_me: aboutMe.trim(),
         interest_tags: interestTags,
-        phone_country_code: phoneCountryCode,
+        phone_country_code: phoneCountryCode ? `+${phoneCountryCode}` : '+48',
         phone_number: phoneNumber.trim(),
         admin_message: adminMessage.trim(),
       })
@@ -132,15 +123,19 @@ function PendingApproval() {
               {t('approval.phoneLabel')}
             </p>
             <div className="flex gap-2">
-              <select
-                value={phoneCountryCode}
-                onChange={(e) => setPhoneCountryCode(e.target.value)}
-                className="ui-input ui-input-compact w-28 shrink-0"
-              >
-                {COUNTRY_CODES.map((c) => (
-                  <option key={c.code} value={c.code}>{c.label}</option>
-                ))}
-              </select>
+              <div className="ui-input ui-input-compact flex items-center gap-1 w-20 shrink-0">
+                <span className="text-navy/50 dark:text-cream/50 font-semibold select-none">+</span>
+                <input
+                  type="text"
+                  value={phoneCountryCode}
+                  onChange={handleCountryCodeChange}
+                  className="bg-transparent outline-none w-full text-sm text-navy dark:text-cream font-medium"
+                  maxLength={4}
+                  placeholder="48"
+                  inputMode="numeric"
+                  pattern="\d{1,4}"
+                />
+              </div>
               <input
                 type="tel"
                 value={formatPhoneDisplay(phoneNumber)}

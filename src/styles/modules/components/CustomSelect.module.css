@@ -1,0 +1,143 @@
+/*
+ * CustomSelect.module.css
+ *
+ * Generic custom dropdown – shares the popup/menu aesthetic of CitySelector
+ * and LanguageSelector, but uses the ui-input visual language for the trigger
+ * (rounded-xl, bg, border) so it slots naturally into forms.
+ *
+ * Dark-mode colours are derived from the shared design token variables via
+ * color-mix(), so no :global(.dark) overrides are needed.
+ */
+
+.root {
+  position: relative;
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+/* ─── Trigger (the visible "select" button) ─────────────────────────── */
+
+.trigger {
+  display: flex;
+  inline-size: 100%;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  padding-block: 0.75rem;
+  padding-inline: 1rem;
+
+  /* Border matches ui-input: navy/20 in light, cream/20 in dark */
+  border: 1px solid color-mix(in srgb, var(--token-text-primary) 20%, transparent);
+
+  /* Background matches ui-input: cream/60 in light, navy/60 in dark */
+  background: color-mix(in srgb, var(--token-surface-base) 60%, transparent);
+
+  color: var(--token-text-primary);
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: start;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.trigger:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--token-text-primary) 40%, transparent);
+}
+
+.trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--token-focus-ring);
+  border-color: color-mix(in srgb, var(--token-text-primary) 50%, transparent);
+}
+
+.trigger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.triggerInvalid {
+  border-color: rgb(239 68 68);
+}
+
+.triggerInvalid:focus-visible {
+  box-shadow: 0 0 0 2px rgb(239 68 68 / 0.2);
+}
+
+/* ─── Label inside trigger ──────────────────────────────────────────── */
+
+.label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+/* Greyed out when nothing is selected */
+.labelPlaceholder {
+  color: color-mix(in srgb, var(--token-text-primary) 40%, transparent);
+}
+
+/* ─── Chevron icon ──────────────────────────────────────────────────── */
+
+.chevron {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+  color: color-mix(in srgb, var(--token-text-primary) 60%, transparent);
+  transition: transform 0.2s ease;
+}
+
+/* ─── Dropdown menu panel ───────────────────────────────────────────── */
+
+.menu {
+  position: absolute;
+  z-index: 50;
+  margin-block-start: 0.375rem;
+  min-inline-size: 100%;
+  max-inline-size: calc(100vw - 1rem);
+  max-block-size: 16rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--token-text-primary) 10%, transparent);
+  background: var(--token-surface-elevated);
+  padding-block: 0.25rem;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* ─── Individual menu items ─────────────────────────────────────────── */
+
+.menuItem {
+  display: flex;
+  inline-size: 100%;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  padding-inline: 1rem;
+  padding-block: 0.625rem;
+  text-align: start;
+  cursor: pointer;
+  color: var(--token-text-primary);
+}
+
+.menuItem:hover {
+  background: color-mix(in srgb, var(--token-text-primary) 8%, transparent);
+}
+
+.menuItemSelected {
+  background: color-mix(in srgb, var(--token-text-primary) 5%, transparent);
+  font-weight: 600;
+}
+
+.menuItemSelected:hover {
+  background: color-mix(in srgb, var(--token-text-primary) 10%, transparent);
+}
+
+.menuItemLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.875rem;
+}

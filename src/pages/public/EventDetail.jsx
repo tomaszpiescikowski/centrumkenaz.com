@@ -9,6 +9,7 @@ import ParticipantsTable from '../../components/common/ParticipantsTable'
 import RegisterButton from '../../components/forms/RegisterButton'
 import DatePickerField from '../../components/forms/DatePickerField'
 import AuthGateCard from '../../components/ui/AuthGateCard'
+import CustomSelect from '../../components/controls/CustomSelect'
 
 function EventDetail() {
   const { id } = useParams()
@@ -433,17 +434,12 @@ function EventDetail() {
 
               <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
                 {t('admin.fields.eventType')}
-                <select
+                <CustomSelect
+                  options={['karate', 'mors', 'planszowki', 'ognisko', 'spacer', 'joga', 'wyjazd', 'inne'].map((item) => ({ value: item, label: t(`eventTypes.${item}`) }))}
                   value={adminForm.event_type}
-                  onChange={(e) => handleAdminChange('event_type', e.target.value)}
-                  className={adminInputClassFor('event_type')}
-                >
-                  {['karate', 'mors', 'planszowki', 'ognisko', 'spacer', 'joga', 'wyjazd', 'inne'].map((item) => (
-                    <option key={item} value={item}>
-                      {t(`eventTypes.${item}`)}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => handleAdminChange('event_type', val)}
+                  isInvalid={Boolean(fieldHints.event_type)}
+                />
               </label>
 
               <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
