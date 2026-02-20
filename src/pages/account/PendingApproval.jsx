@@ -129,25 +129,6 @@ function PendingApproval() {
           </p>
           <div>
             <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
-              {t('account.aboutMe')}
-            </p>
-            <textarea
-              value={aboutMe}
-              onChange={(e) => setAboutMe(e.target.value)}
-              maxLength={800}
-              rows={4}
-              className="ui-input ui-input-compact"
-              placeholder={t('account.aboutMePlaceholder')}
-            />
-          </div>
-          <div>
-            <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
-              {t('account.interests')}
-            </p>
-            <InterestTagsPicker value={interestTags} onChange={setInterestTags} t={t} />
-          </div>
-          <div>
-            <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
               {t('approval.phoneLabel')}
             </p>
             <div className="flex gap-2">
@@ -170,7 +151,7 @@ function PendingApproval() {
               />
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
                 {t('nav.city')}
@@ -183,6 +164,25 @@ function PendingApproval() {
               </p>
               <LanguageSelector />
             </div>
+          </div>
+          <div>
+            <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
+              {t('account.interests')}
+            </p>
+            <InterestTagsPicker value={interestTags} onChange={setInterestTags} t={t} />
+          </div>
+          <div>
+            <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
+              {t('account.aboutMe')}
+            </p>
+            <textarea
+              value={aboutMe}
+              onChange={(e) => setAboutMe(e.target.value)}
+              maxLength={800}
+              rows={4}
+              className="ui-input ui-input-compact"
+              placeholder={t('account.aboutMePlaceholder')}
+            />
           </div>
           <div>
             <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
