@@ -4,10 +4,9 @@ import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
 import { fetchMyRegistrations, cancelRegistration } from '../../api/user'
-import AuthGateCard from '../../components/ui/AuthGateCard'
 
 function MyEvents() {
-  const { user, isAuthenticated, authFetch, login } = useAuth()
+  const { user, isAuthenticated, authFetch } = useAuth()
   const { t } = useLanguage()
   const { showError, showSuccess } = useNotification()
   const [registrations, setRegistrations] = useState([])
@@ -56,12 +55,20 @@ function MyEvents() {
 
   if (!isAuthenticated) {
     return (
-      <AuthGateCard
-        title={t('account.myEvents')}
-        message={t('account.loginRequired')}
-        actionLabel={t('account.loginButton')}
-        onAction={() => login({ returnTo: '/my-events' })}
-      />
+      <div className="flex h-full min-h-0 flex-col px-3 py-3 sm:px-4 sm:py-6">
+        <div className="pointer-events-none select-none blur-[3px]">
+          <div className="mx-auto w-full max-w-4xl">
+            <h1 className="text-3xl font-black text-navy dark:text-cream md:text-4xl">
+              {t('account.myEvents')}
+            </h1>
+            <div className="mt-4 space-y-4">
+              {[1, 2].map((i) => (
+                <div key={i} className="h-28 rounded-2xl bg-navy/10 dark:bg-cream/10 border border-navy/15 dark:border-cream/15" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     )
   }
 
