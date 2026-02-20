@@ -63,10 +63,19 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     settings = Settings()
+    _use_port = settings.app_scheme == "http"
     if not settings.frontend_url:
-        settings.frontend_url = f"{settings.app_scheme}://{settings.app_host}:{settings.frontend_port}"
+        if _use_port:
+            settings.frontend_url = f"{settings.app_scheme}://{settings.app_host}:{settings.frontend_port}"
+        else:
+            settings.frontend_url = f"{settings.app_scheme}://{settings.app_host}"
     if not settings.google_redirect_uri:
-        settings.google_redirect_uri = (
-            f"{settings.app_scheme}://{settings.app_host}:{settings.backend_port}/auth/google/callback"
-        )
+        if _use_port:
+            settings.google_redirect_uri = (
+                f"{settings.app_scheme}://{settings.app_host}:{settings.backend_port}/auth/google/callback"
+            )
+        else:
+            settings.google_redirect_uri = (
+                f"{settings.app_scheme}://{settings.app_host}/auth/google/callback"
+            )
     return settings
