@@ -53,6 +53,13 @@ function MyEvents() {
     }
   }
 
+  const mockCards = [
+    { category: 'General fitness', title: 'Morning functional training', date: 'Tuesday, 24 February 2026', time: '07:30 – 08:30', location: 'Room A, Wyżyny 16' },
+    { category: 'Yoga & breathwork', title: 'Evening yoga for beginners', date: 'Thursday, 26 February 2026', time: '19:00 – 20:15', location: 'Room B, Wyżyny 16' },
+    { category: 'Movement & mobility', title: 'Mobility and stretching session', date: 'Saturday, 28 February 2026', time: '09:00 – 10:00', location: 'Room A, Wyżyny 16' },
+    { category: 'Workshop', title: 'Breathwork workshop – Wim Hof method', date: 'Sunday, 1 March 2026', time: '10:30 – 12:00', location: 'Main hall, Wyżyny 16' },
+  ]
+
   if (!isAuthenticated) {
     return (
       <div className="flex h-full min-h-0 flex-col px-3 py-3 sm:px-4 sm:py-6">
@@ -62,8 +69,21 @@ function MyEvents() {
               {t('account.myEvents')}
             </h1>
             <div className="mt-4 space-y-4">
-              {[1, 2].map((i) => (
-                <div key={i} className="h-28 rounded-2xl bg-navy/10 dark:bg-cream/10 border border-navy/15 dark:border-cream/15" />
+              {mockCards.map((e, i) => (
+                <div key={i} className="rounded-2xl bg-navy/10 dark:bg-cream/10 border border-navy/15 dark:border-cream/15 p-5 flex flex-col gap-2">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-xs font-semibold uppercase tracking-widest text-navy/50 dark:text-cream/50 mb-1">{e.category}</div>
+                      <div className="text-lg font-black text-navy dark:text-cream leading-tight">{e.title}</div>
+                    </div>
+                    <div className="shrink-0 rounded-xl bg-navy/20 dark:bg-cream/20 px-3 py-1 text-xs font-bold text-navy dark:text-cream">Zapisany</div>
+                  </div>
+                  <div className="flex flex-wrap gap-3 text-sm text-navy/60 dark:text-cream/60 mt-1">
+                    <span>📅 {e.date}</span>
+                    <span>🕗 {e.time}</span>
+                    <span>📍 {e.location}</span>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
@@ -81,8 +101,21 @@ function MyEvents() {
               {t('account.myEvents')}
             </h1>
             <div className="mt-4 space-y-4">
-              {[1, 2].map((i) => (
-                <div key={i} className="h-28 rounded-2xl bg-navy/10 dark:bg-cream/10 border border-navy/15 dark:border-cream/15" />
+              {mockCards.map((e, i) => (
+                <div key={i} className="rounded-2xl bg-navy/10 dark:bg-cream/10 border border-navy/15 dark:border-cream/15 p-5 flex flex-col gap-2">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-xs font-semibold uppercase tracking-widest text-navy/50 dark:text-cream/50 mb-1">{e.category}</div>
+                      <div className="text-lg font-black text-navy dark:text-cream leading-tight">{e.title}</div>
+                    </div>
+                    <div className="shrink-0 rounded-xl bg-navy/20 dark:bg-cream/20 px-3 py-1 text-xs font-bold text-navy dark:text-cream">Zapisany</div>
+                  </div>
+                  <div className="flex flex-wrap gap-3 text-sm text-navy/60 dark:text-cream/60 mt-1">
+                    <span>📅 {e.date}</span>
+                    <span>🕗 {e.time}</span>
+                    <span>📍 {e.location}</span>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
