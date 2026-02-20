@@ -5,6 +5,8 @@ import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
 import { approveUser, fetchPendingUsers } from '../../api/admin'
 import AuthGateCard from '../../components/ui/AuthGateCard'
+import EventIcon from '../../components/common/EventIcon'
+import { TAG_COLORS } from '../../constants/interestTags'
 
 function AdminUsersApproval() {
   const { user, isAuthenticated, login, authFetch } = useAuth()
@@ -153,13 +155,16 @@ function AdminUsersApproval() {
                       {t('admin.pendingUserInterests')}
                     </p>
                     {pending.interest_tags && pending.interest_tags.length > 0 ? (
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="ui-tag-list">
                         {pending.interest_tags.map((tag) => (
                           <span
                             key={tag}
-                            className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-navy/10 dark:bg-cream/10 text-navy/80 dark:text-cream/80"
+                            className="ui-tag-chip ui-tag-chip-active"
                           >
-                            {tag}
+                            <span className={TAG_COLORS[tag] || ''}>
+                              <EventIcon type={tag} size="xs" />
+                            </span>
+                            <span>{t(`eventTypes.${tag}`)}</span>
                           </span>
                         ))}
                       </div>

@@ -77,7 +77,7 @@ function MyEvents() {
           <section className="min-h-0 flex-1 mt-4">
             <div className="space-y-4">
               {[1, 2].map((i) => (
-                <div key={i} className="page-card h-28 bg-navy/5 dark:bg-cream/5" />
+                <div key={i} className="h-28 rounded-2xl border border-dashed border-navy/20 dark:border-cream/20" />
               ))}
             </div>
           </section>
