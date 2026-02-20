@@ -13,7 +13,13 @@ from config import get_settings
 from models.user import User, UserRole, AccountStatus
 
 settings = get_settings()
-ADMIN_EMAILS = {"tomek.piescikowski@gmail.com"}
+
+
+def _get_admin_emails() -> set[str]:
+    """Build the set of admin emails from configuration."""
+    email = settings.root_admin_email.strip().lower()
+    return {email} if email else set()
+
 PASSWORD_CONTEXT = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 _DUMMY_PASSWORD_HASH = PASSWORD_CONTEXT.hash("kenaz-never-used-dummy-password")
 USERNAME_PATTERN = re.compile(r"^[A-Za-z0-9._-]+$")
@@ -83,7 +89,7 @@ class AuthService:
         Admin emails are auto-approved and assigned the admin role, while other
         users default to guest and pending status.
         """
-        is_admin = email.lower() in ADMIN_EMAILS
+        is_admin = email.lower() in _get_admin_emails()
         role = UserRole.ADMIN if is_admin else UserRole.GUEST
         status = AccountStatus.ACTIVE if is_admin else AccountStatus.PENDING
         return role, status
@@ -406,7 +412,7 @@ class AuthService:
             raise AuthValidationError("Password must have at least 8 characters")
         if len(password) > 128:
             raise AuthValidationError("Password must have at most 128 characters")
-        if normalized_email in ADMIN_EMAILS:
+        if normalized_email in _get_admin_emails():
             raise AuthPolicyError("This admin email must sign in with Google only")
 
         existing_by_username = await self.get_user_by_username(normalized_username)

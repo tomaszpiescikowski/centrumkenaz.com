@@ -30,19 +30,54 @@ jobs:
     steps:
       - name: Check required secrets
         run: |
-          if [ -z "${{ secrets.SSH_HOST }}" ]; then
-            echo "❌ SSH_HOST secret is not set"
-            exit 1
-          fi
-          if [ -z "${{ secrets.SSH_USER }}" ]; then
-            echo "❌ SSH_USER secret is not set"
-            exit 1
-          fi
-          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
-            echo "❌ SSH_PRIVATE_KEY secret is not set"
+          MISSING=0
+
+          check_secret() {
+            local name="$1"
+            local value="$2"
+            if [ -z "$value" ]; then
+              echo "❌ $name secret is not set"
+              MISSING=1
+            fi
+          }
+
+          # Infrastructure
+          check_secret "SSH_HOST" "${{ secrets.SSH_HOST }}"
+          check_secret "SSH_USER" "${{ secrets.SSH_USER }}"
+          check_secret "SSH_PRIVATE_KEY" "${{ secrets.SSH_PRIVATE_KEY }}"
+
+          # Application secrets
+          check_secret "DATABASE_URL" "${{ secrets.DATABASE_URL }}"
+          check_secret "JWT_SECRET_KEY" "${{ secrets.JWT_SECRET_KEY }}"
+          check_secret "GOOGLE_CLIENT_ID" "${{ secrets.GOOGLE_CLIENT_ID }}"
+          check_secret "GOOGLE_CLIENT_SECRET" "${{ secrets.GOOGLE_CLIENT_SECRET }}"
+          check_secret "ROOT_ADMIN_EMAIL" "${{ secrets.ROOT_ADMIN_EMAIL }}"
+
+          if [ "$MISSING" -eq 1 ]; then
             exit 1
           fi
           echo "✅ All required secrets are configured"
+
+      - name: Check required variables
+        run: |
+          MISSING=0
+
+          check_var() {
+            local name="$1"
+            local value="$2"
+            if [ -z "$value" ]; then
+              echo "⚠️  $name variable is not set (will use default)"
+            fi
+          }
+
+          # These are optional but recommended for production
+          check_var "APP_SCHEME" "${{ vars.APP_SCHEME }}"
+          check_var "APP_HOST" "${{ vars.APP_HOST }}"
+          check_var "FRONTEND_URL" "${{ vars.FRONTEND_URL }}"
+          check_var "GOOGLE_REDIRECT_URI" "${{ vars.GOOGLE_REDIRECT_URI }}"
+          check_var "DEFAULT_PAYMENT_URL" "${{ vars.DEFAULT_PAYMENT_URL }}"
+
+          echo "✅ Variable check completed"
 
   build:
     name: Build Application
@@ -78,6 +113,7 @@ jobs:
       - name: Build frontend
         env:
           VITE_API_URL: ""
+          VITE_DEFAULT_PAYMENT_URL: ${{ vars.DEFAULT_PAYMENT_URL }}
         run: npm run build
 
       - name: Upload frontend build
@@ -103,6 +139,7 @@ jobs:
         if: ${{ !inputs.skip_tests }}
         env:
           DATABASE_URL_TEST: postgresql+asyncpg://postgres:postgres@localhost:5432/kenaz_test
+          ROOT_ADMIN_EMAIL: ${{ secrets.ROOT_ADMIN_EMAIL }}
         run: |
           cd backend
           pytest tests/ -v --tb=short
@@ -253,17 +290,33 @@ jobs:
           echo "✅ Python environment ready"
           ENDSSH
 
+      - name: Generate backend .env
+        run: |
+          ssh deploy-server "cat > ${{ env.BACKEND_DIR }}/.env << 'DOTENV'
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+          ROOT_ADMIN_EMAIL=${{ secrets.ROOT_ADMIN_EMAIL }}
+          TPAY_CLIENT_ID=${{ secrets.TPAY_CLIENT_ID }}
+          TPAY_CLIENT_SECRET=${{ secrets.TPAY_CLIENT_SECRET }}
+          APP_SCHEME=${{ vars.APP_SCHEME || 'https' }}
+          APP_HOST=${{ vars.APP_HOST || 'localhost' }}
+          FRONTEND_URL=${{ vars.FRONTEND_URL }}
+          GOOGLE_REDIRECT_URI=${{ vars.GOOGLE_REDIRECT_URI }}
+          PAYMENT_GATEWAY_TYPE=${{ vars.PAYMENT_GATEWAY_TYPE || 'fake' }}
+          DEFAULT_PAYMENT_URL=${{ vars.DEFAULT_PAYMENT_URL }}
+          DEBUG=${{ vars.DEBUG || 'false' }}
+          DOTENV
+          "
+          ssh deploy-server "chmod 600 ${{ env.BACKEND_DIR }}/.env"
+          echo "✅ .env generated on server"
+
       - name: Run database migrations
         run: |
           ssh deploy-server <<'ENDSSH'
           set -euo pipefail
           cd ${{ env.BACKEND_DIR }}
-          
-          if [ ! -f .env ]; then
-            echo "❌ .env file not found on server"
-            echo "Please create ${{ env.BACKEND_DIR }}/.env with required configuration"
-            exit 1
-          fi
           
           echo "Running database migrations..."
           CURRENT=$(venv/bin/alembic current 2>&1 || true)

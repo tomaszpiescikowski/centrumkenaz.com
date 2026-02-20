@@ -12,6 +12,7 @@ import Tooltip from '../../components/ui/Tooltip'
 const PREFILL_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
 const DEFAULT_START_TIME = '10:00'
 const DEFAULT_END_TIME = '11:00'
+const DEFAULT_PAYMENT_URL = import.meta.env.VITE_DEFAULT_PAYMENT_URL || ''
 
 function normalizePrefillDate(rawDate) {
   if (!rawDate || !PREFILL_DATE_PATTERN.test(rawDate)) return null
@@ -58,7 +59,7 @@ function AdminEventCreate() {
     priceGuest: '0',
     priceMember: '0',
     manualPaymentVerification: true,
-    manualPaymentUrl: 'https://buycoffee.to/kenazplus',
+    manualPaymentUrl: DEFAULT_PAYMENT_URL,
     manualPaymentDueHours: '24',
     maxParticipants: '',
     requiresSubscription: false,

@@ -39,6 +39,12 @@ class Settings(BaseSettings):
     tpay_client_id: str = ""
     tpay_client_secret: str = ""
 
+    # Admin
+    root_admin_email: str = ""
+
+    # Defaults
+    default_payment_url: str = ""
+
     # Security / Rate limiting
     rate_limit_enabled: bool = True
     rate_limit_public_per_minute: int = 600
