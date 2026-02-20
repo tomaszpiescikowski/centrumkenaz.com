@@ -107,7 +107,7 @@ function Login() {
   }
 
   return (
-    <div className="page-shell flex min-h-[calc(100vh-4rem)] items-center justify-center px-5 py-10 pb-[calc(env(safe-area-inset-bottom)+5rem)] sm:pb-10">
+    <div className="page-shell flex min-h-[calc(100vh-4rem)] flex-col items-center pt-[calc(38.2svh-8rem)] px-5 pb-[calc(env(safe-area-inset-bottom)+5rem)] sm:pb-10">
       <div className="page-card w-full max-w-xl">
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-black text-navy dark:text-cream">{t('auth.title')}</h1>
