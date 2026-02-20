@@ -100,23 +100,6 @@ export async function fetchSubscriptionPlans(authFetch) {
   return response.json()
 }
 
-export async function startSubscriptionCheckout(authFetch, payload) {
-  const response = await authFetch(`${API_URL}/payments/subscription/checkout`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  })
-
-  const data = await response.json().catch(() => ({}))
-  if (!response.ok) {
-    const message = data.detail || 'Failed to start subscription checkout'
-    throw new Error(message)
-  }
-  return data
-}
-
 export async function switchToFreePlan(authFetch) {
   const response = await authFetch(`${API_URL}/payments/subscription/free`, {
     method: 'POST',
@@ -124,6 +107,51 @@ export async function switchToFreePlan(authFetch) {
   const data = await response.json().catch(() => ({}))
   if (!response.ok) {
     throw new Error(data.detail || 'Failed to switch plan')
+  }
+  return data
+}
+
+export async function initiateSubscriptionPurchase(authFetch, payload) {
+  const response = await authFetch(`${API_URL}/payments/subscription/manual-checkout`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+  const data = await response.json().catch(() => ({}))
+  if (!response.ok) {
+    throw new Error(data.detail || 'Failed to initiate subscription purchase')
+  }
+  return data
+}
+
+export async function fetchPendingSubscriptionPurchase(authFetch) {
+  const response = await authFetch(`${API_URL}/payments/subscription/purchases/pending`)
+  if (!response.ok) {
+    if (response.status === 404) return null
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.detail || 'Failed to fetch pending purchase')
+  }
+  return response.json()
+}
+
+export async function fetchSubscriptionPurchaseDetails(authFetch, purchaseId) {
+  const response = await authFetch(`${API_URL}/payments/subscription/purchases/${purchaseId}/manual-payment`)
+  const data = await response.json().catch(() => ({}))
+  if (!response.ok) {
+    throw new Error(data.detail || 'Failed to fetch purchase details')
+  }
+  return data
+}
+
+export async function confirmSubscriptionManualPayment(authFetch, purchaseId) {
+  const response = await authFetch(`${API_URL}/payments/subscription/purchases/${purchaseId}/manual-payment/confirm`, {
+    method: 'POST',
+  })
+  const data = await response.json().catch(() => ({}))
+  if (!response.ok) {
+    throw new Error(data.detail || 'Failed to confirm subscription payment')
   }
   return data
 }

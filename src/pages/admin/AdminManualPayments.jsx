@@ -5,8 +5,10 @@ import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
 import {
   approveManualPayment,
+  approveSubscriptionPurchase,
   fetchManualRefundTasks,
   fetchPendingManualPayments,
+  fetchPendingSubscriptionPurchases,
   fetchWaitlistPromotions,
   updateManualRefundTask,
   updateWaitlistPromotion,
@@ -18,11 +20,12 @@ import usePreserveScrollSearchSwitch from '../../hooks/usePreserveScrollSearchSw
 import useViewSorts from '../../hooks/useViewSorts'
 import { parseAmount } from '../../utils/numberFormat'
 
-const ALLOWED_VIEWS = ['pending', 'refunds', 'promotions']
+const ALLOWED_VIEWS = ['pending', 'refunds', 'promotions', 'subscriptions']
 const createDefaultSorts = () => ({
   pending: [],
   refunds: [],
   promotions: [],
+  subscriptions: [],
 })
 
 function AdminManualPayments() {
@@ -39,6 +42,8 @@ function AdminManualPayments() {
   const [savingRefundId, setSavingRefundId] = useState(null)
   const [savingPromotionId, setSavingPromotionId] = useState(null)
   const [refundDrafts, setRefundDrafts] = useState({})
+  const [subscriptionPurchases, setSubscriptionPurchases] = useState([])
+  const [approvingSubId, setApprovingSubId] = useState(null)
 
   const isAdmin = user?.role === 'admin'
   const requestedView = searchParams.get('view')
@@ -48,14 +53,16 @@ function AdminManualPayments() {
   const loadData = async () => {
     setLoading(true)
     try {
-      const [pending, refunds, promotions] = await Promise.all([
+      const [pending, refunds, promotions, subPurchases] = await Promise.all([
         fetchPendingManualPayments(authFetch),
         fetchManualRefundTasks(authFetch),
         fetchWaitlistPromotions(authFetch),
+        fetchPendingSubscriptionPurchases(authFetch),
       ])
       setPendingPayments(Array.isArray(pending) ? pending : [])
       setRefundTasks(Array.isArray(refunds) ? refunds : [])
       setPromotionTasks(Array.isArray(promotions) ? promotions : [])
+      setSubscriptionPurchases(Array.isArray(subPurchases) ? subPurchases : [])
       const drafts = {}
       for (const row of (Array.isArray(refunds) ? refunds : [])) {
         drafts[row.task_id] = {
@@ -70,6 +77,7 @@ function AdminManualPayments() {
       setPendingPayments([])
       setRefundTasks([])
       setPromotionTasks([])
+      setSubscriptionPurchases([])
       setRefundDrafts({})
     } finally {
       setLoading(false)
@@ -171,6 +179,19 @@ function AdminManualPayments() {
       showError(err.message || t('admin.manualPayments.promotionSaveError'))
     } finally {
       setSavingPromotionId(null)
+    }
+  }
+
+  const handleApproveSubscription = async (purchaseId) => {
+    try {
+      setApprovingSubId(purchaseId)
+      await approveSubscriptionPurchase(authFetch, purchaseId)
+      showSuccess(t('admin.manualPayments.subscriptionApproveSuccess'))
+      await loadData()
+    } catch (err) {
+      showError(err.message || t('admin.manualPayments.subscriptionApproveError'))
+    } finally {
+      setApprovingSubId(null)
     }
   }
 
@@ -438,6 +459,82 @@ function AdminManualPayments() {
     },
   ]
 
+  const subscriptionRows = useMemo(
+    () => subscriptionPurchases.map((row) => ({
+      ...row,
+      user_sort: `${row.user_name || ''} ${row.user_email || ''}`,
+      amount_value: parseAmount(row.total_amount),
+    })),
+    [subscriptionPurchases]
+  )
+
+  const subscriptionColumns = [
+    {
+      key: 'user_sort',
+      label: t('admin.tables.user'),
+      sortValue: (row) => row.user_sort,
+      render: (row) => (
+        <div>
+          <p className="font-semibold">{row.user_name || '—'}</p>
+          <p className="text-[11px] text-navy/60 dark:text-cream/60">{row.user_email}</p>
+        </div>
+      ),
+    },
+    {
+      key: 'plan_code',
+      label: t('admin.manualPayments.subscriptionPlanColumn'),
+      sortValue: (row) => row.plan_code,
+      render: (row) => (
+        <div>
+          <p className="font-semibold">{row.plan_label || row.plan_code}</p>
+          <p className="text-[11px] text-navy/60 dark:text-cream/60">
+            {row.periods} {row.periods === 1 ? t('admin.manualPayments.period') : t('admin.manualPayments.periods')}
+          </p>
+        </div>
+      ),
+    },
+    {
+      key: 'amount_value',
+      label: t('admin.tables.amount'),
+      sortValue: (row) => row.amount_value,
+      render: (row) => <span>{row.total_amount} {row.currency}</span>,
+    },
+    {
+      key: 'status',
+      label: t('account.status'),
+      sortValue: (row) => row.status,
+      render: (row) => <span>{row.status}</span>,
+    },
+    {
+      key: 'created_at',
+      label: t('admin.manualPayments.createdColumn'),
+      sortValue: (row) => row.created_at || '',
+      render: (row) => <span>{row.created_at || '—'}</span>,
+    },
+    {
+      key: 'actions',
+      label: t('admin.manualPayments.actionsColumn'),
+      align: 'right',
+      sortable: false,
+      render: (row) => (
+        <button
+          type="button"
+          onClick={() => handleApproveSubscription(row.purchase_id)}
+          disabled={approvingSubId === row.purchase_id}
+          className={`px-3 py-1.5 rounded-full text-xs font-semibold ${
+            approvingSubId === row.purchase_id
+              ? 'cursor-not-allowed bg-navy/20 text-navy/50 dark:bg-cream/20 dark:text-cream/50'
+              : 'btn-primary'
+          }`}
+        >
+          {approvingSubId === row.purchase_id
+            ? t('admin.manualPayments.approving')
+            : t('admin.manualPayments.approveButton')}
+        </button>
+      ),
+    },
+  ]
+
   if (!isAuthenticated) {
     return (
       <AuthGateCard
@@ -482,7 +579,7 @@ function AdminManualPayments() {
         <p className="text-navy/70 dark:text-cream/70">{t('common.loading')}</p>
       ) : (
         <>
-          <section className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <section className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             <ViewCard
               title={t('admin.manualPayments.pendingTitle')}
               description={t('admin.manualPayments.pendingSubtitle')}
@@ -500,6 +597,12 @@ function AdminManualPayments() {
               description={t('admin.manualPayments.promotionsSubtitle')}
               onClick={() => switchView('promotions')}
               isActive={activeView === 'promotions'}
+            />
+            <ViewCard
+              title={t('admin.manualPayments.subscriptionsTitle')}
+              description={t('admin.manualPayments.subscriptionsSubtitle')}
+              onClick={() => switchView('subscriptions')}
+              isActive={activeView === 'subscriptions'}
             />
           </section>
 
@@ -549,6 +652,18 @@ function AdminManualPayments() {
               onSort={(key) => toggleSort('promotions', key)}
               rowKey={(row) => row.registration_id}
               emptyText={t('admin.manualPayments.promotionsEmpty')}
+              t={t}
+            />
+          )}
+
+          {activeView === 'subscriptions' && (
+            <SortableDataTable
+              columns={subscriptionColumns}
+              rows={subscriptionRows}
+              sort={sortByView.subscriptions}
+              onSort={(key) => toggleSort('subscriptions', key)}
+              rowKey={(row) => row.purchase_id}
+              emptyText={t('admin.manualPayments.subscriptionsEmpty')}
               t={t}
             />
           )}

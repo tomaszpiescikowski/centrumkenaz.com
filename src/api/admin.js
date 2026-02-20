@@ -126,3 +126,23 @@ export async function updateWaitlistPromotion(authFetch, registrationId, payload
   }
   return data
 }
+
+export async function fetchPendingSubscriptionPurchases(authFetch) {
+  const response = await authFetch(`${API_URL}/admin/subscription-purchases/pending`)
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.detail || 'Failed to fetch pending subscription purchases')
+  }
+  return response.json()
+}
+
+export async function approveSubscriptionPurchase(authFetch, purchaseId) {
+  const response = await authFetch(`${API_URL}/admin/subscription-purchases/${purchaseId}/approve`, {
+    method: 'POST',
+  })
+  const data = await response.json().catch(() => ({}))
+  if (!response.ok) {
+    throw new Error(data.detail || 'Failed to approve subscription purchase')
+  }
+  return data
+}

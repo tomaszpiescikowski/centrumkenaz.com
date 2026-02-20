@@ -192,7 +192,7 @@
 ```
 
 ### `POST /payments/subscription/free`
-**Use case:** Zmiana na darmowy plan subskrypcji  
+**Use case:** Zmiana na darmowy (free) plan subskrypcji  
 **Frontend:** Używany w `Plans.jsx` - przycisk downgrade do planu darmowego.
 
 ### `GET /payments/{payment_id}/status`

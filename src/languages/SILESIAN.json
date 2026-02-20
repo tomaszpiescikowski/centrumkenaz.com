@@ -342,6 +342,35 @@
     "promotedNoticeTitle": "Awans z listy rezerwowyj",
     "promotedNoticeBody": "Wskoczyłeś z listy rezerwowyj i mosz ôgraniczōny czas na ôpłacynie."
   },
+  "subscriptionManualPayment": {
+    "title": "Płatność za subskrypcyjo",
+    "subtitle": "Zrōb przelyw i potwierdź go w aplikacyji.",
+    "backToPlans": "Wroć do planōw",
+    "loginRequired": "Zaloguj sie, coby kōntynuować płatność za subskrypcyjo.",
+    "loginButton": "Zaloguj sie",
+    "notFoundTitle": "Szczegōły płatności niyma dostympne",
+    "notFoundBody": "Niy znŏdniyto aktywnyj płatności za subskrypcyjo.",
+    "loadError": "Niy idzie wczytać szczegōłōw płatności.",
+    "planLabel": "Plan",
+    "periodsLabel": "Ôkresy",
+    "amountLabel": "Kwota",
+    "stepsIntro": "Zrōb nastympujōnce kroki:",
+    "stepOpenTransfer": "Ôtwōrz strōna przelewu:",
+    "openTransferLink": "przejdź do strōny płatności",
+    "missingTransferLink": "brak linku do płatności",
+    "stepPasteReference": "Wklej tyn tekst w pole tytułu przelewu.",
+    "stepConfirm": "Po zrobiōniu przelewu kliknij \"Potwierdzōm płatność\".",
+    "referenceLabel": "Tytuł przelewu",
+    "copyButton": "Kopiuj tytuł przelewu",
+    "copySuccess": "Tytuł przelewu skopiowany.",
+    "copyError": "Niy idzie skopiować tytułu przelewu.",
+    "confirmButton": "Potwierdzōm płatność",
+    "confirming": "Potwierdzanie...",
+    "confirmSuccess": "Twoja płatność czekŏ na weryfikacyjo admina.",
+    "confirmError": "Niy idzie potwierdzić płatności.",
+    "waitingVerification": "Płatność ôstała zgłoszōno. Czekŏsz na zatwierdzynie bez administratora.",
+    "alreadyPaid": "Płatność ôstała zatwierdzōno. Twoja subskrypcyjo je aktywnŏ."
+  },
   "account": {
     "title": "Moje kōnto",
     "subtitle": "Twoje dane, punkty i zapisy.",
@@ -383,7 +412,9 @@
     "openManualPayment": "Dokōńcz płatność",
     "loadError": "Niy idzie wczytać danych kōnta",
     "cancelError": "Niy idzie anulować zapisu",
-    "cancelSuccess": "Zapis ôstoł anulowany."
+    "cancelSuccess": "Zapis ôstoł anulowany.",
+    "pendingSubscriptionTitle": "Mosz ôczekujōncō płatność za subskrypcyjo.",
+    "pendingSubscriptionLink": "Dokōńcz płatność"
   },
   "plans": {
     "backToAccount": "Wroć do kōnta",
@@ -422,7 +453,7 @@
         "ctaCurrent": "Twōj ôbecny plan",
         "ctaSwitch": "Zacznij bezpłatnie"
       },
-      "pro": {
+      "monthly": {
         "title": "Człōnek Kenaz",
         "summary": "Nŏjczyńściyj wybiyrane",
         "features": [
@@ -433,7 +464,7 @@
         "cta": "Dołōncz do społeczności",
         "ctaAriaLabel": "Dołōncz do społeczności — 33 PLN miesiyncznie"
       },
-      "ultimate": {
+      "yearly": {
         "title": "Człōnkostwo roczne",
         "summary": "Całoroczny dostymp",
         "features": [
@@ -452,7 +483,16 @@
     "welcomeModalTitle": "Twoje kōnto ôstało zatwierdzōne!",
     "welcomeModalBody": "Witej w Kenaz. Możesz terozki dołōnczyć do społeczności ôbiyrajōnc plan abo wrōcić do kōnta i zrobić to niyskorzij.",
     "welcomeModalChoosePlan": "Ôbier plan",
-    "welcomeModalBackToAccount": "Wroć do kōnta"
+    "welcomeModalBackToAccount": "Wroć do kōnta",
+    "pendingPurchaseError": "Już mosz ôczekujōncy zakup subskrypcyje.",
+    "pendingPurchaseBannerTitle": "Ôczekujōncŏ płatność za subskrypcyjo",
+    "pendingPurchaseBannerBody": "Mosz niyskōńczōnō płatność za subskrypcyjo.",
+    "pendingPurchaseBannerLink": "Kōntynuuj płatność",
+    "periodsLabel": "Liczba ôkresōw",
+    "decreasePeriods": "Zmyńsz liczba ôkresōw",
+    "increasePeriods": "Zwiynksz liczba ôkresōw",
+    "totalAmount": "Razym",
+    "manualTransferInfo": "Płatność przelewym bankowym"
   },
   "admin": {
     "createEventTitle": "Dodej nowe wydarzyńe",
@@ -715,7 +755,16 @@
       "notificationColumn": "Powiadōmiynie",
       "notifiedLabel": "Wysłano info",
       "promotionSaveSuccess": "Zaktualizowano status powiadōmiynia.",
-      "promotionSaveError": "Niy idzie zaktualizować statusu powiadōmiynia."
+      "promotionSaveError": "Niy idzie zaktualizować statusu powiadōmiynia.",
+      "subscriptionsTitle": "Subskrypcyje",
+      "subscriptionsSubtitle": "Ôczekujōnce płatności za subskrypcyje.",
+      "subscriptionsEmpty": "Brak ôczekujōncych płatności za subskrypcyje.",
+      "subscriptionApproveSuccess": "Płatność za subskrypcyjo zatwierdzōnŏ.",
+      "subscriptionApproveError": "Niy idzie zatwierdzić płatności za subskrypcyjo.",
+      "subscriptionPlanColumn": "Plan",
+      "period": "ôkres",
+      "periods": "ôkresy",
+      "createdColumn": "Stworzōne"
     },
     "approvalSuccess": "Używoc sie ôstał zaakceptowany.",
     "recurringUpdateSuccess": "Cykliczne wydarzynie ôstało zaktualizowane.",

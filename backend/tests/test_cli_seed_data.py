@@ -87,8 +87,8 @@ def test_seed_users_include_admin_password_and_plan_mix():
     assert admin["interest_tags"]
 
     plan_codes = {spec["subscription_plan_code"] for spec in specs}
-    assert "pro" in plan_codes
-    assert "ultimate" in plan_codes
+    assert "monthly" in plan_codes
+    assert "yearly" in plan_codes
     assert None in plan_codes
     assert all(spec.get("about_me") for spec in specs)
     assert all(spec.get("interest_tags") for spec in specs)

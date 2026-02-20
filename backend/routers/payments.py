@@ -3,13 +3,14 @@ from urllib.parse import urlparse
 from fastapi import APIRouter, Depends, HTTPException, Request, Query, Path
 from fastapi.responses import HTMLResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from pydantic import BaseModel, ValidationError, Field, AnyHttpUrl
+from pydantic import BaseModel, ConfigDict, ValidationError, Field, AnyHttpUrl
 from typing import Optional, Literal
 
 from database import get_db
 from config import get_settings
 from models.user import User, UserRole
 from models.payment import PaymentType
+from models.subscription_purchase import SubscriptionPurchaseStatus
 from services.payment_service import PaymentService, SubscriptionPlan
 from services.registration_service import RegistrationService
 from adapters.fake_payment_adapter import get_shared_fake_payment_adapter
@@ -77,7 +78,7 @@ class SubscriptionPlanResponse(BaseModel):
     This response is used by the frontend to render plan cards and pricing.
     """
 
-    code: Literal["free", "pro", "ultimate"] = Field(description="Plan code identifier.")
+    code: Literal["free", "monthly", "yearly"] = Field(description="Plan code identifier.")
     amount: str = Field(description="Plan price formatted as string.")
     currency: Literal["PLN"] = Field(description="Currency code for the plan.")
     duration_days: int = Field(ge=0, description="Number of days the plan grants.")
@@ -92,7 +93,7 @@ class SubscriptionCheckoutRequest(BaseModel):
     This payload provides the selected plan and frontend redirect URLs.
     """
 
-    plan_code: Literal["pro", "ultimate"] = Field(description="Selected paid plan code.")
+    plan_code: Literal["monthly", "yearly"] = Field(description="Selected paid plan code.")
     return_url: AnyHttpUrl = Field(description="Frontend URL to return on success.")
     cancel_url: AnyHttpUrl = Field(description="Frontend URL to return on cancellation.")
 
@@ -109,7 +110,7 @@ class SubscriptionCheckoutResponse(BaseModel):
     redirect_url: str | None = Field(default=None, description="Gateway redirect URL.")
     amount: str = Field(description="Payment amount.")
     currency: str = Field(description="Currency code.")
-    plan_code: Literal["pro", "ultimate"] = Field(description="Selected plan code.")
+    plan_code: Literal["monthly", "yearly"] = Field(description="Selected plan code.")
 
 
 class FreePlanSwitchResponse(BaseModel):
@@ -121,6 +122,40 @@ class FreePlanSwitchResponse(BaseModel):
 
     status: Literal["ok"] = Field(description="Operation status.")
     plan_code: Literal["free"] = Field(description="Resulting plan code.")
+
+
+class SubscriptionManualCheckoutRequest(BaseModel):
+    """
+    Start a manual-payment subscription purchase.
+
+    The user selects a paid plan and the number of billing periods.
+    """
+
+    plan_code: Literal["monthly", "yearly"] = Field(description="Selected paid plan code.")
+    periods: int = Field(ge=1, le=6, description="Number of billing periods to purchase.")
+
+
+class SubscriptionPurchaseResponse(BaseModel):
+    """
+    Describe a subscription purchase for manual payment.
+
+    This response mirrors the event manual payment details structure
+    for consistent frontend consumption.
+    """
+    model_config = ConfigDict(coerce_numbers_to_str=True)
+
+    purchase_id: str = Field(description="Purchase identifier.")
+    plan_code: str = Field(description="Plan code for the purchase.")
+    plan_label: str = Field(description="Human-readable plan label.")
+    periods: int = Field(description="Number of billing periods purchased.")
+    total_amount: str = Field(description="Total amount due.")
+    currency: str = Field(description="Currency code.")
+    status: str = Field(description="Current purchase status.")
+    manual_payment_url: str | None = Field(default=None, description="Manual transfer instructions URL.")
+    transfer_reference: str = Field(description="Transfer reference for manual payment.")
+    manual_payment_confirmed_at: str | None = Field(default=None, description="Timestamp of confirmation.")
+    can_confirm: bool = Field(description="Whether the user can confirm payment now.")
+    created_at: str | None = Field(default=None, description="Purchase creation timestamp.")
 
 
 def get_payment_gateway():
@@ -263,6 +298,126 @@ async def switch_to_free_plan(
     await db.commit()
     await db.refresh(user)
     return FreePlanSwitchResponse(status="ok", plan_code="free")
+
+
+@router.post("/subscription/manual-checkout", response_model=SubscriptionPurchaseResponse)
+async def start_subscription_manual_checkout(
+    payload: SubscriptionManualCheckoutRequest,
+    user: User = Depends(get_active_user_dependency),
+    db: AsyncSession = Depends(get_db),
+) -> SubscriptionPurchaseResponse:
+    """
+    Start a manual-payment subscription purchase.
+
+    The handler validates plan and period limits, creates a SubscriptionPurchase
+    row, and returns payment details so the user can complete a bank transfer.
+    """
+    payment_gateway = get_payment_gateway()
+    payment_service = PaymentService(db, payment_gateway)
+
+    try:
+        purchase = await payment_service.initiate_subscription_purchase(
+            user=user,
+            plan_code=payload.plan_code,
+            periods=payload.periods,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+
+    details = await payment_service.get_subscription_purchase_details(
+        purchase_id=str(purchase.id),
+        user_id=str(user.id),
+    )
+    if not details:
+        raise HTTPException(status_code=500, detail="Failed to load purchase details")
+    return SubscriptionPurchaseResponse(**details)
+
+
+@router.get(
+    "/subscription/purchases/pending",
+    response_model=SubscriptionPurchaseResponse | None,
+)
+async def get_pending_subscription_purchase(
+    user: User = Depends(get_active_user_dependency),
+    db: AsyncSession = Depends(get_db),
+) -> SubscriptionPurchaseResponse | None:
+    """
+    Return the user's pending subscription purchase, if any.
+
+    This endpoint lets the frontend check whether the user has an active
+    manual payment flow and redirect accordingly.
+    """
+    payment_gateway = get_payment_gateway()
+    payment_service = PaymentService(db, payment_gateway)
+
+    purchase = await payment_service.get_user_pending_subscription_purchase(str(user.id))
+    if not purchase:
+        return None
+
+    details = await payment_service.get_subscription_purchase_details(
+        purchase_id=str(purchase.id),
+        user_id=str(user.id),
+    )
+    if not details:
+        return None
+    return SubscriptionPurchaseResponse(**details)
+
+
+@router.get(
+    "/subscription/purchases/{purchase_id}/manual-payment",
+    response_model=SubscriptionPurchaseResponse,
+)
+async def get_subscription_purchase_details(
+    purchase_id: str = Path(..., min_length=1),
+    user: User = Depends(get_active_user_dependency),
+    db: AsyncSession = Depends(get_db),
+) -> SubscriptionPurchaseResponse:
+    """
+    Return manual payment details for a subscription purchase.
+
+    The endpoint validates ownership and returns transfer instructions,
+    amount, and confirmation status for the UI.
+    """
+    payment_gateway = get_payment_gateway()
+    payment_service = PaymentService(db, payment_gateway)
+
+    details = await payment_service.get_subscription_purchase_details(
+        purchase_id=purchase_id,
+        user_id=str(user.id),
+    )
+    if not details:
+        raise HTTPException(status_code=404, detail="Purchase not found")
+    return SubscriptionPurchaseResponse(**details)
+
+
+@router.post(
+    "/subscription/purchases/{purchase_id}/manual-payment/confirm",
+    response_model=SubscriptionPurchaseResponse,
+)
+async def confirm_subscription_manual_payment(
+    purchase_id: str = Path(..., min_length=1),
+    user: User = Depends(get_active_user_dependency),
+    db: AsyncSession = Depends(get_db),
+) -> SubscriptionPurchaseResponse:
+    """
+    Confirm manual payment for a subscription purchase.
+
+    The user declares they completed the bank transfer, moving the purchase
+    to verification status for admin approval.
+    """
+    payment_gateway = get_payment_gateway()
+    payment_service = PaymentService(db, payment_gateway)
+
+    try:
+        details = await payment_service.confirm_subscription_manual_payment(
+            purchase_id=purchase_id,
+            user_id=str(user.id),
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+    if not details:
+        raise HTTPException(status_code=404, detail="Purchase not found")
+    return SubscriptionPurchaseResponse(**details)
 
 
 @router.get("/{payment_id}/status", response_model=PaymentStatusResponse)

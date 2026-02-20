@@ -11,9 +11,10 @@ from sqlalchemy.orm import joinedload
 
 from database import get_db
 from models.event import Event
-from models.payment import Payment, PaymentStatus as DBPaymentStatus
+from models.payment import Payment, PaymentStatus as DBPaymentStatus, Currency
 from models.registration import Registration, RegistrationStatus
 from models.registration_refund_task import RegistrationRefundTask
+from models.subscription_purchase import SubscriptionPurchase, SubscriptionPurchaseStatus
 from models.user import AccountStatus, User
 from models.subscription import Subscription
 from models.approval_request import ApprovalRequest
@@ -225,6 +226,32 @@ class ManualPaymentPendingResponse(BaseModel):
         default=None,
         description="External payment identifier if available.",
     )
+
+
+class SubscriptionPurchasePendingResponse(BaseModel):
+    """
+    Describe a subscription purchase awaiting admin verification.
+
+    This response supports the admin queue for confirming manual subscription
+    transfers alongside event manual payments.
+    """
+
+    purchase_id: str = Field(description="Purchase identifier.")
+    plan_code: str = Field(description="Plan code for the purchase.")
+    plan_label: str = Field(description="Human-readable plan label.")
+    periods: int = Field(description="Number of billing periods purchased.")
+    total_amount: str = Field(description="Total amount due.")
+    currency: str = Field(description="Currency code.")
+    status: str = Field(description="Current purchase status.")
+    user_id: str = Field(description="User identifier.")
+    user_name: str | None = Field(default=None, description="User full name.")
+    user_email: str = Field(description="User email address.")
+    manual_payment_confirmed_at: str | None = Field(
+        default=None,
+        description="Timestamp of user manual payment confirmation.",
+    )
+    created_at: str | None = Field(default=None, description="Purchase creation timestamp.")
+    payment_id: str | None = Field(default=None, description="Linked payment external ID.")
 
 
 class RefundTaskResponse(BaseModel):
@@ -874,7 +901,7 @@ def _serialize_manual_pending_row(
         user_name=user.full_name,
         user_email=user.email,
         amount=f"{amount:.2f}",
-        currency=payment.currency if payment else "PLN",
+        currency=payment.currency if payment else Currency.PLN.value,
         status=registration.status,
         transfer_reference=_extract_transfer_reference(payment, str(event.id)),
         manual_payment_confirmed_at=(
@@ -1165,3 +1192,108 @@ async def update_waitlist_promotion_status(
     await db.commit()
     await db.refresh(registration)
     return _serialize_waitlist_promotion_row(registration, user, event)
+
+
+# ── Admin subscription purchase management ────────────────────────────
+
+def _serialize_subscription_purchase_pending_row(
+    purchase: SubscriptionPurchase,
+    user: User,
+) -> SubscriptionPurchasePendingResponse:
+    """
+    Map a subscription purchase and its owner to the admin response schema.
+
+    The serializer mirrors the event manual payment row formatter for UI
+    consistency across admin tabs.
+    """
+    plan = PaymentService.get_subscription_plan(purchase.plan_code)
+    plan_label = plan.code if plan else purchase.plan_code
+    return SubscriptionPurchasePendingResponse(
+        purchase_id=str(purchase.id),
+        plan_code=purchase.plan_code,
+        plan_label=plan_label,
+        periods=purchase.periods,
+        total_amount=f"{Decimal(purchase.total_amount):.2f}",
+        currency=purchase.currency,
+        status=purchase.status,
+        user_id=str(user.id),
+        user_name=user.full_name,
+        user_email=user.email,
+        manual_payment_confirmed_at=(
+            purchase.manual_payment_confirmed_at.isoformat()
+            if purchase.manual_payment_confirmed_at
+            else None
+        ),
+        created_at=(
+            purchase.created_at.isoformat()
+            if purchase.created_at
+            else None
+        ),
+        payment_id=purchase.payment_id,
+    )
+
+
+@router.get(
+    "/subscription-purchases/pending",
+    response_model=list[SubscriptionPurchasePendingResponse],
+)
+async def list_pending_subscription_purchases(
+    db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(get_admin_user_dependency),
+) -> list[SubscriptionPurchasePendingResponse]:
+    """
+    Return subscription purchases awaiting manual payment verification.
+
+    The query joins purchases with users and returns rows ordered by
+    confirmation timestamp for the admin approval queue.
+    """
+    rows = await db.execute(
+        select(SubscriptionPurchase, User)
+        .join(User, SubscriptionPurchase.user_id == User.id)
+        .where(
+            SubscriptionPurchase.status == SubscriptionPurchaseStatus.MANUAL_PAYMENT_VERIFICATION.value
+        )
+        .order_by(
+            SubscriptionPurchase.manual_payment_confirmed_at.asc(),
+            SubscriptionPurchase.created_at.asc(),
+        )
+    )
+    return [
+        _serialize_subscription_purchase_pending_row(purchase, user)
+        for purchase, user in rows.all()
+    ]
+
+
+@router.post(
+    "/subscription-purchases/{purchase_id}/approve",
+    response_model=SubscriptionPurchasePendingResponse,
+)
+async def approve_subscription_purchase(
+    purchase_id: str = Path(..., min_length=1),
+    db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(get_admin_user_dependency),
+) -> SubscriptionPurchasePendingResponse:
+    """
+    Approve a pending subscription purchase and activate the subscription.
+
+    This delegates to the payment service, maps domain errors to HTTP codes,
+    and returns the refreshed purchase row for the admin queue.
+    """
+    payment_service = PaymentService(db, get_shared_fake_payment_adapter())
+    try:
+        purchase = await payment_service.approve_subscription_manual_payment(purchase_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))
+    if not purchase:
+        raise HTTPException(status_code=404, detail="Purchase not found")
+
+    row = await db.execute(
+        select(SubscriptionPurchase, User)
+        .join(User, SubscriptionPurchase.user_id == User.id)
+        .where(legacy_id_eq(SubscriptionPurchase.id, purchase.id))
+        .limit(1)
+    )
+    result = row.first()
+    if not result:
+        raise HTTPException(status_code=404, detail="Purchase not found")
+    return _serialize_subscription_purchase_pending_row(*result)

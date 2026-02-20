@@ -11,6 +11,7 @@ from models.subscription import Subscription
 from models.event import Event
 from models.registration import Registration, RegistrationStatus
 from models.registration_refund_task import RegistrationRefundTask
+from models.payment import Currency
 from services.payment_service import PaymentService
 from ports.payment_gateway import PaymentStatus as GatewayPaymentStatus
 from services.google_calendar_service import GoogleCalendarService
@@ -800,7 +801,7 @@ class RegistrationService:
             "occurrence_date": registration.occurrence_date.isoformat(),
             "status": registration.status,
             "amount": str(amount),
-            "currency": "PLN",
+            "currency": Currency.PLN.value,
             "manual_payment_url": event.manual_payment_url,
             "transfer_reference": transfer_reference,
             "payment_deadline": (

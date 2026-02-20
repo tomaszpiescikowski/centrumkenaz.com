@@ -342,6 +342,35 @@
     "promotedNoticeTitle": "Awans z listy rezerwowej",
     "promotedNoticeBody": "Wskoczyłeś z listy rezerwowej i masz ograniczony czas na opłacenie wydarzenia."
   },
+  "subscriptionManualPayment": {
+    "title": "Płatność za subskrypcję",
+    "subtitle": "Wykonaj przelew i potwierdź go w aplikacji.",
+    "backToPlans": "Wróć do planów",
+    "loginRequired": "Zaloguj się, aby kontynuować płatność za subskrypcję.",
+    "loginButton": "Zaloguj się",
+    "notFoundTitle": "Szczegóły płatności niedostępne",
+    "notFoundBody": "Nie znaleziono aktywnej płatności za subskrypcję.",
+    "loadError": "Nie udało się wczytać szczegółów płatności.",
+    "planLabel": "Plan",
+    "periodsLabel": "Okresy",
+    "amountLabel": "Kwota",
+    "stepsIntro": "Wykonaj poniższe kroki:",
+    "stepOpenTransfer": "Otwórz stronę przelewu:",
+    "openTransferLink": "przejdź do strony płatności",
+    "missingTransferLink": "brak linku do płatności",
+    "stepPasteReference": "Wklej poniższy tekst w pole tytułu przelewu.",
+    "stepConfirm": "Po wykonaniu przelewu kliknij \"Potwierdzam płatność\".",
+    "referenceLabel": "Tytuł przelewu",
+    "copyButton": "Kopiuj tytuł przelewu",
+    "copySuccess": "Tytuł przelewu skopiowany.",
+    "copyError": "Nie udało się skopiować tytułu przelewu.",
+    "confirmButton": "Potwierdzam płatność",
+    "confirming": "Potwierdzanie...",
+    "confirmSuccess": "Twoja płatność oczekuje na weryfikację admina.",
+    "confirmError": "Nie udało się potwierdzić płatności.",
+    "waitingVerification": "Płatność została zgłoszona. Czekasz na zatwierdzenie przez administratora.",
+    "alreadyPaid": "Płatność została zatwierdzona. Twoja subskrypcja jest aktywna."
+  },
   "account": {
     "title": "Moje konto",
     "subtitle": "Twoje dane, punkty i zapisy.",
@@ -385,7 +414,9 @@
     "openManualPayment": "Dokończ płatność",
     "loadError": "Nie udało się wczytać danych konta",
     "cancelError": "Nie udało się anulować zapisu",
-    "cancelSuccess": "Pomyślnie anulowano zapis."
+    "cancelSuccess": "Pomyślnie anulowano zapis.",
+    "pendingSubscriptionTitle": "Masz oczekującą płatność za subskrypcję.",
+    "pendingSubscriptionLink": "Dokończ płatność"
   },
   "plans": {
     "backToAccount": "Wróć do konta",
@@ -424,7 +455,7 @@
         "ctaCurrent": "Twój obecny plan",
         "ctaSwitch": "Rozpocznij bezpłatnie"
       },
-      "pro": {
+      "monthly": {
         "title": "Członek Kenaz",
         "summary": "Najczęściej wybierane",
         "features": [
@@ -435,7 +466,7 @@
         "cta": "Dołącz do społeczności",
         "ctaAriaLabel": "Dołącz do społeczności — 33 PLN miesięcznie"
       },
-      "ultimate": {
+      "yearly": {
         "title": "Członkostwo roczne",
         "summary": "Całoroczny dostęp",
         "features": [
@@ -454,7 +485,16 @@
     "welcomeModalTitle": "Twoje konto zostało zatwierdzone!",
     "welcomeModalBody": "Witaj w Kenaz. Możesz teraz dołączyć do społeczności wybierając plan lub wrócić do konta i zrobić to później.",
     "welcomeModalChoosePlan": "Wybierz plan",
-    "welcomeModalBackToAccount": "Wróć do konta"
+    "welcomeModalBackToAccount": "Wróć do konta",
+    "pendingPurchaseError": "Masz już oczekujący zakup subskrypcji.",
+    "pendingPurchaseBannerTitle": "Oczekująca płatność za subskrypcję",
+    "pendingPurchaseBannerBody": "Masz niedokończoną płatność za subskrypcję.",
+    "pendingPurchaseBannerLink": "Kontynuuj płatność",
+    "periodsLabel": "Liczba okresów",
+    "decreasePeriods": "Zmniejsz liczbę okresów",
+    "increasePeriods": "Zwiększ liczbę okresów",
+    "totalAmount": "Razem",
+    "manualTransferInfo": "Płatność przelewem bankowym"
   },
   "admin": {
     "createEventTitle": "Dodaj nowe wydarzenie",
@@ -717,7 +757,16 @@
       "notificationColumn": "Powiadomienie",
       "notifiedLabel": "Wysłano info",
       "promotionSaveSuccess": "Zaktualizowano status powiadomienia.",
-      "promotionSaveError": "Nie udało się zaktualizować statusu powiadomienia."
+      "promotionSaveError": "Nie udało się zaktualizować statusu powiadomienia.",
+      "subscriptionsTitle": "Subskrypcje",
+      "subscriptionsSubtitle": "Oczekujące płatności za subskrypcje.",
+      "subscriptionsEmpty": "Brak oczekujących płatności za subskrypcje.",
+      "subscriptionApproveSuccess": "Płatność za subskrypcję zatwierdzona.",
+      "subscriptionApproveError": "Nie udało się zatwierdzić płatności za subskrypcję.",
+      "subscriptionPlanColumn": "Plan",
+      "period": "okres",
+      "periods": "okresy",
+      "createdColumn": "Utworzono"
     },
     "approvalSuccess": "Użytkownik został zaakceptowany.",
     "recurringUpdateSuccess": "Wydarzenie cykliczne zostało zaktualizowane.",

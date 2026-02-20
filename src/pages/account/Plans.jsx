@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
-import { fetchSubscriptionPlans, startSubscriptionCheckout, switchToFreePlan } from '../../api/user'
+import { fetchSubscriptionPlans, switchToFreePlan, initiateSubscriptionPurchase, fetchPendingSubscriptionPurchase } from '../../api/user'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
 
-const PLAN_ORDER = ['free', 'pro', 'ultimate']
+const PLAN_ORDER = ['free', 'monthly', 'yearly']
+const MAX_PERIODS = { monthly: 6, yearly: 2 }
 
 function formatAmount(amount, currency, t) {
   const numeric = Number(amount)
@@ -78,15 +79,17 @@ function WelcomeModal({ t, onChoosePlan, onBackToAccount }) {
 function Plans() {
   const { t, currentLanguage } = useLanguage()
   const { user, isAuthenticated, authFetch, fetchUser, accessToken } = useAuth()
-  const { showError, showInfo, showSuccess } = useNotification()
+  const { showError, showSuccess } = useNotification()
   const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
 
   const [plans, setPlans] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedPlanCode, setSelectedPlanCode] = useState('free')
   const [processingPlanCode, setProcessingPlanCode] = useState(null)
   const [showWelcome, setShowWelcome] = useState(() => searchParams.get('welcome') === '1')
+  const [pendingPurchase, setPendingPurchase] = useState(null)
+  const [periodsMap, setPeriodsMap] = useState({ monthly: 1, yearly: 1 })
 
   const hasActiveSubscription = useMemo(() => {
     if (!user?.subscription_end_date) return false
@@ -94,26 +97,8 @@ function Plans() {
   }, [user])
 
   const currentPlanCode = hasActiveSubscription
-    ? (user?.subscription_plan_code || 'pro')
+    ? (user?.subscription_plan_code || 'monthly')
     : 'free'
-
-  useEffect(() => {
-    const paymentStatus = searchParams.get('payment')
-    if (!paymentStatus) return
-
-    if (paymentStatus === 'success') {
-      showSuccess(t('plans.paymentSuccessBody'), { title: t('plans.paymentSuccessTitle') })
-      if (accessToken) {
-        fetchUser(accessToken).catch(() => {})
-      }
-    } else if (paymentStatus === 'cancelled') {
-      showInfo(t('plans.paymentCancelled'))
-    }
-
-    const nextParams = new URLSearchParams(searchParams)
-    nextParams.delete('payment')
-    setSearchParams(nextParams, { replace: true })
-  }, [searchParams, setSearchParams, showSuccess, showInfo, t, fetchUser, accessToken])
 
   useEffect(() => {
     let cancelled = false
@@ -121,9 +106,13 @@ function Plans() {
     const loadPlans = async () => {
       setLoading(true)
       try {
-        const data = await fetchSubscriptionPlans(authFetch)
+        const [data, pending] = await Promise.all([
+          fetchSubscriptionPlans(authFetch),
+          fetchPendingSubscriptionPurchase(authFetch).catch(() => null),
+        ])
         if (cancelled) return
         setPlans(data)
+        setPendingPurchase(pending)
         const defaultPlan = data.find((plan) => plan.is_default) || data.find((plan) => plan.code === 'free')
         const currentPlan = data.find((plan) => plan.code === currentPlanCode)
         setSelectedPlanCode(currentPlan?.code || defaultPlan?.code || 'free')
@@ -178,25 +167,16 @@ function Plans() {
       }
 
       if (!plan.is_purchasable) return
-      const basePath = `${window.location.origin}/plans`
       const payload = {
         plan_code: planCode,
-        return_url: `${basePath}?payment=success`,
-        cancel_url: `${basePath}?payment=cancelled`,
+        periods: periodsMap[planCode] || 1,
       }
-      const data = await startSubscriptionCheckout(authFetch, payload)
-      if (data.redirect_url && data.status !== 'completed') {
-        window.location.href = data.redirect_url
-        return
-      }
-      showSuccess(t('plans.paymentSuccessBody'), { title: t('plans.paymentSuccessTitle') })
-      if (accessToken) {
-        await fetchUser(accessToken)
-      }
+      const data = await initiateSubscriptionPurchase(authFetch, payload)
+      navigate(`/subscription-purchases/${data.purchase_id}/manual-payment`)
     } catch (error) {
       const message = error?.message || ''
-      if (message.toLowerCase().includes('pending admin approval')) {
-        showError(t('plans.pendingApproval'))
+      if (message.toLowerCase().includes('pending')) {
+        showError(t('plans.pendingPurchaseError'))
       } else {
         showError(t('plans.checkoutError'))
       }
@@ -318,6 +298,22 @@ function Plans() {
               {activePlanMessage}
             </span>
           )}
+
+          {pendingPurchase && (
+            <div className="mt-3 rounded-xl border border-amber-500/30 bg-amber-100/70 p-3 text-sm text-amber-900 dark:border-amber-300/40 dark:bg-amber-900/30 dark:text-amber-100">
+              <p className="font-semibold">{t('plans.pendingPurchaseBannerTitle')}</p>
+              <p className="mt-1">
+                {t('plans.pendingPurchaseBannerBody')}
+                {' '}
+                <Link
+                  to={`/subscription-purchases/${pendingPurchase.purchase_id}/manual-payment`}
+                  className="font-semibold underline"
+                >
+                  {t('plans.pendingPurchaseBannerLink')}
+                </Link>
+              </p>
+            </div>
+          )}
         </div>
 
         {loading ? (
@@ -366,10 +362,10 @@ function Plans() {
                               {formatAmount(plan.amount, plan.currency, t)}
                             </p>
                             <span className="pb-1 text-xs uppercase tracking-wide text-navy/55 dark:text-cream/55">
-                              {code === 'ultimate' ? t('plans.yearlyLabel') : t('plans.monthlyLabel')}
+                              {code === 'yearly' ? t('plans.yearlyLabel') : t('plans.monthlyLabel')}
                             </span>
                           </div>
-                          {code === 'ultimate' && (
+                          {code === 'yearly' && (
                             <p className="mt-1 text-[0.85rem] font-normal text-navy/60 dark:text-cream/60">
                               {t('plans.yearlyEquivalent')}
                             </p>
@@ -394,6 +390,53 @@ function Plans() {
                       </ul>
                     </div>
 
+                    {/* Period selector for paid plans */}
+                    {!isFree && !isCurrentPlan && plan.is_purchasable && (
+                      <div className="relative z-10 mt-4">
+                        <label className="text-xs font-bold uppercase tracking-wide text-navy/55 dark:text-cream/55">
+                          {t('plans.periodsLabel')}
+                        </label>
+                        <div className="mt-2 flex items-center gap-2">
+                          <button
+                            type="button"
+                            disabled={(periodsMap[code] || 1) <= 1}
+                            onClick={() =>
+                              setPeriodsMap((prev) => ({
+                                ...prev,
+                                [code]: Math.max(1, (prev[code] || 1) - 1),
+                              }))
+                            }
+                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-navy/20 text-navy transition hover:bg-navy/10 disabled:opacity-30 dark:border-cream/20 dark:text-cream dark:hover:bg-cream/10"
+                            aria-label={t('plans.decreasePeriods')}
+                          >
+                            −
+                          </button>
+                          <span className="min-w-[2rem] text-center text-lg font-bold text-navy dark:text-cream">
+                            {periodsMap[code] || 1}
+                          </span>
+                          <button
+                            type="button"
+                            disabled={(periodsMap[code] || 1) >= (MAX_PERIODS[code] || 1)}
+                            onClick={() =>
+                              setPeriodsMap((prev) => ({
+                                ...prev,
+                                [code]: Math.min(MAX_PERIODS[code] || 1, (prev[code] || 1) + 1),
+                              }))
+                            }
+                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-navy/20 text-navy transition hover:bg-navy/10 disabled:opacity-30 dark:border-cream/20 dark:text-cream dark:hover:bg-cream/10"
+                            aria-label={t('plans.increasePeriods')}
+                          >
+                            +
+                          </button>
+                        </div>
+                        {(periodsMap[code] || 1) > 1 && (
+                          <p className="mt-1 text-xs text-navy/60 dark:text-cream/60">
+                            {t('plans.totalAmount')}: {((periodsMap[code] || 1) * Number(plan.amount)).toFixed(2)} {plan.currency}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
                     {/* CTA */}
                     <div className="relative z-10 mt-6">
                       {renderCtaButton(plan)}
@@ -409,14 +452,8 @@ function Plans() {
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4" aria-hidden="true">
                   <path fillRule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clipRule="evenodd" />
                 </svg>
-                {t('plans.securePayment')}
+                {t('plans.manualTransferInfo')}
               </span>
-              <span aria-hidden="true" className="text-navy/20 dark:text-cream/20">·</span>
-              <span>Blik</span>
-              <span aria-hidden="true" className="text-navy/20 dark:text-cream/20">·</span>
-              <span>Visa</span>
-              <span aria-hidden="true" className="text-navy/20 dark:text-cream/20">·</span>
-              <span>Mastercard</span>
             </div>
           </div>
         )}

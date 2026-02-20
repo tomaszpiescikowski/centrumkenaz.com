@@ -21,7 +21,7 @@ from sqlalchemy import Integer, delete, func, inspect, or_, select
 from database import AsyncSessionLocal, ensure_db_schema
 from models.city import City
 from models.event import Event
-from models.payment import Payment, PaymentStatus as DBPaymentStatus, PaymentType
+from models.payment import Payment, PaymentStatus as DBPaymentStatus, PaymentType, Currency
 from models.product import Product
 from models.registration import Registration, RegistrationStatus
 from models.registration_refund_task import RegistrationRefundTask
@@ -55,11 +55,11 @@ EDGE_CASE_EVENT_KEYS = [
 ]
 
 SUBSCRIPTION_PLANS = {
-    "pro": {
+    "monthly": {
         "amount": Decimal("20.00"),
         "duration_days": 30,
     },
-    "ultimate": {
+    "yearly": {
         "amount": Decimal("200.00"),
         "duration_days": 365,
     },
@@ -375,7 +375,7 @@ def _base_user_seed_specs(base_now: datetime | None = None) -> list[dict]:
             "role": UserRole.MEMBER,
             "account_status": AccountStatus.ACTIVE,
             "subscription_end_date": now_naive + timedelta(days=30),
-            "subscription_plan_code": "pro",
+            "subscription_plan_code": "monthly",
             "points": 420,
             "city": "Poznań",
             "google_id": None,
@@ -391,7 +391,7 @@ def _base_user_seed_specs(base_now: datetime | None = None) -> list[dict]:
             "role": UserRole.MEMBER,
             "account_status": AccountStatus.ACTIVE,
             "subscription_end_date": now_naive + timedelta(days=20),
-            "subscription_plan_code": "pro",
+            "subscription_plan_code": "monthly",
             "points": 275,
             "city": "Warszawa",
             "google_id": None,
@@ -407,7 +407,7 @@ def _base_user_seed_specs(base_now: datetime | None = None) -> list[dict]:
             "role": UserRole.MEMBER,
             "account_status": AccountStatus.ACTIVE,
             "subscription_end_date": now_naive + timedelta(days=365),
-            "subscription_plan_code": "ultimate",
+            "subscription_plan_code": "yearly",
             "points": 980,
             "city": "Poznań",
             "google_id": None,
@@ -1040,9 +1040,9 @@ async def _seed_registrations(per_event: int, reset: bool) -> None:
         # Seed subscription payments to expose plan_code via /auth/me.
         subscription_payments: list[Payment] = []
         subscription_seed = [
-            (pro_one, "pro", "SUB_TEST_PRO_01"),
-            (pro_two, "pro", "SUB_TEST_PRO_02"),
-            (ultimate_one, "ultimate", "SUB_TEST_ULTIMATE_01"),
+            (pro_one, "monthly", "SUB_TEST_MONTHLY_01"),
+            (pro_two, "monthly", "SUB_TEST_MONTHLY_02"),
+            (ultimate_one, "yearly", "SUB_TEST_YEARLY_01"),
         ]
         for user, plan_code, external_id in subscription_seed:
             meta = SUBSCRIPTION_PLANS[plan_code]
@@ -1051,7 +1051,7 @@ async def _seed_registrations(per_event: int, reset: bool) -> None:
                     user_id=user.id,
                     external_id=external_id,
                     amount=meta["amount"],
-                    currency="PLN",
+                    currency=Currency.PLN.value,
                     payment_type=PaymentType.SUBSCRIPTION.value,
                     status=DBPaymentStatus.COMPLETED.value,
                     description=f"Subscription {plan_code}",
@@ -1073,7 +1073,7 @@ async def _seed_registrations(per_event: int, reset: bool) -> None:
             user_id=guest_four.id,
             external_id="MANUAL_TEST_VERIFY_01",
             amount=Decimal(str(manual.price_guest)),
-            currency="PLN",
+            currency=Currency.PLN.value,
             payment_type=PaymentType.EVENT.value,
             status=DBPaymentStatus.PROCESSING.value,
             description=f"Manual payment for {manual.title}",

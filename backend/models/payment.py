@@ -16,6 +16,10 @@ class PaymentStatus(str, enum.Enum):
     CANCELLED = "cancelled"
 
 
+class Currency(str, enum.Enum):
+    PLN = "PLN"
+
+
 class PaymentType(str, enum.Enum):
     EVENT = "event"
     SUBSCRIPTION = "subscription"
@@ -57,7 +61,7 @@ class Payment(Base):
     )
     currency = Column(
         String(3),
-        default="PLN",
+        default=Currency.PLN.value,
         comment="ISO currency code.",
     )
 

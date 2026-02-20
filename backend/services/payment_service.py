@@ -7,9 +7,10 @@ import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from models.payment import Payment, PaymentStatus as DBPaymentStatus, PaymentType
+from models.payment import Payment, PaymentStatus as DBPaymentStatus, PaymentType, Currency
 from models.user import User, UserRole
 from models.subscription import Subscription
+from models.subscription_purchase import PlanCode, SubscriptionPurchase, SubscriptionPurchaseStatus
 from ports.payment_gateway import (
     PaymentGatewayPort,
     PaymentRequest,
@@ -34,24 +35,24 @@ class SubscriptionPlan:
 
 
 SUBSCRIPTION_PLANS: dict[str, SubscriptionPlan] = {
-    "free": SubscriptionPlan(
-        code="free",
+    PlanCode.FREE: SubscriptionPlan(
+        code=PlanCode.FREE.value,
         amount=Decimal("0.00"),
-        currency="PLN",
+        currency=Currency.PLN.value,
         duration_days=0,
         is_default=True,
         is_purchasable=False,
     ),
-    "pro": SubscriptionPlan(
-        code="pro",
+    PlanCode.MONTHLY: SubscriptionPlan(
+        code=PlanCode.MONTHLY.value,
         amount=Decimal("20.00"),
-        currency="PLN",
+        currency=Currency.PLN.value,
         duration_days=30,
     ),
-    "ultimate": SubscriptionPlan(
-        code="ultimate",
+    PlanCode.YEARLY: SubscriptionPlan(
+        code=PlanCode.YEARLY.value,
         amount=Decimal("200.00"),
-        currency="PLN",
+        currency=Currency.PLN.value,
         duration_days=365,
     ),
 }
@@ -87,9 +88,9 @@ class PaymentService:
         The order is fixed so the frontend can render plans consistently.
         """
         return [
-            SUBSCRIPTION_PLANS["free"],
-            SUBSCRIPTION_PLANS["pro"],
-            SUBSCRIPTION_PLANS["ultimate"],
+            SUBSCRIPTION_PLANS[PlanCode.FREE],
+            SUBSCRIPTION_PLANS[PlanCode.MONTHLY],
+            SUBSCRIPTION_PLANS[PlanCode.YEARLY],
         ]
 
     @staticmethod
@@ -158,7 +159,7 @@ class PaymentService:
         # Create payment request
         request = PaymentRequest(
             amount=amount,
-            currency="PLN",
+            currency=Currency.PLN.value,
             description=description,
             user_id=user.id,
             user_email=user.email,
@@ -176,7 +177,7 @@ class PaymentService:
             user_id=user.id,
             external_id=result.payment_id,
             amount=amount,
-            currency="PLN",
+            currency=Currency.PLN.value,
             payment_type=PaymentType.EVENT.value,
             status=result.status.value,
             description=description,
@@ -215,7 +216,7 @@ class PaymentService:
             user_id=user.id,
             external_id=self._build_manual_external_id(),
             amount=amount,
-            currency="PLN",
+            currency=Currency.PLN.value,
             payment_type=PaymentType.EVENT.value,
             status=DBPaymentStatus.PROCESSING.value,
             description=description,
@@ -495,3 +496,289 @@ class PaymentService:
         )
         result = await self.db.execute(stmt)
         return list(result.scalars().all())
+
+    # ── Subscription manual-payment purchase flow ──────────────────────────
+
+    @staticmethod
+    def max_periods_for_plan(plan_code: str) -> int:
+        """
+        Return the maximum number of billing periods a user may purchase at once.
+
+        Monthly allows up to 6 months; yearly (annual) allows up to 2 years.
+        """
+        if plan_code == PlanCode.YEARLY.value:
+            return 2
+        return 6  # monthly or any other
+
+    async def initiate_subscription_purchase(
+        self,
+        user: User,
+        plan_code: str,
+        periods: int = 1,
+    ) -> SubscriptionPurchase:
+        """
+        Create a subscription purchase order for manual payment.
+
+        The method validates the plan, enforces period limits, prevents
+        duplicate purchases during an active subscription, and returns the
+        new SubscriptionPurchase row.
+        """
+        plan = self.get_subscription_plan(plan_code)
+        if not plan or not plan.is_purchasable:
+            raise ValueError("Unsupported subscription plan")
+
+        max_p = self.max_periods_for_plan(plan_code)
+        if periods < 1 or periods > max_p:
+            raise ValueError(f"periods must be between 1 and {max_p}")
+
+        # Prevent duplicate purchase while subscription is still active
+        sub_result = await self.db.execute(
+            select(Subscription).where(legacy_id_eq(Subscription.user_id, user.id))
+        )
+        subscription = sub_result.scalar_one_or_none()
+        if subscription and subscription.end_date and subscription.end_date > datetime.utcnow():
+            raise ValueError("Cannot purchase while subscription is still active")
+
+        # Prevent duplicate pending purchase
+        pending_result = await self.db.execute(
+            select(SubscriptionPurchase).where(
+                legacy_id_eq(SubscriptionPurchase.user_id, user.id),
+                SubscriptionPurchase.status.in_([
+                    SubscriptionPurchaseStatus.MANUAL_PAYMENT_REQUIRED.value,
+                    SubscriptionPurchaseStatus.MANUAL_PAYMENT_VERIFICATION.value,
+                ]),
+            )
+        )
+        existing = pending_result.scalar_one_or_none()
+        if existing:
+            raise ValueError("You already have a pending subscription purchase")
+
+        total = plan.amount * periods
+        purchase = SubscriptionPurchase(
+            user_id=user.id,
+            plan_code=plan.code,
+            periods=periods,
+            total_amount=total,
+            currency=plan.currency,
+            status=SubscriptionPurchaseStatus.MANUAL_PAYMENT_REQUIRED.value,
+            is_test_data=bool(user.is_test_data),
+        )
+        self.db.add(purchase)
+        await self.db.commit()
+        await self.db.refresh(purchase)
+        return purchase
+
+    async def get_subscription_purchase_details(
+        self,
+        purchase_id: str,
+        user_id: str,
+    ) -> dict | None:
+        """
+        Return manual payment details for a subscription purchase.
+
+        The response dict mirrors the event manual payment details structure
+        for consistent frontend consumption.
+        """
+        from config import settings
+
+        stmt = select(SubscriptionPurchase).where(
+            legacy_id_eq(SubscriptionPurchase.id, purchase_id),
+            legacy_id_eq(SubscriptionPurchase.user_id, user_id),
+        )
+        result = await self.db.execute(stmt)
+        purchase = result.scalar_one_or_none()
+        if not purchase:
+            return None
+
+        plan = self.get_subscription_plan(purchase.plan_code)
+        plan_label = plan.code if plan else purchase.plan_code
+
+        return {
+            "purchase_id": str(purchase.id),
+            "plan_code": purchase.plan_code,
+            "plan_label": plan_label,
+            "periods": purchase.periods,
+            "total_amount": str(purchase.total_amount),
+            "currency": purchase.currency,
+            "status": purchase.status,
+            "manual_payment_url": getattr(settings, "default_payment_url", "") or "",
+            "transfer_reference": str(purchase.id),
+            "manual_payment_confirmed_at": (
+                purchase.manual_payment_confirmed_at.isoformat()
+                if purchase.manual_payment_confirmed_at
+                else None
+            ),
+            "can_confirm": purchase.status == SubscriptionPurchaseStatus.MANUAL_PAYMENT_REQUIRED.value,
+            "created_at": purchase.created_at.isoformat() if purchase.created_at else None,
+        }
+
+    async def confirm_subscription_manual_payment(
+        self,
+        purchase_id: str,
+        user_id: str,
+    ) -> dict | None:
+        """
+        Confirm that the user completed a manual subscription payment.
+
+        Creates a Payment record and sets the purchase to MANUAL_PAYMENT_VERIFICATION.
+        """
+        stmt = select(SubscriptionPurchase).where(
+            legacy_id_eq(SubscriptionPurchase.id, purchase_id),
+            legacy_id_eq(SubscriptionPurchase.user_id, user_id),
+        )
+        result = await self.db.execute(stmt)
+        purchase = result.scalar_one_or_none()
+        if not purchase:
+            return None
+
+        if purchase.status == SubscriptionPurchaseStatus.MANUAL_PAYMENT_VERIFICATION.value:
+            return await self.get_subscription_purchase_details(purchase_id, user_id)
+        if purchase.status == SubscriptionPurchaseStatus.CONFIRMED.value:
+            return await self.get_subscription_purchase_details(purchase_id, user_id)
+        if purchase.status != SubscriptionPurchaseStatus.MANUAL_PAYMENT_REQUIRED.value:
+            raise ValueError("Manual payment confirmation is not available for this purchase")
+
+        now = datetime.utcnow()
+
+        # Create manual payment record
+        if not purchase.payment_id:
+            plan = self.get_subscription_plan(purchase.plan_code)
+            plan_label = plan.code if plan else purchase.plan_code
+            payload = {
+                "type": "subscription",
+                "plan_code": purchase.plan_code,
+                "periods": purchase.periods,
+                "duration_days": (plan.duration_days * purchase.periods) if plan else 0,
+                "purchase_id": str(purchase.id),
+                "manual_payment_reference": str(purchase.id),
+                "declared_at": now.isoformat(),
+            }
+            payment = Payment(
+                user_id=purchase.user_id,
+                external_id=self._build_manual_external_id(),
+                amount=purchase.total_amount,
+                currency=purchase.currency,
+                payment_type=PaymentType.SUBSCRIPTION.value,
+                status=DBPaymentStatus.PROCESSING.value,
+                description=f"Subskrypcja {plan_label} x{purchase.periods}",
+                extra_data=json.dumps(payload),
+            )
+            self.db.add(payment)
+            await self.db.flush()
+            purchase.payment_id = payment.external_id
+
+        purchase.status = SubscriptionPurchaseStatus.MANUAL_PAYMENT_VERIFICATION.value
+        purchase.manual_payment_confirmed_at = now
+        self.db.add(purchase)
+        await self.db.commit()
+        await self.db.refresh(purchase)
+        return await self.get_subscription_purchase_details(purchase_id, user_id)
+
+    async def approve_subscription_manual_payment(
+        self,
+        purchase_id: str,
+    ) -> SubscriptionPurchase | None:
+        """
+        Approve a manual subscription payment and activate the subscription.
+
+        Marks the payment completed, calculates total duration from plan *
+        periods, applies subscription via existing helper, and sets purchase
+        status to CONFIRMED.
+        """
+        stmt = select(SubscriptionPurchase).where(
+            legacy_id_eq(SubscriptionPurchase.id, purchase_id),
+        )
+        result = await self.db.execute(stmt)
+        purchase = result.scalar_one_or_none()
+        if not purchase:
+            return None
+        if purchase.status != SubscriptionPurchaseStatus.MANUAL_PAYMENT_VERIFICATION.value:
+            raise ValueError("Purchase is not awaiting manual payment verification")
+
+        # Ensure payment record exists
+        if not purchase.payment_id:
+            raise ValueError("No payment record linked to this purchase")
+
+        # Mark payment completed
+        await self.mark_manual_event_payment_completed(purchase.payment_id)
+
+        # Get the payment to apply subscription
+        pay_result = await self.db.execute(
+            select(Payment).where(Payment.external_id == purchase.payment_id)
+        )
+        payment = pay_result.scalar_one_or_none()
+        if not payment:
+            raise ValueError("Payment record not found")
+
+        # Calculate total duration
+        plan = self.get_subscription_plan(purchase.plan_code)
+        if not plan:
+            raise ValueError("Plan not found")
+        total_days = plan.duration_days * purchase.periods
+
+        # Apply subscription directly (don't use apply_subscription_for_payment
+        # because that reads duration from extra_data which may not match periods)
+        user_result = await self.db.execute(
+            select(User).where(legacy_id_eq(User.id, purchase.user_id))
+        )
+        user = user_result.scalar_one_or_none()
+        if not user:
+            raise ValueError("User not found")
+
+        sub_result = await self.db.execute(
+            select(Subscription).where(legacy_id_eq(Subscription.user_id, user.id))
+        )
+        subscription = sub_result.scalar_one_or_none()
+        if not subscription:
+            subscription = Subscription(
+                user_id=user.id, points=0, is_test_data=bool(user.is_test_data)
+            )
+
+        subscription.end_date = self._add_days_from_effective_start(
+            current_end=subscription.end_date,
+            duration_days=total_days,
+        )
+        if user.role == UserRole.GUEST:
+            user.role = UserRole.MEMBER
+
+        # Update payment extra_data
+        extra_data = self._parse_extra_data(payment)
+        extra_data["plan_code"] = plan.code
+        extra_data["duration_days"] = total_days
+        extra_data["subscription_applied_at"] = datetime.utcnow().isoformat()
+        payment.extra_data = json.dumps(extra_data)
+
+        purchase.status = SubscriptionPurchaseStatus.CONFIRMED.value
+
+        self.db.add(user)
+        self.db.add(subscription)
+        self.db.add(payment)
+        self.db.add(purchase)
+        await self.db.commit()
+        await self.db.refresh(purchase)
+        return purchase
+
+    async def get_user_pending_subscription_purchase(
+        self,
+        user_id: str,
+    ) -> SubscriptionPurchase | None:
+        """
+        Return the pending subscription purchase for a user, if any.
+
+        Returns the most recent purchase in MANUAL_PAYMENT_REQUIRED or
+        MANUAL_PAYMENT_VERIFICATION status.
+        """
+        stmt = (
+            select(SubscriptionPurchase)
+            .where(
+                legacy_id_eq(SubscriptionPurchase.user_id, user_id),
+                SubscriptionPurchase.status.in_([
+                    SubscriptionPurchaseStatus.MANUAL_PAYMENT_REQUIRED.value,
+                    SubscriptionPurchaseStatus.MANUAL_PAYMENT_VERIFICATION.value,
+                ]),
+            )
+            .order_by(SubscriptionPurchase.created_at.desc())
+            .limit(1)
+        )
+        result = await self.db.execute(stmt)
+        return result.scalar_one_or_none()

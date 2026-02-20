@@ -3,7 +3,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
-import { fetchMyProfile, updateMyProfile } from '../../api/user'
+import { fetchMyProfile, updateMyProfile, fetchPendingSubscriptionPurchase } from '../../api/user'
 import InterestTagsPicker from '../../components/forms/InterestTagsPicker'
 import LanguageSelector from '../../components/controls/LanguageSelector'
 import CitySelector from '../../components/controls/CitySelector'
@@ -21,6 +21,7 @@ function Account({ darkMode, setDarkMode }) {
   const [savingAboutMe, setSavingAboutMe] = useState(false)
   const [savingInterests, setSavingInterests] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [pendingPurchase, setPendingPurchase] = useState(null)
 
   const activeSubscription = useMemo(() => {
     if (!user?.subscription_end_date) return false
@@ -29,7 +30,7 @@ function Account({ darkMode, setDarkMode }) {
 
   const currentPlanCode = useMemo(() => {
     if (!activeSubscription) return 'free'
-    return user?.subscription_plan_code || 'pro'
+    return user?.subscription_plan_code || 'monthly'
   }, [activeSubscription, user])
 
   const currentPlanLabel = useMemo(() => {
@@ -48,12 +49,16 @@ function Account({ darkMode, setDarkMode }) {
     const loadProfile = async () => {
       setLoading(true)
       try {
-        const profile = await fetchMyProfile(authFetch)
+        const [profile, pending] = await Promise.all([
+          fetchMyProfile(authFetch),
+          fetchPendingSubscriptionPurchase(authFetch).catch(() => null),
+        ])
         if (cancelled) return
         const aboutMeValue = profile.about_me || ''
         setAboutMe(aboutMeValue)
         setOriginalAboutMe(aboutMeValue)
         setInterestTags(Array.isArray(profile.interest_tags) ? profile.interest_tags : [])
+        setPendingPurchase(pending)
       } catch (_err) {
         if (cancelled) return
         const aboutMeValue = user?.about_me || ''
@@ -347,6 +352,18 @@ function Account({ darkMode, setDarkMode }) {
                   {t('account.manageSubscription')}
                 </Link>
               </div>
+
+              {pendingPurchase && (
+                <div className="mt-3 rounded-xl border border-amber-500/30 bg-amber-100/70 p-3 text-xs text-amber-900 dark:border-amber-300/40 dark:bg-amber-900/30 dark:text-amber-100">
+                  <p className="font-semibold">{t('account.pendingSubscriptionTitle')}</p>
+                  <Link
+                    to={`/subscription-purchases/${pendingPurchase.purchase_id}/manual-payment`}
+                    className="mt-1 inline-block font-semibold underline"
+                  >
+                    {t('account.pendingSubscriptionLink')}
+                  </Link>
+                </div>
+              )}
             </div>
           </aside>
         </div>

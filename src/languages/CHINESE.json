@@ -342,6 +342,35 @@
     "promotedNoticeTitle": "已从候补名单晋升",
     "promotedNoticeBody": "你已从候补名单中晋升，有限时间内需完成付款。"
   },
+  "subscriptionManualPayment": {
+    "title": "订阅付款",
+    "subtitle": "进行银行转账并在应用中确认。",
+    "backToPlans": "返回计划",
+    "loginRequired": "请登录以继续订阅付款。",
+    "loginButton": "登录",
+    "notFoundTitle": "付款详情不可用",
+    "notFoundBody": "未找到有效的订阅付款。",
+    "loadError": "无法加载付款详情。",
+    "planLabel": "计划",
+    "periodsLabel": "期数",
+    "amountLabel": "金额",
+    "stepsIntro": "完成以下步骤：",
+    "stepOpenTransfer": "打开转账页面：",
+    "openTransferLink": "前往付款页面",
+    "missingTransferLink": "付款链接缺失",
+    "stepPasteReference": "将下方文本粘贴到转账备注栏。",
+    "stepConfirm": "转账完成后，点击「我确认付款」。",
+    "referenceLabel": "转账备注",
+    "copyButton": "复制转账备注",
+    "copySuccess": "转账备注已复制。",
+    "copyError": "无法复制转账备注。",
+    "confirmButton": "我确认付款",
+    "confirming": "确认中...",
+    "confirmSuccess": "您的付款正在等待管理员验证。",
+    "confirmError": "无法确认付款。",
+    "waitingVerification": "付款声明已提交，等待管理员验证。",
+    "alreadyPaid": "付款已批准，您的订阅已激活。"
+  },
   "account": {
     "title": "我的账户",
     "subtitle": "你的资料、积分与报名记录。",
@@ -383,7 +412,9 @@
     "openManualPayment": "完成付款",
     "loadError": "加载账户数据失败",
     "cancelError": "取消报名失败",
-    "cancelSuccess": "报名已成功取消。"
+    "cancelSuccess": "报名已成功取消。",
+    "pendingSubscriptionTitle": "您有一笔待处理的订阅付款。",
+    "pendingSubscriptionLink": "完成付款"
   },
   "plans": {
     "backToAccount": "返回账户",
@@ -422,7 +453,7 @@
         "ctaCurrent": "您的当前计划",
         "ctaSwitch": "免费开始"
       },
-      "pro": {
+      "monthly": {
         "title": "Kenaz 会员",
         "summary": "最受欢迎",
         "features": [
@@ -433,7 +464,7 @@
         "cta": "加入社区",
         "ctaAriaLabel": "加入社区 — 每月 33 PLN"
       },
-      "ultimate": {
+      "yearly": {
         "title": "年度会员",
         "summary": "全年访问",
         "features": [
@@ -452,7 +483,16 @@
     "welcomeModalTitle": "您的账户已通过审核！",
     "welcomeModalBody": "欢迎来到 Kenaz。您现在可以选择一个计划加入社区，或者返回账户稍后再做。",
     "welcomeModalChoosePlan": "选择计划",
-    "welcomeModalBackToAccount": "返回账户"
+    "welcomeModalBackToAccount": "返回账户",
+    "pendingPurchaseError": "您已有待处理的订阅购买。",
+    "pendingPurchaseBannerTitle": "待处理的订阅付款",
+    "pendingPurchaseBannerBody": "您有一笔未完成的订阅付款。",
+    "pendingPurchaseBannerLink": "继续付款",
+    "periodsLabel": "期数",
+    "decreasePeriods": "减少期数",
+    "increasePeriods": "增加期数",
+    "totalAmount": "合计",
+    "manualTransferInfo": "通过银行转账付款"
   },
   "admin": {
     "createEventTitle": "创建新活动",
@@ -715,7 +755,16 @@
       "notificationColumn": "通知",
       "notifiedLabel": "已通知",
       "promotionSaveSuccess": "通知状态已更新。",
-      "promotionSaveError": "无法更新通知状态。"
+      "promotionSaveError": "无法更新通知状态。",
+      "subscriptionsTitle": "订阅",
+      "subscriptionsSubtitle": "待处理的订阅付款。",
+      "subscriptionsEmpty": "没有待处理的订阅付款。",
+      "subscriptionApproveSuccess": "订阅付款已批准。",
+      "subscriptionApproveError": "无法批准订阅付款。",
+      "subscriptionPlanColumn": "计划",
+      "period": "期",
+      "periods": "期",
+      "createdColumn": "创建时间"
     },
     "approvalSuccess": "用户已通过审核。",
     "recurringUpdateSuccess": "周期活动已更新。",

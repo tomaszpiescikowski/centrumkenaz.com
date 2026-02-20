@@ -342,6 +342,35 @@
     "promotedNoticeTitle": "Promosso dalla lista d'attesa",
     "promotedNoticeBody": "Sei stato promosso dalla lista d'attesa e hai tempo limitato per pagare."
   },
+  "subscriptionManualPayment": {
+    "title": "Pagamento abbonamento",
+    "subtitle": "Effettua un bonifico bancario e confermalo nell'app.",
+    "backToPlans": "Torna ai piani",
+    "loginRequired": "Accedi per continuare il pagamento dell'abbonamento.",
+    "loginButton": "Accedi",
+    "notFoundTitle": "Dettagli pagamento non disponibili",
+    "notFoundBody": "Nessun pagamento attivo trovato per l'abbonamento.",
+    "loadError": "Impossibile caricare i dettagli del pagamento.",
+    "planLabel": "Piano",
+    "periodsLabel": "Periodi",
+    "amountLabel": "Importo",
+    "stepsIntro": "Completa i seguenti passaggi:",
+    "stepOpenTransfer": "Apri la pagina del bonifico:",
+    "openTransferLink": "vai alla pagina di pagamento",
+    "missingTransferLink": "link di pagamento mancante",
+    "stepPasteReference": "Incolla il testo sottostante nel campo causale del bonifico.",
+    "stepConfirm": "Dopo aver effettuato il bonifico, clicca \"Confermo il pagamento\".",
+    "referenceLabel": "Causale bonifico",
+    "copyButton": "Copia causale",
+    "copySuccess": "Causale copiata.",
+    "copyError": "Impossibile copiare la causale.",
+    "confirmButton": "Confermo il pagamento",
+    "confirming": "Conferma in corso...",
+    "confirmSuccess": "Il pagamento è in attesa di verifica admin.",
+    "confirmError": "Impossibile confermare il pagamento.",
+    "waitingVerification": "Dichiarazione di pagamento inviata. In attesa di verifica admin.",
+    "alreadyPaid": "Pagamento approvato. Il tuo abbonamento è attivo."
+  },
   "account": {
     "title": "Il mio account",
     "subtitle": "Il tuo profilo, punti e iscrizioni.",
@@ -385,7 +414,9 @@
     "openManualPayment": "Completa il pagamento",
     "loadError": "Impossibile caricare i dati dell'account",
     "cancelError": "Impossibile annullare l'iscrizione",
-    "cancelSuccess": "Iscrizione annullata con successo."
+    "cancelSuccess": "Iscrizione annullata con successo.",
+    "pendingSubscriptionTitle": "Hai un pagamento abbonamento in sospeso.",
+    "pendingSubscriptionLink": "Completa il pagamento"
   },
   "plans": {
     "backToAccount": "Torna all'account",
@@ -424,7 +455,7 @@
         "ctaCurrent": "Il tuo piano attuale",
         "ctaSwitch": "Inizia gratuitamente"
       },
-      "pro": {
+      "monthly": {
         "title": "Membro Kenaz",
         "summary": "Più scelto",
         "features": [
@@ -435,7 +466,7 @@
         "cta": "Unisciti alla comunità",
         "ctaAriaLabel": "Unisciti alla comunità — 33 PLN al mese"
       },
-      "ultimate": {
+      "yearly": {
         "title": "Abbonamento annuale",
         "summary": "Accesso per tutto l'anno",
         "features": [
@@ -454,7 +485,16 @@
     "welcomeModalTitle": "Il tuo account è stato approvato!",
     "welcomeModalBody": "Benvenuto a Kenaz. Ora puoi unirti alla comunità scegliendo un piano oppure tornare al tuo account e farlo più tardi.",
     "welcomeModalChoosePlan": "Scegli un piano",
-    "welcomeModalBackToAccount": "Torna all'account"
+    "welcomeModalBackToAccount": "Torna all'account",
+    "pendingPurchaseError": "Hai già un acquisto abbonamento in sospeso.",
+    "pendingPurchaseBannerTitle": "Pagamento abbonamento in sospeso",
+    "pendingPurchaseBannerBody": "Hai un pagamento abbonamento non completato.",
+    "pendingPurchaseBannerLink": "Continua il pagamento",
+    "periodsLabel": "Numero di periodi",
+    "decreasePeriods": "Diminuisci il numero di periodi",
+    "increasePeriods": "Aumenta il numero di periodi",
+    "totalAmount": "Totale",
+    "manualTransferInfo": "Pagamento tramite bonifico bancario"
   },
   "admin": {
     "createEventTitle": "Crea un nuovo evento",
@@ -717,7 +757,16 @@
       "notificationColumn": "Notifica",
       "notifiedLabel": "Notificato",
       "promotionSaveSuccess": "Stato notifica aggiornato.",
-      "promotionSaveError": "Impossibile aggiornare lo stato notifica."
+      "promotionSaveError": "Impossibile aggiornare lo stato notifica.",
+      "subscriptionsTitle": "Abbonamenti",
+      "subscriptionsSubtitle": "Pagamenti abbonamento in sospeso.",
+      "subscriptionsEmpty": "Nessun pagamento abbonamento in sospeso.",
+      "subscriptionApproveSuccess": "Pagamento abbonamento approvato.",
+      "subscriptionApproveError": "Impossibile approvare il pagamento abbonamento.",
+      "subscriptionPlanColumn": "Piano",
+      "period": "periodo",
+      "periods": "periodi",
+      "createdColumn": "Creato"
     },
     "approvalSuccess": "Utente approvato.",
     "recurringUpdateSuccess": "Evento ricorrente aggiornato.",

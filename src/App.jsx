@@ -23,6 +23,7 @@ import Terms from './pages/public/Terms'
 import PendingApproval from './pages/account/PendingApproval'
 import UserProfile from './pages/account/UserProfile'
 import ManualPaymentPage from './pages/account/ManualPaymentPage'
+import SubscriptionManualPaymentPage from './pages/account/SubscriptionManualPaymentPage'
 import MyEvents from './pages/account/MyEvents'
 import Login from './pages/auth/Login'
 
@@ -131,6 +132,7 @@ function App() {
                     <Route path="/pending-approval" element={<PendingApproval />} />
                     <Route path="/people/:userId" element={<UserProfile />} />
                     <Route path="/registrations/:registrationId/manual-payment" element={<ManualPaymentPage />} />
+                    <Route path="/subscription-purchases/:purchaseId/manual-payment" element={<SubscriptionManualPaymentPage />} />
                   </Route>
                   <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/auth/error" element={<AuthCallback />} />

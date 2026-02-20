@@ -342,6 +342,35 @@
     "promotedNoticeTitle": "Gepromoveerd van wachtlijst",
     "promotedNoticeBody": "Je bent van de wachtlijst gehaald en hebt beperkte tijd om te betalen."
   },
+  "subscriptionManualPayment": {
+    "title": "Abonnementsbetaling",
+    "subtitle": "Maak een bankoverschrijving en bevestig deze in de app.",
+    "backToPlans": "Terug naar plannen",
+    "loginRequired": "Log in om door te gaan met de abonnementsbetaling.",
+    "loginButton": "Log in",
+    "notFoundTitle": "Betalingsgegevens niet beschikbaar",
+    "notFoundBody": "Geen actieve abonnementsbetaling gevonden.",
+    "loadError": "Kon betalingsgegevens niet laden.",
+    "planLabel": "Plan",
+    "periodsLabel": "Periodes",
+    "amountLabel": "Bedrag",
+    "stepsIntro": "Voltooi de volgende stappen:",
+    "stepOpenTransfer": "Open de overschrijvingspagina:",
+    "openTransferLink": "ga naar betaalpagina",
+    "missingTransferLink": "betaallink ontbreekt",
+    "stepPasteReference": "Plak de onderstaande tekst in het omschrijvingsveld van de overschrijving.",
+    "stepConfirm": "Klik na de overschrijving op \"Ik bevestig de betaling\".",
+    "referenceLabel": "Betalingsomschrijving",
+    "copyButton": "Kopieer omschrijving",
+    "copySuccess": "Omschrijving gekopieerd.",
+    "copyError": "Kon omschrijving niet kopiëren.",
+    "confirmButton": "Ik bevestig de betaling",
+    "confirming": "Bevestigen...",
+    "confirmSuccess": "Je betaling wacht op verificatie door admin.",
+    "confirmError": "Kon betaling niet bevestigen.",
+    "waitingVerification": "Betalingsverklaring ingediend. Wacht op verificatie door admin.",
+    "alreadyPaid": "Betaling is goedgekeurd. Je abonnement is actief."
+  },
   "account": {
     "title": "Mijn account",
     "subtitle": "Je profiel, punten en inschrijvingen.",
@@ -385,7 +414,9 @@
     "openManualPayment": "Betaling voltooien",
     "loadError": "Kon accountgegevens niet laden",
     "cancelError": "Kon inschrijving niet annuleren",
-    "cancelSuccess": "Inschrijving succesvol geannuleerd."
+    "cancelSuccess": "Inschrijving succesvol geannuleerd.",
+    "pendingSubscriptionTitle": "Je hebt een openstaande abonnementsbetaling.",
+    "pendingSubscriptionLink": "Betaling voltooien"
   },
   "plans": {
     "backToAccount": "Terug naar account",
@@ -424,7 +455,7 @@
         "ctaCurrent": "Je huidige plan",
         "ctaSwitch": "Begin gratis"
       },
-      "pro": {
+      "monthly": {
         "title": "Kenaz Lid",
         "summary": "Meest gekozen",
         "features": [
@@ -435,7 +466,7 @@
         "cta": "Word lid van de gemeenschap",
         "ctaAriaLabel": "Word lid van de gemeenschap — 33 PLN per maand"
       },
-      "ultimate": {
+      "yearly": {
         "title": "Jaarlijks lidmaatschap",
         "summary": "Volledig jaar toegang",
         "features": [
@@ -454,7 +485,16 @@
     "welcomeModalTitle": "Je account is goedgekeurd!",
     "welcomeModalBody": "Welkom bij Kenaz. Je kunt nu lid worden door een plan te kiezen of teruggaan naar je account en dit later doen.",
     "welcomeModalChoosePlan": "Kies een plan",
-    "welcomeModalBackToAccount": "Terug naar account"
+    "welcomeModalBackToAccount": "Terug naar account",
+    "pendingPurchaseError": "Je hebt al een openstaande abonnementsaankoop.",
+    "pendingPurchaseBannerTitle": "Openstaande abonnementsbetaling",
+    "pendingPurchaseBannerBody": "Je hebt een onvoltooide abonnementsbetaling.",
+    "pendingPurchaseBannerLink": "Ga door met betaling",
+    "periodsLabel": "Aantal periodes",
+    "decreasePeriods": "Verminder aantal periodes",
+    "increasePeriods": "Verhoog aantal periodes",
+    "totalAmount": "Totaal",
+    "manualTransferInfo": "Betaling via bankoverschrijving"
   },
   "admin": {
     "createEventTitle": "Nieuw event toevoegen",
@@ -717,7 +757,16 @@
       "notificationColumn": "Melding",
       "notifiedLabel": "Op de hoogte gesteld",
       "promotionSaveSuccess": "Meldingsstatus bijgewerkt.",
-      "promotionSaveError": "Kon meldingsstatus niet bijwerken."
+      "promotionSaveError": "Kon meldingsstatus niet bijwerken.",
+      "subscriptionsTitle": "Abonnementen",
+      "subscriptionsSubtitle": "Openstaande abonnementsbetalingen.",
+      "subscriptionsEmpty": "Geen openstaande abonnementsbetalingen.",
+      "subscriptionApproveSuccess": "Abonnementsbetaling goedgekeurd.",
+      "subscriptionApproveError": "Kon abonnementsbetaling niet goedkeuren.",
+      "subscriptionPlanColumn": "Plan",
+      "period": "periode",
+      "periods": "periodes",
+      "createdColumn": "Aangemaakt"
     },
     "approvalSuccess": "Gebruiker is goedgekeurd.",
     "recurringUpdateSuccess": "Terugkerend evenement bijgewerkt.",

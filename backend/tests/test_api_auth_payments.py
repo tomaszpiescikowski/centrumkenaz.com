@@ -856,7 +856,7 @@ class TestPaymentsRouter:
         response = await api_client.post(
             "/payments/subscription/checkout",
             json={
-                "plan_code": "pro",
+                "plan_code": "monthly",
                 "return_url": "http://test/plans?payment=success",
                 "cancel_url": "http://test/plans?payment=cancelled",
             },
@@ -880,7 +880,7 @@ class TestPaymentsRouter:
 
         assert response.status_code == 200
         payload = response.json()
-        assert [row["code"] for row in payload] == ["free", "pro", "ultimate"]
+        assert [row["code"] for row in payload] == ["free", "monthly", "yearly"]
         free_row = payload[0]
         assert free_row["is_default"] is True
         assert free_row["is_purchasable"] is False
@@ -910,7 +910,7 @@ class TestPaymentsRouter:
             "/payments/subscription/checkout",
             headers={"Authorization": f"Bearer {token}"},
             json={
-                "plan_code": "pro",
+                "plan_code": "monthly",
                 "return_url": "http://test/plans?payment=success",
                 "cancel_url": "http://test/plans?payment=cancelled",
             },
@@ -934,7 +934,7 @@ class TestPaymentsRouter:
             "/payments/subscription/checkout",
             headers={"Authorization": f"Bearer {token}"},
             json={
-                "plan_code": "pro",
+                "plan_code": "monthly",
                 "return_url": "http://evil.example/plans?payment=success",
                 "cancel_url": "http://test/plans?payment=cancelled",
             },
@@ -971,7 +971,7 @@ class TestPaymentsRouter:
             "/payments/subscription/checkout",
             headers={"Authorization": f"Bearer {token}"},
             json={
-                "plan_code": "pro",
+                "plan_code": "monthly",
                 "return_url": "http://test/plans?payment=success",
                 "cancel_url": "http://test/plans?payment=cancelled",
             },
@@ -979,7 +979,7 @@ class TestPaymentsRouter:
 
         assert response.status_code == 200
         data = response.json()
-        assert data["plan_code"] == "pro"
+        assert data["plan_code"] == "monthly"
         assert data["status"] == DBPaymentStatus.COMPLETED.value
         assert data["payment_id"]
 
@@ -1028,7 +1028,7 @@ class TestPaymentsRouter:
             "/payments/subscription/checkout",
             headers={"Authorization": f"Bearer {token}"},
             json={
-                "plan_code": "pro",
+                "plan_code": "monthly",
                 "return_url": "http://test/plans?payment=success",
                 "cancel_url": "http://test/plans?payment=cancelled",
             },

@@ -342,6 +342,35 @@
     "promotedNoticeTitle": "Promoted from waitlist",
     "promotedNoticeBody": "You were moved from the waitlist and now have limited time to pay."
   },
+  "subscriptionManualPayment": {
+    "title": "Subscription payment",
+    "subtitle": "Make a bank transfer and confirm it in the app.",
+    "backToPlans": "Back to plans",
+    "loginRequired": "Log in to continue subscription payment.",
+    "loginButton": "Log in",
+    "notFoundTitle": "Payment details unavailable",
+    "notFoundBody": "No active subscription payment was found.",
+    "loadError": "Failed to load payment details.",
+    "planLabel": "Plan",
+    "periodsLabel": "Periods",
+    "amountLabel": "Amount",
+    "stepsIntro": "Complete the following steps:",
+    "stepOpenTransfer": "Open transfer page:",
+    "openTransferLink": "go to payment page",
+    "missingTransferLink": "payment link missing",
+    "stepPasteReference": "Paste the text below into the transfer message field.",
+    "stepConfirm": "After making the transfer, click \"I confirm payment\".",
+    "referenceLabel": "Transfer message",
+    "copyButton": "Copy transfer message",
+    "copySuccess": "Transfer message copied.",
+    "copyError": "Could not copy the transfer message.",
+    "confirmButton": "I confirm payment",
+    "confirming": "Confirming...",
+    "confirmSuccess": "Your payment now awaits admin verification.",
+    "confirmError": "Could not confirm payment.",
+    "waitingVerification": "Payment declaration submitted. Waiting for admin verification.",
+    "alreadyPaid": "Payment has been approved. Your subscription is active."
+  },
   "account": {
     "title": "My account",
     "subtitle": "Your profile, points, and registrations.",
@@ -385,7 +414,9 @@
     "openManualPayment": "Complete payment",
     "loadError": "Failed to load account data",
     "cancelError": "Failed to cancel registration",
-    "cancelSuccess": "Registration cancelled successfully."
+    "cancelSuccess": "Registration cancelled successfully.",
+    "pendingSubscriptionTitle": "You have a pending subscription payment.",
+    "pendingSubscriptionLink": "Complete payment"
   },
   "plans": {
     "backToAccount": "Back to account",
@@ -424,7 +455,7 @@
         "ctaCurrent": "Your current plan",
         "ctaSwitch": "Get started for free"
       },
-      "pro": {
+      "monthly": {
         "title": "Kenaz Member",
         "summary": "Most popular",
         "features": [
@@ -435,7 +466,7 @@
         "cta": "Join the community",
         "ctaAriaLabel": "Join the community — 33 PLN per month"
       },
-      "ultimate": {
+      "yearly": {
         "title": "Annual membership",
         "summary": "Full year access",
         "features": [
@@ -454,7 +485,16 @@
     "welcomeModalTitle": "Your account has been approved!",
     "welcomeModalBody": "Welcome to Kenaz. You can now join the community by choosing a plan or go back to your account and do it later.",
     "welcomeModalChoosePlan": "Choose a plan",
-    "welcomeModalBackToAccount": "Back to account"
+    "welcomeModalBackToAccount": "Back to account",
+    "pendingPurchaseError": "You already have a pending subscription purchase.",
+    "pendingPurchaseBannerTitle": "Pending subscription payment",
+    "pendingPurchaseBannerBody": "You have an unfinished subscription payment.",
+    "pendingPurchaseBannerLink": "Continue payment",
+    "periodsLabel": "Number of periods",
+    "decreasePeriods": "Decrease number of periods",
+    "increasePeriods": "Increase number of periods",
+    "totalAmount": "Total",
+    "manualTransferInfo": "Payment via bank transfer"
   },
   "admin": {
     "createEventTitle": "Create a new event",
@@ -717,7 +757,16 @@
       "notificationColumn": "Notification",
       "notifiedLabel": "Notified",
       "promotionSaveSuccess": "Notification status updated.",
-      "promotionSaveError": "Could not update notification status."
+      "promotionSaveError": "Could not update notification status.",
+      "subscriptionsTitle": "Subscriptions",
+      "subscriptionsSubtitle": "Pending subscription payments.",
+      "subscriptionsEmpty": "No pending subscription payments.",
+      "subscriptionApproveSuccess": "Subscription payment approved.",
+      "subscriptionApproveError": "Could not approve subscription payment.",
+      "subscriptionPlanColumn": "Plan",
+      "period": "period",
+      "periods": "periods",
+      "createdColumn": "Created"
     },
     "approvalSuccess": "User has been approved.",
     "recurringUpdateSuccess": "Recurring event updated.",
