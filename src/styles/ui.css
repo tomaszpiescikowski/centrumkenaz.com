@@ -152,11 +152,11 @@
   }
 
   @media (hover: hover) {
-    .app-shell :where(a, button, [role='button'], summary, [data-clickable='true']):not(:disabled):hover {
+    .app-shell :where(a, button, [role='button'], summary, [data-clickable='true']):not(:disabled):not([data-no-hover]):hover {
       box-shadow: inset 0 0 0 9999px rgba(26, 26, 78, 0.08);
     }
 
-    .dark .app-shell :where(a, button, [role='button'], summary, [data-clickable='true']):not(:disabled):hover {
+    .dark .app-shell :where(a, button, [role='button'], summary, [data-clickable='true']):not(:disabled):not([data-no-hover]):hover {
       box-shadow: inset 0 0 0 9999px rgba(255, 245, 225, 0.06);
     }
   }

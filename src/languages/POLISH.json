@@ -254,6 +254,7 @@
       "grudzień"
     ],
     "legend": "Legenda",
+    "legendTooltip": "Kliknij kategorię, aby filtrować widok kalendarza.",
     "karateGroup": "GRUPA KARATE",
     "karateSchedule": "poniedziałki i środy o godz. 20:00 - 21:30",
     "contactDM": "po szczegóły napisz DM!",

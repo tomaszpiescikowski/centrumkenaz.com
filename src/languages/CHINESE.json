@@ -254,6 +254,7 @@
       "十二月"
     ],
     "legend": "图例",
+    "legendTooltip": "点击类别以筛选日历视图。",
     "karateGroup": "空手道组",
     "karateSchedule": "每周一和周三 20:00 - 21:30",
     "contactDM": "详情请私信我们！",

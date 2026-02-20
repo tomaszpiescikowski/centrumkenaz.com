@@ -32,6 +32,17 @@ const EVENT_TONES = {
   inne: { marker: 'bg-slate-500 text-white', line: 'bg-slate-500' },
 }
 
+const ICON_COLORS = {
+  karate: 'text-cyan-500',
+  mors: 'text-blue-500',
+  planszowki: 'text-violet-500',
+  ognisko: 'text-orange-500',
+  spacer: 'text-green-500',
+  joga: 'text-pink-500',
+  wyjazd: 'text-amber-500',
+  inne: 'text-gray-400',
+}
+
 function getTone(type) {
   return EVENT_TONES[type] || EVENT_TONES.inne
 }
@@ -368,8 +379,8 @@ function Calendar({ className = '' }) {
         </div>
       )}
 
-      <div className="grid h-full min-h-0 grid-cols-1 gap-3 lg:grid-cols-3 lg:gap-4">
-        <div className="flex min-h-0 flex-col lg:col-span-2">
+      <div className="grid h-full min-h-0 grid-cols-1 gap-3 lg:grid-cols-3 lg:items-stretch lg:gap-4">
+        <div className="flex h-full min-h-0 flex-col lg:col-span-2">
           <div className="grid grid-cols-7 gap-1 rounded-2xl border border-navy/10 bg-cream/80 p-2 dark:border-cream/10 dark:bg-navy/80">
             {days.map((dayName) => (
               <div key={dayName} className="py-1 text-center text-[11px] font-black uppercase tracking-wide text-navy/70 dark:text-cream/70">
@@ -410,11 +421,22 @@ function Calendar({ className = '' }) {
           </div>
 
           <div className="mt-3 shrink-0 rounded-xl border border-navy/10 bg-transparent p-3 dark:border-cream/15 dark:bg-transparent">
-            <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-navy dark:text-cream">{t('calendar.legend')}</h3>
+            <div className="mb-2 flex items-center gap-2">
+              <h3 className="text-xs font-bold uppercase tracking-wide text-navy dark:text-cream">{t('calendar.legend')}</h3>
+              <div className="group relative">
+                <svg className="h-3.5 w-3.5 cursor-default text-navy/40 dark:text-cream/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 16v-4" />
+                  <path d="M12 8h.01" />
+                </svg>
+                <div className="pointer-events-none absolute bottom-full left-1/2 mb-2 w-max max-w-[200px] -translate-x-1/2 rounded-lg bg-navy px-2.5 py-1.5 text-xs text-cream shadow-lg opacity-0 transition-opacity duration-150 group-hover:opacity-100 dark:bg-cream dark:text-navy">
+                  {t('calendar.legendTooltip')}
+                </div>
+              </div>
+            </div>
             <div className="flex flex-wrap gap-2">
               {EVENT_TYPES.map(({ type, labelKey }) => {
                 const isActive = typeFilter[type] !== false
-                const tone = getTone(type)
                 return (
                   <button
                     key={type}
@@ -426,13 +448,16 @@ function Calendar({ className = '' }) {
                     }}
                     className={
                       `inline-flex shrink-0 items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold transition ` +
+                      `border border-navy/15 dark:border-cream/15 ` +
                       `${isActive
-                        ? `${tone.marker}`
-                        : 'border border-navy/20 text-navy/60 dark:border-cream/25 dark:text-cream/60'
+                        ? 'bg-navy/5 text-navy dark:bg-cream/10 dark:text-cream'
+                        : 'text-navy/70 hover:bg-navy/5 dark:text-cream/70 dark:hover:bg-cream/10'
                       }`
                     }
                   >
-                    <EventIcon type={type} size="sm" />
+                    <span className={isActive ? ICON_COLORS[type] : 'text-navy/30 dark:text-cream/30'}>
+                      <EventIcon type={type} size="sm" />
+                    </span>
                     <span>{t(labelKey)}</span>
                   </button>
                 )
@@ -441,8 +466,8 @@ function Calendar({ className = '' }) {
           </div>
         </div>
 
-        <div className="min-h-0 lg:col-span-1">
-          <div className="min-h-0 flex-1 overflow-hidden rounded-2xl border border-navy/10 bg-cream/75 dark:border-cream/15 dark:bg-navy/75">
+        <div className="flex min-h-0 flex-col lg:col-span-1 lg:h-full">
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-navy/10 bg-cream/75 dark:border-cream/15 dark:bg-navy/75">
             <div className="border-b border-navy/10 px-4 py-3 dark:border-cream/15">
               <span className="block text-sm font-bold text-navy dark:text-cream">
                 {t('calendar.mobileSelectedDay')}
@@ -453,13 +478,13 @@ function Calendar({ className = '' }) {
             </div>
 
             {selectedDayEvents.length === 0 && (
-              <div className="px-4 py-6 text-sm text-navy/60 dark:text-cream/60">
+              <div className="flex-1 px-4 py-6 text-sm text-navy/60 dark:text-cream/60">
                 {t('calendar.mobileNoEvents')}
               </div>
             )}
 
             {selectedDayEvents.length > 0 && (
-              <div className="max-h-full divide-y divide-navy/10 overflow-y-auto dark:divide-cream/10">
+              <div className="flex-1 divide-y divide-navy/10 overflow-y-auto dark:divide-cream/10">
                 {selectedDayEvents.map((eventItem) => {
                   const isRegistered = registeredEventIds.has(eventItem.id)
                   const availability = availabilityByEventId[eventItem.id] || null

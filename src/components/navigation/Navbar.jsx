@@ -65,7 +65,7 @@ function Navbar({ darkMode, setDarkMode }) {
       <div className="mx-auto max-w-6xl px-4 py-3">
         <div className="flex items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-3">
-            <Link to="/" className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3" data-no-hover="true">
               <BrandMark />
               <span className="hidden text-xl font-bold text-navy dark:text-cream lg:inline">{t('common.appName')}</span>
             </Link>

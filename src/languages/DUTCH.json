@@ -254,6 +254,7 @@
       "december"
     ],
     "legend": "Legenda",
+    "legendTooltip": "Klik op een categorie om de kalenderweergave te filteren.",
     "karateGroup": "KARATEGROEP",
     "karateSchedule": "maandagen en woensdagen om 20:00 - 21:30",
     "contactDM": "Stuur ons een DM voor details!",
