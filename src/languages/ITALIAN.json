@@ -61,10 +61,8 @@
   },
   "pwa": {
     "installCta": "Installa l'app sul telefono",
-    "installButton": "Installa",
-    "installManualTitle": "Installazione manuale",
-    "installManualHint": "In Chrome apri il menu ⋮ e seleziona \"Aggiungi alla schermata Home\".",
-    "installRequiresHttps": "L'installazione in Chrome richiede un indirizzo HTTPS sicuro. Apri l'app tramite https://."
+    "installHintIos": "In Safari tocca l'icona di condivisione ⤴ e seleziona \"Aggiungi alla schermata Home\".",
+    "installHintAndroid": "In Chrome apri il menu ⋮ e seleziona \"Aggiungi alla schermata Home\"."
   },
   "home": {
     "demoLabel": "demo",
@@ -305,7 +303,40 @@
     "mustBeLoggedIn": "Devi effettuare l'accesso per iscriverti",
     "errorGeneric": "Si è verificato un errore. Riprova.",
     "errorFailed": "Iscrizione non riuscita",
-    "errorSubscriptionRequired": "Per iscriverti a questo evento è necessario un abbonamento attivo."
+    "errorSubscriptionRequired": "Per iscriverti a questo evento è necessario un abbonamento attivo.",
+    "manualPaymentRedirectTitle": "Completa il pagamento manuale",
+    "manualPaymentRedirectSuccess": "Apri le istruzioni per il bonifico e conferma il pagamento."
+  },
+  "manualPayment": {
+    "title": "Pagamento manuale",
+    "subtitle": "Effettua un bonifico e confermalo nell'app.",
+    "loginRequired": "Accedi per continuare con il pagamento manuale.",
+    "loginButton": "Accedi",
+    "notFoundTitle": "Dati di pagamento non disponibili",
+    "notFoundBody": "Nessun pagamento manuale attivo trovato per questa iscrizione.",
+    "backToAccount": "Torna all'account",
+    "loadError": "Impossibile caricare i dettagli del pagamento manuale.",
+    "copyButton": "Copia messaggio di bonifico",
+    "copySuccess": "Messaggio di bonifico copiato.",
+    "copyError": "Impossibile copiare il messaggio di bonifico.",
+    "eventLabel": "Evento",
+    "amountLabel": "Importo",
+    "deadlineLabel": "Scadenza pagamento",
+    "stepsIntro": "Completa i seguenti passaggi:",
+    "stepOpenTransfer": "Apri la pagina del bonifico:",
+    "openTransferLink": "vai alla pagina di pagamento",
+    "missingTransferLink": "link di pagamento mancante",
+    "stepPasteReference": "Incolla il testo qui sotto nel campo messaggio del bonifico.",
+    "stepConfirm": "Dopo aver effettuato il bonifico, clicca \"Confermo il pagamento\".",
+    "referenceLabel": "Messaggio del bonifico",
+    "confirmButton": "Confermo il pagamento",
+    "confirming": "Conferma in corso...",
+    "confirmSuccess": "Il tuo pagamento è in attesa di verifica admin.",
+    "confirmError": "Impossibile confermare il pagamento manuale.",
+    "waitingVerification": "Dichiarazione di pagamento inviata. In attesa di verifica admin.",
+    "alreadyPaid": "Pagamento approvato. Il tuo stato è pagato.",
+    "promotedNoticeTitle": "Promosso dalla lista d'attesa",
+    "promotedNoticeBody": "Sei stato promosso dalla lista d'attesa e hai tempo limitato per pagare."
   },
   "account": {
     "title": "Il mio account",
@@ -335,6 +366,8 @@
     "statuses": {
       "pending": "In attesa di pagamento",
       "confirmed": "Confermato",
+      "manual_payment_required": "Pagamento manuale richiesto",
+      "manual_payment_verification": "In attesa di verifica pagamento",
       "waitlist": "Lista d'attesa",
       "cancelled": "Annullato",
       "refunded": "Rimborsato"
@@ -345,6 +378,7 @@
     "cancellationClosedMessage": "Finestra di annullamento chiusa.",
     "cancelStandard": "Annulla iscrizione",
     "cancelRescue": "Usa rescue",
+    "openManualPayment": "Completa il pagamento",
     "rescue": "Rescue",
     "rescueAvailable": "Rimangono {count}",
     "rescueTooltip": "Rescue consente agli abbonati di annullare vicino alla data dell'evento. Limite mensile.",
@@ -558,6 +592,10 @@
       "payments": {
         "title": "Pagamenti e statistiche",
         "description": "Ricavi, riempimento e top membri."
+      },
+      "manualPayments": {
+        "title": "Pagamenti manuali",
+        "description": "Verifica bonifici, rimborsi e promozioni dalla lista d'attesa."
       }
     },
     "notAuthorizedTitle": "Accesso negato",
@@ -568,6 +606,7 @@
     "validation": {
       "nonNegative": "Il valore non può essere negativo.",
       "minOne": "Il valore deve essere almeno 1.",
+      "maxValue": "Il valore supera il limite consentito.",
       "notPastDate": "La data di inizio non può essere nel passato."
     },
     "fields": {
@@ -602,6 +641,12 @@
       "priceGuestPlaceholder": "e.g. 50",
       "priceMember": "Prezzo membro",
       "priceMemberPlaceholder": "e.g. 30",
+      "manualPaymentVerification": "Verifica pagamento manuale",
+      "manualPaymentVerificationLockedHint": "I gateway di pagamento sono temporaneamente disattivati, quindi la verifica manuale è sempre abilitata.",
+      "manualPaymentUrl": "URL pagina bonifico",
+      "manualPaymentUrlPlaceholder": "https://...",
+      "manualPaymentDueHours": "Ore per pagare",
+      "manualPaymentDueHoursHint": "Intervallo: 1-168 ore (fino a 7 giorni).",
       "maxParticipants": "Numero massimo",
       "maxParticipantsPlaceholder": "e.g. 20",
       "cancelCutoffHours": "Finestra annullamento (ore)",
@@ -615,6 +660,46 @@
       "paymentInfo": "Info pagamento",
       "paymentInfoPlaceholder": "e.g. Bank transfer details",
       "pointsValuePlaceholder": "e.g. 1"
+    },
+    "manualPayments": {
+      "title": "Pagamenti manuali",
+      "subtitle": "Gestisci bonifici offline, rimborsi e promozioni dalla lista d'attesa.",
+      "loadError": "Impossibile caricare i dati dei pagamenti manuali.",
+      "pendingTitle": "Pagamenti in attesa di approvazione",
+      "pendingSubtitle": "Gli utenti hanno dichiarato il completamento del bonifico e attendono l'approvazione admin.",
+      "pendingEmpty": "Nessun pagamento in attesa di approvazione.",
+      "referenceColumn": "Messaggio del bonifico",
+      "actionsColumn": "Azioni",
+      "approveButton": "Approva",
+      "approving": "Approvazione in corso...",
+      "approveSuccess": "Pagamento approvato.",
+      "approveError": "Impossibile approvare il pagamento.",
+      "refundsTitle": "Annullamenti e rimborsi",
+      "refundsSubtitle": "Decidi se rimborsare e segna i rimborsi completati.",
+      "refundsEmpty": "Nessun compito di rimborso.",
+      "refundsSummary": "Voci: {total} • Da rimborsare: {to_refund} • Rimborsati: {refunded}",
+      "recommendedColumn": "Raccomandazione",
+      "shouldRefundColumn": "Decisione rimborso",
+      "refundedColumn": "Rimborso effettuato",
+      "overrideReasonColumn": "Motivo della modifica",
+      "recommendRefund": "Rimborsare",
+      "recommendNoRefund": "Non rimborsare",
+      "shouldRefundLabel": "Rimborso necessario",
+      "refundedLabel": "Denaro rimborsato",
+      "overrideRequiredPlaceholder": "Motivo richiesto (min. 8 caratteri)",
+      "overrideReasonRequired": "Fornisci un motivo per la modifica (almeno 8 caratteri).",
+      "saveButton": "Salva",
+      "saving": "Salvataggio...",
+      "refundSaveSuccess": "Impostazioni di rimborso salvate.",
+      "refundSaveError": "Impossibile salvare le impostazioni di rimborso.",
+      "promotionsTitle": "Utenti promossi dalla lista d'attesa",
+      "promotionsSubtitle": "Segna gli utenti già avvisati di pagare.",
+      "promotionsEmpty": "Nessuna promozione dalla lista d'attesa.",
+      "deadlineColumn": "Scadenza pagamento",
+      "notificationColumn": "Notifica",
+      "notifiedLabel": "Notificato",
+      "promotionSaveSuccess": "Stato notifica aggiornato.",
+      "promotionSaveError": "Impossibile aggiornare lo stato notifica."
     },
     "approvalSuccess": "Utente approvato.",
     "recurringUpdateSuccess": "Evento ricorrente aggiornato.",
@@ -653,10 +738,22 @@
     "confirmTitle": "Conferma azione"
   },
   "approval": {
-    "profileRequiredBody": "Before your request can be reviewed, complete your profile and submit the join request.",
-    "submitJoinRequest": "Submit join request",
-    "joinRequestSent": "Join request sent. Wait for admin approval.",
-    "joinRequestError": "Failed to submit join request."
+    "title": "In attesa di approvazione",
+    "subtitle": "Il tuo account è in attesa di approvazione admin.",
+    "description": "Abbiamo ricevuto la tua richiesta. Per velocizzare, contatta direttamente i fondatori.",
+    "loginRequired": "Accedi per vedere lo stato dell'approvazione.",
+    "loginButton": "Accedi",
+    "foundersLabel": "Fondatori:",
+    "foundersNames": "Sebastian Andrzejewski, Franciszek Kwame Awuku",
+    "emailLabel": "Email:",
+    "emailValue": "[email protected]",
+    "socialLabel": "Instagram:",
+    "socialValue": "@kenaz",
+    "waitingHint": "Dopo l'approvazione, aggiorna la pagina o accedi di nuovo.",
+    "profileRequiredBody": "Prima che la tua richiesta possa essere valutata, completa il profilo e invia la richiesta di adesione.",
+    "submitJoinRequest": "Invia richiesta di adesione",
+    "joinRequestSent": "Richiesta di adesione inviata. Attendi l'approvazione admin.",
+    "joinRequestError": "Impossibile inviare la richiesta di adesione."
   },
   "auth": {
     "title": "Accedi",

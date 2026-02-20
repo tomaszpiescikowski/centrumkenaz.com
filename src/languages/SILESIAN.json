@@ -61,10 +61,8 @@
   },
   "pwa": {
     "installCta": "Zainstaluj apka na telefonie",
-    "installButton": "Zainstaluj",
-    "installManualTitle": "Rynczno instalacyjŏ",
-    "installManualHint": "W Chrome ôtwōrz myni ⋮ i wybiyrz „Dodŏj do ekranu głōwnego”.",
-    "installRequiresHttps": "Instalacyjŏ w Chrome fołdruje bezpieczny adres HTTPS. Ôtwōrz aplikacyjŏ bez https://."
+    "installHintIos": "W Safari kliknij ikōna udostympnianio ⤴ i wybiyrz „Dodŏj do ekranu głōwnego”.",
+    "installHintAndroid": "W Chrome ôtwōrz myni ⋮ i wybiyrz „Dodŏj do ekranu głōwnego”."
   },
   "home": {
     "demoLabel": "demo",
@@ -305,7 +303,40 @@
     "mustBeLoggedIn": "Musiś sie zalogować, coby sie zapisać",
     "errorGeneric": "Cosik poszło niy tak. Sprōbuj zaś.",
     "errorFailed": "Błōnd rejestracyje",
-    "errorSubscriptionRequired": "Do zapisu na to wydarzynie trza mieć aktywno subskrypcyjõ."
+    "errorSubscriptionRequired": "Do zapisu na to wydarzynie trza mieć aktywno subskrypcyjõ.",
+    "manualPaymentRedirectTitle": "Dokōńcz rynczno płatność",
+    "manualPaymentRedirectSuccess": "Ôtwōrz instrukcyje przelewu i potwierdź płatność."
+  },
+  "manualPayment": {
+    "title": "Rynczno płatność",
+    "subtitle": "Zrōb przelyw i potwierdź go w aplikacyje.",
+    "loginRequired": "Zaloguj sie, coby kōntynuować rynczno płatność.",
+    "loginButton": "Zaloguj sie",
+    "notFoundTitle": "Brak danych płatności",
+    "notFoundBody": "Niy znŏleziōno aktywnyj ryncznyj płatności dlo tego zapisu.",
+    "backToAccount": "Wróć do kōnta",
+    "loadError": "Niy idzie wczytać danych ryncznyj płatności.",
+    "copyButton": "Kopiuj wiadōmość",
+    "copySuccess": "Skopiowano wiadōmość do przelewu.",
+    "copyError": "Niy idzie skopiować tekstu.",
+    "eventLabel": "Wydarzyńe",
+    "amountLabel": "Kwota",
+    "deadlineLabel": "Termin ôpłacynio",
+    "stepsIntro": "Zrōb te kroki:",
+    "stepOpenTransfer": "Ôtwōrz strōna przelewu:",
+    "openTransferLink": "idź do płatności",
+    "missingTransferLink": "brak linku płatności",
+    "stepPasteReference": "We polu wiadōmości do przelewu wklej tyn tekst.",
+    "stepConfirm": "Po zrobieniu przelewu kliknij „Potwierdzōm płatność”.",
+    "referenceLabel": "Wiadōmość do przelewu",
+    "confirmButton": "Potwierdzōm płatność",
+    "confirming": "Potwierdzanie...",
+    "confirmSuccess": "Twoja płatność czeko na weryfikacyjo admina.",
+    "confirmError": "Niy idzie potwierdzić płatności.",
+    "waitingVerification": "Płatność ôstała zgłoszōno. Czekŏsz na zatwierdzynie bez administratora.",
+    "alreadyPaid": "Płatność ôstała zatwierdzōno. Mosz status: ôpłacōne.",
+    "promotedNoticeTitle": "Awans z listy rezerwowyj",
+    "promotedNoticeBody": "Wskoczyłeś z listy rezerwowyj i mosz ôgraniczōny czas na ôpłacynie."
   },
   "account": {
     "title": "Moje kōnto",
@@ -335,6 +366,8 @@
     "statuses": {
       "pending": "Czeko na płatność",
       "confirmed": "Potwierdzōne",
+      "manual_payment_required": "Wymŏgo ryncznyj płatności",
+      "manual_payment_verification": "Czeko na potwierdzynie płatności",
       "waitlist": "Lista rezerwowo",
       "cancelled": "Anulowane",
       "refunded": "Zwrōcōne"
@@ -345,6 +378,7 @@
     "cancellationClosedMessage": "Ôkno rezygnacyje zamkniynte.",
     "cancelStandard": "Zrezygnuj",
     "cancelRescue": "Użyj koła ratunkowego",
+    "openManualPayment": "Dokōńcz płatność",
     "rescue": "Koło ratunkowe",
     "rescueAvailable": "Zostoło: {count}",
     "rescueTooltip": "Koło ratunkowe pozwŏlŏ subskrybentōm zrezygnować bliżyj terminu. Limit je miesiyczny.",
@@ -558,6 +592,10 @@
       "payments": {
         "title": "Płatności i statystyki",
         "description": "Przychody, wypołniynie i top człōnkowie."
+      },
+      "manualPayments": {
+        "title": "Rynczne płatności",
+        "description": "Weryfikacyjo wpłat, zwroty i awanse z rezerwy."
       }
     },
     "notAuthorizedTitle": "Brak dostympu",
@@ -568,6 +606,7 @@
     "validation": {
       "nonNegative": "Wartość niy może być ujemno.",
       "minOne": "Wartość musi być co nojmyńij 1.",
+      "maxValue": "Wartość przekrŏczo dozwolōny limit.",
       "notPastDate": "Data poczōntku niy może być z przeszłości."
     },
     "fields": {
@@ -602,6 +641,12 @@
       "priceGuestPlaceholder": "e.g. 50",
       "priceMember": "Cyna człōnka",
       "priceMemberPlaceholder": "e.g. 30",
+      "manualPaymentVerification": "Rynczno weryfikacyjo płatności",
+      "manualPaymentVerificationLockedHint": "Bramki płatnicze sōm tymczasowo wyłōnczōne, tōż rynczno weryfikacyjo płatności je zawsze włōnczōno.",
+      "manualPaymentUrl": "Link do strōny przelewu",
+      "manualPaymentUrlPlaceholder": "https://...",
+      "manualPaymentDueHours": "Wiela godzin na ôpłacynie",
+      "manualPaymentDueHoursHint": "Zakres: 1-168 godzin (do 7 dni).",
       "maxParticipants": "Limit miyjsc",
       "maxParticipantsPlaceholder": "e.g. 20",
       "cancelCutoffHours": "Limit rezygnacyje (godziny)",
@@ -615,6 +660,46 @@
       "paymentInfo": "Informacyje ô płatnościach",
       "paymentInfoPlaceholder": "e.g. Bank transfer details",
       "pointsValuePlaceholder": "e.g. 1"
+    },
+    "manualPayments": {
+      "title": "Rynczne płatności",
+      "subtitle": "Zarzōndzanie przelewami offline, zwrotami i awansami z listy rezerwowyj.",
+      "loadError": "Niy idzie wczytać danych ryncznych płatności.",
+      "pendingTitle": "Płatności czekajōnce na zatwierdzynie",
+      "pendingSubtitle": "Użytkownicy potwierdzili przelyw i czekajōm na akceptacyjo admina.",
+      "pendingEmpty": "Brak płatności czekajōncych na zatwierdzynie.",
+      "referenceColumn": "Wiadōmość przelewu",
+      "actionsColumn": "Akcyje",
+      "approveButton": "Zatwierdź",
+      "approving": "Zatwierdzanie...",
+      "approveSuccess": "Płatność ôstała zatwierdzōno.",
+      "approveError": "Niy idzie zatwierdzić płatności.",
+      "refundsTitle": "Rezygnacyje i zwroty",
+      "refundsSubtitle": "Zdecyduj, czy zwracać i ôznacz wykonane zwroty.",
+      "refundsEmpty": "Brak zadań zwrotōw.",
+      "refundsSummary": "Wpisy: {total} • Do zwrotu: {to_refund} • Zwrōcōne: {refunded}",
+      "recommendedColumn": "Rekomendacyjo",
+      "shouldRefundColumn": "Czy zwracać",
+      "refundedColumn": "Zwrot zrobiōny",
+      "overrideReasonColumn": "Powōd zmiany",
+      "recommendRefund": "Zwrōcić",
+      "recommendNoRefund": "Niy zwracać",
+      "shouldRefundLabel": "Zwrot wymŏgany",
+      "refundedLabel": "Piniōndze zwrōcōne",
+      "overrideRequiredPlaceholder": "Wymŏgany powōd (min. 8 znakōw)",
+      "overrideReasonRequired": "Podej powōd zmiany decyzje ô zwrocie (min. 8 znakōw).",
+      "saveButton": "Zapisz",
+      "saving": "Zapisowanie...",
+      "refundSaveSuccess": "Spamiyntano ustawiynio zwrotu.",
+      "refundSaveError": "Niy idzie spamiyntać ustawiyń zwrotu.",
+      "promotionsTitle": "Ôsoby awansowane z listy rezerwowyj",
+      "promotionsSubtitle": "Ôznaczej ôsoby, kere już dostały info ô płatności.",
+      "promotionsEmpty": "Brak awansōw z listy rezerwowyj.",
+      "deadlineColumn": "Termin płatności",
+      "notificationColumn": "Powiadōmiynie",
+      "notifiedLabel": "Wysłano info",
+      "promotionSaveSuccess": "Zaktualizowano status powiadōmiynia.",
+      "promotionSaveError": "Niy idzie zaktualizować statusu powiadōmiynia."
     },
     "approvalSuccess": "Używoc sie ôstał zaakceptowany.",
     "recurringUpdateSuccess": "Cykliczne wydarzynie ôstało zaktualizowane.",
@@ -653,10 +738,22 @@
     "confirmTitle": "Potwiyrdź akcyjo"
   },
   "approval": {
-    "profileRequiredBody": "Before your request can be reviewed, complete your profile and submit the join request.",
-    "submitJoinRequest": "Submit join request",
-    "joinRequestSent": "Join request sent. Wait for admin approval.",
-    "joinRequestError": "Failed to submit join request."
+    "title": "Czekanie na akceptacyjo",
+    "subtitle": "Twoje kōnto czeko na akceptacyjo admina.",
+    "description": "Dostalimy Twoje zgłoszynie. Jak chcesz przispiyszyć, skōntaktuj sie z założycielami.",
+    "loginRequired": "Zaloguj sie, coby ôboczyć status akceptacyje.",
+    "loginButton": "Zaloguj sie",
+    "foundersLabel": "Założyciele:",
+    "foundersNames": "Sebastian Andrzejewski, Franciszek Kwame Awuku",
+    "emailLabel": "E-mail:",
+    "emailValue": "[email protected]",
+    "socialLabel": "Instagram:",
+    "socialValue": "@kenaz",
+    "waitingHint": "Po akceptacyje ôdśwież strōna abo zaloguj sie nazod.",
+    "profileRequiredBody": "Zanim Twoje zgłoszynie bydzie rozpatrzōne, uzupołnij profil i wyślij prośba ô dołōnczynie.",
+    "submitJoinRequest": "Wyślij prośba ô dołōnczynie",
+    "joinRequestSent": "Prośba ô dołōnczynie ôstała wysłano. Poczekej na akceptacyjo admina.",
+    "joinRequestError": "Niy idzie wysłać prośby ô dołōnczynie."
   },
   "auth": {
     "title": "Zaloguj sie",

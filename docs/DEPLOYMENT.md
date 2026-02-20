@@ -101,10 +101,10 @@ DATABASE_URL=postgresql://user:password@localhost:5432/kenaz
 # Google OAuth
 GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
-GOOGLE_REDIRECT_URI=http://YOUR_SERVER_IP/auth/google/callback
+GOOGLE_REDIRECT_URI=https://YOUR_DOMAIN/auth/google/callback
 
 # Frontend
-FRONTEND_URL=http://YOUR_SERVER_IP
+FRONTEND_URL=https://YOUR_DOMAIN
 
 # JWT
 JWT_SECRET_KEY=your-random-secret-key
@@ -112,6 +112,11 @@ JWT_SECRET_KEY=your-random-secret-key
 # Payment (optional)
 PAYMENT_GATEWAY_TYPE=fake
 ```
+
+> **Google OAuth setup:** After updating `GOOGLE_REDIRECT_URI`, also add the
+> same URI to **Authorized redirect URIs** in
+> [Google Cloud Console → Credentials → OAuth 2.0 Client IDs](https://console.cloud.google.com/apis/credentials).
+> Without this step, Google will reject the callback and login will show a blank page.
 
 ### Systemd Service
 

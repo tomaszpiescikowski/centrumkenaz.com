@@ -73,6 +73,7 @@ function MobileBottomNav() {
     location.pathname.startsWith('/me')
     || location.pathname.startsWith('/plans')
     || location.pathname.startsWith('/pending-approval')
+    || location.pathname === '/login'
   )
 
   const handleAccountClick = () => {

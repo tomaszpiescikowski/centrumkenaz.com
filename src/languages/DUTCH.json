@@ -61,16 +61,15 @@
   },
   "pwa": {
     "installCta": "Installeer de app op je telefoon",
-    "installButton": "Installeren",
-    "installManualTitle": "Handmatige installatie",
-    "installManualHint": "Open in Chrome het ⋮ menu en kies \"Toevoegen aan startscherm\".",
-    "installRequiresHttps": "Installatie in Chrome vereist een veilig HTTPS-adres. Open de app via https://."
+    "installHintIos": "Tik in Safari op het deelicoon ⤴ en kies \"Zet op beginscherm\".",
+    "installHintAndroid": "Open in Chrome het ⋮ menu en kies \"Toevoegen aan startscherm\"."
   },
   "home": {
     "demoLabel": "demo",
     "tagline": "Een besloten offline community. Events, verbindingen, gedeelde passies.",
     "viewCalendar": "Bekijk kalender",
     "aboutCta": "Leer ons kennen!",
+    "aboutCtaHint": "Klik en ontdek hoe onze community er van binnen uitziet.",
     "features": {
       "events": {
         "title": "Events",
@@ -304,7 +303,40 @@
     "mustBeLoggedIn": "Je moet ingelogd zijn om in te schrijven",
     "errorGeneric": "Er ging iets mis. Probeer opnieuw.",
     "errorFailed": "Inschrijving mislukt",
-    "errorSubscriptionRequired": "Je hebt een actief abonnement nodig om je voor dit evenement in te schrijven."
+    "errorSubscriptionRequired": "Je hebt een actief abonnement nodig om je voor dit evenement in te schrijven.",
+    "manualPaymentRedirectTitle": "Handmatige betaling voltooien",
+    "manualPaymentRedirectSuccess": "Open de overschrijvingsinstructies en bevestig je betaling."
+  },
+  "manualPayment": {
+    "title": "Handmatige betaling",
+    "subtitle": "Maak een bankoverschrijving en bevestig deze in de app.",
+    "loginRequired": "Log in om door te gaan met de handmatige betaling.",
+    "loginButton": "Log in",
+    "notFoundTitle": "Betalingsgegevens niet beschikbaar",
+    "notFoundBody": "Er is geen actieve handmatige betaling gevonden voor deze inschrijving.",
+    "backToAccount": "Terug naar account",
+    "loadError": "Kon handmatige betalingsgegevens niet laden.",
+    "copyButton": "Kopieer overschrijvingsbericht",
+    "copySuccess": "Overschrijvingsbericht gekopieerd.",
+    "copyError": "Kon het overschrijvingsbericht niet kopiëren.",
+    "eventLabel": "Evenement",
+    "amountLabel": "Bedrag",
+    "deadlineLabel": "Betalingstermijn",
+    "stepsIntro": "Voltooi de volgende stappen:",
+    "stepOpenTransfer": "Open de overschrijvingspagina:",
+    "openTransferLink": "ga naar betalingspagina",
+    "missingTransferLink": "betalingslink ontbreekt",
+    "stepPasteReference": "Plak de onderstaande tekst in het overschrijvingsberichtveld.",
+    "stepConfirm": "Klik na het overschrijven op \"Ik bevestig betaling\".",
+    "referenceLabel": "Overschrijvingsbericht",
+    "confirmButton": "Ik bevestig betaling",
+    "confirming": "Bevestigen...",
+    "confirmSuccess": "Je betaling wacht op verificatie door de admin.",
+    "confirmError": "Kon de handmatige betaling niet bevestigen.",
+    "waitingVerification": "Betalingsverklaring ingediend. Wacht op verificatie door admin.",
+    "alreadyPaid": "Betaling is goedgekeurd. Je status is betaald.",
+    "promotedNoticeTitle": "Gepromoveerd van wachtlijst",
+    "promotedNoticeBody": "Je bent van de wachtlijst gehaald en hebt beperkte tijd om te betalen."
   },
   "account": {
     "title": "Mijn account",
@@ -334,6 +366,8 @@
     "statuses": {
       "pending": "Wacht op betaling",
       "confirmed": "Bevestigd",
+      "manual_payment_required": "Handmatige betaling vereist",
+      "manual_payment_verification": "Wacht op betalingsverificatie",
       "waitlist": "Wachtlijst",
       "cancelled": "Geannuleerd",
       "refunded": "Terugbetaald"
@@ -344,6 +378,7 @@
     "cancellationClosedMessage": "Annuleringsvenster gesloten.",
     "cancelStandard": "Annuleer inschrijving",
     "cancelRescue": "Gebruik rescue",
+    "openManualPayment": "Betaling voltooien",
     "rescue": "Rescue",
     "rescueAvailable": "Nog {count}",
     "rescueTooltip": "Rescue laat abonnees kort voor het event annuleren. Maandlimiet van toepassing.",
@@ -557,6 +592,10 @@
       "payments": {
         "title": "Betalingen & stats",
         "description": "Inkomsten, vullingsgraad en top-leden."
+      },
+      "manualPayments": {
+        "title": "Handmatige betalingen",
+        "description": "Overschrijvingsverificatie, terugbetalingen en wachtlijstpromoties."
       }
     },
     "notAuthorizedTitle": "Toegang geweigerd",
@@ -567,6 +606,7 @@
     "validation": {
       "nonNegative": "Waarde mag niet negatief zijn.",
       "minOne": "Waarde moet minimaal 1 zijn.",
+      "maxValue": "Waarde overschrijdt de toegestane limiet.",
       "notPastDate": "Startdatum mag niet in het verleden liggen."
     },
     "fields": {
@@ -601,6 +641,12 @@
       "priceGuestPlaceholder": "e.g. 50",
       "priceMember": "Prijs voor leden",
       "priceMemberPlaceholder": "e.g. 30",
+      "manualPaymentVerification": "Handmatige betalingsverificatie",
+      "manualPaymentVerificationLockedHint": "Betaalgateways zijn tijdelijk uitgeschakeld, dus handmatige betalingsverificatie is altijd ingeschakeld.",
+      "manualPaymentUrl": "URL overschrijvingspagina",
+      "manualPaymentUrlPlaceholder": "https://...",
+      "manualPaymentDueHours": "Uren om te betalen",
+      "manualPaymentDueHoursHint": "Bereik: 1-168 uur (tot 7 dagen).",
       "maxParticipants": "Max deelnemers",
       "maxParticipantsPlaceholder": "e.g. 20",
       "cancelCutoffHours": "Annuleringstermijn (uren)",
@@ -614,6 +660,46 @@
       "paymentInfo": "Betalingsinfo",
       "paymentInfoPlaceholder": "e.g. Bank transfer details",
       "pointsValuePlaceholder": "e.g. 1"
+    },
+    "manualPayments": {
+      "title": "Handmatige betalingen",
+      "subtitle": "Beheer offline overschrijvingen, terugbetalingen en wachtlijstpromoties.",
+      "loadError": "Kon handmatige betalingsgegevens niet laden.",
+      "pendingTitle": "Betalingen wachtend op goedkeuring",
+      "pendingSubtitle": "Gebruikers hebben hun overschrijving bevestigd en wachten op admin-goedkeuring.",
+      "pendingEmpty": "Geen betalingen wachtend op goedkeuring.",
+      "referenceColumn": "Overschrijvingsbericht",
+      "actionsColumn": "Acties",
+      "approveButton": "Goedkeuren",
+      "approving": "Goedkeuren...",
+      "approveSuccess": "Betaling goedgekeurd.",
+      "approveError": "Kon betaling niet goedkeuren.",
+      "refundsTitle": "Annuleringen en terugbetalingen",
+      "refundsSubtitle": "Beslis of je terugbetaalt en markeer voltooide terugbetalingen.",
+      "refundsEmpty": "Geen terugbetalingstaken.",
+      "refundsSummary": "Items: {total} • Terug te betalen: {to_refund} • Terugbetaald: {refunded}",
+      "recommendedColumn": "Aanbeveling",
+      "shouldRefundColumn": "Terugbetalingsbeslissing",
+      "refundedColumn": "Terugbetaling voltooid",
+      "overrideReasonColumn": "Reden voor overschrijving",
+      "recommendRefund": "Terugbetalen",
+      "recommendNoRefund": "Niet terugbetalen",
+      "shouldRefundLabel": "Terugbetaling vereist",
+      "refundedLabel": "Geld terugbetaald",
+      "overrideRequiredPlaceholder": "Reden vereist (min. 8 tekens)",
+      "overrideReasonRequired": "Geef een reden op voor de overschrijving (minimaal 8 tekens).",
+      "saveButton": "Opslaan",
+      "saving": "Opslaan...",
+      "refundSaveSuccess": "Terugbetalingsinstellingen opgeslagen.",
+      "refundSaveError": "Kon terugbetalingsinstellingen niet opslaan.",
+      "promotionsTitle": "Gebruikers gepromoveerd van wachtlijst",
+      "promotionsSubtitle": "Markeer gebruikers die al op de hoogte zijn gesteld om te betalen.",
+      "promotionsEmpty": "Geen wachtlijstpromoties.",
+      "deadlineColumn": "Betalingstermijn",
+      "notificationColumn": "Melding",
+      "notifiedLabel": "Op de hoogte gesteld",
+      "promotionSaveSuccess": "Meldingsstatus bijgewerkt.",
+      "promotionSaveError": "Kon meldingsstatus niet bijwerken."
     },
     "approvalSuccess": "Gebruiker is goedgekeurd.",
     "recurringUpdateSuccess": "Terugkerend evenement bijgewerkt.",
@@ -648,13 +734,26 @@
   "notifications": {
     "successTitle": "Gelukt",
     "errorTitle": "Actie mislukt",
-    "infoTitle": "Melding"
+    "infoTitle": "Melding",
+    "confirmTitle": "Actie bevestigen"
   },
   "approval": {
-    "profileRequiredBody": "Before your request can be reviewed, complete your profile and submit the join request.",
-    "submitJoinRequest": "Submit join request",
-    "joinRequestSent": "Join request sent. Wait for admin approval.",
-    "joinRequestError": "Failed to submit join request."
+    "title": "Wacht op goedkeuring",
+    "subtitle": "Je account wacht op goedkeuring van de admin.",
+    "description": "We hebben je aanvraag ontvangen. Neem contact op met de oprichters om het proces te versnellen.",
+    "loginRequired": "Log in om je goedkeuringsstatus te bekijken.",
+    "loginButton": "Log in",
+    "foundersLabel": "Oprichters:",
+    "foundersNames": "Sebastian Andrzejewski, Franciszek Kwame Awuku",
+    "emailLabel": "E-mail:",
+    "emailValue": "[email protected]",
+    "socialLabel": "Instagram:",
+    "socialValue": "@kenaz",
+    "waitingHint": "Na goedkeuring kun je de pagina vernieuwen of opnieuw inloggen.",
+    "profileRequiredBody": "Vul je profiel aan en dien een toetredingsverzoek in voordat je aanvraag beoordeeld kan worden.",
+    "submitJoinRequest": "Toetredingsverzoek indienen",
+    "joinRequestSent": "Toetredingsverzoek verzonden. Wacht op goedkeuring van admin.",
+    "joinRequestError": "Kon toetredingsverzoek niet indienen."
   },
   "auth": {
     "title": "Inloggen",

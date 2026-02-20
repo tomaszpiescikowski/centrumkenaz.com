@@ -61,16 +61,15 @@
   },
   "pwa": {
     "installCta": "Install the app on your phone",
-    "installButton": "Install",
-    "installManualTitle": "Manual install",
-    "installManualHint": "In Chrome open the ⋮ menu and choose \"Add to Home screen\".",
-    "installRequiresHttps": "Install in Chrome requires a secure HTTPS address. Open the app over https://."
+    "installHintIos": "In Safari tap the share icon ⤴ and choose \"Add to Home Screen\".",
+    "installHintAndroid": "In Chrome open the ⋮ menu and choose \"Add to Home screen\"."
   },
   "home": {
     "demoLabel": "demo",
     "tagline": "A private offline community. Events, integrations, shared passions.",
     "viewCalendar": "View calendar",
     "aboutCta": "Get to know us!",
+    "aboutCtaHint": "Click and see what our community looks like from the inside.",
     "features": {
       "events": {
         "title": "Events",

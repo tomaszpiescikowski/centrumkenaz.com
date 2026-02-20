@@ -61,16 +61,15 @@
   },
   "pwa": {
     "installCta": "在手机上安装应用",
-    "installButton": "安装",
-    "installManualTitle": "手动安装",
-    "installManualHint": "在 Chrome 中打开 ⋮ 菜单，然后选择“添加到主屏幕”。",
-    "installRequiresHttps": "在 Chrome 中安装需要 HTTPS 安全地址。请通过 https:// 打开应用。"
+    "installHintIos": "在 Safari 中点击分享图标 ⤴ 然后选择“添加到主屏幕”。",
+    "installHintAndroid": "在 Chrome 中打开 ⋮ 菜单，然后选择“添加到主屏幕”。"
   },
   "home": {
     "demoLabel": "演示",
     "tagline": "私密线下社群。活动、联结、共同热爱。",
     "viewCalendar": "查看日历",
     "aboutCta": "认识我们！",
+    "aboutCtaHint": "点击查看我们社群的真实面貌。",
     "features": {
       "events": {
         "title": "活动",
@@ -304,7 +303,40 @@
     "mustBeLoggedIn": "必须登录才能报名",
     "errorGeneric": "发生错误，请重试。",
     "errorFailed": "报名失败",
-    "errorSubscriptionRequired": "报名此活动需要有效订阅。"
+    "errorSubscriptionRequired": "报名此活动需要有效订阅。",
+    "manualPaymentRedirectTitle": "完成手动付款",
+    "manualPaymentRedirectSuccess": "打开转账说明并确认你的付款。"
+  },
+  "manualPayment": {
+    "title": "手动付款",
+    "subtitle": "进行银行转账并在应用中确认。",
+    "loginRequired": "请登录以继续手动付款。",
+    "loginButton": "登录",
+    "notFoundTitle": "付款信息不可用",
+    "notFoundBody": "未找到此报名的有效手动付款。",
+    "backToAccount": "返回账户",
+    "loadError": "加载手动付款详情失败。",
+    "copyButton": "复制转账信息",
+    "copySuccess": "转账信息已复制。",
+    "copyError": "无法复制转账信息。",
+    "eventLabel": "活动",
+    "amountLabel": "金额",
+    "deadlineLabel": "付款截止时间",
+    "stepsIntro": "请完成以下步骤：",
+    "stepOpenTransfer": "打开转账页面：",
+    "openTransferLink": "前往付款页面",
+    "missingTransferLink": "付款链接缺失",
+    "stepPasteReference": "将以下文字粘贴到转账信息字段中。",
+    "stepConfirm": "完成转账后，点击“我确认付款”。",
+    "referenceLabel": "转账信息",
+    "confirmButton": "我确认付款",
+    "confirming": "确认中...",
+    "confirmSuccess": "你的付款正在等待管理员验证。",
+    "confirmError": "无法确认手动付款。",
+    "waitingVerification": "付款声明已提交，等待管理员验证。",
+    "alreadyPaid": "付款已批准，你的状态为已付款。",
+    "promotedNoticeTitle": "已从候补名单晋升",
+    "promotedNoticeBody": "你已从候补名单中晋升，有限时间内需完成付款。"
   },
   "account": {
     "title": "我的账户",
@@ -334,6 +366,8 @@
     "statuses": {
       "pending": "待付款",
       "confirmed": "已确认",
+      "manual_payment_required": "需要手动付款",
+      "manual_payment_verification": "等待付款验证",
       "waitlist": "候补中",
       "cancelled": "已取消",
       "refunded": "已退款"
@@ -344,6 +378,7 @@
     "cancellationClosedMessage": "取消窗口已关闭。",
     "cancelStandard": "取消报名",
     "cancelRescue": "使用救援取消",
+    "openManualPayment": "完成付款",
     "rescue": "救援",
     "rescueAvailable": "剩余 {count}",
     "rescueTooltip": "救援允许订阅者在临近活动时取消。每月有次数限制。",
@@ -557,6 +592,10 @@
       "payments": {
         "title": "付款与统计",
         "description": "收入、填充率与热门会员。"
+      },
+      "manualPayments": {
+        "title": "手动付款",
+        "description": "转账验证、退款和候补晋升。"
       }
     },
     "notAuthorizedTitle": "拒绝访问",
@@ -567,6 +606,7 @@
     "validation": {
       "nonNegative": "数值不能为负数。",
       "minOne": "数值必须至少为 1。",
+      "maxValue": "数值超出允许范围。",
       "notPastDate": "开始日期不能早于当前时间。"
     },
     "fields": {
@@ -601,6 +641,12 @@
       "priceGuestPlaceholder": "e.g. 50",
       "priceMember": "会员价格",
       "priceMemberPlaceholder": "e.g. 30",
+      "manualPaymentVerification": "手动付款验证",
+      "manualPaymentVerificationLockedHint": "支付网关暂时关闭，手动付款验证始终启用。",
+      "manualPaymentUrl": "转账页面链接",
+      "manualPaymentUrlPlaceholder": "https://...",
+      "manualPaymentDueHours": "付款时限（小时）",
+      "manualPaymentDueHoursHint": "范围：1-168 小时（最多 7 天）。",
       "maxParticipants": "人数上限",
       "maxParticipantsPlaceholder": "e.g. 20",
       "cancelCutoffHours": "取消截止（小时）",
@@ -614,6 +660,46 @@
       "paymentInfo": "付款信息",
       "paymentInfoPlaceholder": "e.g. Bank transfer details",
       "pointsValuePlaceholder": "e.g. 1"
+    },
+    "manualPayments": {
+      "title": "手动付款",
+      "subtitle": "管理线下转账、退款和候补晋升。",
+      "loadError": "加载手动付款数据失败。",
+      "pendingTitle": "等待审批的付款",
+      "pendingSubtitle": "用户已声明转账完成，等待管理员审批。",
+      "pendingEmpty": "没有等待审批的付款。",
+      "referenceColumn": "转账信息",
+      "actionsColumn": "操作",
+      "approveButton": "批准",
+      "approving": "审批中...",
+      "approveSuccess": "付款已批准。",
+      "approveError": "无法批准付款。",
+      "refundsTitle": "取消与退款",
+      "refundsSubtitle": "决定是否退款并标记已完成的退款。",
+      "refundsEmpty": "没有退款任务。",
+      "refundsSummary": "条目：{total} • 待退款：{to_refund} • 已退款：{refunded}",
+      "recommendedColumn": "建议",
+      "shouldRefundColumn": "退款决定",
+      "refundedColumn": "退款完成",
+      "overrideReasonColumn": "覆盖原因",
+      "recommendRefund": "退款",
+      "recommendNoRefund": "不退款",
+      "shouldRefundLabel": "需要退款",
+      "refundedLabel": "已退款",
+      "overrideRequiredPlaceholder": "请填写原因（至少 8 个字符）",
+      "overrideReasonRequired": "请提供覆盖原因（至少 8 个字符）。",
+      "saveButton": "保存",
+      "saving": "保存中...",
+      "refundSaveSuccess": "退款设置已保存。",
+      "refundSaveError": "无法保存退款设置。",
+      "promotionsTitle": "从候补名单晋升的用户",
+      "promotionsSubtitle": "标记已通知需付款的用户。",
+      "promotionsEmpty": "没有候补晋升。",
+      "deadlineColumn": "付款截止时间",
+      "notificationColumn": "通知",
+      "notifiedLabel": "已通知",
+      "promotionSaveSuccess": "通知状态已更新。",
+      "promotionSaveError": "无法更新通知状态。"
     },
     "approvalSuccess": "用户已通过审核。",
     "recurringUpdateSuccess": "周期活动已更新。",
@@ -648,13 +734,26 @@
   "notifications": {
     "successTitle": "成功",
     "errorTitle": "操作失败",
-    "infoTitle": "提示"
+    "infoTitle": "提示",
+    "confirmTitle": "确认操作"
   },
   "approval": {
-    "profileRequiredBody": "Before your request can be reviewed, complete your profile and submit the join request.",
-    "submitJoinRequest": "Submit join request",
-    "joinRequestSent": "Join request sent. Wait for admin approval.",
-    "joinRequestError": "Failed to submit join request."
+    "title": "等待审核",
+    "subtitle": "你的账户正在等待管理员审核。",
+    "description": "我们已收到你的请求。如需加快进度，请直接联系创始人。",
+    "loginRequired": "请登录以查看审核状态。",
+    "loginButton": "登录",
+    "foundersLabel": "创始人：",
+    "foundersNames": "Sebastian Andrzejewski, Franciszek Kwame Awuku",
+    "emailLabel": "邮箱：",
+    "emailValue": "[email protected]",
+    "socialLabel": "Instagram：",
+    "socialValue": "@kenaz",
+    "waitingHint": "审核通过后，刷新页面或重新登录即可。",
+    "profileRequiredBody": "在审核你的请求之前，请先完善资料并提交加入申请。",
+    "submitJoinRequest": "提交加入申请",
+    "joinRequestSent": "加入申请已发送，请等待管理员审核。",
+    "joinRequestError": "提交加入申请失败。"
   },
   "auth": {
     "title": "登录",

@@ -84,7 +84,7 @@ function App() {
     const stored = localStorage.getItem('kenaz.theme')
     if (stored === 'dark') return true
     if (stored === 'light') return false
-    return false
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
   })
 
   useEffect(() => {

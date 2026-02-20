@@ -61,10 +61,8 @@
   },
   "pwa": {
     "installCta": "Zainstaluj aplikację na telefonie",
-    "installButton": "Zainstaluj",
-    "installManualTitle": "Instalacja ręczna",
-    "installManualHint": "W Chrome otwórz menu ⋮ i wybierz „Dodaj do ekranu głównego”.",
-    "installRequiresHttps": "Instalacja w Chrome wymaga bezpiecznego adresu HTTPS. Otwórz aplikację przez https://."
+    "installHintIos": "W Safari kliknij ikonę udostępniania ⤴ i wybierz „Dodaj do ekranu głównego”.",
+    "installHintAndroid": "W Chrome otwórz menu ⋮ i wybierz „Dodaj do ekranu głównego”."
   },
   "home": {
     "demoLabel": "demo",
