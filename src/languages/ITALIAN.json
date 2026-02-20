@@ -388,11 +388,13 @@
   "plans": {
     "backToAccount": "Torna all'account",
     "title": "Piani membership",
-    "subtitle": "Scegli un piano e acquista l'abbonamento direttamente dal tuo account.",
+    "subtitle": "Unisciti alla comunità Kenaz e sfrutta al meglio tutto ciò che il centro ha da offrire.",
     "subscriptionActiveUntil": "Abbonamento attivo fino al: {date}",
-    "subscriptionInactive": "Nessun abbonamento attivo.",
-    "monthlyLabel": "/mese",
-    "includes": "Include",
+    "subscriptionInactive": "Non hai ancora un abbonamento attivo",
+    "monthlyLabel": "/ mese",
+    "yearlyLabel": "/ anno",
+    "yearlyEquivalent": "≈ 27,50 PLN al mese",
+    "includes": "Cosa include il piano",
     "buyPlan": "Acquista {plan}",
     "freePlanCta": "Piano predefinito",
     "processing": "Elaborazione...",
@@ -402,40 +404,53 @@
     "loadError": "Impossibile caricare i piani.",
     "checkoutError": "Impossibile avviare il pagamento.",
     "pendingApproval": "L'account è in attesa di approvazione admin.",
-    "currentPlan": "Current plan",
+    "currentPlan": "PIANO ATTUALE",
+    "bestPrice": "MIGLIOR PREZZO",
+    "freeBadge": "GRATUITO",
+    "securePayment": "Pagamento sicuro",
     "plan": {
       "free": {
-        "title": "Free",
+        "title": "Account gratuito",
         "summary": "Start",
         "features": [
-          "Accesso base al calendario",
-          "Visualizza eventi e iscrizioni",
-          "Nessun abbonamento attivo"
-        ]
+          "Accesso al calendario degli eventi",
+          "Panoramica degli eventi e delle iscrizioni in arrivo",
+          "Biglietti a prezzi per ospiti"
+        ],
+        "ctaCurrent": "Il tuo piano attuale",
+        "ctaSwitch": "Inizia gratuitamente"
       },
       "pro": {
-        "title": "Membership Pro",
+        "title": "Membro Kenaz",
         "summary": "Più scelto",
         "features": [
-          "Accesso agli eventi riservati agli abbonati",
-          "Prezzi membro sugli eventi",
-          "Abbonamento attivo per 30 giorni"
-        ]
+          "Iscrizione agli eventi tramite il pannello membro",
+          "Accesso ai profili degli altri membri della comunità",
+          "Biglietti a prezzi per i membri"
+        ],
+        "cta": "Unisciti alla comunità",
+        "ctaAriaLabel": "Unisciti alla comunità — 33 PLN al mese"
       },
       "ultimate": {
-        "title": "Membership Ultimate",
-        "summary": "Pacchetto massimo",
+        "title": "Abbonamento annuale",
+        "summary": "Accesso per tutto l'anno",
         "features": [
-          "Tutto del piano Pro",
-          "Supporto organizzativo prioritario",
-          "Abbonamento attivo per 365 giorni"
-        ]
+          "Tutto dal piano Membro Kenaz",
+          "Risparmia oltre 60 PLN all'anno rispetto al piano mensile",
+          "Priorità nelle iscrizioni agli eventi trimestrali"
+        ],
+        "cta": "Scegli il piano annuale",
+        "ctaAriaLabel": "Scegli il piano annuale — 333 PLN all'anno"
       }
     },
-    "mostPopular": "Più popolare",
-    "freePlanCurrent": "Piano gratuito attuale",
-    "freePlanSwitch": "Passa al piano gratuito",
-    "switchedToFree": "Passato al piano gratuito."
+    "mostPopular": "PIÙ POPOLARE",
+    "freePlanCurrent": "Il tuo piano attuale",
+    "freePlanSwitch": "Inizia gratuitamente",
+    "switchedToFree": "Passato al piano gratuito.",
+    "welcomeModalTitle": "Il tuo account è stato approvato!",
+    "welcomeModalBody": "Benvenuto a Kenaz. Ora puoi unirti alla comunità scegliendo un piano oppure tornare al tuo account e farlo più tardi.",
+    "welcomeModalChoosePlan": "Scegli un piano",
+    "welcomeModalBackToAccount": "Torna all'account"
   },
   "admin": {
     "createEventTitle": "Crea un nuovo evento",

@@ -386,11 +386,13 @@
   "plans": {
     "backToAccount": "返回账户",
     "title": "会员计划",
-    "subtitle": "选择一个计划并直接从账户完成订阅购买。",
+    "subtitle": "加入 Kenaz 社区，充分享受中心提供的一切。",
     "subscriptionActiveUntil": "订阅有效期至：{date}",
-    "subscriptionInactive": "当前没有有效订阅。",
-    "monthlyLabel": "/月",
-    "includes": "包含内容",
+    "subscriptionInactive": "您还没有有效订阅",
+    "monthlyLabel": "/ 月",
+    "yearlyLabel": "/ 年",
+    "yearlyEquivalent": "≈ 每月 27.50 PLN",
+    "includes": "计划包含",
     "buyPlan": "购买 {plan}",
     "freePlanCta": "默认计划",
     "processing": "处理中...",
@@ -400,40 +402,53 @@
     "loadError": "加载计划失败。",
     "checkoutError": "发起付款失败。",
     "pendingApproval": "账户仍在等待管理员审核。",
-    "currentPlan": "Current plan",
+    "currentPlan": "当前计划",
+    "bestPrice": "最优价格",
+    "freeBadge": "免费",
+    "securePayment": "安全支付",
     "plan": {
       "free": {
-        "title": "Free",
+        "title": "免费账户",
         "summary": "入门",
         "features": [
-          "基础日历访问权限",
-          "查看活动与报名记录",
-          "无有效订阅"
-        ]
+          "访问活动日历",
+          "查看即将到来的活动和报名",
+          "以访客价格购票"
+        ],
+        "ctaCurrent": "您的当前计划",
+        "ctaSwitch": "免费开始"
       },
       "pro": {
-        "title": "Pro 会员",
+        "title": "Kenaz 会员",
         "summary": "最受欢迎",
         "features": [
-          "可参加订阅者专属活动",
-          "活动享受会员价",
-          "订阅有效期 30 天"
-        ]
+          "通过会员面板报名活动",
+          "查看其他社区成员的个人资料",
+          "以会员价格购票"
+        ],
+        "cta": "加入社区",
+        "ctaAriaLabel": "加入社区 — 每月 33 PLN"
       },
       "ultimate": {
-        "title": "Ultimate 会员",
-        "summary": "最高套餐",
+        "title": "年度会员",
+        "summary": "全年访问",
         "features": [
-          "包含 Pro 的全部权益",
-          "优先组织支持",
-          "订阅有效期 365 天"
-        ]
+          "包含 Kenaz 会员的全部权益",
+          "相比月度计划每年节省超过 60 PLN",
+          "季度活动优先报名"
+        ],
+        "cta": "选择年度计划",
+        "ctaAriaLabel": "选择年度计划 — 每年 333 PLN"
       }
     },
     "mostPopular": "最受欢迎",
-    "freePlanCurrent": "当前免费计划",
-    "freePlanSwitch": "切换到免费计划",
-    "switchedToFree": "已切换到免费计划。"
+    "freePlanCurrent": "您的当前计划",
+    "freePlanSwitch": "免费开始",
+    "switchedToFree": "已切换到免费计划。",
+    "welcomeModalTitle": "您的账户已通过审核！",
+    "welcomeModalBody": "欢迎来到 Kenaz。您现在可以选择一个计划加入社区，或者返回账户稍后再做。",
+    "welcomeModalChoosePlan": "选择计划",
+    "welcomeModalBackToAccount": "返回账户"
   },
   "admin": {
     "createEventTitle": "创建新活动",

@@ -388,11 +388,13 @@
   "plans": {
     "backToAccount": "Terug naar account",
     "title": "Membership-plannen",
-    "subtitle": "Kies een plan en koop je abonnement direct vanuit je account.",
+    "subtitle": "Word lid van de Kenaz-gemeenschap en maak optimaal gebruik van alles wat het centrum biedt.",
     "subscriptionActiveUntil": "Abonnement actief tot: {date}",
-    "subscriptionInactive": "Geen actief abonnement.",
-    "monthlyLabel": "/mnd",
-    "includes": "Inbegrepen",
+    "subscriptionInactive": "Je hebt nog geen actief abonnement",
+    "monthlyLabel": "/ mnd",
+    "yearlyLabel": "/ jaar",
+    "yearlyEquivalent": "≈ 27,50 PLN per maand",
+    "includes": "Wat zit erin",
     "buyPlan": "Koop {plan}",
     "freePlanCta": "Standaardplan",
     "processing": "Verwerken...",
@@ -402,40 +404,53 @@
     "loadError": "Kon plannen niet laden.",
     "checkoutError": "Kon betaling niet starten.",
     "pendingApproval": "Account wacht op goedkeuring van admin.",
-    "currentPlan": "Current plan",
+    "currentPlan": "HUIDIG PLAN",
+    "bestPrice": "BESTE PRIJS",
+    "freeBadge": "GRATIS",
+    "securePayment": "Veilige betaling",
     "plan": {
       "free": {
-        "title": "Free",
+        "title": "Gratis account",
         "summary": "Start",
         "features": [
-          "Basistoegang tot de kalender",
-          "Events en inschrijvingen bekijken",
-          "Geen actief abonnement"
-        ]
+          "Toegang tot de evenementenkalender",
+          "Overzicht van komende evenementen en inschrijvingen",
+          "Tickets tegen gastprijzen"
+        ],
+        "ctaCurrent": "Je huidige plan",
+        "ctaSwitch": "Begin gratis"
       },
       "pro": {
-        "title": "Pro membership",
+        "title": "Kenaz Lid",
         "summary": "Meest gekozen",
         "features": [
-          "Toegang tot events voor abonnees",
-          "Ledenprijzen voor events",
-          "Actief abonnement voor 30 dagen"
-        ]
+          "Inschrijven voor evenementen via het ledenpaneel",
+          "Toegang tot profielen van andere leden",
+          "Tickets tegen ledenprijzen"
+        ],
+        "cta": "Word lid van de gemeenschap",
+        "ctaAriaLabel": "Word lid van de gemeenschap — 33 PLN per maand"
       },
       "ultimate": {
-        "title": "Ultimate membership",
-        "summary": "Maximaal pakket",
+        "title": "Jaarlijks lidmaatschap",
+        "summary": "Volledig jaar toegang",
         "features": [
-          "Alles van Pro",
-          "Prioritaire organisatorische support",
-          "Actief abonnement voor 365 dagen"
-        ]
+          "Alles van het Kenaz Lid-plan",
+          "Bespaar meer dan 60 PLN per jaar ten opzichte van het maandplan",
+          "Voorrang bij inschrijving voor kwartaalevenementen"
+        ],
+        "cta": "Kies jaarplan",
+        "ctaAriaLabel": "Kies jaarplan — 333 PLN per jaar"
       }
     },
-    "mostPopular": "Meest populair",
-    "freePlanCurrent": "Huidig gratis plan",
-    "freePlanSwitch": "Schakel naar gratis plan",
-    "switchedToFree": "Overgeschakeld naar gratis plan."
+    "mostPopular": "MEEST POPULAIR",
+    "freePlanCurrent": "Je huidige plan",
+    "freePlanSwitch": "Begin gratis",
+    "switchedToFree": "Overgeschakeld naar gratis plan.",
+    "welcomeModalTitle": "Je account is goedgekeurd!",
+    "welcomeModalBody": "Welkom bij Kenaz. Je kunt nu lid worden door een plan te kiezen of teruggaan naar je account en dit later doen.",
+    "welcomeModalChoosePlan": "Kies een plan",
+    "welcomeModalBackToAccount": "Terug naar account"
   },
   "admin": {
     "createEventTitle": "Nieuw event toevoegen",

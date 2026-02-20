@@ -386,11 +386,13 @@
   "plans": {
     "backToAccount": "Wroć do kōnta",
     "title": "Plany człōnkostwa",
-    "subtitle": "Ôbier plan i kup subskrypcyjõ prosto z kōnta.",
+    "subtitle": "Dołōncz do społeczności Kenaz i korzystej z tego, co ôfyruje cyntrōm.",
     "subscriptionActiveUntil": "Subskrypcyjo aktywnŏ do: {date}",
-    "subscriptionInactive": "Brak aktywnyj subskrypcyje.",
-    "monthlyLabel": "/mies.",
-    "includes": "Zawiyro",
+    "subscriptionInactive": "Niy mŏsz jeszcze aktywnyj subskrypcyje",
+    "monthlyLabel": "/ mies.",
+    "yearlyLabel": "/ rok",
+    "yearlyEquivalent": "≈ 27,50 PLN miesiyncznie",
+    "includes": "Co zawiyro plan",
     "buyPlan": "Kup {plan}",
     "freePlanCta": "Plan bazowy",
     "processing": "Przetwŏrzanie...",
@@ -400,40 +402,53 @@
     "loadError": "Niy idzie wczytać planōw.",
     "checkoutError": "Niy idzie zaczōnć płatności.",
     "pendingApproval": "Kōnto czeko na akceptacyjo admina.",
-    "currentPlan": "Aktualny plan",
+    "currentPlan": "AKTUALNY PLAN",
+    "bestPrice": "NŎJLEPSZŎ CYNA",
+    "freeBadge": "BEZPŁATNIE",
+    "securePayment": "Bezpiecznŏ płatność",
     "plan": {
       "free": {
-        "title": "Free",
+        "title": "Kōnto bezpłatne",
         "summary": "Start",
         "features": [
-          "Bazowy dostymp do kalyndarza",
-          "Podglōnd wydarzyń i zapisōw",
-          "Brak aktywnyj subskrypcyje"
-        ]
+          "Dostymp do kalyndarza wydarzyń",
+          "Podglōnd nadchodzōncych wydarzyń i zapisōw",
+          "Wejściōwki w cynach dlo gości"
+        ],
+        "ctaCurrent": "Twōj ôbecny plan",
+        "ctaSwitch": "Zacznij bezpłatnie"
       },
       "pro": {
-        "title": "Człōnkostwo Pro",
+        "title": "Człōnek Kenaz",
         "summary": "Nŏjczyńściyj wybiyrane",
         "features": [
-          "Dostymp do wydarzyń ino dlo subskrybentōw",
-          "Cyny człōnkowskie na wydarzyniŏch",
-          "Aktywnŏ subskrypcyjo na 30 dni"
-        ]
+          "Zapisy na wydarzynia bez panel człōnkowski",
+          "Dostymp do profilōw inkszych człōnkōw społeczności",
+          "Wejściōwki w cynach człōnkowskich"
+        ],
+        "cta": "Dołōncz do społeczności",
+        "ctaAriaLabel": "Dołōncz do społeczności — 33 PLN miesiyncznie"
       },
       "ultimate": {
-        "title": "Człōnkostwo Ultimate",
-        "summary": "Maksymalny pakiet",
+        "title": "Człōnkostwo roczne",
+        "summary": "Całoroczny dostymp",
         "features": [
-          "Wszyjsko z planu Pro",
-          "Priorytetowe wsparcie ôrganizacyjne",
-          "Aktywnŏ subskrypcyjo na 365 dni"
-        ]
+          "Wszyjsko z planu Człōnka Kenaz",
+          "Ôszczyndzŏsz wiyncyj jak 60 PLN rocznie",
+          "Pierwyństwo zapisōw na wydarzynia kwartalnie"
+        ],
+        "cta": "Ôbier plan roczny",
+        "ctaAriaLabel": "Ôbier plan roczny — 333 PLN rocznie"
       }
     },
-    "mostPopular": "Nŏjpopularniyjszy",
-    "freePlanCurrent": "Aktualny darmowy plan",
-    "freePlanSwitch": "Przełōncz na darmowy plan",
-    "switchedToFree": "Przełōnczōno na darmowy plan."
+    "mostPopular": "NŎJPOPULARNIYJSZY",
+    "freePlanCurrent": "Twōj ôbecny plan",
+    "freePlanSwitch": "Zacznij bezpłatnie",
+    "switchedToFree": "Przełōnczōno na darmowy plan.",
+    "welcomeModalTitle": "Twoje kōnto ôstało zatwierdzōne!",
+    "welcomeModalBody": "Witej w Kenaz. Możesz terozki dołōnczyć do społeczności ôbiyrajōnc plan abo wrōcić do kōnta i zrobić to niyskorzij.",
+    "welcomeModalChoosePlan": "Ôbier plan",
+    "welcomeModalBackToAccount": "Wroć do kōnta"
   },
   "admin": {
     "createEventTitle": "Dodej nowe wydarzyńe",
