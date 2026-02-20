@@ -13,6 +13,22 @@ function AboutSection() {
     '/static/about1.jpg',
     '/static/about7.jpg',
   ]
+  const storyImageAlts = [
+    'Grupa ludzi ćwicząca razem na świeżym powietrzu',
+    'Dwóch mężczyzn siedzących razem na trawie',
+    'Kobiety śmiejące się podczas wspólnego wyjścia',
+    'Osoby tworzące krąg z dłońmi – gest jedności',
+    'Ekipa Kenaz podczas wspólnego wyjazdu – zdjęcie grupowe',
+    'Duża grupa członków Kenaz w czarnych koszulkach',
+  ]
+  const storyImagePositions = [
+    'object-[center_30%]',
+    'object-center',
+    'object-left',
+    'object-top',
+    'object-center',
+    'object-center',
+  ]
   const stories = Array.isArray(t('about.stories')) ? t('about.stories') : []
   const statsItems = Array.isArray(t('about.stats.items')) ? t('about.stats.items') : []
   const shopUrl = '/shop'
@@ -20,17 +36,19 @@ function AboutSection() {
   return (
     <div className="page-shell">
       <div className="mx-auto w-full max-w-4xl">
-        <div className="mb-10">
-          <p className="text-xs uppercase tracking-[0.3em] text-navy/40 dark:text-cream/40">
-            {t('about.label')}
-          </p>
-          <h1 className="text-3xl md:text-5xl font-black text-navy dark:text-cream">
-            {t('about.title')}
-          </h1>
-          <p className="mt-3 max-w-3xl text-sm md:text-base text-navy/70 dark:text-cream/70">
-            {t('about.subtitle')}
-          </p>
-        </div>
+        <section className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-navy/40 dark:text-cream/40">
+              {t('about.label')}
+            </p>
+            <h1 className="text-3xl md:text-5xl font-black text-navy dark:text-cream">
+              {t('about.title')}
+            </h1>
+            <p className="mt-3 max-w-xl text-sm md:text-base text-navy/70 dark:text-cream/70">
+              {t('about.subtitle')}
+            </p>
+          </div>
+        </section>
 
         <div className="mb-12" />
 
@@ -47,6 +65,8 @@ function AboutSection() {
                 title={story.title}
                 body={story.body}
                 image={image}
+                alt={storyImageAlts[index]}
+                imagePosition={storyImagePositions[index]}
                 reverse={shouldReverse}
               />
             )
@@ -175,7 +195,7 @@ function StatCard({ value, label }) {
   )
 }
 
-function WideStoryCard({ title, body, image, reverse }) {
+function WideStoryCard({ title, body, image, alt, imagePosition, reverse }) {
   return (
     <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 items-center p-6 rounded-2xl border border-navy/10 bg-transparent dark:border-cream/15 dark:bg-transparent ${
       reverse ? 'md:[&>*:first-child]:order-2' : ''
@@ -188,14 +208,12 @@ function WideStoryCard({ title, body, image, reverse }) {
           {body}
         </p>
       </div>
-      <div className="rounded-2xl border border-navy/10 bg-transparent dark:border-cream/15 dark:bg-transparent p-3">
-        <img
-          src={image}
-          alt=""
-          className="w-full h-auto rounded-xl"
-          loading="lazy"
-        />
-      </div>
+      <img
+        src={image}
+        alt={alt || ''}
+        className={`w-full h-72 rounded-xl object-cover ${imagePosition || 'object-center'}`}
+        loading="lazy"
+      />
     </div>
   )
 }
@@ -221,7 +239,7 @@ function WideCtaCard({ message, primaryLabel, onPrimary }) {
 
 function WideStatsCard({ items }) {
   return (
-    <div className="p-6 rounded-2xl border border-navy/10 bg-transparent dark:border-cream/15 dark:bg-transparent grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-2 gap-4 my-6">
       {items.map((item) => (
         <StatCard
           key={item.label}
@@ -237,8 +255,8 @@ function WideSocialCard({ title, subtitle, facebookLabel, instagramLabel }) {
   return (
     <div className="p-6 rounded-2xl border border-navy/10 bg-transparent dark:border-cream/15 dark:bg-transparent flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
       <div>
-        <div className="text-xl font-semibold text-navy dark:text-cream">{title}</div>
-        <div className="mt-2 text-sm text-navy/60 dark:text-cream/60">{subtitle}</div>
+        <h2 className="text-xl font-bold text-navy dark:text-cream">{title}</h2>
+        <p className="mt-1 text-sm text-navy/60 dark:text-cream/60">{subtitle}</p>
       </div>
       <div className="flex flex-wrap gap-3">
         <SocialLink
@@ -259,9 +277,12 @@ function WideSocialCard({ title, subtitle, facebookLabel, instagramLabel }) {
 function WideShopCard({ title, body, buttonLabel, image, onClick }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center p-6 rounded-2xl border border-navy/10 bg-transparent dark:border-cream/15 dark:bg-transparent">
-      <div className="rounded-2xl border border-navy/10 bg-transparent dark:border-cream/15 dark:bg-transparent p-3">
-        <img src={image} alt="" className="w-full h-auto rounded-xl" loading="lazy" />
-      </div>
+      <img
+        src={image}
+        alt="Dziewczyna w czapce Kenaz w miejskim otoczeniu"
+        className="w-full h-72 rounded-xl object-cover object-center"
+        loading="lazy"
+      />
       <div>
         <h3 className="text-2xl md:text-3xl font-black text-navy dark:text-cream">
           {title}
@@ -284,7 +305,7 @@ function WideShopCard({ title, body, buttonLabel, image, onClick }) {
 function WideMediaCard({ title, body, articleLabel, articleHref, videoTitle, videoHref }) {
   return (
     <div className="p-6 rounded-2xl border border-navy/10 bg-transparent dark:border-cream/15 dark:bg-transparent">
-      <div className="text-2xl font-bold text-navy dark:text-cream">{title}</div>
+      <h2 className="text-2xl font-bold text-navy dark:text-cream">{title}</h2>
       <p className="mt-3 text-base md:text-lg text-navy/70 dark:text-cream/70">
         {body}
       </p>
