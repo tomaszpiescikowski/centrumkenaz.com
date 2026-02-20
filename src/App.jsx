@@ -111,6 +111,7 @@ function App() {
                 <Routes location={location}>
                   <Route path="/" element={<Home />} />
                   <Route path="/calendar" element={<CalendarPage />} />
+                  <Route path="/my-events" element={<MyEvents />} />
                   <Route path="/about" element={<AboutSection />} />
                   <Route path="/shop" element={<Shop />} />
                   <Route path="/privacy" element={<Privacy />} />
@@ -126,7 +127,6 @@ function App() {
                   </Route>
                   <Route element={<RequireAuth />}>
                     <Route path="/me" element={<Account darkMode={darkMode} setDarkMode={setDarkMode} />} />
-                    <Route path="/my-events" element={<MyEvents />} />
                     <Route path="/plans" element={<Plans />} />
                     <Route path="/pending-approval" element={<PendingApproval />} />
                     <Route path="/people/:userId" element={<UserProfile />} />
