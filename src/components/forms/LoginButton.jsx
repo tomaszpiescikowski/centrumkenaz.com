@@ -19,7 +19,7 @@ function LoginButton() {
     return (
       <Link
         to={accountTarget}
-        className="btn-nav h-10 gap-3"
+        className="btn-nav h-10 gap-3 justify-start pl-1.5 pr-4"
         aria-label={t('nav.myAccount')}
       >
         {user.picture_url ? (
