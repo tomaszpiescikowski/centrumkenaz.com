@@ -451,8 +451,25 @@ jobs:
             ssh deploy-server <<ENDSSH
           set -euo pipefail
           echo "Restoring from $LATEST_BACKUP..."
-          sudo rm -rf ${{ env.APP_DIR }}
-          sudo cp -r $LATEST_BACKUP ${{ env.APP_DIR }}
+
+          # Restore backend code (preserve venv and .env)
+          if [ -d "$LATEST_BACKUP/backend" ]; then
+            rsync -a --delete \
+              --exclude 'venv/' \
+              --exclude '.env' \
+              $LATEST_BACKUP/backend/ ${{ env.BACKEND_DIR }}/
+          fi
+
+          # Restore frontend
+          if [ -d "$LATEST_BACKUP/dist" ]; then
+            rsync -a --delete $LATEST_BACKUP/dist/ ${{ env.FRONTEND_DIR }}/
+          fi
+
+          # Restore static (preserve uploads)
+          if [ -d "$LATEST_BACKUP/static" ]; then
+            rsync -a $LATEST_BACKUP/static/ ${{ env.STATIC_DIR }}/
+          fi
+
           sudo chown -R \$USER:\$USER ${{ env.APP_DIR }}
           sudo systemctl restart kenaz-backend
           sudo systemctl reload nginx
