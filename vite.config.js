@@ -77,7 +77,7 @@ export default defineConfig({
           },
         ],
         navigateFallback: 'index.html',
-        navigateFallbackDenylist: [/^\/api/, /^\/docs/, /^\/uploads/],
+        navigateFallbackDenylist: [/^\/api/, /^\/auth\/google/, /^\/docs/, /^\/uploads/, /^\/health/],
       },
     }),
   ],
