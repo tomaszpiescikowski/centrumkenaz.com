@@ -18,6 +18,10 @@
     <meta name="msapplication-TileColor" content="#1a1a4e" />
     <meta name="msapplication-tap-highlight" content="no" />
     <title>Kenaz Centrum</title>
+    <script>
+      // Apply theme immediately to prevent flash
+      (function(){var s=localStorage.getItem('kenaz.theme');var d=s==='dark'||(s!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark')})();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
