@@ -123,15 +123,15 @@
   }
 
   .ui-tag-chip {
-    @apply inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold transition;
+    @apply inline-flex items-center gap-1.5 rounded-full border border-navy/15 px-3 py-1.5 text-xs font-semibold transition dark:border-cream/15;
   }
 
   .ui-tag-chip-active {
-    @apply border-navy bg-navy text-cream dark:border-cream dark:bg-cream dark:text-navy;
+    @apply bg-navy/5 text-navy dark:bg-cream/10 dark:text-cream;
   }
 
   .ui-tag-chip-idle {
-    @apply border-navy/20 text-navy/70 hover:bg-navy/5 dark:border-cream/25 dark:text-cream/70 dark:hover:bg-cream/10;
+    @apply text-navy/70 hover:bg-navy/5 dark:text-cream/70 dark:hover:bg-cream/10;
   }
 
   .ui-input-date {

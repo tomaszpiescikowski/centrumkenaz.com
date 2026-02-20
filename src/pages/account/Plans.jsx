@@ -242,6 +242,18 @@ function Plans() {
     const ctaKey = `plans.plan.${code}.cta`
     const ariaKey = `plans.plan.${code}.ctaAriaLabel`
 
+    if (isCurrentPlan) {
+      return (
+        <button
+          type="button"
+          disabled
+          className="inline-flex h-11 w-full cursor-not-allowed items-center justify-center rounded-2xl border border-navy/30 bg-navy/30 px-4 text-sm font-bold text-cream/50 dark:border-cream/30 dark:bg-cream/20 dark:text-cream/40"
+        >
+          {t('plans.currentPlanCta')}
+        </button>
+      )
+    }
+
     if (!isPurchasable && code !== 'free') {
       return (
         <button
@@ -314,7 +326,7 @@ function Plans() {
           <p className="mt-6 text-navy/60 dark:text-cream/60">{t('common.loading')}</p>
         ) : (
           <div className="mt-6 min-h-0 flex-1 overflow-y-auto pb-2">
-            <div className="flex flex-col items-stretch gap-6 md:flex-row">
+            <div className="flex flex-col items-stretch gap-6 md:flex-row md:items-end md:py-4">
               {cards.map((plan) => {
                 const code = plan.code
                 const isCurrentPlan = currentPlanCode === code
@@ -329,9 +341,12 @@ function Plans() {
                     key={code}
                     className={
                       'relative flex flex-1 flex-col justify-between overflow-hidden rounded-2xl border p-5 transition-all ' +
-                      (isHighlighted
-                        ? 'z-[1] border-2 border-navy/55 dark:border-cream/50 md:scale-[1.03]'
-                        : 'border-navy/15 dark:border-cream/20')
+                      (isCurrentPlan
+                        ? 'border-2 border-emerald-500 dark:border-emerald-400'
+                        : isHighlighted
+                          ? 'z-[1] border-2 border-navy/55 dark:border-cream/50'
+                          : 'border-navy/15 dark:border-cream/20') +
+                      (isHighlighted ? ' md:scale-[1.03]' : '')
                     }
                     style={isHighlighted ? { boxShadow: '0 0 28px rgba(26,26,78,0.15)' } : undefined}
                   >
@@ -363,7 +378,7 @@ function Plans() {
                     )}
 
                     {/* Header section — fixed min-height so features align across cards */}
-                    <div className="relative z-10 min-h-[150px] text-left">
+                    <div className="relative z-10 min-h-[200px] text-left">
                       <p className="text-sm font-semibold text-navy/70 dark:text-cream/70">
                         {summary}
                       </p>

@@ -162,14 +162,14 @@ function Account({ darkMode, setDarkMode }) {
         </button>
       </div>
 
-      <section className="shrink-0 rounded-2xl border border-navy/10 bg-cream/60 p-6 dark:border-cream/10 dark:bg-navy/60">
+      <section className="shrink-0 rounded-2xl bg-cream/40 p-6 dark:bg-navy/40">
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
           <div className="xl:col-span-2">
             <h2 className="mb-4 text-xl font-black text-navy dark:text-cream">
               {t('account.profileTitle')}
             </h2>
 
-            <div className="mb-5 flex items-center gap-4 rounded-2xl bg-navy/5 p-4 dark:bg-cream/10">
+            <div className="mb-5 flex items-center gap-4 pb-5 border-b border-navy/8 dark:border-cream/8">
               {user?.picture_url ? (
                 <img
                   src={user.picture_url}
@@ -182,13 +182,13 @@ function Account({ darkMode, setDarkMode }) {
                 </div>
               )}
               <div className="min-w-0">
-                <p className="text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
+                <p className="text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40">
                   {t('account.name')}
                 </p>
                 <p className="truncate text-lg font-bold text-navy dark:text-cream">
                   {user?.full_name || '—'}
                 </p>
-                <p className="mt-1 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
+                <p className="mt-1 text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40">
                   {t('account.email')}
                 </p>
                 <p className="truncate text-sm font-medium text-navy/80 dark:text-cream/80">
@@ -197,17 +197,17 @@ function Account({ darkMode, setDarkMode }) {
               </div>
             </div>
 
-            <div className="mt-5 rounded-2xl border border-navy/10 bg-cream/50 p-4 dark:border-cream/15 dark:bg-navy/50">
+            <div className="mt-5">
               <div className="space-y-4">
                 <div>
-                  <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
+                  <p className="mb-2 text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40">
                     {t('account.aboutMe')}
                   </p>
                   {!isEditingAboutMe ? (
                     <div className="group relative">
                       <div
                         onClick={handleEditAboutMe}
-                        className="min-h-[100px] cursor-pointer rounded-2xl border border-navy/10 bg-cream px-4 py-3 text-navy transition-colors hover:border-navy/20 dark:border-cream/15 dark:bg-navy dark:text-cream dark:hover:border-cream/25"
+                        className="min-h-[100px] cursor-pointer rounded-xl bg-navy/5 px-4 py-3 text-navy transition-colors dark:bg-cream/8 dark:text-cream"
                       >
                         {aboutMe || (
                           <span className="text-navy/50 dark:text-cream/50">
@@ -270,14 +270,14 @@ function Account({ darkMode, setDarkMode }) {
                   )}
                 </div>
                 <div>
-                  <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
+                  <p className="mb-2 text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40">
                     {t('account.interests')}
                   </p>
                   <InterestTagsPicker value={interestTags} onChange={handleInterestsChange} t={t} />
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <div>
-                    <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
+                    <p className="mb-2 text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40">
                       {t('common.theme') || 'Motyw'}
                     </p>
                     <button
@@ -303,13 +303,13 @@ function Account({ darkMode, setDarkMode }) {
                     </button>
                   </div>
                   <div>
-                    <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
+                    <p className="mb-2 text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40">
                       {t('nav.city')}
                     </p>
                     <CitySelector />
                   </div>
                   <div>
-                    <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
+                    <p className="mb-2 text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40">
                       {t('common.language') || 'Language'}
                     </p>
                     <LanguageSelector />
@@ -358,7 +358,7 @@ function Account({ darkMode, setDarkMode }) {
 function InfoRow({ label, value }) {
   return (
     <div>
-      <p className="text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">{label}</p>
+      <p className="text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40">{label}</p>
       <p className="text-base font-semibold text-navy dark:text-cream">{value}</p>
     </div>
   )

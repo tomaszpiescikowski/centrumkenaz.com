@@ -99,12 +99,12 @@ function UserProfile() {
         </div>
 
         <div className="mt-5">
-          <p className="text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">{t('profile.about')}</p>
+          <p className="text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40">{t('profile.about')}</p>
           <p className="mt-2 text-sm text-navy/85 dark:text-cream/85">{profile.about_me || t('profile.noAbout')}</p>
         </div>
 
         <div className="mt-5">
-          <p className="text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">{t('profile.interests')}</p>
+          <p className="text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40">{t('profile.interests')}</p>
           {visibleTags.length > 0 ? (
             <div className="mt-2 flex flex-wrap gap-2">
               {visibleTags.map((tag) => (
