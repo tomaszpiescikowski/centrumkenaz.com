@@ -377,11 +377,7 @@
     "cancellationClosed": "Zamkniyntŏ",
     "cancellationClosedMessage": "Ôkno rezygnacyje zamkniynte.",
     "cancelStandard": "Zrezygnuj",
-    "cancelRescue": "Użyj koła ratunkowego",
     "openManualPayment": "Dokōńcz płatność",
-    "rescue": "Koło ratunkowe",
-    "rescueAvailable": "Zostoło: {count}",
-    "rescueTooltip": "Koło ratunkowe pozwŏlŏ subskrybentōm zrezygnować bliżyj terminu. Limit je miesiyczny.",
     "loadError": "Niy idzie wczytać danych kōnta",
     "cancelError": "Niy idzie anulować zapisu",
     "cancelSuccess": "Zapis ôstoł anulowany."
@@ -655,11 +651,6 @@
       "maxParticipantsPlaceholder": "e.g. 20",
       "cancelCutoffHours": "Limit rezygnacyje (godziny)",
       "cancelCutoffHoursTooltip": "Na wiela godzin przed wydarzynińę uczestnik mōże sam zrezygnować.",
-      "rescueCutoffHours": "Limit koła ratunkowego (godziny)",
-      "rescueCutoffHoursTooltip": "Na wiela godzin przed wydarzynińę uczestnik mōże użyć koła ratunkowego.",
-      "rescueMonthlyLimit": "Limit ratunku na miesiōnc",
-      "rescueMonthlyLimitTooltip": "Wiela razy na miesiōnc uczestnik mōże użyć koła ratunkowego.",
-      "rescueRequiresSubscription": "Ratunek ino dlo subskrybentōw",
       "isRecurring": "Powtorzalne wydarzyńe",
       "pointsValuePlaceholder": "e.g. 1"
     },

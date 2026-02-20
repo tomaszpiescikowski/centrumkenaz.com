@@ -120,7 +120,7 @@ async def test_scenario_waitlist_cancellation_promotion_manual_payment_and_stats
     5) POST /registrations/{regA}/manual-payment/confirm -> 200 manual_payment_verification
     6) GET  /admin/manual-payments/pending  -> zawiera A
     7) POST /admin/manual-payments/{regA}/approve -> 200 status confirmed
-    8) POST /registrations/{regB}/cancel {use_rescue:false} -> 200 success:true + refund_task_id
+    8) POST /registrations/{regB}/cancel -> 200 success:true + refund_task_id
        - efekt uboczny: promocja C z waitlisty
     9) GET  /registrations/{regC}/manual-payment (C) -> 200 status manual_payment_required + promoted_from_waitlist:true
     10) POST /registrations/{regC}/manual-payment/confirm -> 200 manual_payment_verification

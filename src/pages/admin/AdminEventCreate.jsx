@@ -62,9 +62,6 @@ function AdminEventCreate() {
     maxParticipants: '',
     requiresSubscription: false,
     cancelCutoffHours: '24',
-    rescueCutoffHours: '',
-    rescueMonthlyLimit: '0',
-    rescueRequiresSubscription: true,
     pointsValue: '1',
   })
 
@@ -243,9 +240,6 @@ function AdminEventCreate() {
       max_participants: form.maxParticipants ? Number(form.maxParticipants) : null,
       requires_subscription: form.requiresSubscription,
       cancel_cutoff_hours: Number(form.cancelCutoffHours || 24),
-      rescue_cutoff_hours: form.rescueCutoffHours ? Number(form.rescueCutoffHours) : null,
-      rescue_monthly_limit: Number(form.rescueMonthlyLimit || 0),
-      rescue_requires_subscription: form.rescueRequiresSubscription,
       points_value: Number(form.pointsValue || 0),
     }
 
@@ -598,62 +592,7 @@ function AdminEventCreate() {
             )}
           </label>
 
-          <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
-            <span className="flex items-center gap-1.5">
-              {t('admin.fields.rescueCutoffHours')}
-              <span
-                className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-navy/20 text-[10px] font-bold text-navy/70 dark:border-cream/20 dark:text-cream/70 cursor-help"
-                title={t('admin.fields.rescueCutoffHoursTooltip')}
-                aria-label={t('admin.fields.rescueCutoffHoursTooltip')}
-              >
-                i
-              </span>
-            </span>
-            <input
-              type="number"
-              min="0"
-              className={inputClassFor('rescueCutoffHours')}
-              value={form.rescueCutoffHours}
-              onChange={(e) => handleNonNegativeNumberChange('rescueCutoffHours', e.target.value)}
-            />
-            {fieldHints.rescueCutoffHours && (
-              <p className={validationHintClass}>{t(fieldHints.rescueCutoffHours)}</p>
-            )}
-          </label>
-
-          <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
-            <span className="flex items-center gap-1.5">
-              {t('admin.fields.rescueMonthlyLimit')}
-              <span
-                className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-navy/20 text-[10px] font-bold text-navy/70 dark:border-cream/20 dark:text-cream/70 cursor-help"
-                title={t('admin.fields.rescueMonthlyLimitTooltip')}
-                aria-label={t('admin.fields.rescueMonthlyLimitTooltip')}
-              >
-                i
-              </span>
-            </span>
-            <input
-              type="number"
-              min="0"
-              className={inputClassFor('rescueMonthlyLimit')}
-              value={form.rescueMonthlyLimit}
-              onChange={(e) => handleNonNegativeNumberChange('rescueMonthlyLimit', e.target.value)}
-            />
-            {fieldHints.rescueMonthlyLimit && (
-              <p className={validationHintClass}>{t(fieldHints.rescueMonthlyLimit)}</p>
-            )}
-          </label>
         </div>
-
-        <label className="flex items-center gap-3 text-sm text-navy dark:text-cream">
-          <input
-            type="checkbox"
-              className="form-checkbox"
-            checked={form.rescueRequiresSubscription}
-            onChange={(e) => updateField('rescueRequiresSubscription', e.target.checked)}
-          />
-          {t('admin.fields.rescueRequiresSubscription')}
-        </label>
 
         <div className="flex flex-wrap gap-3">
           <button

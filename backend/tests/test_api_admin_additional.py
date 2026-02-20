@@ -468,7 +468,6 @@ class TestAdminManualPaymentQueues:
             user_id=participant.id,
             event_id=event.id,
             occurrence_date=registration.occurrence_date,
-            cancelled_with_rescue=False,
             refund_eligible=True,
             recommended_should_refund=True,
             should_refund=True,

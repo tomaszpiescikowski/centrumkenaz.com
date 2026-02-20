@@ -119,18 +119,10 @@
 ## Registrations (Rejestracje)
 
 ### `POST /registrations/{registration_id}/cancel`
-**Use case:** Anulowanie rejestracji z możliwością użycia "rescue" (awaryjne anulowanie)  
+**Use case:** Anulowanie rejestracji
 **Frontend:** Używany w `Account.jsx` na stronie "Moje rejestracje" - przycisk anulowania rejestracji. Użytkownik może:
-- Anulować normalnie (w ramach terminu cutoff)
-- Użyć rescue (awaryjne anulowanie poza terminem, limitowane)
+- Anulować w ramach terminu cutoff
 - System automatycznie obsługuje zwroty płatności
-
-**Payload:**
-```json
-{
-  "use_rescue": false
-}
-```
 
 ### `GET /registrations/{registration_id}/manual-payment`
 **Use case:** Pobranie szczegółów płatności manualnej (przelew bankowy)  
@@ -168,7 +160,6 @@
 **Frontend:** Używany w `Account.jsx` na zakładce "Moje wydarzenia" - lista wszystkich wydarzeń użytkownika (przyszłe i archiwalne) z:
 - Statusem rejestracji
 - Możliwością anulowania
-- Dostępnością rescue
 - Szczegółami płatności manualnej
 
 ### `POST /users/me/join-request`
@@ -397,8 +388,7 @@ Wyświetla numer referencyjny, kwotę, wydarzenie.
 1. Użytkownik wchodzi na "Moje wydarzenia": `GET /users/me/registrations`
 2. Widzi przycisk "Anuluj" przy rejestracji
 3. System pokazuje czy:
-   - Anulowanie normalne (w terminie)
-   - Anulowanie rescue (awaryjne, poza terminem)
+   - Anulowanie jest w terminie
 4. Użytkownik klika "Anuluj": `POST /registrations/{registration_id}/cancel`
 5. Jeśli płatność automatyczna - backend automatycznie zwraca pieniądze przez bramkę
 6. Jeśli płatność manualna:

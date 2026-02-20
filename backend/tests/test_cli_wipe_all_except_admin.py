@@ -94,7 +94,6 @@ async def test_wipe_all_except_admin_keeps_only_selected_admin(monkeypatch, db_e
             user_id=user.id,
             event_id=event.id,
             occurrence_date=start.date(),
-            cancelled_with_rescue=False,
             refund_eligible=True,
             recommended_should_refund=True,
             should_refund=True,

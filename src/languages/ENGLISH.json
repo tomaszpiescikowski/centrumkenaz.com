@@ -377,11 +377,7 @@
     "cancellationClosed": "Closed",
     "cancellationClosedMessage": "Cancellation window closed.",
     "cancelStandard": "Cancel registration",
-    "cancelRescue": "Use rescue to cancel",
     "openManualPayment": "Complete payment",
-    "rescue": "Rescue",
-    "rescueAvailable": "{count} left",
-    "rescueTooltip": "Rescue allows subscribers to cancel close to the event. It is limited per month.",
     "loadError": "Failed to load account data",
     "cancelError": "Failed to cancel registration",
     "cancelSuccess": "Registration cancelled successfully."
@@ -655,11 +651,6 @@
       "maxParticipantsPlaceholder": "e.g. 20",
       "cancelCutoffHours": "Cancellation cutoff (hours)",
       "cancelCutoffHoursTooltip": "How many hours before the event a participant can cancel their registration.",
-      "rescueCutoffHours": "Rescue cutoff (hours)",
-      "rescueCutoffHoursTooltip": "How many hours before the event a participant can use a rescue instead of a standard cancellation.",
-      "rescueMonthlyLimit": "Rescue limit per month",
-      "rescueMonthlyLimitTooltip": "How many times per month a participant can use the rescue option.",
-      "rescueRequiresSubscription": "Rescue only for subscribers",
       "isRecurring": "Recurring event",
       "pointsValuePlaceholder": "e.g. 1"
     },

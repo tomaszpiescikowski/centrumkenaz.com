@@ -377,11 +377,7 @@
     "cancellationClosed": "Zamknięta",
     "cancellationClosedMessage": "Okno rezygnacji zamknięte.",
     "cancelStandard": "Zrezygnuj",
-    "cancelRescue": "Użyj koła ratunkowego",
     "openManualPayment": "Dokończ płatność",
-    "rescue": "Koło ratunkowe",
-    "rescueAvailable": "Pozostało: {count}",
-    "rescueTooltip": "Koło ratunkowe pozwala subskrybentom zrezygnować bliżej terminu wydarzenia. Limit jest miesięczny.",
     "loadError": "Nie udało się wczytać danych konta",
     "cancelError": "Nie udało się anulować zapisu",
     "cancelSuccess": "Pomyślnie anulowano zapis."
@@ -655,11 +651,6 @@
       "maxParticipantsPlaceholder": "np. 20",
       "cancelCutoffHours": "Limit rezygnacji (godziny)",
       "cancelCutoffHoursTooltip": "Na ile godzin przed wydarzeniem uczestnik może samodzielnie zrezygnować z udziału.",
-      "rescueCutoffHours": "Limit koła ratunkowego (godziny)",
-      "rescueCutoffHoursTooltip": "Na ile godzin przed wydarzeniem uczestnik może użyć koła ratunkowego zamiast standardowej rezygnacji.",
-      "rescueMonthlyLimit": "Limit kół ratunkowych / mies.",
-      "rescueMonthlyLimitTooltip": "Ile razy w miesiącu uczestnik może skorzystać z koła ratunkowego.",
-      "rescueRequiresSubscription": "Koło ratunkowe tylko dla subskrybentów",
       "isRecurring": "Wydarzenie cykliczne",
       "pointsValuePlaceholder": "np. 1"
     },

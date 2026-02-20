@@ -60,7 +60,7 @@ class UserRegistrationResponse(BaseModel):
     Describe a user's registration and cancellation eligibility.
 
     This response bundles the registration status, event summary, and any
-    manual payment or rescue-related metadata for the UI.
+    manual payment metadata for the UI.
     """
     model_config = ConfigDict(coerce_numbers_to_str=True)
 

@@ -377,11 +377,7 @@
     "cancellationClosed": "已关闭",
     "cancellationClosedMessage": "取消窗口已关闭。",
     "cancelStandard": "取消报名",
-    "cancelRescue": "使用救援取消",
     "openManualPayment": "完成付款",
-    "rescue": "救援",
-    "rescueAvailable": "剩余 {count}",
-    "rescueTooltip": "救援允许订阅者在临近活动时取消。每月有次数限制。",
     "loadError": "加载账户数据失败",
     "cancelError": "取消报名失败",
     "cancelSuccess": "报名已成功取消。"
@@ -655,11 +651,6 @@
       "maxParticipantsPlaceholder": "e.g. 20",
       "cancelCutoffHours": "取消截止（小时）",
       "cancelCutoffHoursTooltip": "参与者可以在活动前多少小时取消注册。",
-      "rescueCutoffHours": "救援截止（小时）",
-      "rescueCutoffHoursTooltip": "参与者可以在活动前多少小时使用救援而不是标准取消。",
-      "rescueMonthlyLimit": "每月救援次数",
-      "rescueMonthlyLimitTooltip": "参与者每月可以使用救援选项的次数。",
-      "rescueRequiresSubscription": "仅订阅者可用救援",
       "isRecurring": "重复活动",
       "pointsValuePlaceholder": "e.g. 1"
     },

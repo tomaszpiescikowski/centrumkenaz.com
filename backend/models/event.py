@@ -152,21 +152,6 @@ class Event(Base):
         default=24,
         comment="Hours before start when cancellation is allowed.",
     )
-    rescue_cutoff_hours = Column(
-        Integer,
-        nullable=True,
-        comment="Hours before start when rescue cancellation is allowed.",
-    )
-    rescue_monthly_limit = Column(
-        Integer,
-        default=0,
-        comment="Monthly limit for rescue cancellations.",
-    )
-    rescue_requires_subscription = Column(
-        Boolean,
-        default=True,
-        comment="Whether rescue is limited to subscribers.",
-    )
     points_value = Column(
         Integer,
         default=1,

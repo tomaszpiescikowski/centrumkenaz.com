@@ -8,7 +8,7 @@ Kenaz to aplikacja do organizacji wydarzen i zapisow uczestnikow. Uzytkownicy mo
 rejestrowac sie na wydarzenia, przechodzic przez proces platnosci (online lub
 manualny), a admini zarzadzaja akceptacja kont i weryfikacja platnosci manualnych.
 System wspiera zasady subskrypcji (np. ceny dla czlonkow), listy rezerwowe, limity
-miejsc, a takze polityke anulowania zapisow z mechanizmem "rescue".
+miejsc, a takze polityke anulowania zapisow.
 
 Kluczowe procesy:
 - Rejestracja na wydarzenie z kontrola limitow miejsc.
@@ -42,13 +42,11 @@ Kluczowe procesy:
 - Registration -> Payment (przez `payment_id` jako zewnetrzny identyfikator)
   - Rejestracja moze byc powiazana z platnoscia w zaleznosci od trybu.
 
-### Refundy i polityka rescue
+### Refundy
 - Registration 1:1 RegistrationRefundTask
   - Zadanie refundu powstaje przy anulowaniu i jest recenzowane przez admina.
 - User 1:N RegistrationRefundTask
   - Zapewnia audyt: kto byl uczestnikiem i kto zatwierdzil refund.
-- User 1:N RescueUsage
-  - RescueUsage przechowuje miesieczne wykorzystanie limitu "rescue".
 
 ### Miasta i wydarzenia
 - City 1:N Event
@@ -64,4 +62,3 @@ Kluczowe procesy:
 - Pola takie jak statusy platnosci i rejestracji sa definiowane jako enumy w kodzie.
 - Rejestracja moze byc w statusach oczekujacych (manual payment) i zajmuje miejsce
   na wydarzeniu zgodnie z polityka w RegistrationService.
-- Mechanizm "rescue" ogranicza liczbe anulowan w miesiacu i jest liczony w RescueUsage.

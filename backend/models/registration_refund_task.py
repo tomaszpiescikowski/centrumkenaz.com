@@ -51,12 +51,6 @@ class RegistrationRefundTask(Base):
         comment="Occurrence date associated with the refund task.",
     )
 
-    cancelled_with_rescue = Column(
-        Boolean,
-        default=False,
-        nullable=False,
-        comment="Whether cancellation used rescue policy.",
-    )
     refund_eligible = Column(
         Boolean,
         default=False,

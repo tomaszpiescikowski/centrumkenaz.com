@@ -62,12 +62,6 @@ class EventResponse(BaseModel):
     max_participants: int | None = Field(default=None, description="Capacity limit if configured.")
     requires_subscription: bool = Field(description="Whether subscription is required to register.")
     cancel_cutoff_hours: int = Field(description="Cancellation cutoff in hours.")
-    rescue_cutoff_hours: int | None = Field(
-        default=None,
-        description="Rescue cutoff window in hours.",
-    )
-    rescue_monthly_limit: int = Field(description="Monthly rescue cancellation limit.")
-    rescue_requires_subscription: bool = Field(description="Whether rescue requires subscription.")
     points_value: int = Field(description="Points awarded for attendance.")
 
 class EventAvailabilityResponse(BaseModel):
@@ -153,9 +147,6 @@ class EventCreateRequest(BaseModel):
     max_participants: int | None = Field(default=None, ge=1, description="Capacity limit if set.")
     requires_subscription: bool = Field(default=False, description="Whether subscription is required.")
     cancel_cutoff_hours: int = Field(default=24, ge=0, description="Cancellation cutoff in hours.")
-    rescue_cutoff_hours: int | None = Field(default=None, ge=0, description="Rescue cutoff window in hours.")
-    rescue_monthly_limit: int = Field(default=0, ge=0, description="Monthly rescue limit.")
-    rescue_requires_subscription: bool = Field(default=True, description="Whether rescue requires subscription.")
     points_value: int = Field(default=1, ge=0, description="Points awarded for attendance.")
 
 
@@ -219,9 +210,6 @@ class EventUpdateRequest(BaseModel):
     max_participants: int | None = Field(default=None, ge=1, description="Capacity limit if set.")
     requires_subscription: bool | None = Field(default=None, description="Whether subscription is required.")
     cancel_cutoff_hours: int | None = Field(default=None, ge=0, description="Cancellation cutoff in hours.")
-    rescue_cutoff_hours: int | None = Field(default=None, ge=0, description="Rescue cutoff window in hours.")
-    rescue_monthly_limit: int | None = Field(default=None, ge=0, description="Monthly rescue limit.")
-    rescue_requires_subscription: bool | None = Field(default=None, description="Whether rescue requires subscription.")
     points_value: int | None = Field(default=None, ge=0, description="Points awarded for attendance.")
 
 
@@ -424,9 +412,6 @@ async def create_event(
         max_participants=payload.max_participants,
         requires_subscription=payload.requires_subscription,
         cancel_cutoff_hours=payload.cancel_cutoff_hours,
-        rescue_cutoff_hours=payload.rescue_cutoff_hours,
-        rescue_monthly_limit=payload.rescue_monthly_limit,
-        rescue_requires_subscription=payload.rescue_requires_subscription,
         points_value=payload.points_value,
     )
     db.add(event)

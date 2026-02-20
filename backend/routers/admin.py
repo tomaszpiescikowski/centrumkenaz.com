@@ -242,7 +242,6 @@ class RefundTaskResponse(BaseModel):
     user_id: str = Field(description="User identifier.")
     user_name: str | None = Field(default=None, description="User full name.")
     user_email: str = Field(description="User email address.")
-    cancelled_with_rescue: bool = Field(description="Whether cancellation used rescue policy.")
     refund_eligible: bool = Field(description="Whether refund is eligible per policy.")
     recommended_should_refund: bool = Field(description="System recommendation for refund.")
     should_refund: bool = Field(description="Admin decision to refund.")
@@ -905,7 +904,6 @@ def _serialize_refund_task_row(
         user_id=str(user.id),
         user_name=user.full_name,
         user_email=user.email,
-        cancelled_with_rescue=bool(task.cancelled_with_rescue),
         refund_eligible=bool(task.refund_eligible),
         recommended_should_refund=bool(task.recommended_should_refund),
         should_refund=bool(task.should_refund),

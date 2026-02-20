@@ -74,7 +74,7 @@ async def test_pending_user_cannot_cancel_registration(guarded_api_client: Async
     response = await guarded_api_client.post(
         "/registrations/999/cancel",
         headers={"Authorization": f"Bearer {token}"},
-        json={"use_rescue": False},
+        json={},
     )
 
     assert response.status_code == 403

@@ -949,12 +949,11 @@ class RegistrationService:
         registration: Registration,
         *,
         refund_eligible: bool,
-        cancelled_with_rescue: bool,
     ) -> RegistrationRefundTask:
         """
         Create or update a refund task for a cancelled registration.
 
-        The method records refund eligibility, rescue usage, and the recommended
+        The method records refund eligibility and the recommended
         refund decision for admin processing.
         """
         stmt = select(RegistrationRefundTask).where(
@@ -963,14 +962,13 @@ class RegistrationService:
         result = await self.db.execute(stmt)
         task = result.scalar_one_or_none()
 
-        recommended_should_refund = bool(refund_eligible and not cancelled_with_rescue and registration.payment_id)
+        recommended_should_refund = bool(refund_eligible and registration.payment_id)
         if task is None:
             task = RegistrationRefundTask(
                 registration_id=registration.id,
                 user_id=registration.user_id,
                 event_id=registration.event_id,
                 occurrence_date=registration.occurrence_date,
-                cancelled_with_rescue=cancelled_with_rescue,
                 refund_eligible=refund_eligible,
                 recommended_should_refund=recommended_should_refund,
                 should_refund=recommended_should_refund,
@@ -979,7 +977,6 @@ class RegistrationService:
             self.db.add(task)
             return task
 
-        task.cancelled_with_rescue = cancelled_with_rescue
         task.refund_eligible = refund_eligible
         task.recommended_should_refund = recommended_should_refund
         self.db.add(task)
@@ -1113,7 +1110,6 @@ class RegistrationService:
         task = await self._create_or_update_refund_task(
             registration,
             refund_eligible=can_cancel,
-            cancelled_with_rescue=False,
         )
 
         should_attempt_gateway_refund = bool(

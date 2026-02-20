@@ -377,11 +377,7 @@
     "cancellationClosed": "Chiuso",
     "cancellationClosedMessage": "Finestra di annullamento chiusa.",
     "cancelStandard": "Annulla iscrizione",
-    "cancelRescue": "Usa rescue",
     "openManualPayment": "Completa il pagamento",
-    "rescue": "Rescue",
-    "rescueAvailable": "Rimangono {count}",
-    "rescueTooltip": "Rescue consente agli abbonati di annullare vicino alla data dell'evento. Limite mensile.",
     "loadError": "Impossibile caricare i dati dell'account",
     "cancelError": "Impossibile annullare l'iscrizione",
     "cancelSuccess": "Iscrizione annullata con successo."
@@ -655,11 +651,6 @@
       "maxParticipantsPlaceholder": "e.g. 20",
       "cancelCutoffHours": "Finestra annullamento (ore)",
       "cancelCutoffHoursTooltip": "Quante ore prima dell'evento il partecipante può annullare la registrazione.",
-      "rescueCutoffHours": "Finestra rescue (ore)",
-      "rescueCutoffHoursTooltip": "Quante ore prima dell'evento il partecipante può usare il rescue invece dell'annullamento standard.",
-      "rescueMonthlyLimit": "Limite rescue mensile",
-      "rescueMonthlyLimitTooltip": "Quante volte al mese il partecipante può usare l'opzione rescue.",
-      "rescueRequiresSubscription": "Rescue solo per abbonati",
       "isRecurring": "Evento ricorrente",
       "pointsValuePlaceholder": "e.g. 1"
     },

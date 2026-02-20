@@ -377,11 +377,7 @@
     "cancellationClosed": "Gesloten",
     "cancellationClosedMessage": "Annuleringsvenster gesloten.",
     "cancelStandard": "Annuleer inschrijving",
-    "cancelRescue": "Gebruik rescue",
     "openManualPayment": "Betaling voltooien",
-    "rescue": "Rescue",
-    "rescueAvailable": "Nog {count}",
-    "rescueTooltip": "Rescue laat abonnees kort voor het event annuleren. Maandlimiet van toepassing.",
     "loadError": "Kon accountgegevens niet laden",
     "cancelError": "Kon inschrijving niet annuleren",
     "cancelSuccess": "Inschrijving succesvol geannuleerd."
@@ -655,11 +651,6 @@
       "maxParticipantsPlaceholder": "e.g. 20",
       "cancelCutoffHours": "Annuleringstermijn (uren)",
       "cancelCutoffHoursTooltip": "Hoeveel uur voor het evenement een deelnemer zijn registratie kan annuleren.",
-      "rescueCutoffHours": "Rescue-termijn (uren)",
-      "rescueCutoffHoursTooltip": "Hoeveel uur voor het evenement een deelnemer de rescue-optie kan gebruiken in plaats van standaard annulering.",
-      "rescueMonthlyLimit": "Rescue-limiet per maand",
-      "rescueMonthlyLimitTooltip": "Hoe vaak per maand een deelnemer de rescue-optie kan gebruiken.",
-      "rescueRequiresSubscription": "Rescue alleen voor abonnees",
       "isRecurring": "Terugkerend event",
       "pointsValuePlaceholder": "e.g. 1"
     },
