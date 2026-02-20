@@ -19,17 +19,17 @@ function LoginButton() {
     return (
       <Link
         to={accountTarget}
-        className="btn-nav h-10 gap-2"
+        className="btn-nav h-10 gap-3"
         aria-label={t('nav.myAccount')}
       >
         {user.picture_url ? (
           <img
             src={user.picture_url}
             alt={user.full_name}
-            className="h-7 w-7 min-h-7 min-w-7 rounded-full border-2 border-navy/20 dark:border-cream/30 object-cover"
+            className="h-8 w-8 min-h-8 min-w-8 rounded-full border-2 border-navy/20 dark:border-cream/30 object-cover"
           />
         ) : (
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-navy/10 text-sm font-bold text-navy dark:bg-cream/15 dark:text-cream border-2 border-navy/20 dark:border-cream/30">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-navy/10 text-sm font-bold text-navy dark:bg-cream/15 dark:text-cream border-2 border-navy/20 dark:border-cream/30">
             {user.full_name?.charAt(0) || '?'}
           </div>
         )}
