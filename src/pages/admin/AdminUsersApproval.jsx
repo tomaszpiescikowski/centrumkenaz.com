@@ -8,6 +8,14 @@ import AuthGateCard from '../../components/ui/AuthGateCard'
 import EventIcon from '../../components/common/EventIcon'
 import { TAG_COLORS } from '../../constants/interestTags'
 
+function formatDate(isoString) {
+  const d = new Date(isoString)
+  const dd = String(d.getDate()).padStart(2, '0')
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const yyyy = d.getFullYear()
+  return `${dd}/${mm}/${yyyy}`
+}
+
 function AdminUsersApproval() {
   const { user, isAuthenticated, login, authFetch } = useAuth()
   const { t } = useLanguage()
@@ -199,7 +207,7 @@ function AdminUsersApproval() {
 
                   {pending.created_at && (
                     <p className="text-xs text-navy/50 dark:text-cream/50">
-                      {t('admin.pendingUserCreated', { date: new Date(pending.created_at).toLocaleString() })}
+                      {t('admin.pendingUserCreated', { date: formatDate(pending.created_at) })}
                     </p>
                   )}
                 </div>
