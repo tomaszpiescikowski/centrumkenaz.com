@@ -52,7 +52,6 @@ jobs:
           check_secret "JWT_SECRET_KEY" "${{ secrets.JWT_SECRET_KEY }}"
           check_secret "GOOGLE_CLIENT_ID" "${{ secrets.GOOGLE_CLIENT_ID }}"
           check_secret "GOOGLE_CLIENT_SECRET" "${{ secrets.GOOGLE_CLIENT_SECRET }}"
-          check_secret "ROOT_ADMIN_EMAIL" "${{ secrets.ROOT_ADMIN_EMAIL }}"
 
           if [ "$MISSING" -eq 1 ]; then
             exit 1
@@ -77,6 +76,7 @@ jobs:
           check_var "FRONTEND_URL" "${{ vars.FRONTEND_URL }}"
           check_var "GOOGLE_REDIRECT_URI" "${{ vars.GOOGLE_REDIRECT_URI }}"
           check_var "DEFAULT_PAYMENT_URL" "${{ vars.DEFAULT_PAYMENT_URL }}"
+          check_var "ROOT_ADMIN_EMAIL" "${{ vars.ROOT_ADMIN_EMAIL }}"
 
           echo "✅ Variable check completed"
 
@@ -141,7 +141,7 @@ jobs:
         if: ${{ !inputs.skip_tests }}
         env:
           DATABASE_URL_TEST: postgresql+asyncpg://postgres:postgres@localhost:5432/kenaz_test
-          ROOT_ADMIN_EMAIL: ${{ secrets.ROOT_ADMIN_EMAIL }}
+          ROOT_ADMIN_EMAIL: ${{ vars.ROOT_ADMIN_EMAIL }}
         run: |
           cd backend
           pytest tests/ -v --tb=short
@@ -299,7 +299,6 @@ jobs:
           JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
           GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
-          ROOT_ADMIN_EMAIL=${{ secrets.ROOT_ADMIN_EMAIL }}
           TPAY_CLIENT_ID=${{ secrets.TPAY_CLIENT_ID }}
           TPAY_CLIENT_SECRET=${{ secrets.TPAY_CLIENT_SECRET }}
           APP_SCHEME=${{ vars.APP_SCHEME || 'https' }}
@@ -308,6 +307,7 @@ jobs:
           GOOGLE_REDIRECT_URI=${{ vars.GOOGLE_REDIRECT_URI }}
           PAYMENT_GATEWAY_TYPE=${{ vars.PAYMENT_GATEWAY_TYPE || 'fake' }}
           DEFAULT_PAYMENT_URL=${{ vars.DEFAULT_PAYMENT_URL }}
+          ROOT_ADMIN_EMAIL=${{ vars.ROOT_ADMIN_EMAIL }}
           DEBUG=${{ vars.DEBUG || 'false' }}
           DOTENV
           "
