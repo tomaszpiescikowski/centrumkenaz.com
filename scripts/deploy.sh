@@ -242,6 +242,11 @@ restart_services() {
     ssh ${SSH_KEY_OPT} -o StrictHostKeyChecking=accept-new "${SSH_USER}@${SSH_HOST}" <<'ENDSSH'
 set -euo pipefail
 
+# Clear stale Python bytecache to prevent old .pyc files from being used
+echo "Clearing __pycache__ directories..."
+find /opt/kenaz/backend -type d -name '__pycache__' -exec rm -rf {} + 2>/dev/null || true
+find /opt/kenaz/backend -name '*.pyc' -delete 2>/dev/null || true
+
 # Restart backend
 echo "Restarting backend service..."
 sudo systemctl restart kenaz-backend
