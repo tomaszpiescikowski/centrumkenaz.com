@@ -3,7 +3,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
-import { fetchMyRegistrations, cancelRegistration, fetchMyProfile, updateMyProfile } from '../../api/user'
+import { fetchMyProfile, updateMyProfile } from '../../api/user'
 import InterestTagsPicker from '../../components/forms/InterestTagsPicker'
 import LanguageSelector from '../../components/controls/LanguageSelector'
 import CitySelector from '../../components/controls/CitySelector'
@@ -14,7 +14,6 @@ function Account({ darkMode, setDarkMode }) {
   const { t } = useLanguage()
   const { showError, showSuccess } = useNotification()
   const navigate = useNavigate()
-  const [registrations, setRegistrations] = useState([])
   const [aboutMe, setAboutMe] = useState('')
   const [originalAboutMe, setOriginalAboutMe] = useState('')
   const [interestTags, setInterestTags] = useState([])
@@ -53,31 +52,8 @@ function Account({ darkMode, setDarkMode }) {
     }
 
     let cancelled = false
-    const load = async () => {
-      setLoading(true)
-      try {
-        const data = await fetchMyRegistrations(authFetch)
-        if (!cancelled) setRegistrations(data)
-      } catch (err) {
-        if (!cancelled) {
-          setRegistrations([])
-          showError(err.message || t('account.loadError'))
-        }
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    }
-
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [authFetch, isAuthenticated, t, showError])
-
-  useEffect(() => {
-    if (!isAuthenticated) return
-    let cancelled = false
     const loadProfile = async () => {
+      setLoading(true)
       try {
         const profile = await fetchMyProfile(authFetch)
         if (cancelled) return
@@ -91,6 +67,8 @@ function Account({ darkMode, setDarkMode }) {
         setAboutMe(aboutMeValue)
         setOriginalAboutMe(aboutMeValue)
         setInterestTags(Array.isArray(user?.interest_tags) ? user.interest_tags : [])
+      } finally {
+        if (!cancelled) setLoading(false)
       }
     }
     loadProfile()
@@ -98,17 +76,6 @@ function Account({ darkMode, setDarkMode }) {
       cancelled = true
     }
   }, [authFetch, isAuthenticated, user?.id])
-
-  const handleCancel = async (registrationId) => {
-    try {
-      await cancelRegistration(authFetch, registrationId)
-      const data = await fetchMyRegistrations(authFetch)
-      setRegistrations(data)
-      showSuccess(t('account.cancelSuccess'))
-    } catch (err) {
-      showError(err.message || t('account.cancelError'))
-    }
-  }
 
   const handleLogout = () => {
     logout()
@@ -384,113 +351,6 @@ function Account({ darkMode, setDarkMode }) {
           </aside>
         </div>
       </section>
-
-      <section className="min-h-0 flex-1">
-        <h2 className="shrink-0 text-2xl font-black text-navy dark:text-cream">
-          {t('account.myEvents')}
-        </h2>
-
-        {loading ? (
-          <p className="mt-3 text-navy/60 dark:text-cream/60">{t('common.loading')}</p>
-        ) : registrations.length === 0 ? (
-          <div className="mt-3 rounded-2xl border border-dashed border-navy/20 p-6 dark:border-cream/20">
-            <p className="text-navy/70 dark:text-cream/70">{t('account.noEvents')}</p>
-          </div>
-        ) : (
-          <div className="mt-3 flex h-full min-h-0 flex-col">
-            <div className="min-h-0 flex-1 space-y-4 overflow-y-auto pr-1 sm:pr-2">
-              {registrations.map((reg) => {
-                const eventPassed = new Date(reg.event.start_date) < new Date()
-                const pointsEarned = eventPassed && reg.status === 'confirmed' && reg.event.points_value > 0
-                
-                return (
-                  <div
-                    key={reg.registration_id}
-                    className="page-card relative"
-                  >
-                    {pointsEarned && (
-                      <div className="absolute right-4 top-4 flex items-center gap-1 rounded-full bg-navy/10 px-2 py-1 text-xs font-bold text-navy dark:bg-cream/20 dark:text-cream">
-                        <span>+{reg.event.points_value}</span>
-                        <span className="opacity-70">{t('admin.pointsAbbr')}</span>
-                      </div>
-                    )}
-                    <div className="flex flex-wrap justify-between gap-4">
-                      <div className={pointsEarned ? 'pr-16' : ''}>
-                        <h3 className="text-lg font-bold text-navy dark:text-cream">
-                          {reg.event.title}
-                        </h3>
-                        <p className="text-sm text-navy/60 dark:text-cream/60">
-                          {formatDate(reg.event.start_date)}
-                          {reg.event.city ? ` • ${reg.event.city}` : ''}
-                        </p>
-                        {reg.event.location && (
-                          <a
-                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(reg.event.location)}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-sm font-semibold text-navy dark:text-cream"
-                          >
-                            {reg.event.location} ↗
-                          </a>
-                        )}
-                      </div>
-                      <Link
-                        to={`/event/${reg.event.id}`}
-                        className="text-sm font-semibold text-navy dark:text-cream"
-                      >
-                        {t('account.viewEvent')}
-                      </Link>
-                    </div>
-
-                  <div className="mt-4 flex flex-wrap gap-3 text-sm">
-                    <Badge label={t('account.status')} value={t(`account.statuses.${reg.status}`)} />
-                    <Badge
-                      label={t('account.cancellationWindow')}
-                      value={reg.can_cancel
-                        ? t('account.cancellationOpen')
-                        : t('account.cancellationClosed')}
-                    />
-                  </div>
-
-                  <div className="mt-4 flex flex-wrap gap-3">
-                    {reg.can_confirm_manual_payment && (
-                      <Link
-                        to={`/registrations/${reg.registration_id}/manual-payment`}
-                        className="btn-primary px-4 py-2 text-sm"
-                      >
-                        {t('account.openManualPayment')}
-                      </Link>
-                    )}
-                    {reg.status !== 'confirmed'
-                      && reg.status !== 'pending'
-                      && reg.status !== 'manual_payment_required'
-                      && reg.status !== 'manual_payment_verification' ? (
-                      <button
-                        disabled
-                        className="cursor-not-allowed rounded-full bg-navy/20 px-4 py-2 text-sm font-semibold text-navy/50 dark:bg-cream/20 dark:text-cream/50"
-                      >
-                        {t('account.cancellationClosedMessage')}
-                      </button>
-                    ) : reg.can_cancel ? (
-                      <button
-                        onClick={() => handleCancel(reg.registration_id)}
-                        className="btn-primary px-4 py-2 text-sm"
-                      >
-                        {t('account.cancelStandard')}
-                      </button>
-                    ) : (
-                      <p className="text-sm text-navy/60 dark:text-cream/60">
-                        {t('account.cancellationClosedMessage')}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )
-              })}
-            </div>
-          </div>
-        )}
-      </section>
     </div>
   )
 }
@@ -502,25 +362,6 @@ function InfoRow({ label, value }) {
       <p className="text-base font-semibold text-navy dark:text-cream">{value}</p>
     </div>
   )
-}
-
-function Badge({ label, value, title }) {
-  return (
-    <div className="rounded-full bg-navy/5 px-3 py-2 text-xs dark:bg-cream/10">
-      <span className="text-navy/60 dark:text-cream/60">{label}: </span>
-      <span className="font-semibold text-navy dark:text-cream" title={title}>{value}</span>
-    </div>
-  )
-}
-
-function formatDate(dateStr) {
-  const date = new Date(dateStr)
-  return date.toLocaleDateString('pl-PL', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
 }
 
 function formatShortDate(dateStr) {

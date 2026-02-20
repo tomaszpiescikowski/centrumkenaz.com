@@ -23,6 +23,7 @@ import Terms from './pages/public/Terms'
 import PendingApproval from './pages/account/PendingApproval'
 import UserProfile from './pages/account/UserProfile'
 import ManualPaymentPage from './pages/account/ManualPaymentPage'
+import MyEvents from './pages/account/MyEvents'
 import Login from './pages/auth/Login'
 
 function RequireAuth() {
@@ -125,6 +126,7 @@ function App() {
                   </Route>
                   <Route element={<RequireAuth />}>
                     <Route path="/me" element={<Account darkMode={darkMode} setDarkMode={setDarkMode} />} />
+                    <Route path="/my-events" element={<MyEvents />} />
                     <Route path="/plans" element={<Plans />} />
                     <Route path="/pending-approval" element={<PendingApproval />} />
                     <Route path="/people/:userId" element={<UserProfile />} />

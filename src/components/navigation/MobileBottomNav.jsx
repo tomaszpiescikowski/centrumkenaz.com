@@ -23,10 +23,10 @@ function CalendarIcon() {
   )
 }
 
-function ShopIcon() {
+function MyEventsIcon() {
   return (
     <svg className={ICON_CLASS} viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M5 8h14l-1 12H6L5 8zm3 0a4 4 0 118 0" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
     </svg>
   )
 }
@@ -70,7 +70,7 @@ function MobileBottomNav() {
 
   const isAdmin = user?.role === 'admin' && user?.account_status === 'active'
   const accountActive = (
-    location.pathname.startsWith('/me')
+    location.pathname === '/me'
     || location.pathname.startsWith('/plans')
     || location.pathname.startsWith('/pending-approval')
     || location.pathname === '/login'
@@ -105,11 +105,11 @@ function MobileBottomNav() {
       icon: <CalendarIcon />,
     },
     {
-      key: 'shop',
-      to: '/shop',
-      label: t('nav.shop'),
-      active: location.pathname.startsWith('/shop'),
-      icon: <ShopIcon />,
+      key: 'my-events',
+      to: '/my-events',
+      label: t('nav.myEvents'),
+      active: location.pathname.startsWith('/my-events'),
+      icon: <MyEventsIcon />,
     },
     ...(isAdmin
       ? [{
