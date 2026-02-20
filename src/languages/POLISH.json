@@ -388,11 +388,13 @@
   "plans": {
     "backToAccount": "Wróć do konta",
     "title": "Plany członkostwa",
-    "subtitle": "Wybierz plan i opłać subskrypcję bezpośrednio z konta.",
+    "subtitle": "Dołącz do społeczności Kenaz i korzystaj w pełni z tego, co oferuje centrum.",
     "subscriptionActiveUntil": "Subskrypcja aktywna do: {date}",
-    "subscriptionInactive": "Brak aktywnej subskrypcji.",
-    "monthlyLabel": "/mies.",
-    "includes": "W planie",
+    "subscriptionInactive": "Nie masz jeszcze aktywnej subskrypcji",
+    "monthlyLabel": "/ mies.",
+    "yearlyLabel": "/ rok",
+    "yearlyEquivalent": "≈ 27,50 PLN miesięcznie",
+    "includes": "Co zawiera plan",
     "buyPlan": "Kup {plan}",
     "freePlanCta": "Plan domyślny",
     "processing": "Przetwarzanie...",
@@ -402,40 +404,53 @@
     "loadError": "Nie udało się wczytać planów.",
     "checkoutError": "Nie udało się rozpocząć płatności.",
     "pendingApproval": "Konto oczekuje na akceptację administratora.",
-    "currentPlan": "Aktualny plan",
+    "currentPlan": "AKTUALNY PLAN",
+    "bestPrice": "NAJLEPSZA CENA",
+    "freeBadge": "BEZPŁATNIE",
+    "securePayment": "Bezpieczna płatność",
     "plan": {
       "free": {
-        "title": "Free",
+        "title": "Konto bezpłatne",
         "summary": "Start",
         "features": [
-          "Podstawowy dostęp do kalendarza",
-          "Podgląd wydarzeń i zapisów",
-          "Brak aktywnej subskrypcji"
-        ]
+          "Dostęp do kalendarza wydarzeń",
+          "Podgląd nadchodzących wydarzeń i zapisów",
+          "Wejściówki w cenach dla gości"
+        ],
+        "ctaCurrent": "Twój obecny plan",
+        "ctaSwitch": "Rozpocznij bezpłatnie"
       },
       "pro": {
-        "title": "Członkostwo Pro",
+        "title": "Członek Kenaz",
         "summary": "Najczęściej wybierane",
         "features": [
-          "Dostęp do wydarzeń tylko dla subskrybentów",
-          "Ceny członkowskie na wydarzeniach",
-          "Aktywna subskrypcja na 30 dni"
-        ]
+          "Zapisy na wydarzenia przez panel członkowski",
+          "Dostęp do profili innych członków społeczności",
+          "Wejściówki w cenach członkowskich"
+        ],
+        "cta": "Dołącz do społeczności",
+        "ctaAriaLabel": "Dołącz do społeczności — 33 PLN miesięcznie"
       },
       "ultimate": {
-        "title": "Członkostwo Ultimate",
-        "summary": "Maksymalny pakiet",
+        "title": "Członkostwo roczne",
+        "summary": "Całoroczny dostęp",
         "features": [
-          "Wszystko z planu Pro",
-          "Priorytetowe wsparcie organizacyjne",
-          "Aktywna subskrypcja na 365 dni"
-        ]
+          "Wszystko z planu Członka Kenaz",
+          "Oszczędzasz ponad 60 PLN rocznie względem planu miesięcznego",
+          "Pierwszeństwo zapisów na wydarzenia kwartalne"
+        ],
+        "cta": "Wybierz plan roczny",
+        "ctaAriaLabel": "Wybierz plan roczny — 333 PLN rocznie"
       }
     },
-    "mostPopular": "Najpopularniejszy",
-    "freePlanCurrent": "Aktualny plan darmowy",
-    "freePlanSwitch": "Przełącz na plan darmowy",
-    "switchedToFree": "Przełączono na plan darmowy."
+    "mostPopular": "NAJPOPULARNIEJSZY",
+    "freePlanCurrent": "Twój obecny plan",
+    "freePlanSwitch": "Rozpocznij bezpłatnie",
+    "switchedToFree": "Przełączono na plan darmowy.",
+    "welcomeModalTitle": "Twoje konto zostało zatwierdzone!",
+    "welcomeModalBody": "Witaj w Kenaz. Możesz teraz dołączyć do społeczności wybierając plan lub wrócić do konta i zrobić to później.",
+    "welcomeModalChoosePlan": "Wybierz plan",
+    "welcomeModalBackToAccount": "Wróć do konta"
   },
   "admin": {
     "createEventTitle": "Dodaj nowe wydarzenie",

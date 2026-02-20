@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "VITE_COMMIT_SHA=\"$(git rev-parse --short HEAD 2>/dev/null || echo 'dev')\" vite build",
     "preview": "vite preview"
   },
   "dependencies": {
