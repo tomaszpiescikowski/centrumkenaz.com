@@ -6,10 +6,10 @@ function AboutSection() {
   const { t } = useLanguage()
   const { login } = useAuth()
   const storyImages = [
-    '/static/about2.jpg',
-    '/static/about3.jpg',
-    '/static/about4.jpg',
-    '/static/about5.jpg',
+    'https://placehold.co/800x400/e2e8f0/64748b?text=Photo+1',
+    'https://placehold.co/800x400/e2e8f0/64748b?text=Photo+2',
+    'https://placehold.co/800x400/e2e8f0/64748b?text=Photo+3',
+    'https://placehold.co/800x400/e2e8f0/64748b?text=Photo+4',
     '/static/about1.jpg',
     '/static/about7.jpg',
   ]
