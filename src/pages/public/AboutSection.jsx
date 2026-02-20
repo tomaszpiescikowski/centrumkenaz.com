@@ -6,10 +6,10 @@ function AboutSection() {
   const { t } = useLanguage()
   const { login } = useAuth()
   const storyImages = [
-    'https://placehold.co/800x400/e2e8f0/64748b',
-    'https://placehold.co/800x400/e2e8f0/64748b',
-    'https://placehold.co/800x400/e2e8f0/64748b',
-    'https://placehold.co/800x400/e2e8f0/64748b',
+    'https://placehold.co/800x400/e2e8f0/64748b?text=%20',
+    'https://placehold.co/800x400/e2e8f0/64748b?text=%20',
+    'https://placehold.co/800x400/e2e8f0/64748b?text=%20',
+    'https://placehold.co/800x400/e2e8f0/64748b?text=%20',
     '/static/about1.jpg',
     '/static/about7.jpg',
   ]
