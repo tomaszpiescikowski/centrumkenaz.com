@@ -54,8 +54,8 @@ function NavItem({ to, label, icon, active }) {
       aria-label={label}
       className={ITEM_BASE}
     >
-      <span className={`transition-colors ${active ? ICON_ACTIVE : ICON_IDLE}`}>{icon}</span>
-      <span className={`truncate transition-colors ${active ? ICON_ACTIVE : ICON_IDLE}`}>{label}</span>
+      <span className={active ? ICON_ACTIVE : ICON_IDLE}>{icon}</span>
+      <span className={`truncate ${active ? ICON_ACTIVE : ICON_IDLE}`}>{label}</span>
     </Link>
   )
 }
@@ -144,8 +144,8 @@ function MobileBottomNav() {
           aria-label={t('nav.myAccount')}
           className={ITEM_BASE}
         >
-          <span className={`transition-colors ${accountActive ? ICON_ACTIVE : ICON_IDLE}`}><AccountIcon /></span>
-          <span className={`truncate transition-colors ${accountActive ? ICON_ACTIVE : ICON_IDLE}`}>{t('nav.myAccount')}</span>
+          <span className={accountActive ? ICON_ACTIVE : ICON_IDLE}><AccountIcon /></span>
+          <span className={`truncate ${accountActive ? ICON_ACTIVE : ICON_IDLE}`}>{t('nav.myAccount')}</span>
         </button>
       </div>
     </nav>
