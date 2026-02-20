@@ -20,6 +20,11 @@
       px-5 py-2.5 text-sm font-semibold text-navy dark:border-cream/30 dark:text-cream;
   }
 
+  .btn-accent {
+    @apply inline-flex items-center justify-center rounded-full border border-navy bg-navy
+      px-5 py-2.5 text-sm font-semibold text-cream dark:border-cream dark:bg-cream dark:text-navy;
+  }
+
   .btn-secondary {
     @apply inline-flex items-center justify-center rounded-full border border-navy/20 bg-transparent
       px-4 py-2 text-sm font-semibold text-navy/80 dark:border-cream/25 dark:text-cream/85;

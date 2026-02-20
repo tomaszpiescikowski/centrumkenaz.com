@@ -155,6 +155,11 @@ class JoinRequestPayload(BaseModel):
         max_length=20,
         description="Phone number without country code.",
     )
+    admin_message: str = Field(
+        default="",
+        max_length=500,
+        description="Optional message from user to admin.",
+    )
 
 
 def get_payment_gateway():
@@ -245,6 +250,7 @@ async def submit_join_request(
         approval_request = ApprovalRequest(user_id=user.id, is_test_data=bool(user.is_test_data))
     approval_request.phone_country_code = (payload.phone_country_code or "+48").strip()
     approval_request.phone_number = (payload.phone_number or "").strip()
+    approval_request.admin_message = (payload.admin_message or "").strip()
 
     db.add(profile)
     db.add(approval_request)

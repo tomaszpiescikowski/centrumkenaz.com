@@ -12,7 +12,8 @@
     "today": "Dzisiaj",
     "theme": "Motyw",
     "themeLight": "Jasny",
-    "themeDark": "Ciemny"
+    "themeDark": "Ciemny",
+    "language": "Język"
   },
   "shop": {
     "label": "Kenaz sklep",
@@ -61,8 +62,9 @@
   },
   "pwa": {
     "installCta": "Zainstaluj aplikację na telefonie",
-    "installHintIos": "W Safari kliknij ikonę udostępniania ⤴ i wybierz „Dodaj do ekranu głównego”.",
-    "installHintAndroid": "W Chrome otwórz menu ⋮ i wybierz „Dodaj do ekranu głównego”."
+    "installBtn": "Zainstaluj",
+    "installHintIos": "1. Otwórz tę stronę w Safari\n2. Kliknij ikonę udostępniania ⤴\n   (pasek na dole ekranu)\n3. Przewiń opcje w dół\n4. Wybierz \u201eDodaj do ekranu głównego\u201d\n5. Kliknij \u201eDodaj\u201d w prawym górnym rogu",
+    "installHintAndroid": "W Chrome kliknij ⋮ (trzy kropki w prawym górnym rogu) i wybierz \u201eDodaj do ekranu głównego\u201d lub \u201eZainstaluj aplikację\u201d."
   },
   "home": {
     "demoLabel": "demo",
@@ -566,6 +568,8 @@
     "pendingUserNoAboutMe": "Nie podano",
     "pendingUserNoInterests": "Nie podano",
     "pendingUserNoPhone": "Nie podano",
+    "pendingUserAdminMessage": "Wiadomość",
+    "pendingUserNoAdminMessage": "Brak wiadomości",
     "recurringTitle": "Wydarzenia cykliczne",
     "recurringSubtitle": "Zarządzaj automatycznie powtarzającymi się wydarzeniami.",
     "recurringEmpty": "Brak skonfigurowanych wydarzeń cyklicznych.",
@@ -718,7 +722,9 @@
     "phoneCountryCode": "Kierunkowy",
     "submitJoinRequest": "Wyślij prośbę o dołączenie",
     "joinRequestSent": "Prośba o dołączenie została wysłana. Poczekaj na akceptację administratora.",
-    "joinRequestError": "Nie udało się wysłać prośby o dołączenie."
+    "joinRequestError": "Nie udało się wysłać prośby o dołączenie.",
+    "adminMessageLabel": "Dodatkowa wiadomość dla administratora",
+    "adminMessagePlaceholder": "Opcjonalna wiadomość, np. kto Cię polecił"
   },
   "participants": {
     "title": "Zapisani uczestnicy",

@@ -182,6 +182,16 @@ function AdminUsersApproval() {
                     </p>
                   </div>
 
+                  {/* Admin message */}
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50 mb-0.5">
+                      {t('admin.pendingUserAdminMessage')}
+                    </p>
+                    <p className="text-sm text-navy/80 dark:text-cream/80 whitespace-pre-line">
+                      {pending.admin_message || t('admin.pendingUserNoAdminMessage')}
+                    </p>
+                  </div>
+
                   {pending.created_at && (
                     <p className="text-xs text-navy/50 dark:text-cream/50">
                       {t('admin.pendingUserCreated', { date: new Date(pending.created_at).toLocaleString() })}

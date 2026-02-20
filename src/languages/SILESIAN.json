@@ -12,7 +12,8 @@
     "today": "Dziś",
     "theme": "Motyw",
     "themeLight": "Jasny",
-    "themeDark": "Ciymny"
+    "themeDark": "Ciymny",
+    "language": "Godka"
   },
   "shop": {
     "label": "Kenaz sklep",
@@ -61,8 +62,9 @@
   },
   "pwa": {
     "installCta": "Zainstaluj apka na telefonie",
-    "installHintIos": "W Safari kliknij ikōna udostympnianio ⤴ i wybiyrz „Dodŏj do ekranu głōwnego”.",
-    "installHintAndroid": "W Chrome ôtwōrz myni ⋮ i wybiyrz „Dodŏj do ekranu głōwnego”."
+    "installBtn": "Zainstaluj",
+    "installHintIos": "1. Ôtwōrz ta strōna w Safari\n2. Kliknij ikōna udostympnianio ⤴\n   (pasek na dole ekranu)\n3. Przewiń ôpcyje w dōł\n4. Wybiyrz \u201eDodŏj do ekranu głōwnego\u201d\n5. Kliknij \u201eDodŏj\u201d w prawym gōrnym rogu",
+    "installHintAndroid": "W Chrome kliknij ⋮ (trzi krōpki w prawym gōrnym rogu) i wybiyrz \u201eDodŏj do ekranu głōwnego\u201d abo \u201eZainstaluj apka\u201d."
   },
   "home": {
     "demoLabel": "demo",
@@ -566,6 +568,8 @@
     "pendingUserNoAboutMe": "Niy podano",
     "pendingUserNoInterests": "Niy podano",
     "pendingUserNoPhone": "Niy podano",
+    "pendingUserAdminMessage": "Wiadomość",
+    "pendingUserNoAdminMessage": "Brak wiadomości",
     "recurringTitle": "Recurring events",
     "recurringSubtitle": "Manage schedules that repeat automatically.",
     "recurringEmpty": "No recurring events configured.",
@@ -750,7 +754,9 @@
     "phoneCountryCode": "Kierunkowy",
     "submitJoinRequest": "Wyślij prośba ô dołōnczynie",
     "joinRequestSent": "Prośba ô dołōnczynie ôstała wysłano. Poczekej na akceptacyjo admina.",
-    "joinRequestError": "Niy idzie wysłać prośby ô dołōnczynie."
+    "joinRequestError": "Niy idzie wysłać prośby ô dołōnczynie.",
+    "adminMessageLabel": "Dodatkową wiadomość dlou admina",
+    "adminMessagePlaceholder": "Opcjonalno wiadomość, np. fto Cie polecił"
   },
   "auth": {
     "title": "Zaloguj sie",

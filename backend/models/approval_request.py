@@ -29,6 +29,11 @@ class ApprovalRequest(Base):
         nullable=True,
         comment="Phone number without country code.",
     )
+    admin_message = Column(
+        String(500),
+        nullable=True,
+        comment="Optional message from user to admin during join request.",
+    )
     submitted_at = Column(
         DateTime(timezone=True),
         server_default=func.now(),

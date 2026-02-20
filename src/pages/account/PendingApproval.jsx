@@ -18,8 +18,19 @@ function PendingApproval() {
   const [interestTags, setInterestTags] = useState(Array.isArray(user?.interest_tags) ? user.interest_tags : [])
   const [phoneCountryCode, setPhoneCountryCode] = useState('+48')
   const [phoneNumber, setPhoneNumber] = useState('')
+  const [adminMessage, setAdminMessage] = useState('')
   const [sending, setSending] = useState(false)
   const FIRST_APPROVED_PLANS_KEY = 'approvedFirstPlanChoiceShown'
+
+  const formatPhoneDisplay = (raw) => {
+    const digits = raw.replace(/\D/g, '')
+    return digits.replace(/(\d{3})(?=\d)/g, '$1 ').trim()
+  }
+
+  const handlePhoneChange = (e) => {
+    const digits = e.target.value.replace(/\D/g, '')
+    setPhoneNumber(digits)
+  }
 
   const COUNTRY_CODES = [
     { code: '+48', label: '🇵🇱 +48' },
@@ -78,6 +89,7 @@ function PendingApproval() {
         interest_tags: interestTags,
         phone_country_code: phoneCountryCode,
         phone_number: phoneNumber.trim(),
+        admin_message: adminMessage.trim(),
       })
       if (accessToken) {
         await fetchUser(accessToken)
@@ -104,7 +116,7 @@ function PendingApproval() {
         <button
           type="button"
           onClick={handleLogout}
-          className="btn-primary shrink-0 h-10 px-5 text-sm"
+          className="btn-accent shrink-0 h-10 px-5 text-sm"
         >
           {t('account.logout')}
         </button>
@@ -150,8 +162,8 @@ function PendingApproval() {
               </select>
               <input
                 type="tel"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                value={formatPhoneDisplay(phoneNumber)}
+                onChange={handlePhoneChange}
                 maxLength={20}
                 className="ui-input ui-input-compact flex-1"
                 placeholder={t('approval.phonePlaceholder')}
@@ -167,19 +179,34 @@ function PendingApproval() {
             </div>
             <div>
               <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
-                {t('common.language') || 'Language'}
+                {t('common.language')}
               </p>
               <LanguageSelector />
             </div>
           </div>
-          <button
-            type="button"
-            disabled={!canSubmit || sending}
-            onClick={handleSubmitJoinRequest}
-            className="btn-primary h-10 px-5 text-sm disabled:opacity-60"
-          >
-            {sending ? t('common.loading') : t('approval.submitJoinRequest')}
-          </button>
+          <div>
+            <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
+              {t('approval.adminMessageLabel')}
+            </p>
+            <textarea
+              value={adminMessage}
+              onChange={(e) => setAdminMessage(e.target.value)}
+              maxLength={500}
+              rows={2}
+              className="ui-input ui-input-compact"
+              placeholder={t('approval.adminMessagePlaceholder')}
+            />
+          </div>
+          <div className="flex items-center justify-end">
+            <button
+              type="button"
+              disabled={!canSubmit || sending}
+              onClick={handleSubmitJoinRequest}
+              className="btn-accent h-10 px-6 text-sm disabled:opacity-60"
+            >
+              {sending ? t('common.loading') : t('approval.submitJoinRequest')}
+            </button>
+          </div>
         </section>
       ) : (
         <section className="shrink-0 page-card">
@@ -217,7 +244,7 @@ function PendingApproval() {
             </div>
             <div>
               <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
-                {t('common.language') || 'Language'}
+                {t('common.language')}
               </p>
               <LanguageSelector />
             </div>

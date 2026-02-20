@@ -12,7 +12,8 @@
     "today": "Oggi",
     "theme": "Tema",
     "themeLight": "Chiaro",
-    "themeDark": "Scuro"
+    "themeDark": "Scuro",
+    "language": "Lingua"
   },
   "shop": {
     "label": "Kenaz shop",
@@ -61,8 +62,9 @@
   },
   "pwa": {
     "installCta": "Installa l'app sul telefono",
-    "installHintIos": "In Safari tocca l'icona di condivisione ⤴ e seleziona \"Aggiungi alla schermata Home\".",
-    "installHintAndroid": "In Chrome apri il menu ⋮ e seleziona \"Aggiungi alla schermata Home\"."
+    "installBtn": "Installa",
+    "installHintIos": "1. Apri questa pagina in Safari\n2. Tocca l'icona di condivisione ⤴\n   (barra in basso)\n3. Scorri le opzioni verso il basso\n4. Seleziona \"Aggiungi alla schermata Home\"\n5. Tocca \"Aggiungi\" in alto a destra",
+    "installHintAndroid": "In Chrome tocca ⋮ (tre puntini in alto a destra) e seleziona \"Aggiungi alla schermata Home\" o \"Installa app\"."
   },
   "home": {
     "demoLabel": "demo",
@@ -566,6 +568,8 @@
     "pendingUserNoAboutMe": "Non fornito",
     "pendingUserNoInterests": "Non fornito",
     "pendingUserNoPhone": "Non fornito",
+    "pendingUserAdminMessage": "Messaggio",
+    "pendingUserNoAdminMessage": "Nessun messaggio",
     "recurringTitle": "Recurring events",
     "recurringSubtitle": "Manage schedules that repeat automatically.",
     "recurringEmpty": "No recurring events configured.",
@@ -750,7 +754,9 @@
     "phoneCountryCode": "Prefisso",
     "submitJoinRequest": "Invia richiesta di adesione",
     "joinRequestSent": "Richiesta di adesione inviata. Attendi l'approvazione admin.",
-    "joinRequestError": "Impossibile inviare la richiesta di adesione."
+    "joinRequestError": "Impossibile inviare la richiesta di adesione.",
+    "adminMessageLabel": "Messaggio aggiuntivo per l'amministratore",
+    "adminMessagePlaceholder": "Messaggio opzionale, es. chi ti ha consigliato"
   },
   "auth": {
     "title": "Accedi",

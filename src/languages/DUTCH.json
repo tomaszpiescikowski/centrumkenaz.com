@@ -12,7 +12,8 @@
     "today": "Vandaag",
     "theme": "Thema",
     "themeLight": "Licht",
-    "themeDark": "Donker"
+    "themeDark": "Donker",
+    "language": "Taal"
   },
   "shop": {
     "label": "Kenaz shop",
@@ -61,8 +62,9 @@
   },
   "pwa": {
     "installCta": "Installeer de app op je telefoon",
-    "installHintIos": "Tik in Safari op het deelicoon ⤴ en kies \"Zet op beginscherm\".",
-    "installHintAndroid": "Open in Chrome het ⋮ menu en kies \"Toevoegen aan startscherm\"."
+    "installBtn": "Installeer",
+    "installHintIos": "1. Open deze pagina in Safari\n2. Tik op het deelicoon ⤴\n   (balk onderaan het scherm)\n3. Scroll naar beneden door de opties\n4. Kies \"Zet op beginscherm\"\n5. Tik op \"Voeg toe\" rechtsboven",
+    "installHintAndroid": "Open in Chrome het ⋮ menu (drie puntjes rechtsboven) en kies \"Toevoegen aan startscherm\" of \"App installeren\"."
   },
   "home": {
     "demoLabel": "demo",
@@ -566,6 +568,8 @@
     "pendingUserNoAboutMe": "Niet opgegeven",
     "pendingUserNoInterests": "Niet opgegeven",
     "pendingUserNoPhone": "Niet opgegeven",
+    "pendingUserAdminMessage": "Bericht",
+    "pendingUserNoAdminMessage": "Geen bericht",
     "recurringTitle": "Recurring events",
     "recurringSubtitle": "Manage schedules that repeat automatically.",
     "recurringEmpty": "No recurring events configured.",
@@ -750,7 +754,9 @@
     "phoneCountryCode": "Landcode",
     "submitJoinRequest": "Toetredingsverzoek indienen",
     "joinRequestSent": "Toetredingsverzoek verzonden. Wacht op goedkeuring van admin.",
-    "joinRequestError": "Kon toetredingsverzoek niet indienen."
+    "joinRequestError": "Kon toetredingsverzoek niet indienen.",
+    "adminMessageLabel": "Extra bericht voor beheerder",
+    "adminMessagePlaceholder": "Optioneel bericht, bijv. wie je heeft doorverwezen"
   },
   "auth": {
     "title": "Inloggen",

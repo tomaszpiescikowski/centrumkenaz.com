@@ -188,6 +188,7 @@ class PendingUserResponse(BaseModel):
     interest_tags: list[str] = Field(default_factory=list, description="Interest tags.")
     phone_country_code: str | None = Field(default=None, description="Phone country prefix.")
     phone_number: str | None = Field(default=None, description="Phone number.")
+    admin_message: str | None = Field(default=None, description="Optional message from user.")
     created_at: str | None = Field(default=None, description="Account creation timestamp.")
     account_status: str = Field(description="Current account status.")
 
@@ -785,6 +786,7 @@ async def get_pending_users(
             interest_tags=_parse_tags(u.profile.interest_tags if u.profile else None),
             phone_country_code=u.approval_request.phone_country_code if u.approval_request else None,
             phone_number=u.approval_request.phone_number if u.approval_request else None,
+            admin_message=u.approval_request.admin_message if u.approval_request else None,
             created_at=u.created_at.isoformat() if u.created_at else None,
             account_status=u.account_status.value,
         )
@@ -849,6 +851,7 @@ async def approve_user(
         interest_tags=_tags(target.profile.interest_tags if target.profile else None),
         phone_country_code=target.approval_request.phone_country_code if target.approval_request else None,
         phone_number=target.approval_request.phone_number if target.approval_request else None,
+        admin_message=target.approval_request.admin_message if target.approval_request else None,
         created_at=target.created_at.isoformat() if target.created_at else None,
         account_status=target.account_status.value,
     )

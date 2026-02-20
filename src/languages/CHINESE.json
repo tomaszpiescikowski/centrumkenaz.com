@@ -12,7 +12,8 @@
     "today": "今天",
     "theme": "主题",
     "themeLight": "浅色",
-    "themeDark": "深色"
+    "themeDark": "深色",
+    "language": "语言"
   },
   "shop": {
     "label": "Kenaz 商店",
@@ -61,8 +62,9 @@
   },
   "pwa": {
     "installCta": "在手机上安装应用",
-    "installHintIos": "在 Safari 中点击分享图标 ⤴ 然后选择“添加到主屏幕”。",
-    "installHintAndroid": "在 Chrome 中打开 ⋮ 菜单，然后选择“添加到主屏幕”。"
+    "installBtn": "安装",
+    "installHintIos": "1. 在 Safari 中打开此页面\n2. 点击底部工具栏的分享图标 ⤴\n3. 向下滚动选项列表\n4. 选择\u201c添加到主屏幕\u201d\n5. 点击右上角的\u201c添加\u201d",
+    "installHintAndroid": "在 Chrome 中点击右上角 ⋮（三个点），然后选择\u201c添加到主屏幕\u201d或\u201c安装应用\u201d。"
   },
   "home": {
     "demoLabel": "演示",
@@ -566,6 +568,8 @@
     "pendingUserNoAboutMe": "未提供",
     "pendingUserNoInterests": "未提供",
     "pendingUserNoPhone": "未提供",
+    "pendingUserAdminMessage": "消息",
+    "pendingUserNoAdminMessage": "无消息",
     "recurringTitle": "Recurring events",
     "recurringSubtitle": "Manage schedules that repeat automatically.",
     "recurringEmpty": "No recurring events configured.",
@@ -750,7 +754,9 @@
     "phoneCountryCode": "国际区号",
     "submitJoinRequest": "提交加入申请",
     "joinRequestSent": "加入申请已发送，请等待管理员审核。",
-    "joinRequestError": "提交加入申请失败。"
+    "joinRequestError": "提交加入申请失败。",
+    "adminMessageLabel": "给管理员的附加消息",
+    "adminMessagePlaceholder": "可选消息，例如谁推荐的你"
   },
   "auth": {
     "title": "登录",
