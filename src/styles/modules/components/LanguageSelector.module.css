@@ -19,7 +19,8 @@
 }
 
 .trigger {
-  display: inline-flex;
+  display: flex;
+  inline-size: 100%;
   align-items: center;
   gap: 0.5rem;
   block-size: var(--language-selector-height);
