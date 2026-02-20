@@ -13,8 +13,10 @@ function MyEvents() {
   const [registrations, setRegistrations] = useState([])
   const [loading, setLoading] = useState(true)
 
+  const isPendingApproval = isAuthenticated && user?.account_status !== 'active'
+
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || isPendingApproval) {
       setLoading(false)
       return
     }
@@ -39,7 +41,7 @@ function MyEvents() {
     return () => {
       cancelled = true
     }
-  }, [authFetch, isAuthenticated, t, showError])
+  }, [authFetch, isAuthenticated, isPendingApproval, t, showError])
 
   const handleCancel = async (registrationId) => {
     try {
@@ -60,6 +62,43 @@ function MyEvents() {
         actionLabel={t('account.loginButton')}
         onAction={() => login({ returnTo: '/my-events' })}
       />
+    )
+  }
+
+  if (isPendingApproval) {
+    return (
+      <div className="page-shell relative flex h-full min-h-0 flex-col gap-4 sm:gap-6">
+        <div className="pointer-events-none select-none blur-[3px]">
+          <div className="shrink-0">
+            <h1 className="text-3xl font-black text-navy dark:text-cream md:text-4xl">
+              {t('account.myEvents')}
+            </h1>
+          </div>
+          <section className="min-h-0 flex-1 mt-4">
+            <div className="space-y-4">
+              {[1, 2].map((i) => (
+                <div key={i} className="page-card h-28 bg-navy/5 dark:bg-cream/5" />
+              ))}
+            </div>
+          </section>
+        </div>
+        <div className="absolute inset-0 z-20 flex items-center justify-center">
+          <div className="mx-4 w-full max-w-md rounded-2xl border border-navy/20 bg-cream/85 p-5 text-center shadow-xl dark:border-cream/20 dark:bg-navy/85">
+            <p className="text-xl font-black text-navy dark:text-cream">
+              {t('calendar.pendingRequiredTitle')}
+            </p>
+            <p className="mt-2 text-navy/80 dark:text-cream/80">
+              {t('calendar.pendingRequiredBody')}
+            </p>
+            <Link
+              to="/pending-approval"
+              className="btn-primary mt-4 px-6 py-3 font-bold"
+            >
+              {t('calendar.pendingRequiredButton')}
+            </Link>
+          </div>
+        </div>
+      </div>
     )
   }
 
