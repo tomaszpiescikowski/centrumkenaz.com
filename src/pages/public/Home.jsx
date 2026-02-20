@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext'
 
 function Home() {
   const { t } = useLanguage()
+  const [shaHover, setShaHover] = useState(false)
 
   return (
     <div className="page-shell flex h-full min-h-0 flex-col items-center justify-center pt-[12vh] sm:pt-0 pb-[calc(env(safe-area-inset-bottom)+5.25rem)] text-center sm:min-h-[calc(100vh-4rem)] sm:pb-12">
@@ -26,12 +28,16 @@ function Home() {
         {t('home.tagline')}
       </p>
       {__COMMIT_SHA__ && (
-        <div className="group/version relative mt-2 inline-block">
-          <p className="cursor-default text-[10px] font-light tracking-wider text-navy/30 dark:text-cream/30">
+        <div className="relative mt-2 inline-block">
+          <p
+            className="cursor-default text-[10px] font-light tracking-wider text-navy/30 dark:text-cream/30"
+            onMouseEnter={() => setShaHover(true)}
+            onMouseLeave={() => setShaHover(false)}
+          >
             wersja: {__COMMIT_SHA__}
           </p>
-          {(__COMMIT_SUBJECT__ || __COMMIT_BODY__) && (
-            <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-72 -translate-x-1/2 rounded-xl bg-navy px-4 py-3 text-left opacity-0 shadow-xl transition-opacity duration-150 group-hover/version:opacity-100 dark:bg-cream">
+          {shaHover && (__COMMIT_SUBJECT__ || __COMMIT_BODY__) && (
+            <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-72 -translate-x-1/2 rounded-xl bg-navy px-4 py-3 text-left shadow-xl dark:bg-cream">
               {__COMMIT_SUBJECT__ && (
                 <p className="text-xs font-semibold leading-snug text-cream dark:text-navy">{__COMMIT_SUBJECT__}</p>
               )}
