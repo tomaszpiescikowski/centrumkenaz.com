@@ -385,7 +385,7 @@ async def get_event_stats(
         )
         .group_by(Registration.event_id)
     )
-    payment_sums = {row[0]: Decimal(row[1]) for row in payment_sums_result.all()}
+    payment_sums = {row[0]: Decimal(str(row[1])) for row in payment_sums_result.all()}
 
     response: list[EventStatsResponse] = []
     for event in events:
@@ -401,10 +401,10 @@ async def get_event_stats(
                 event_id=str(event.id),
                 title=event.title,
                 start_date=event.start_date.strftime("%Y-%m-%d"),
-                event_type=event.event_type,
-                city=event.city,
-                price_guest=f"{Decimal(event.price_guest or 0):.2f} PLN",
-                price_member=f"{Decimal(event.price_member or 0):.2f} PLN",
+                event_type=event.event_type or "",
+                city=event.city or "",
+                price_guest=f"{Decimal(str(event.price_guest or 0)):.2f} PLN",
+                price_member=f"{Decimal(str(event.price_member or 0)):.2f} PLN",
                 requires_subscription=bool(event.requires_subscription),
                 confirmed_count=confirmed,
                 max_participants=event.max_participants,

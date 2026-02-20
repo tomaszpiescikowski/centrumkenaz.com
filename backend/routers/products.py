@@ -31,7 +31,7 @@ class ProductResponse(BaseModel):
     price: str = Field(description="Product price formatted as string.")
     image_url: str | None = Field(default=None, description="Optional image URL.")
 
-@router.get("", response_model=list[ProductResponse], dependencies=[Depends(products_rate_limit)])
+@router.get("/", response_model=list[ProductResponse], dependencies=[Depends(products_rate_limit)])
 async def list_products(db: AsyncSession = Depends(get_db)) -> list[ProductResponse]:
     """
     Return active products for the public catalog.

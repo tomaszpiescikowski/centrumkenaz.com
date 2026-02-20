@@ -13,7 +13,7 @@ function Shop() {
     const load = async () => {
       setLoading(true)
       try {
-        const response = await fetch(`${API_URL}/products`)
+        const response = await fetch(`${API_URL}/products/`)
         if (!response.ok) throw new Error('Failed to load products')
         const data = await response.json()
         if (!cancelled) setProducts(data)

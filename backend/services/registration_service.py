@@ -171,9 +171,12 @@ class RegistrationService:
         Compute start and end datetimes for a specific occurrence.
 
         The method preserves the event's timezone information and applies the
-        event duration when an end date exists.
+        event duration when an end date exists.  Unlike ``_resolve_occurrence_date``
+        this intentionally skips validation so it can compute datetimes for
+        historical registrations whose occurrence_date may no longer match the
+        current event start_date (e.g. after an admin reschedule).
         """
-        resolved_date = self._resolve_occurrence_date(event, occurrence_date)
+        resolved_date = occurrence_date or event.start_date.date()
         base_start = event.start_date
         start_dt = datetime.combine(resolved_date, base_start.timetz() if base_start.tzinfo else base_start.time())
         if base_start.tzinfo:

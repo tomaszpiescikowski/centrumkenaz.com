@@ -334,6 +334,8 @@ async def get_my_registrations(
     response: list[UserRegistrationResponse] = []
     for reg in registrations:
         event = reg.event
+        if event is None:
+            continue
         occurrence_start, occurrence_end = registration_service.get_occurrence_datetimes(
             event,
             reg.occurrence_date,
