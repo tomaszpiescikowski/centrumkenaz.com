@@ -19,6 +19,16 @@ class ApprovalRequest(Base):
         primary_key=True,
         comment="FK to the user who submitted approval request.",
     )
+    phone_country_code = Column(
+        String(5),
+        nullable=True,
+        comment="International dialling prefix (e.g. +48).",
+    )
+    phone_number = Column(
+        String(20),
+        nullable=True,
+        comment="Phone number without country code.",
+    )
     submitted_at = Column(
         DateTime(timezone=True),
         server_default=func.now(),

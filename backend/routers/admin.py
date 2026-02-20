@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Path
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from database import get_db
 from models.event import Event
@@ -182,6 +183,11 @@ class PendingUserResponse(BaseModel):
     user_id: str = Field(description="User identifier.")
     full_name: str | None = Field(default=None, description="User full name.")
     email: str = Field(description="User email address.")
+    picture_url: str | None = Field(default=None, description="Avatar image URL.")
+    about_me: str | None = Field(default=None, description="User bio from profile.")
+    interest_tags: list[str] = Field(default_factory=list, description="Interest tags.")
+    phone_country_code: str | None = Field(default=None, description="Phone country prefix.")
+    phone_number: str | None = Field(default=None, description="Phone number.")
     created_at: str | None = Field(default=None, description="Account creation timestamp.")
     account_status: str = Field(description="Current account status.")
 
@@ -744,21 +750,42 @@ async def get_pending_users(
     and orders them by creation date for the admin review queue.
     """
 
+    from models.user_profile import UserProfile
     users_result = await db.execute(
         select(User)
         .join(ApprovalRequest, ApprovalRequest.user_id == User.id)
+        .outerjoin(UserProfile, UserProfile.user_id == User.id)
+        .options(
+            joinedload(User.approval_request),
+            joinedload(User.profile),
+        )
         .where(
             User.account_status == AccountStatus.PENDING.value,
         )
         .order_by(User.created_at.desc())
     )
-    users = list(users_result.scalars().all())
+    users = list(users_result.unique().scalars().all())
+
+    def _parse_tags(raw: str | None) -> list[str]:
+        if not raw:
+            return []
+        import json as _json
+        try:
+            parsed = _json.loads(raw)
+        except Exception:
+            return []
+        return [str(t) for t in parsed] if isinstance(parsed, list) else []
 
     return [
         PendingUserResponse(
             user_id=str(u.id),
             full_name=u.full_name,
             email=u.email,
+            picture_url=u.picture_url,
+            about_me=u.profile.about_me if u.profile else None,
+            interest_tags=_parse_tags(u.profile.interest_tags if u.profile else None),
+            phone_country_code=u.approval_request.phone_country_code if u.approval_request else None,
+            phone_number=u.approval_request.phone_number if u.approval_request else None,
             created_at=u.created_at.isoformat() if u.created_at else None,
             account_status=u.account_status.value,
         )
@@ -780,27 +807,49 @@ async def approve_user(
     updated approval payload.
     """
 
-    result = await db.execute(select(User).where(legacy_id_eq(User.id, user_id)))
-    target = result.scalar_one_or_none()
+    result = await db.execute(
+        select(User)
+        .options(joinedload(User.profile), joinedload(User.approval_request))
+        .where(legacy_id_eq(User.id, user_id))
+    )
+    target = result.unique().scalar_one_or_none()
     if not target:
         raise HTTPException(status_code=404, detail="User not found")
     if target.account_status == AccountStatus.PENDING:
-        approval = await db.execute(
-            select(ApprovalRequest).where(ApprovalRequest.user_id == target.id)
-        )
-        if approval.scalar_one_or_none() is None:
+        if target.approval_request is None:
             raise HTTPException(status_code=409, detail="User has not submitted join request")
 
     if target.account_status != AccountStatus.ACTIVE:
         target.account_status = AccountStatus.ACTIVE
         db.add(target)
         await db.commit()
-        await db.refresh(target)
+        # Re-fetch with eager loads – refresh alone won't restore relationships.
+        result = await db.execute(
+            select(User)
+            .options(joinedload(User.profile), joinedload(User.approval_request))
+            .where(User.id == target.id)
+        )
+        target = result.unique().scalar_one_or_none()
+
+    import json as _json
+    def _tags(raw):
+        if not raw:
+            return []
+        try:
+            parsed = _json.loads(raw)
+        except Exception:
+            return []
+        return [str(t) for t in parsed] if isinstance(parsed, list) else []
 
     return PendingUserResponse(
         user_id=str(target.id),
         full_name=target.full_name,
         email=target.email,
+        picture_url=target.picture_url,
+        about_me=target.profile.about_me if target.profile else None,
+        interest_tags=_tags(target.profile.interest_tags if target.profile else None),
+        phone_country_code=target.approval_request.phone_country_code if target.approval_request else None,
+        phone_number=target.approval_request.phone_number if target.approval_request else None,
         created_at=target.created_at.isoformat() if target.created_at else None,
         account_status=target.account_status.value,
     )

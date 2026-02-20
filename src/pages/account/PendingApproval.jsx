@@ -16,8 +16,24 @@ function PendingApproval() {
   const navigate = useNavigate()
   const [aboutMe, setAboutMe] = useState(user?.about_me || '')
   const [interestTags, setInterestTags] = useState(Array.isArray(user?.interest_tags) ? user.interest_tags : [])
+  const [phoneCountryCode, setPhoneCountryCode] = useState('+48')
+  const [phoneNumber, setPhoneNumber] = useState('')
   const [sending, setSending] = useState(false)
   const FIRST_APPROVED_PLANS_KEY = 'approvedFirstPlanChoiceShown'
+
+  const COUNTRY_CODES = [
+    { code: '+48', label: '🇵🇱 +48' },
+    { code: '+1', label: '🇺🇸 +1' },
+    { code: '+44', label: '🇬🇧 +44' },
+    { code: '+49', label: '🇩🇪 +49' },
+    { code: '+31', label: '🇳🇱 +31' },
+    { code: '+39', label: '🇮🇹 +39' },
+    { code: '+33', label: '🇫🇷 +33' },
+    { code: '+34', label: '🇪🇸 +34' },
+    { code: '+86', label: '🇨🇳 +86' },
+    { code: '+380', label: '🇺🇦 +380' },
+    { code: '+91', label: '🇮🇳 +91' },
+  ]
 
   useEffect(() => {
     setAboutMe(user?.about_me || '')
@@ -60,6 +76,8 @@ function PendingApproval() {
       await submitJoinRequest(authFetch, {
         about_me: aboutMe.trim(),
         interest_tags: interestTags,
+        phone_country_code: phoneCountryCode,
+        phone_number: phoneNumber.trim(),
       })
       if (accessToken) {
         await fetchUser(accessToken)
@@ -115,6 +133,30 @@ function PendingApproval() {
               {t('account.interests')}
             </p>
             <InterestTagsPicker value={interestTags} onChange={setInterestTags} t={t} />
+          </div>
+          <div>
+            <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
+              {t('approval.phoneLabel')}
+            </p>
+            <div className="flex gap-2">
+              <select
+                value={phoneCountryCode}
+                onChange={(e) => setPhoneCountryCode(e.target.value)}
+                className="ui-input ui-input-compact w-28 shrink-0"
+              >
+                {COUNTRY_CODES.map((c) => (
+                  <option key={c.code} value={c.code}>{c.label}</option>
+                ))}
+              </select>
+              <input
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                maxLength={20}
+                className="ui-input ui-input-compact flex-1"
+                placeholder={t('approval.phonePlaceholder')}
+              />
+            </div>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>

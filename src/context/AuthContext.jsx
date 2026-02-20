@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useCallback, useContext, useRef, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API_URL } from '../api/config'
 
@@ -9,6 +9,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [accessToken, setAccessToken] = useState(null)
+  const accessTokenRef = useRef(accessToken)
 
   const POST_LOGIN_REDIRECT_KEY = 'postLoginRedirect'
 
@@ -27,6 +28,7 @@ export function AuthProvider({ children }) {
   const storeTokens = (newAccessToken, newRefreshToken) => {
     localStorage.setItem('accessToken', newAccessToken)
     localStorage.setItem('refreshToken', newRefreshToken)
+    accessTokenRef.current = newAccessToken
     setAccessToken(newAccessToken)
   }
 
@@ -47,6 +49,7 @@ export function AuthProvider({ children }) {
     const storedAccessToken = localStorage.getItem('accessToken')
 
     if (storedAccessToken) {
+      accessTokenRef.current = storedAccessToken
       setAccessToken(storedAccessToken)
       fetchUser(storedAccessToken)
     } else {
@@ -178,31 +181,58 @@ export function AuthProvider({ children }) {
     return handleAuthCallback(data.access_token, data.refresh_token)
   }
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem('accessToken')
     localStorage.removeItem('refreshToken')
+    accessTokenRef.current = null
     setAccessToken(null)
     setUser(null)
-  }
+  }, [])
 
-  const authFetch = async (url, options = {}) => {
+  const authFetch = useCallback(async (url, options = {}) => {
+    const currentToken = accessTokenRef.current
     const headers = {
       ...options.headers,
-      'Authorization': `Bearer ${accessToken}`,
+      'Authorization': `Bearer ${currentToken}`,
     }
 
     const response = await fetch(url, { ...options, headers })
 
     if (response.status === 401) {
-      await refreshToken()
-      // Retry with new token
-      const newToken = localStorage.getItem('accessToken')
-      headers['Authorization'] = `Bearer ${newToken}`
-      return fetch(url, { ...options, headers })
+      // Try refreshing the token
+      const storedRefreshToken = localStorage.getItem('refreshToken')
+      if (!storedRefreshToken) {
+        logout()
+        return response
+      }
+
+      try {
+        const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${storedRefreshToken}` },
+        })
+
+        if (refreshResponse.ok) {
+          const data = await refreshResponse.json()
+          localStorage.setItem('accessToken', data.access_token)
+          localStorage.setItem('refreshToken', data.refresh_token)
+          accessTokenRef.current = data.access_token
+          setAccessToken(data.access_token)
+
+          // Retry with new token
+          headers['Authorization'] = `Bearer ${data.access_token}`
+          return fetch(url, { ...options, headers })
+        } else {
+          logout()
+        }
+      } catch (error) {
+        console.error('Failed to refresh token:', error)
+        logout()
+      }
     }
 
     return response
-  }
+  }, [logout])
 
   const value = {
     user,

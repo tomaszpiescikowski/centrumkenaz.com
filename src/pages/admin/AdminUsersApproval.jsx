@@ -101,27 +101,93 @@ function AdminUsersApproval() {
             {pendingUsers.map((pending) => (
               <div
                 key={pending.user_id}
-                className="page-card flex flex-wrap items-center justify-between gap-4"
+                className="page-card flex flex-col sm:flex-row gap-4"
               >
-                <div>
-                  <p className="text-lg font-bold text-navy dark:text-cream">
-                    {pending.full_name || t('admin.pendingUserNoName')}
-                  </p>
-                  <p className="text-sm text-navy/60 dark:text-cream/60">
-                    {pending.email}
-                  </p>
+                {/* Avatar */}
+                <div className="shrink-0 flex sm:flex-col items-center gap-3 sm:gap-2">
+                  {pending.picture_url ? (
+                    <img
+                      src={pending.picture_url}
+                      alt={pending.full_name || ''}
+                      className="w-16 h-16 rounded-full object-cover border-2 border-navy/10 dark:border-cream/10"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-navy/10 dark:bg-cream/10 flex items-center justify-center text-2xl font-bold text-navy/40 dark:text-cream/40">
+                      {(pending.full_name || '?')[0]?.toUpperCase()}
+                    </div>
+                  )}
+                </div>
+
+                {/* Details */}
+                <div className="flex-1 min-w-0 space-y-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <p className="text-lg font-bold text-navy dark:text-cream">
+                        {pending.full_name || t('admin.pendingUserNoName')}
+                      </p>
+                      <p className="text-sm text-navy/60 dark:text-cream/60">
+                        {pending.email}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleApprove(pending.user_id)}
+                      className="px-5 py-2 rounded-full font-semibold btn-primary shrink-0"
+                    >
+                      {t('admin.approveButton')}
+                    </button>
+                  </div>
+
+                  {/* About me */}
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50 mb-0.5">
+                      {t('admin.pendingUserAboutMe')}
+                    </p>
+                    <p className="text-sm text-navy/80 dark:text-cream/80 whitespace-pre-line">
+                      {pending.about_me || t('admin.pendingUserNoAboutMe')}
+                    </p>
+                  </div>
+
+                  {/* Interests */}
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50 mb-0.5">
+                      {t('admin.pendingUserInterests')}
+                    </p>
+                    {pending.interest_tags && pending.interest_tags.length > 0 ? (
+                      <div className="flex flex-wrap gap-1.5">
+                        {pending.interest_tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-navy/10 dark:bg-cream/10 text-navy/80 dark:text-cream/80"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-navy/50 dark:text-cream/50">
+                        {t('admin.pendingUserNoInterests')}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Phone */}
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50 mb-0.5">
+                      {t('admin.pendingUserPhone')}
+                    </p>
+                    <p className="text-sm text-navy/80 dark:text-cream/80">
+                      {pending.phone_number
+                        ? `${pending.phone_country_code || '+48'} ${pending.phone_number}`
+                        : t('admin.pendingUserNoPhone')}
+                    </p>
+                  </div>
+
                   {pending.created_at && (
-                    <p className="text-xs text-navy/50 dark:text-cream/50 mt-1">
+                    <p className="text-xs text-navy/50 dark:text-cream/50">
                       {t('admin.pendingUserCreated', { date: new Date(pending.created_at).toLocaleString() })}
                     </p>
                   )}
                 </div>
-                <button
-                  onClick={() => handleApprove(pending.user_id)}
-                  className="px-5 py-2 rounded-full font-semibold btn-primary"
-                >
-                  {t('admin.approveButton')}
-                </button>
               </div>
             ))}
           </div>
