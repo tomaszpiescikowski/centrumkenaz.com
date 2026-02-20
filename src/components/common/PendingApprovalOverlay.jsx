@@ -15,7 +15,7 @@ function PendingApprovalOverlay() {
   if (!isGated || !GATED_PATHS.has(pathname)) return null
 
   return (
-    <div className="fixed inset-x-0 bottom-0 top-0 z-40 flex items-center justify-center sm:top-16">
+    <div className="fixed inset-x-0 bottom-0 top-0 z-40 flex flex-col items-center pt-[38.2svh] sm:top-16 sm:pt-[calc(38.2svh-4rem)]">
       <div className="mx-4 w-full max-w-md rounded-2xl border border-navy/20 bg-cream/85 p-5 text-center shadow-xl dark:border-cream/20 dark:bg-navy/85 backdrop-blur-sm">
         {isPendingApproval ? (
           <>
