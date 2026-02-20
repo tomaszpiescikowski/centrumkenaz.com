@@ -273,9 +273,7 @@ function Plans() {
         onClick={() => handleCheckout(code)}
         className={
           `inline-flex h-11 w-full items-center justify-center rounded-2xl border px-4 text-sm font-bold transition ` +
-          (code === 'pro'
-            ? 'border-navy bg-navy text-cream dark:border-cream dark:bg-cream dark:text-navy'
-            : 'border-navy/45 bg-transparent text-navy dark:border-cream/45 dark:text-cream') +
+          'border-navy/45 bg-transparent text-navy dark:border-cream/45 dark:text-cream' +
           (isProcessing ? ' cursor-not-allowed opacity-60' : '')
         }
         aria-label={t(ariaKey)}
