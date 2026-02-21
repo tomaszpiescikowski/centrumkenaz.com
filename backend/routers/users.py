@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from decimal import Decimal
 from typing import List, Optional, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Path
@@ -85,6 +86,10 @@ class UserRegistrationResponse(BaseModel):
     can_confirm_manual_payment: bool = Field(
         default=False,
         description="Whether manual payment confirmation is allowed now.",
+    )
+    effective_price: str = Field(
+        default="0",
+        description="Actual price the user paid/will pay for this registration.",
     )
 
 
@@ -366,6 +371,10 @@ async def get_my_registrations(
             occurrence_start=occurrence_start,
         )
 
+        effective_price = await registration_service._resolve_price_for_user(
+            user, event, now,
+        )
+
         response.append(
             UserRegistrationResponse(
                 registration_id=reg.id,
@@ -403,6 +412,7 @@ async def get_my_registrations(
                     reg.status == RegistrationStatus.MANUAL_PAYMENT_REQUIRED.value
                     and bool(event.manual_payment_verification)
                 ),
+                effective_price=str(effective_price),
             )
         )
 

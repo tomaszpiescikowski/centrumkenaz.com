@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
@@ -10,6 +10,7 @@ function Panel() {
   const { user, isAuthenticated, authFetch } = useAuth()
   const { t } = useLanguage()
   const { showError, showSuccess } = useNotification()
+  const navigate = useNavigate()
   const [registrations, setRegistrations] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -139,18 +140,23 @@ function Panel() {
                 {registrations.map((reg) => {
                   const eventPassed = new Date(reg.event.start_date) < new Date()
                   const pointsEarned = eventPassed && reg.status === 'confirmed' && reg.event.points_value > 0
+                  const price = parseFloat(reg.effective_price || '0')
+                  const isFree = price === 0
+                  const showTransferRef = reg.manual_payment_transfer_reference && (
+                    reg.status === 'manual_payment_required' ||
+                    reg.status === 'manual_payment_verification' ||
+                    reg.status === 'confirmed'
+                  )
 
                   return (
                     <div
                       key={reg.registration_id}
-                      className={`panel-row relative ${statusRowClass(reg.status)}`}
+                      className={`panel-row panel-row-clickable relative ${statusRowClass(reg.status)}`}
+                      onClick={() => navigate(`/event/${reg.event.id}`)}
+                      role="link"
+                      tabIndex={0}
+                      onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/event/${reg.event.id}`) }}
                     >
-                      {pointsEarned && (
-                        <div className="absolute right-4 top-4 flex items-center gap-1 rounded-full bg-navy/10 px-2 py-1 text-xs font-bold text-navy dark:bg-cream/20 dark:text-cream">
-                          <span>+{reg.event.points_value}</span>
-                          <span className="opacity-70">{t('admin.pointsAbbr')}</span>
-                        </div>
-                      )}
                       <div className="flex flex-wrap justify-between gap-4">
                         <div className={pointsEarned ? 'pr-16' : ''}>
                           <h3 className="text-lg font-bold text-navy dark:text-cream">
@@ -166,25 +172,45 @@ function Panel() {
                               target="_blank"
                               rel="noreferrer"
                               className="text-sm font-semibold text-navy dark:text-cream"
+                              onClick={(e) => e.stopPropagation()}
                             >
                               {reg.event.location} ↗
                             </a>
                           )}
                         </div>
-                        <Link
-                          to={`/event/${reg.event.id}`}
-                          data-no-hover
-                          className="text-sm font-semibold text-navy/70 dark:text-cream/70"
-                        >
-                          {t('account.viewEvent')}
-                        </Link>
+                        {pointsEarned && (
+                          <div className="flex items-start gap-1 rounded-full bg-navy/10 px-2 py-1 text-xs font-bold text-navy dark:bg-cream/20 dark:text-cream">
+                            <span>+{reg.event.points_value}</span>
+                            <span className="opacity-70">{t('admin.pointsAbbr')}</span>
+                          </div>
+                        )}
                       </div>
 
-                      <div className="mt-4 flex flex-wrap gap-3 text-sm">
-                        <Badge label={t('account.status')} value={t(`account.statuses.${reg.status}`)} />
+                      <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+                        <StatusPill status={reg.status} label={t(`account.statuses.${reg.status}`)} />
+                        {!isFree && (
+                          <span className="panel-info-chip">
+                            <span className="panel-info-label">{t('account.price')}:</span> {price.toFixed(2)} zł
+                          </span>
+                        )}
+                        {isFree && (
+                          <span className="panel-info-chip">
+                            {t('account.free')}
+                          </span>
+                        )}
+                        {reg.event.points_value > 0 && !pointsEarned && (
+                          <span className="panel-info-chip">
+                            <span className="panel-info-label">{t('account.pointsForEvent')}:</span> +{reg.event.points_value}
+                          </span>
+                        )}
+                        {showTransferRef && (
+                          <span className="panel-info-chip">
+                            <span className="panel-info-label">{t('account.transferTitle')}:</span> {reg.manual_payment_transfer_reference}
+                          </span>
+                        )}
                       </div>
 
-                      <div className="mt-4 flex flex-wrap gap-3">
+                      <div className="mt-3 flex flex-wrap gap-3" onClick={(e) => e.stopPropagation()}>
                         {reg.can_confirm_manual_payment && (
                           <Link
                             to={`/manual-payment/${reg.registration_id}`}
@@ -233,12 +259,20 @@ function statusRowClass(status) {
   return ''
 }
 
-function Badge({ label, value, title }) {
+function statusPillClass(status) {
+  if (status === 'confirmed') return 'ev-leg-ok'
+  if (status === 'pending' || status === 'manual_payment_verification') return 'ev-leg-wait'
+  if (status === 'manual_payment_required') return 'ev-leg-pay'
+  if (status === 'waitlist') return 'ev-leg-wait'
+  if (status === 'cancelled' || status === 'refunded') return 'ev-leg-cancel'
+  return ''
+}
+
+function StatusPill({ status, label }) {
   return (
-    <div className="rounded-full bg-navy/5 px-3 py-2 text-xs dark:bg-cream/10">
-      <span className="text-navy/60 dark:text-cream/60">{label}: </span>
-      <span className="font-semibold text-navy dark:text-cream" title={title}>{value}</span>
-    </div>
+    <span className={`ev-leg-pill ${statusPillClass(status)}`}>
+      {label}
+    </span>
   )
 }
 
