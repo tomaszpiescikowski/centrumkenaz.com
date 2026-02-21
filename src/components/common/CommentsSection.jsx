@@ -113,10 +113,22 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     }
   }, [authFetch])
 
+  // Scroll messenger list to bottom
+  const scrollToBottom = useCallback(() => {
+    if (messengerLayout && listRef.current) {
+      listRef.current.scrollTop = listRef.current.scrollHeight
+    }
+  }, [messengerLayout])
+
   useEffect(() => {
     loadComments()
     loadGeneralComments()
   }, [loadComments, loadGeneralComments])
+
+  // Auto-scroll to newest message when comments load / change
+  useEffect(() => {
+    scrollToBottom()
+  }, [currentComments, scrollToBottom])
 
   useEffect(() => {
     if (replyingTo && replyInputRef.current) replyInputRef.current.focus()
@@ -139,6 +151,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
       await createComment(currentResourceType, currentResourceId, authFetch, { content: newContent.trim() })
       setNewContent('')
       await reloadCurrent()
+      requestAnimationFrame(scrollToBottom)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -159,6 +172,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
       setReplyContent('')
       setReplyingTo(null)
       await reloadCurrent()
+      requestAnimationFrame(scrollToBottom)
     } catch (err) {
       setError(err.message)
     } finally {

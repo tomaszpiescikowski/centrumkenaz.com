@@ -920,8 +920,8 @@ function EventDetail() {
           </div>
 
           {/* Comments section – hidden on mobile (replaced by chat bubble) */}
-          <div className="ev-card hidden sm:block" style={{ marginTop: '0.75rem', padding: '1rem 1.25rem' }}>
-            <CommentsSection resourceType="event" resourceId={event.id} hideTabs />
+          <div className="ev-card ev-chat-card hidden sm:block" style={{ marginTop: '0.75rem', padding: '1rem 1.25rem' }}>
+            <CommentsSection resourceType="event" resourceId={event.id} hideTabs messengerLayout />
           </div>
 
           {/* Mobile chat bubble – always visible on event page */}

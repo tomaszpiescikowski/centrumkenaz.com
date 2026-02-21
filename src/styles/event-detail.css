@@ -488,6 +488,20 @@
   margin-top: 0.0625rem;
 }
 
+/* ── Inline chat card (desktop messenger layout) ──── */
+
+.ev-chat-card {
+  height: 520px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ev-chat-card .cmt-section {
+  flex: 1;
+  min-height: 0;
+}
+
 /* ── CTA card ──────────────────────────────────────── */
 
 .ev-cta-card {
