@@ -7,6 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
 from models.feedback import Feedback
+from models.user import User
+from security.guards import get_admin_user_dependency
 
 router = APIRouter(prefix="/api/feedback", tags=["feedback"])
 
@@ -44,3 +46,28 @@ async def submit_feedback(
     db.add(entry)
     await db.commit()
     return {"ok": True}
+
+
+@router.get(
+    "",
+    response_model=list[FeedbackOut],
+    summary="List all feedback (admin only, temporary)",
+)
+async def list_feedback(
+    admin: User = Depends(get_admin_user_dependency),
+    db: AsyncSession = Depends(get_db),
+):
+    """Return every feedback entry, newest first."""
+    result = await db.execute(
+        select(Feedback).order_by(Feedback.created_at.desc())
+    )
+    rows = result.scalars().all()
+    return [
+        FeedbackOut(
+            id=r.id,
+            email=r.email,
+            comment=r.comment,
+            created_at=r.created_at.isoformat() if r.created_at else "",
+        )
+        for r in rows
+    ]

@@ -689,7 +689,18 @@
       "manualPayments": {
         "title": "Manual payments",
         "description": "Transfer verification, refunds, and waitlist promotions."
+      },
+      "feedback": {
+        "title": "User feedback",
+        "description": "Read opinions and suggestions from users."
       }
+    },
+    "feedback": {
+      "title": "User feedback",
+      "subtitle": "All feedback submitted by users.",
+      "empty": "No feedback yet.",
+      "loadError": "Could not load feedback.",
+      "count": "{count} entries"
     },
     "notAuthorizedTitle": "Access denied",
     "notAuthorized": "You do not have permission to access this area.",

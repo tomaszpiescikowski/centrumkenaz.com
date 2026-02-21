@@ -687,7 +687,18 @@
       "manualPayments": {
         "title": "Rynczne płatności",
         "description": "Weryfikacyjo wpłat, zwroty i awanse z rezerwy."
+      },
+      "feedback": {
+        "title": "Ôpinie użytkownikōw",
+        "description": "Przeczytej ôpinie i suggestie ôd użytkownikōw."
       }
+    },
+    "feedback": {
+      "title": "Ôpinie użytkownikōw",
+      "subtitle": "Wszyjstke ôpinie przesłane ôd użytkownikōw.",
+      "empty": "Żodnych ôpinii.",
+      "loadError": "Niy szło załadować ôpinii.",
+      "count": "{count} wpisōw"
     },
     "notAuthorizedTitle": "Brak dostympu",
     "notAuthorized": "Niy mosz praw do tygo miyjsca.",

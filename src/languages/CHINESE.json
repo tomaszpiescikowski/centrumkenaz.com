@@ -687,7 +687,18 @@
       "manualPayments": {
         "title": "手动付款",
         "description": "转账验证、退款和候补晋升。"
+      },
+      "feedback": {
+        "title": "用户反馈",
+        "description": "阅读用户的意见和建议。"
       }
+    },
+    "feedback": {
+      "title": "用户反馈",
+      "subtitle": "用户提交的所有反馈。",
+      "empty": "暂无反馈。",
+      "loadError": "无法加载反馈。",
+      "count": "{count} 条"
     },
     "notAuthorizedTitle": "拒绝访问",
     "notAuthorized": "你无权限访问此区域。",

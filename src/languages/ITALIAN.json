@@ -689,7 +689,18 @@
       "manualPayments": {
         "title": "Pagamenti manuali",
         "description": "Verifica bonifici, rimborsi e promozioni dalla lista d'attesa."
+      },
+      "feedback": {
+        "title": "Feedback utenti",
+        "description": "Leggi opinioni e suggerimenti dagli utenti."
       }
+    },
+    "feedback": {
+      "title": "Feedback utenti",
+      "subtitle": "Tutti i feedback inviati dagli utenti.",
+      "empty": "Nessun feedback ancora.",
+      "loadError": "Impossibile caricare i feedback.",
+      "count": "{count} voci"
     },
     "notAuthorizedTitle": "Accesso negato",
     "notAuthorized": "Non hai il permesso di accedere a questa area.",

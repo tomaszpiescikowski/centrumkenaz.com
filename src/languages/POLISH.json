@@ -689,7 +689,18 @@
       "manualPayments": {
         "title": "Manualne płatności",
         "description": "Weryfikacja wpłat, zwroty i awanse z rezerwy."
+      },
+      "feedback": {
+        "title": "Opinie użytkowników",
+        "description": "Przeczytaj opinie i sugestie od użytkowników."
       }
+    },
+    "feedback": {
+      "title": "Opinie użytkowników",
+      "subtitle": "Wszystkie opinie przesłane przez użytkowników.",
+      "empty": "Brak opinii.",
+      "loadError": "Nie udało się załadować opinii.",
+      "count": "{count} wpisów"
     },
     "notAuthorizedTitle": "Brak dostępu",
     "notAuthorized": "Nie masz uprawnień do tego obszaru.",

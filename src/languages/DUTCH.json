@@ -689,7 +689,18 @@
       "manualPayments": {
         "title": "Handmatige betalingen",
         "description": "Overschrijvingsverificatie, terugbetalingen en wachtlijstpromoties."
+      },
+      "feedback": {
+        "title": "Gebruikersfeedback",
+        "description": "Lees meningen en suggesties van gebruikers."
       }
+    },
+    "feedback": {
+      "title": "Gebruikersfeedback",
+      "subtitle": "Alle feedback ingediend door gebruikers.",
+      "empty": "Nog geen feedback.",
+      "loadError": "Kan feedback niet laden.",
+      "count": "{count} items"
     },
     "notAuthorizedTitle": "Toegang geweigerd",
     "notAuthorized": "Je hebt geen toestemming om dit gebied te openen.",
