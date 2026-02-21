@@ -841,17 +841,6 @@ function EventDetail() {
               </div>
             )}
 
-            {/* Stats strip */}
-            <div className="ev-stats">
-              <strong>{confirmedCount}</strong> {t('participants.enrolled')}
-              {maxParticipants != null && (
-                <>{' · '}<strong>{availableSpots}</strong> {t('participants.free')}</>
-              )}
-              {waitlistCount > 0 && (
-                <>{' · '}<strong>{waitlistCount}</strong> {t('participants.onWaitlist')}</>
-              )}
-            </div>
-
             {/* Column headers */}
             <div className="ev-col-headers">
               <span>{t('participants.name')}</span>
