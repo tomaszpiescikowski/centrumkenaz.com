@@ -10,7 +10,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from pydantic import BaseModel, ConfigDict, Field
-from sqlalchemy import select, func as sa_func, and_
+from sqlalchemy import select, update, func as sa_func, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -265,7 +265,23 @@ async def toggle_pin(
     if not comment:
         raise HTTPException(status_code=404, detail="Comment not found")
 
-    comment.is_pinned = not comment.is_pinned
+    new_pinned = not comment.is_pinned
+
+    if new_pinned:
+        # Unpin any other pinned comment for the same resource (max 1 pin)
+        stmt = (
+            update(Comment)
+            .where(
+                Comment.resource_type == comment.resource_type,
+                Comment.resource_id == comment.resource_id,
+                Comment.is_pinned.is_(True),
+                Comment.id != comment.id,
+            )
+            .values(is_pinned=False)
+        )
+        await db.execute(stmt)
+
+    comment.is_pinned = new_pinned
     comment.version += 1
     await db.commit()
 

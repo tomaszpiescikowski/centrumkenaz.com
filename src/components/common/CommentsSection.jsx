@@ -446,9 +446,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     return <div className="cmt-loading">{t('comments.loading')}</div>
   }
 
-  // Separate pinned and regular comments for messenger layout
-  const pinnedItems = messengerLayout ? flatList.filter((item) => item.is_pinned) : []
-  const regularItems = messengerLayout ? flatList.filter((item) => !item.is_pinned) : flatList
+  // No separate pinned section – pinned items stay inline (backend sorts pinned first)
 
   const commentForm = user ? (
     <form className="cmt-new-form" onSubmit={handleSubmit}>
@@ -510,21 +508,14 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
 
       {messengerLayout ? (
         <>
-          {/* Pinned comments float at top */}
-          {pinnedItems.length > 0 && (
-            <div className="cmt-pinned-float">
-              {pinnedItems.map((item) => renderFlatComment(item))}
-            </div>
-          )}
-
-          {/* Scrollable messages – oldest top, newest bottom */}
+          {/* Scrollable messages – pinned at top (via backend sort), oldest first, newest bottom */}
           <div className="cmt-list cmt-list-messenger" ref={listRef}>
-            {regularItems.length === 0 ? (
+            {flatList.length === 0 ? (
               <div className="cmt-empty">
                 <p>{isGeneralTab ? t('comments.emptyGeneral') : t('comments.empty')}</p>
               </div>
             ) : (
-              regularItems.map((item) => renderFlatComment(item))
+              flatList.map((item) => renderFlatComment(item))
             )}
           </div>
 
