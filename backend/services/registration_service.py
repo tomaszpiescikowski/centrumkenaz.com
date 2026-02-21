@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
+import logging
 
 from models.user import User, UserRole, AccountStatus
 from models.subscription import Subscription
@@ -16,6 +17,8 @@ from services.payment_service import PaymentService
 from ports.payment_gateway import PaymentStatus as GatewayPaymentStatus
 from services.google_calendar_service import GoogleCalendarService
 from utils.legacy_ids import legacy_id_eq
+
+logger = logging.getLogger(__name__)
 
 
 class RegistrationError(Exception):
@@ -812,9 +815,10 @@ class RegistrationService:
         next_waitlisted.waitlist_notification_sent = False
         next_waitlisted.waitlist_notified_at = None
         self.db.add(next_waitlisted)
+        waitlisted_user = next_waitlisted.user
         await self.db.commit()
         await self.db.refresh(next_waitlisted)
-        await self._apply_points_for_event(next_waitlisted.user, event)
+        await self._apply_points_for_event(waitlisted_user, event)
         await self._maybe_add_to_google_calendar(next_waitlisted)
 
     async def _load_owned_registration_with_context(
@@ -1001,9 +1005,11 @@ class RegistrationService:
 
         registration.status = RegistrationStatus.CONFIRMED.value
         self.db.add(registration)
+        reg_user = registration.user
+        reg_event = registration.event
         await self.db.commit()
         await self.db.refresh(registration)
-        await self._apply_points_for_event(registration.user, registration.event)
+        await self._apply_points_for_event(reg_user, reg_event)
         await self._maybe_add_to_google_calendar(registration)
         return registration
 
@@ -1063,10 +1069,12 @@ class RegistrationService:
         if registration:
             if registration.user and registration.user.account_status != AccountStatus.ACTIVE:
                 return registration
+            reg_user = registration.user
+            reg_event = registration.event
             registration.status = RegistrationStatus.CONFIRMED.value
             await self.db.commit()
             await self.db.refresh(registration)
-            await self._apply_points_for_event(registration.user, registration.event)
+            await self._apply_points_for_event(reg_user, reg_event)
             await self._maybe_add_to_google_calendar(registration)
 
         return registration
@@ -1095,27 +1103,41 @@ class RegistrationService:
         """
         Add a confirmed registration to Google Calendar when eligible.
 
-        The method skips when the user lacks a refresh token, creates a calendar
-        event via Google API, and stores the resulting event ID.
+        The method eagerly loads user/event relationships, skips when the user
+        lacks a refresh token, creates a calendar event via Google API, and
+        stores the resulting event ID.
         """
         if not registration or registration.calendar_event_id:
             return
-        if not registration.user or not registration.event:
+
+        # Eagerly reload with relationships to avoid async lazy-loading issues
+        stmt = (
+            select(Registration)
+            .options(joinedload(Registration.user), joinedload(Registration.event))
+            .where(Registration.id == registration.id)
+        )
+        result = await self.db.execute(stmt)
+        reg = result.scalar_one_or_none()
+        if not reg or not reg.user or not reg.event:
+            logger.warning("GCal: registration %s missing user or event", registration.id)
             return
-        if not registration.user.google_refresh_token:
+        if not reg.user.google_refresh_token:
+            logger.debug("GCal: user %s has no google_refresh_token, skipping", reg.user.id)
             return
 
         try:
             service = GoogleCalendarService()
             calendar_event_id = await service.create_event(
-                registration.user,
-                registration.event,
-                occurrence_date=registration.occurrence_date,
+                reg.user,
+                reg.event,
+                occurrence_date=reg.occurrence_date,
             )
         except Exception:
+            logger.exception("GCal: failed to create event for registration %s", registration.id)
             return
 
         if not calendar_event_id:
+            logger.warning("GCal: API returned no event ID for registration %s", registration.id)
             return
 
         registration.calendar_event_id = calendar_event_id

@@ -449,9 +449,9 @@ async def get_current_user(
     response.interest_tags = _parse_interest_tags(interest_tags_raw)
     response.approval_request_submitted = approval_submitted
     response.has_google_calendar = bool(
-        user.google_refresh_token
-        and user.google_scopes
-        and "calendar.events" in user.google_scopes
+        getattr(user, "google_refresh_token", None)
+        and getattr(user, "google_scopes", None)
+        and "calendar.events" in (getattr(user, "google_scopes", "") or "")
     )
 
     pending_manual_payment = await db.execute(
