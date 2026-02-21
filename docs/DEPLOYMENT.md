@@ -165,6 +165,24 @@ proxy_send_timeout 60s;
 proxy_read_timeout 60s;
 ```
 
+#### Backend proxy locations snippet
+
+The backend proxy `location` blocks live in `nginx/backend-locations.conf`
+in the repo and are deployed automatically to
+`/etc/nginx/snippets/kenaz-backend.conf`.
+
+Every server block (HTTP **and** HTTPS) must include the snippet so that
+API requests are forwarded to the FastAPI backend:
+
+```nginx
+include /etc/nginx/snippets/kenaz-backend.conf;
+```
+
+> **Note:** After installing a TLS certificate with certbot, verify that
+> the HTTPS `server {}` block also contains the `include` line. The CI/CD
+> pipeline tries to inject it automatically, but a manual check is
+> recommended after the first certbot run.
+
 Then create `/etc/nginx/conf.d/kenaz.conf`:
 
 ```nginx

@@ -402,6 +402,35 @@ jobs:
           fi
           ENDSSH
 
+      - name: Sync nginx backend-locations snippet
+        run: |
+          echo "Syncing nginx backend-locations snippet..."
+          scp nginx/backend-locations.conf deploy-server:/tmp/kenaz-backend-locations.conf
+          ssh deploy-server <<'ENDSSH'
+          set -euo pipefail
+          sudo mkdir -p /etc/nginx/snippets
+          sudo cp /tmp/kenaz-backend-locations.conf /etc/nginx/snippets/kenaz-backend.conf
+          rm -f /tmp/kenaz-backend-locations.conf
+
+          # Ensure every server block in kenaz config includes the snippet
+          CONF="/etc/nginx/conf.d/kenaz.conf"
+          INCLUDE_LINE="include /etc/nginx/snippets/kenaz-backend.conf;"
+
+          if [ -f "$CONF" ]; then
+            if ! grep -qF "$INCLUDE_LINE" "$CONF"; then
+              echo "Injecting backend-locations include into $CONF ..."
+              # Insert the include line after every 'server_name' directive
+              sudo sed -i "/server_name /a\\    $INCLUDE_LINE" "$CONF"
+            else
+              echo "Include already present in $CONF"
+            fi
+          else
+            echo "⚠️  $CONF not found — skip include injection"
+          fi
+
+          echo "✅ Nginx snippet synced"
+          ENDSSH
+
       - name: Reload nginx
         run: |
           ssh deploy-server <<'ENDSSH'
