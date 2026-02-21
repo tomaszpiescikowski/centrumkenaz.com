@@ -867,7 +867,7 @@ function EventDetail() {
                 participants.map((p) => (
                   <Link
                     key={p.id}
-                    to={`/profile/${p.user_id}`}
+                    to={`/people/${p.user_id}`}
                     className={`ev-row ${statusRowClass(p.status)}`}
                   >
                     <div className="ev-av-wrap">
@@ -908,7 +908,7 @@ function EventDetail() {
                 {waitlist.map((w, idx) => (
                   <Link
                     key={w.id}
-                    to={`/profile/${w.user_id}`}
+                    to={`/people/${w.user_id}`}
                     className="ev-row ev-row-wl"
                   >
                     <div className="ev-av-wrap">
