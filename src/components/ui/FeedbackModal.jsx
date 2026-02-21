@@ -15,17 +15,11 @@ function FeedbackModal({ open, onClose }) {
   const { t } = useLanguage()
   const { user } = useAuth()
 
-  const [email, setEmail] = useState('')
   const [comment, setComment] = useState('')
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState(false)
   const textareaRef = useRef(null)
-
-  // Pre-fill email from logged-in user
-  useEffect(() => {
-    if (open && user?.email) setEmail(user.email)
-  }, [open, user?.email])
 
   // Focus textarea when modal opens
   useEffect(() => {
@@ -62,7 +56,7 @@ function FeedbackModal({ open, onClose }) {
       const res = await fetch(`${API_URL}/api/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, comment }),
+        body: JSON.stringify({ email: user?.email || null, comment }),
       })
       if (!res.ok) throw new Error('submit failed')
       setSent(true)
@@ -138,22 +132,6 @@ function FeedbackModal({ open, onClose }) {
             </ul>
 
             <form onSubmit={handleSubmit} className="space-y-3">
-              {/* Email */}
-              <div>
-                <label htmlFor="fb-email" className="block text-xs font-semibold text-navy/70 dark:text-cream/70 mb-1">
-                  {t('feedback.emailLabel')}
-                </label>
-                <input
-                  id="fb-email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t('feedback.emailPlaceholder')}
-                  className="w-full rounded-xl border border-navy/15 dark:border-cream/15 bg-white dark:bg-navy/60 px-3 py-2 text-sm text-navy dark:text-cream placeholder:text-navy/30 dark:placeholder:text-cream/30 outline-none focus:ring-2 focus:ring-amber-400/50"
-                />
-              </div>
-
               {/* Comment */}
               <div>
                 <label htmlFor="fb-comment" className="block text-xs font-semibold text-navy/70 dark:text-cream/70 mb-1">

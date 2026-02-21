@@ -22,7 +22,7 @@ class Feedback(Base):
         primary_key=True,
         default=lambda: str(uuid.uuid4()),
     )
-    email = Column(String(255), nullable=False)
+    email = Column(String(255), nullable=True)
     comment = Column(Text, nullable=False)
     created_at = Column(
         DateTime(timezone=True),

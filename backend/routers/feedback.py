@@ -1,7 +1,7 @@
 """Temporary feedback endpoint for early-access user opinions."""
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,13 +14,13 @@ router = APIRouter(prefix="/api/feedback", tags=["feedback"])
 
 
 class FeedbackCreate(BaseModel):
-    email: EmailStr
+    email: str | None = None
     comment: str = Field(..., min_length=3, max_length=5000)
 
 
 class FeedbackOut(BaseModel):
     id: str
-    email: str
+    email: str | None
     comment: str
     created_at: str
 
@@ -65,7 +65,7 @@ async def list_feedback(
     return [
         FeedbackOut(
             id=r.id,
-            email=r.email,
+            email=r.email or None,
             comment=r.comment,
             created_at=r.created_at.isoformat() if r.created_at else "",
         )
