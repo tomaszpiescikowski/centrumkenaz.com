@@ -686,6 +686,7 @@ class RegistrationService:
         if manual_payment_mode:
             await self.db.commit()
             await self.db.refresh(registration)
+            await self._maybe_add_to_google_calendar(registration)
             return {
                 "registration_id": str(registration.id),
                 "status": RegistrationStatus.MANUAL_PAYMENT_REQUIRED.value,
@@ -734,6 +735,7 @@ class RegistrationService:
 
         await self.db.commit()
         await self.db.refresh(registration)
+        await self._maybe_add_to_google_calendar(registration)
 
         return {
             "registration_id": str(registration.id),
