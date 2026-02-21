@@ -440,7 +440,9 @@
     "cancelError": "Failed to cancel registration",
     "cancelSuccess": "Registration cancelled successfully.",
     "pendingSubscriptionTitle": "You have a pending subscription payment.",
-    "pendingSubscriptionLink": "Complete payment"
+    "pendingSubscriptionLink": "Complete payment",
+    "verificationSubscriptionTitle": "Payment awaiting verification",
+    "verificationSubscriptionBody": "Your subscription payment has been confirmed and is awaiting admin verification."
   },
   "plans": {
     "backToAccount": "Back to account",

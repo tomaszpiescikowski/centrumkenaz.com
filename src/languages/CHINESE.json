@@ -438,7 +438,9 @@
     "cancelError": "取消报名失败",
     "cancelSuccess": "报名已成功取消。",
     "pendingSubscriptionTitle": "您有一笔待处理的订阅付款。",
-    "pendingSubscriptionLink": "完成付款"
+    "pendingSubscriptionLink": "完成付款",
+    "verificationSubscriptionTitle": "付款等待验证",
+    "verificationSubscriptionBody": "您的订阅付款已确认，正在等待管理员验证。"
   },
   "plans": {
     "backToAccount": "返回账户",

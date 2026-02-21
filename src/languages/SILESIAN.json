@@ -438,7 +438,9 @@
     "cancelError": "Niy idzie anulować zapisu",
     "cancelSuccess": "Zapis ôstoł anulowany.",
     "pendingSubscriptionTitle": "Mosz ôczekujōncō płatność za subskrypcyjo.",
-    "pendingSubscriptionLink": "Dokōńcz płatność"
+    "pendingSubscriptionLink": "Dokōńcz płatność",
+    "verificationSubscriptionTitle": "Płatność czeko na weryfikacyjo",
+    "verificationSubscriptionBody": "Twoja płatność za subskrypcyjo zostoła potwiyrdzōno i czeko na weryfikacyjo ôd admina."
   },
   "plans": {
     "backToAccount": "Wroć do kōnta",

@@ -440,7 +440,9 @@
     "cancelError": "Kon inschrijving niet annuleren",
     "cancelSuccess": "Inschrijving succesvol geannuleerd.",
     "pendingSubscriptionTitle": "Je hebt een openstaande abonnementsbetaling.",
-    "pendingSubscriptionLink": "Betaling voltooien"
+    "pendingSubscriptionLink": "Betaling voltooien",
+    "verificationSubscriptionTitle": "Betaling wacht op verificatie",
+    "verificationSubscriptionBody": "Je abonnementsbetaling is bevestigd en wacht op verificatie door de beheerder."
   },
   "plans": {
     "backToAccount": "Terug naar account",

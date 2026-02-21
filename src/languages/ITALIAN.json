@@ -440,7 +440,9 @@
     "cancelError": "Impossibile annullare l'iscrizione",
     "cancelSuccess": "Iscrizione annullata con successo.",
     "pendingSubscriptionTitle": "Hai un pagamento abbonamento in sospeso.",
-    "pendingSubscriptionLink": "Completa il pagamento"
+    "pendingSubscriptionLink": "Completa il pagamento",
+    "verificationSubscriptionTitle": "Pagamento in attesa di verifica",
+    "verificationSubscriptionBody": "Il pagamento dell'abbonamento è stato confermato ed è in attesa di verifica da parte dell'amministratore."
   },
   "plans": {
     "backToAccount": "Torna all'account",

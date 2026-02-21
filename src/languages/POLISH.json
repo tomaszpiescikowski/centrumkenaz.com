@@ -440,7 +440,9 @@
     "cancelError": "Nie udało się anulować zapisu",
     "cancelSuccess": "Pomyślnie anulowano zapis.",
     "pendingSubscriptionTitle": "Masz oczekującą płatność za subskrypcję.",
-    "pendingSubscriptionLink": "Dokończ płatność"
+    "pendingSubscriptionLink": "Dokończ płatność",
+    "verificationSubscriptionTitle": "Płatność oczekuje na weryfikację",
+    "verificationSubscriptionBody": "Twoja płatność za subskrypcję została potwierdzona i oczekuje na weryfikację przez administratora."
   },
   "plans": {
     "backToAccount": "Wróć do konta",
