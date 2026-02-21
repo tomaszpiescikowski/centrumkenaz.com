@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext'
 import { useAuth } from '../../context/AuthContext'
@@ -51,6 +51,35 @@ function EventDetail() {
   const [deletingAdmin, setDeletingAdmin] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
   const isAdmin = user?.role === 'admin'
+
+  // ── Resizable chat card (persisted) ──
+  const chatCardRef = useRef(null)
+  const [chatSize, setChatSize] = useState(() => {
+    try {
+      const raw = localStorage.getItem('kenaz.chatSize')
+      if (raw) return JSON.parse(raw)
+    } catch { /* ignore */ }
+    return null // use CSS defaults
+  })
+
+  useEffect(() => {
+    const el = chatCardRef.current
+    if (!el) return
+    let skipFirst = true
+    const ro = new ResizeObserver((entries) => {
+      if (skipFirst) { skipFirst = false; return }
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect
+        if (width > 0 && height > 0) {
+          const size = { width: Math.round(width), height: Math.round(height) }
+          setChatSize(size)
+          localStorage.setItem('kenaz.chatSize', JSON.stringify(size))
+        }
+      }
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [event]) // re-attach when event loads
 
   const userAccountStatus = user?.account_status
 
@@ -920,7 +949,15 @@ function EventDetail() {
           </div>
 
           {/* Comments section – hidden on mobile (replaced by chat bubble) */}
-          <div className="ev-card ev-chat-card hidden sm:block" style={{ marginTop: '0.75rem', padding: '1rem 1.25rem' }}>
+          <div
+            ref={chatCardRef}
+            className="ev-card ev-chat-card hidden sm:block"
+            style={{
+              marginTop: '0.75rem',
+              padding: '1rem 1.25rem',
+              ...(chatSize ? { width: chatSize.width, height: chatSize.height } : {}),
+            }}
+          >
             <CommentsSection resourceType="event" resourceId={event.id} hideTabs messengerLayout />
           </div>
 
