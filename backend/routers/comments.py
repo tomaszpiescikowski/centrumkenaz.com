@@ -343,7 +343,7 @@ async def list_comments(
         )
         .options(*_comment_load_options())
         .execution_options(populate_existing=True)
-        .order_by(Comment.is_pinned.desc(), Comment.created_at.desc())
+        .order_by(Comment.is_pinned.desc(), Comment.created_at.asc())
         .offset(offset)
         .limit(limit)
     )
