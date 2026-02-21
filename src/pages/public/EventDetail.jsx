@@ -751,14 +751,6 @@ function EventDetail() {
               )}
             </div>
 
-            {/* Separator */}
-            <hr className="ev-separator" />
-
-            {/* Description */}
-            {event.description && (
-              <div className="ev-desc">{event.description}</div>
-            )}
-
             {/* Location */}
             {(event.location || event.city) && (
               <>
@@ -780,6 +772,14 @@ function EventDetail() {
                     <span className="ev-loc-sub">{t('participants.openInMaps')}</span>
                   </div>
                 </a>
+              </>
+            )}
+
+            {/* Description */}
+            {event.description && (
+              <>
+                <hr className="ev-separator" />
+                <div className="ev-desc">{event.description}</div>
               </>
             )}
 
