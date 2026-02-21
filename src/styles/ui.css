@@ -84,7 +84,8 @@
   }
 
   .ui-view-card {
-    @apply w-full rounded-2xl border p-6 text-left transition;
+    @apply w-full rounded-2xl border p-6 text-left transition
+      grid grid-rows-subgrid row-span-2 content-start;
   }
 
   .ui-view-card-active {
@@ -96,11 +97,11 @@
   }
 
   .ui-view-card-title {
-    @apply mb-2 text-xl font-black text-navy dark:text-cream;
+    @apply text-xl font-black text-navy dark:text-cream;
   }
 
   .ui-view-card-description {
-    @apply text-sm text-navy/70 dark:text-cream/70;
+    @apply text-sm text-navy/70 dark:text-cream/70 self-start;
   }
 
   .form-checkbox {

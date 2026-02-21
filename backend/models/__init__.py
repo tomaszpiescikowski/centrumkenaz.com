@@ -11,6 +11,7 @@ from models.user_profile import UserProfile
 from models.approval_request import ApprovalRequest
 from models.payment_method import PaymentMethod
 from models.feedback import Feedback
+from models.announcement import Announcement
 
 __all__ = [
 	"User",
@@ -27,4 +28,5 @@ __all__ = [
 	"ApprovalRequest",
 	"PaymentMethod",
 	"Feedback",
+	"Announcement",
 ]

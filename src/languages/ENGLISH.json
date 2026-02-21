@@ -56,6 +56,7 @@
     "calendar": "Calendar",
     "shop": "Shop",
     "myEvents": "My events",
+    "events": "Events",
     "myAccount": "My account",
     "admin": "Admin",
     "city": "City",
@@ -291,6 +292,14 @@
     "pendingRequiredButton": "Check account status",
     "mobileSelectedDay": "Events",
     "mobileNoEvents": "No events on selected day."
+  },
+  "events": {
+    "myEventsTitle": "My events"
+  },
+  "announcements": {
+    "title": "Announcements",
+    "empty": "No announcements yet.",
+    "unknownAuthor": "Unknown author"
   },
   "event": {
     "notFound": "Event not found",
@@ -697,6 +706,10 @@
       "feedback": {
         "title": "User feedback",
         "description": "Read opinions and suggestions from users."
+      },
+      "announcements": {
+        "title": "Announcements",
+        "description": "Create and manage announcements."
       }
     },
     "feedback": {
@@ -705,6 +718,20 @@
       "empty": "No feedback yet.",
       "loadError": "Could not load feedback.",
       "count": "{count} entries"
+    },
+    "announcements": {
+      "title": "Announcements",
+      "subtitle": "Manage announcements visible to users.",
+      "empty": "No announcements yet.",
+      "loadError": "Could not load announcements.",
+      "titleLabel": "Title",
+      "contentLabel": "Content",
+      "publishButton": "Publish",
+      "deleteConfirm": "Are you sure you want to delete this announcement?",
+      "createSuccess": "Announcement published.",
+      "createError": "Failed to publish announcement.",
+      "deleteSuccess": "Announcement deleted.",
+      "deleteError": "Failed to delete announcement."
     },
     "notAuthorizedTitle": "Access denied",
     "notAuthorized": "You do not have permission to access this area.",

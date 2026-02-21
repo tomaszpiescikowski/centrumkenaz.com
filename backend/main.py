@@ -18,6 +18,7 @@ from routers import (
     uploads_router,
     cities_router,
     feedback_router,
+    announcements_router,
 )
 
 settings = get_settings()
@@ -60,6 +61,7 @@ app.include_router(products_router)
 app.include_router(uploads_router)
 app.include_router(cities_router)
 app.include_router(feedback_router)
+app.include_router(announcements_router)
 
 uploads_dir = Path(__file__).resolve().parent / "static" / "uploads"
 uploads_dir.mkdir(parents=True, exist_ok=True)

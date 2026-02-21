@@ -56,6 +56,7 @@
     "calendar": "Kalyndarz",
     "shop": "Sklep",
     "myEvents": "Moje wydarzyńa",
+    "events": "Wydarzyńa",
     "myAccount": "Moje kōnto",
     "admin": "Admin",
     "city": "Miasto",
@@ -291,6 +292,14 @@
     "pendingRequiredButton": "Sprawdź status kōnta",
     "mobileSelectedDay": "Wydarzyńa",
     "mobileNoEvents": "Brak wydarzyń we wybranym dniu."
+  },
+  "events": {
+    "myEventsTitle": "Moje wydarzyńa"
+  },
+  "announcements": {
+    "title": "Ogłoszynia",
+    "empty": "Żodnych ogłoszyń.",
+    "unknownAuthor": "Niyznany autor"
   },
   "event": {
     "notFound": "Wydarzyńe niy znŏleziōne",
@@ -695,6 +704,10 @@
       "feedback": {
         "title": "Ôpinie użytkownikōw",
         "description": "Przeczytej ôpinie i suggestie ôd użytkownikōw."
+      },
+      "announcements": {
+        "title": "Ogłoszynia",
+        "description": "Tworz i zarządzej ogłoszyniami."
       }
     },
     "feedback": {
@@ -703,6 +716,20 @@
       "empty": "Żodnych ôpinii.",
       "loadError": "Niy szło załadować ôpinii.",
       "count": "{count} wpisōw"
+    },
+    "announcements": {
+      "title": "Ogłoszynia",
+      "subtitle": "Zarządzej ogłoszyniami widocznymi do użytkownikōw.",
+      "empty": "Żodnych ogłoszyń.",
+      "loadError": "Niy szło załadować ogłoszyń.",
+      "titleLabel": "Tytuł",
+      "contentLabel": "Treść",
+      "publishButton": "Opublikuj",
+      "deleteConfirm": "Na zicher chcesz wyciepnąć te ogłoszynię?",
+      "createSuccess": "Ogłoszynię opublikowano.",
+      "createError": "Niy idzie opublikować ogłoszynia.",
+      "deleteSuccess": "Ogłoszynię wyciepnięto.",
+      "deleteError": "Niy idzie wyciepnąć ogłoszynia."
     },
     "notAuthorizedTitle": "Brak dostympu",
     "notAuthorized": "Niy mosz praw do tygo miyjsca.",

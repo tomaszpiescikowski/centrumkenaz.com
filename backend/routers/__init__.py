@@ -8,6 +8,7 @@ from routers.products import router as products_router
 from routers.uploads import router as uploads_router
 from routers.cities import router as cities_router
 from routers.feedback import router as feedback_router
+from routers.announcements import router as announcements_router
 
 __all__ = [
     "auth_router",
@@ -20,4 +21,5 @@ __all__ = [
     "uploads_router",
     "cities_router",
     "feedback_router",
+    "announcements_router",
 ]

@@ -56,6 +56,7 @@
     "calendar": "Kalender",
     "shop": "Shop",
     "myEvents": "Mijn events",
+    "events": "Events",
     "myAccount": "Mijn account",
     "admin": "Admin",
     "city": "Stad",
@@ -291,6 +292,14 @@
     "pendingRequiredButton": "Controleer accountstatus",
     "mobileSelectedDay": "Events",
     "mobileNoEvents": "Geen events op de geselecteerde dag."
+  },
+  "events": {
+    "myEventsTitle": "Mijn events"
+  },
+  "announcements": {
+    "title": "Aankondigingen",
+    "empty": "Nog geen aankondigingen.",
+    "unknownAuthor": "Onbekende auteur"
   },
   "event": {
     "notFound": "Event niet gevonden",
@@ -697,6 +706,10 @@
       "feedback": {
         "title": "Gebruikersfeedback",
         "description": "Lees meningen en suggesties van gebruikers."
+      },
+      "announcements": {
+        "title": "Aankondigingen",
+        "description": "Maak en beheer aankondigingen."
       }
     },
     "feedback": {
@@ -705,6 +718,20 @@
       "empty": "Nog geen feedback.",
       "loadError": "Kan feedback niet laden.",
       "count": "{count} items"
+    },
+    "announcements": {
+      "title": "Aankondigingen",
+      "subtitle": "Beheer aankondigingen zichtbaar voor gebruikers.",
+      "empty": "Nog geen aankondigingen.",
+      "loadError": "Kan aankondigingen niet laden.",
+      "titleLabel": "Titel",
+      "contentLabel": "Inhoud",
+      "publishButton": "Publiceren",
+      "deleteConfirm": "Weet je zeker dat je deze aankondiging wilt verwijderen?",
+      "createSuccess": "Aankondiging gepubliceerd.",
+      "createError": "Kan aankondiging niet publiceren.",
+      "deleteSuccess": "Aankondiging verwijderd.",
+      "deleteError": "Kan aankondiging niet verwijderen."
     },
     "notAuthorizedTitle": "Toegang geweigerd",
     "notAuthorized": "Je hebt geen toestemming om dit gebied te openen.",

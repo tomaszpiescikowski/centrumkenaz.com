@@ -88,7 +88,7 @@ function Navbar({ darkMode, setDarkMode }) {
             </DesktopNavLink>
             <DesktopNavLink
               to="/my-events"
-              label={t('nav.myEvents')}
+              label={t('nav.events')}
               active={isActive('/my-events')}
               desktopButtonClass={desktopButtonClass}
             >

@@ -56,6 +56,7 @@
     "calendar": "日历",
     "shop": "商店",
     "myEvents": "我的活动",
+    "events": "活动",
     "myAccount": "我的账户",
     "admin": "管理",
     "city": "城市",
@@ -291,6 +292,14 @@
     "pendingRequiredButton": "查看账户状态",
     "mobileSelectedDay": "当日活动",
     "mobileNoEvents": "所选日期暂无活动。"
+  },
+  "events": {
+    "myEventsTitle": "我的活动"
+  },
+  "announcements": {
+    "title": "公告",
+    "empty": "暂无公告。",
+    "unknownAuthor": "未知作者"
   },
   "event": {
     "notFound": "未找到活动",
@@ -695,6 +704,10 @@
       "feedback": {
         "title": "用户反馈",
         "description": "阅读用户的意见和建议。"
+      },
+      "announcements": {
+        "title": "公告",
+        "description": "创建和管理公告。"
       }
     },
     "feedback": {
@@ -703,6 +716,20 @@
       "empty": "暂无反馈。",
       "loadError": "无法加载反馈。",
       "count": "{count} 条"
+    },
+    "announcements": {
+      "title": "公告",
+      "subtitle": "管理对用户可见的公告。",
+      "empty": "暂无公告。",
+      "loadError": "无法加载公告。",
+      "titleLabel": "标题",
+      "contentLabel": "内容",
+      "publishButton": "发布",
+      "deleteConfirm": "确定要删除这条公告吗？",
+      "createSuccess": "公告已发布。",
+      "createError": "发布公告失败。",
+      "deleteSuccess": "公告已删除。",
+      "deleteError": "删除公告失败。"
     },
     "notAuthorizedTitle": "拒绝访问",
     "notAuthorized": "你无权限访问此区域。",

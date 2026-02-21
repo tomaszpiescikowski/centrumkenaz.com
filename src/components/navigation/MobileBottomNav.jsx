@@ -110,7 +110,7 @@ function MobileBottomNav() {
     {
       key: 'my-events',
       to: '/my-events',
-      label: t('nav.myEvents'),
+      label: t('nav.events'),
       active: location.pathname.startsWith('/my-events'),
       icon: <MyEventsIcon />,
     },

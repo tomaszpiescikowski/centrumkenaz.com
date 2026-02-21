@@ -73,6 +73,12 @@ function AdminDashboard() {
           to="/admin/feedback"
           className="p-6"
         />
+        <ViewCard
+          title={t('admin.cards.announcements.title')}
+          description={t('admin.cards.announcements.description')}
+          to="/admin/announcements"
+          className="p-6"
+        />
       </div>
     </div>
   )

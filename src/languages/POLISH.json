@@ -56,6 +56,7 @@
     "calendar": "Kalendarz",
     "shop": "Sklep",
     "myEvents": "Moje wydarzenia",
+    "events": "Wydarzenia",
     "myAccount": "Moje konto",
     "admin": "Admin",
     "city": "Miasto",
@@ -291,6 +292,14 @@
     "pendingRequiredButton": "Sprawdź status konta",
     "mobileSelectedDay": "Wydarzenia",
     "mobileNoEvents": "Brak wydarzeń w wybranym dniu."
+  },
+  "events": {
+    "myEventsTitle": "Moje wydarzenia"
+  },
+  "announcements": {
+    "title": "Ogłoszenia",
+    "empty": "Brak ogłoszeń.",
+    "unknownAuthor": "Nieznany autor"
   },
   "event": {
     "notFound": "Wydarzenie nie znalezione",
@@ -697,6 +706,10 @@
       "feedback": {
         "title": "Opinie użytkowników",
         "description": "Przeczytaj opinie i sugestie od użytkowników."
+      },
+      "announcements": {
+        "title": "Ogłoszenia",
+        "description": "Twórz i zarządzaj ogłoszeniami."
       }
     },
     "feedback": {
@@ -705,6 +718,20 @@
       "empty": "Brak opinii.",
       "loadError": "Nie udało się załadować opinii.",
       "count": "{count} wpisów"
+    },
+    "announcements": {
+      "title": "Ogłoszenia",
+      "subtitle": "Zarządzaj ogłoszeniami widocznymi dla użytkowników.",
+      "empty": "Brak ogłoszeń.",
+      "loadError": "Nie udało się załadować ogłoszeń.",
+      "titleLabel": "Tytuł",
+      "contentLabel": "Treść",
+      "publishButton": "Opublikuj",
+      "deleteConfirm": "Czy na pewno chcesz usunąć to ogłoszenie?",
+      "createSuccess": "Ogłoszenie opublikowane.",
+      "createError": "Nie udało się opublikować ogłoszenia.",
+      "deleteSuccess": "Ogłoszenie usunięte.",
+      "deleteError": "Nie udało się usunąć ogłoszenia."
     },
     "notAuthorizedTitle": "Brak dostępu",
     "notAuthorized": "Nie masz uprawnień do tego obszaru.",

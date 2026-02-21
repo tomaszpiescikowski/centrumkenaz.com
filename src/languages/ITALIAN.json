@@ -56,6 +56,7 @@
     "calendar": "Calendario",
     "shop": "Shop",
     "myEvents": "I miei eventi",
+    "events": "Eventi",
     "myAccount": "Il mio account",
     "admin": "Admin",
     "city": "Città",
@@ -291,6 +292,14 @@
     "pendingRequiredButton": "Controlla stato account",
     "mobileSelectedDay": "Eventi",
     "mobileNoEvents": "Nessun evento nel giorno selezionato."
+  },
+  "events": {
+    "myEventsTitle": "I miei eventi"
+  },
+  "announcements": {
+    "title": "Annunci",
+    "empty": "Nessun annuncio ancora.",
+    "unknownAuthor": "Autore sconosciuto"
   },
   "event": {
     "notFound": "Evento non trovato",
@@ -697,6 +706,10 @@
       "feedback": {
         "title": "Feedback utenti",
         "description": "Leggi opinioni e suggerimenti dagli utenti."
+      },
+      "announcements": {
+        "title": "Annunci",
+        "description": "Crea e gestisci annunci."
       }
     },
     "feedback": {
@@ -705,6 +718,20 @@
       "empty": "Nessun feedback ancora.",
       "loadError": "Impossibile caricare i feedback.",
       "count": "{count} voci"
+    },
+    "announcements": {
+      "title": "Annunci",
+      "subtitle": "Gestisci gli annunci visibili agli utenti.",
+      "empty": "Nessun annuncio ancora.",
+      "loadError": "Impossibile caricare gli annunci.",
+      "titleLabel": "Titolo",
+      "contentLabel": "Contenuto",
+      "publishButton": "Pubblica",
+      "deleteConfirm": "Sei sicuro di voler eliminare questo annuncio?",
+      "createSuccess": "Annuncio pubblicato.",
+      "createError": "Impossibile pubblicare l'annuncio.",
+      "deleteSuccess": "Annuncio eliminato.",
+      "deleteError": "Impossibile eliminare l'annuncio."
     },
     "notAuthorizedTitle": "Accesso negato",
     "notAuthorized": "Non hai il permesso di accedere a questa area.",
