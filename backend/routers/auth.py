@@ -152,6 +152,10 @@ class UserResponse(BaseModel):
         default=None,
         description="Manual payment action info if a waitlist promotion needs confirmation.",
     )
+    has_google_calendar: bool = Field(
+        default=False,
+        description="Whether the user has Google Calendar integration enabled.",
+    )
 
     class Config:
         from_attributes = True
@@ -444,6 +448,11 @@ async def get_current_user(
     response.about_me = about_me
     response.interest_tags = _parse_interest_tags(interest_tags_raw)
     response.approval_request_submitted = approval_submitted
+    response.has_google_calendar = bool(
+        user.google_refresh_token
+        and user.google_scopes
+        and "calendar.events" in user.google_scopes
+    )
 
     pending_manual_payment = await db.execute(
         select(

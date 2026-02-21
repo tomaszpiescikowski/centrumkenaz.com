@@ -91,6 +91,10 @@ class UserRegistrationResponse(BaseModel):
         default="0",
         description="Actual price the user paid/will pay for this registration.",
     )
+    added_to_google_calendar: bool = Field(
+        default=False,
+        description="Whether the event was added to the user's Google Calendar.",
+    )
 
 
 class UserProfileResponse(BaseModel):
@@ -413,6 +417,7 @@ async def get_my_registrations(
                     and bool(event.manual_payment_verification)
                 ),
                 effective_price=str(effective_price),
+                added_to_google_calendar=bool(reg.calendar_event_id),
             )
         )
 
