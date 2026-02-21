@@ -326,6 +326,7 @@
     "waitlistSuccess": "Dodano Cię do listy rezerwowej tego wydarzenia.",
     "ctaWaitlist": "Dołącz do listy rezerwowej",
     "ctaPaid": "Zapisz się - {price} {currency}",
+    "ctaSignUp": "Zapisz się",
     "ctaFree": "Zapisz się (bezpłatne)",
     "ctaLogin": "Zaloguj się, aby się zapisać",
     "mustBeLoggedIn": "Musisz być zalogowany, aby zapisać się na wydarzenie",

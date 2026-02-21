@@ -326,6 +326,7 @@
     "waitlistSuccess": "Sei stato aggiunto alla lista d'attesa per questo evento.",
     "ctaWaitlist": "Unisciti alla lista d'attesa",
     "ctaPaid": "Iscriviti - {price} {currency}",
+    "ctaSignUp": "Iscriviti",
     "ctaFree": "Iscriviti (gratuito)",
     "ctaLogin": "Accedi per iscriverti",
     "mustBeLoggedIn": "Devi effettuare l'accesso per iscriverti",

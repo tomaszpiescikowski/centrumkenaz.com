@@ -326,6 +326,7 @@
     "waitlistSuccess": "Dōdali my Cie na lista rezerwowo tego wydarzynio.",
     "ctaWaitlist": "Dojdź do listy rezerwowyj",
     "ctaPaid": "Zapisz sie - {price} {currency}",
+    "ctaSignUp": "Zapisz sie",
     "ctaFree": "Zapisz sie (darmo)",
     "ctaLogin": "Zaloguj sie, coby sie zapisać",
     "mustBeLoggedIn": "Musiś sie zalogować, coby sie zapisać",

@@ -326,6 +326,7 @@
     "waitlistSuccess": "你已加入该活动的候补名单。",
     "ctaWaitlist": "加入候补名单",
     "ctaPaid": "报名 - {price} {currency}",
+    "ctaSignUp": "报名",
     "ctaFree": "报名（免费）",
     "ctaLogin": "登录后报名",
     "mustBeLoggedIn": "必须登录才能报名",

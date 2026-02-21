@@ -326,6 +326,7 @@
     "waitlistSuccess": "Je bent toegevoegd aan de wachtlijst van dit evenement.",
     "ctaWaitlist": "Ga op de wachtlijst",
     "ctaPaid": "Schrijf je in - {price} {currency}",
+    "ctaSignUp": "Schrijf je in",
     "ctaFree": "Schrijf je in (gratis)",
     "ctaLogin": "Log in om in te schrijven",
     "mustBeLoggedIn": "Je moet ingelogd zijn om in te schrijven",

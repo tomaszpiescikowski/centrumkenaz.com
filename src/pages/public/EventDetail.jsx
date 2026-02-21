@@ -731,14 +731,6 @@ function EventDetail() {
               )}
             </div>
 
-            {/* Separator */}
-            <hr className="ev-separator" />
-
-            {/* Description */}
-            {event.description && (
-              <div className="ev-desc">{event.description}</div>
-            )}
-
             {/* Tags */}
             <div className="ev-tags">
               <span className={`ev-tag ${availabilityTag.cls}`}>
@@ -759,56 +751,64 @@ function EventDetail() {
               )}
             </div>
 
-            {/* Price */}
-            <div className="ev-meta">
-              <span className="ev-price">
-                {event.requiresSubscription ? (
-                  <>
-                    {t('event.priceMember')}{' '}
-                    <strong>{formatPrice(event.priceMember)}</strong>
-                  </>
-                ) : (
-                  <>
-                    {t('event.priceGuest')}{' '}
-                    <strong>{formatPrice(event.priceGuest)}</strong>
-                    {' / '}
-                    {t('event.priceMember')}{' '}
-                    <strong>{formatPrice(event.priceMember)}</strong>
-                  </>
-                )}
-              </span>
-            </div>
+            {/* Separator */}
+            <hr className="ev-separator" />
 
-            {/* Filler to push location/CTA to bottom */}
+            {/* Description */}
+            {event.description && (
+              <div className="ev-desc">{event.description}</div>
+            )}
+
+            {/* Location */}
+            {(event.location || event.city) && (
+              <>
+                <hr className="ev-separator" />
+                <a
+                  href={mapsHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="ev-loc-inline"
+                >
+                  <div className="ev-loc-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <span className="ev-loc-name">{event.location || event.city}</span>
+                    <span className="ev-loc-sub">{t('participants.openInMaps')}</span>
+                  </div>
+                </a>
+              </>
+            )}
+
+            {/* Filler to push CTA to bottom */}
             <div className="ev-filler" />
           </div>
 
-          {/* Location strip */}
-          {(event.location || event.city) && (
-            <a
-              href={mapsHref}
-              target="_blank"
-              rel="noreferrer"
-              className="ev-loc"
-            >
-              <div className="ev-loc-icon">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-              <div>
-                <span className="ev-loc-name">{event.location || event.city}</span>
-                <span className="ev-loc-sub">{t('participants.openInMaps')}</span>
-              </div>
-            </a>
-          )}
-
           {/* CTA card */}
           <div className="ev-cta-card">
+            {/* Price line */}
+            <div className="ev-cta-price">
+              {event.requiresSubscription ? (
+                <>
+                  <span className="ev-cta-price-label">{t('event.priceMember')}</span>
+                  <span className="ev-cta-price-value">{formatPrice(event.priceMember)}</span>
+                </>
+              ) : (
+                <>
+                  <span className="ev-cta-price-label">{t('event.priceGuest')}</span>
+                  <span className="ev-cta-price-value">{formatPrice(event.priceGuest)}</span>
+                  <span className="ev-cta-price-sep">/</span>
+                  <span className="ev-cta-price-label">{t('event.priceMember')}</span>
+                  <span className="ev-cta-price-value">{formatPrice(event.priceMember)}</span>
+                </>
+              )}
+            </div>
             <RegisterButton
               eventId={event.id}
-              price={userPrice}
+              price={0}
               isFull={isFull}
               isPast={isPast}
               isRegistered={isRegistered}

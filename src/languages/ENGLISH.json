@@ -326,6 +326,7 @@
     "waitlistSuccess": "You have been added to this event waitlist.",
     "ctaWaitlist": "Join waitlist",
     "ctaPaid": "Sign up - {price} {currency}",
+    "ctaSignUp": "Sign up",
     "ctaFree": "Sign up (free)",
     "ctaLogin": "Log in to register",
     "mustBeLoggedIn": "You must be logged in to register",
