@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext'
 import { useAuth } from '../../context/AuthContext'
@@ -27,6 +27,36 @@ function ChatModal() {
 
   const [events, setEvents] = useState([])
   const [eventsLoading, setEventsLoading] = useState(false)
+  const panelRef = useRef(null)
+
+  // Persisted modal size (desktop)
+  const [modalSize, setModalSize] = useState(() => {
+    try {
+      const raw = localStorage.getItem('kenaz.chatModalSize')
+      if (raw) return JSON.parse(raw)
+    } catch { /* ignore */ }
+    return null
+  })
+
+  // ResizeObserver — persist size when user drags the resize handle
+  useEffect(() => {
+    const el = panelRef.current
+    if (!el || !open) return
+    let skipFirst = true
+    const ro = new ResizeObserver((entries) => {
+      if (skipFirst) { skipFirst = false; return }
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect
+        if (width > 0 && height > 0) {
+          const size = { width: Math.round(width), height: Math.round(height) }
+          setModalSize(size)
+          localStorage.setItem('kenaz.chatModalSize', JSON.stringify(size))
+        }
+      }
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [open])
 
   // Close on Escape
   useEffect(() => {
@@ -91,7 +121,11 @@ function ChatModal() {
       aria-modal="true"
       aria-label={t('comments.chatTitle')}
     >
-      <div className="chat-modal-panel">
+      <div
+        ref={panelRef}
+        className="chat-modal-panel"
+        style={modalSize ? { width: modalSize.width, height: modalSize.height } : undefined}
+      >
         {/* ── Header ── */}
         <div className="chat-modal-header">
           {/* Back button when in event chat */}
