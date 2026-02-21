@@ -249,6 +249,7 @@
 /* ── Comment item ──────────────────────────────────── */
 
 .cmt-item {
+  position: relative;
   padding: 0.5rem 0;
   border-bottom: 1px solid rgba(15, 23, 74, 0.06);
 }
@@ -257,7 +258,8 @@
   border-bottom-color: rgba(255, 253, 245, 0.06);
 }
 
-.cmt-item:last-child {
+.cmt-item:last-child,
+.cmt-swipe-wrap:last-child > .cmt-item {
   border-bottom: none;
 }
 
@@ -304,13 +306,15 @@
 }
 
 /* Clear visual break after a thread group ends */
-.cmt-threaded + .cmt-item:not(.cmt-threaded) {
+.cmt-threaded + .cmt-item:not(.cmt-threaded),
+.cmt-wrap-threaded + .cmt-swipe-wrap:not(.cmt-wrap-threaded) > .cmt-item {
   margin-top: 0.25rem;
   border-top: 1px solid rgba(15, 23, 74, 0.06);
   padding-top: 0.75rem;
 }
 
-.dark .cmt-threaded + .cmt-item:not(.cmt-threaded) {
+.dark .cmt-threaded + .cmt-item:not(.cmt-threaded),
+.dark .cmt-wrap-threaded + .cmt-swipe-wrap:not(.cmt-wrap-threaded) > .cmt-item {
   border-top-color: rgba(255, 253, 245, 0.06);
 }
 
@@ -618,6 +622,49 @@ img.cmt-av-img {
 
 .dark .cmt-reaction-pick:hover {
   background: rgba(255, 253, 245, 0.08);
+}
+
+/* ── Desktop-only helper (hides element on mobile) ──── */
+.cmt-desktop-only {
+  display: none;
+}
+@media (min-width: 640px) {
+  .cmt-desktop-only {
+    display: inline-flex;
+  }
+}
+
+/* ── Swipe-to-reply indicator ──────────────────────── */
+
+.cmt-swipe-indicator {
+  position: absolute;
+  left: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.15);
+  color: rgba(99, 102, 241, 1);
+  transition: background 0.1s;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.cmt-swipe-indicator.cmt-swipe-ready {
+  background: rgba(99, 102, 241, 0.3);
+}
+
+.dark .cmt-swipe-indicator {
+  background: rgba(129, 140, 248, 0.2);
+  color: rgba(129, 140, 248, 1);
+}
+
+.dark .cmt-swipe-indicator.cmt-swipe-ready {
+  background: rgba(129, 140, 248, 0.35);
 }
 
 /* ── Long-press reaction bar (mobile, Messenger-style) ── */

@@ -90,6 +90,13 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const longPressTimer = useRef(null)
   const touchMoved = useRef(false)
 
+  // Swipe-to-reply state
+  const [swipeId, setSwipeId] = useState(null)
+  const [swipeX, setSwipeX] = useState(0)
+  const swipeStart = useRef(null)
+  const swipeItemRef = useRef(null)
+  const SWIPE_THRESHOLD = 60
+
   const isGeneralTab = activeTab === 'general'
   const currentComments = isGeneralTab ? generalComments : comments
 
@@ -273,13 +280,15 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   }
 
   /* ── Long-press handlers (mobile reaction picker) ── */
-  const handleTouchStart = useCallback((commentId) => {
+  const handleTouchStart = useCallback((commentId, e) => {
     touchMoved.current = false
+    // Record start position for swipe detection
+    const touch = e.touches[0]
+    swipeStart.current = { x: touch.clientX, y: touch.clientY, id: commentId, swiping: false }
     longPressTimer.current = setTimeout(() => {
-      if (!touchMoved.current) {
+      if (!touchMoved.current && !swipeStart.current?.swiping) {
         setLongPressId(commentId)
         setShowReactionPicker(null)
-        // Light haptic if available
         if (navigator.vibrate) navigator.vibrate(30)
       }
     }, 500)
@@ -287,12 +296,73 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
 
   const handleTouchEnd = useCallback(() => {
     clearTimeout(longPressTimer.current)
-  }, [])
+    if (swipeStart.current?.swiping && swipeX >= SWIPE_THRESHOLD) {
+      // Trigger reply
+      const id = swipeStart.current.id
+      // Find the item to determine replyTargetId
+      const flatItems = flattenComments(isGeneralTab ? generalComments : comments)
+      const item = flatItems.find(c => c.id === id)
+      // Animate back first
+      setSwipeX(0)
+      setTimeout(() => setSwipeId(null), 200)
+      swipeStart.current = null
+      if (item) {
+        const targetId = item._depth === 0 ? item.id : (item.parent_id || item.id)
+        setReplyingTo(targetId)
+        setReplyContent('')
+      }
+      return
+    }
+    // Snap back
+    if (swipeStart.current?.swiping) {
+      setSwipeX(0)
+      setTimeout(() => setSwipeId(null), 200)
+    } else {
+      setSwipeId(null)
+      setSwipeX(0)
+    }
+    swipeStart.current = null
+  }, [swipeX, SWIPE_THRESHOLD, isGeneralTab, generalComments, comments])
 
-  const handleTouchMove = useCallback(() => {
-    touchMoved.current = true
-    clearTimeout(longPressTimer.current)
-  }, [])
+  const handleTouchMove = useCallback((e) => {
+    if (!swipeStart.current) return
+    const touch = e.touches[0]
+    const dx = touch.clientX - swipeStart.current.x
+    const dy = touch.clientY - swipeStart.current.y
+
+    // If we haven't classified the gesture yet
+    if (!swipeStart.current.swiping && !touchMoved.current) {
+      const absDx = Math.abs(dx)
+      const absDy = Math.abs(dy)
+      if (absDx > 8 || absDy > 8) {
+        if (absDx > absDy && dx > 0) {
+          // Horizontal swipe right — enter swipe mode
+          swipeStart.current.swiping = true
+          clearTimeout(longPressTimer.current)
+          touchMoved.current = true
+        } else {
+          // Vertical scroll or left swipe — abandon
+          touchMoved.current = true
+          clearTimeout(longPressTimer.current)
+        }
+      }
+      return
+    }
+
+    if (swipeStart.current.swiping) {
+      const clamped = Math.max(0, Math.min(dx, 100))
+      setSwipeId(swipeStart.current.id)
+      setSwipeX(clamped)
+      // Haptic when crossing threshold
+      if (clamped >= SWIPE_THRESHOLD && dx - (touch.prevDx || 0) > 0 && !swipeStart.current.hapticFired) {
+        swipeStart.current.hapticFired = true
+        if (navigator.vibrate) navigator.vibrate(15)
+      }
+      if (clamped < SWIPE_THRESHOLD) {
+        swipeStart.current.hapticFired = false
+      }
+    }
+  }, [SWIPE_THRESHOLD])
 
   // Close long-press picker on outside tap / scroll
   useEffect(() => {
@@ -314,15 +384,25 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     const replyTargetId = item._depth === 0 ? item.id : (item.parent_id || item.id)
 
     return (
+      <div key={item.id} className={`cmt-swipe-wrap ${item._visualDepth > 0 ? 'cmt-wrap-threaded' : ''} ${item._hasChildren && item._visualDepth === 0 ? 'cmt-wrap-has-replies' : ''}`} style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* Swipe reply indicator (stays in place behind the sliding item) */}
+        {swipeId === item.id && swipeX > 10 && (
+          <div className={`cmt-swipe-indicator ${swipeX >= SWIPE_THRESHOLD ? 'cmt-swipe-ready' : ''}`}
+            style={{ opacity: Math.min(swipeX / SWIPE_THRESHOLD, 1), transform: `scale(${Math.min(swipeX / SWIPE_THRESHOLD, 1)})` }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 14 4 9 9 4" />
+              <path d="M20 20v-7a4 4 0 00-4-4H4" />
+            </svg>
+          </div>
+        )}
       <div
-        key={item.id}
         className={`cmt-item ${item.is_pinned ? 'cmt-pinned' : ''} ${item._visualDepth > 0 ? 'cmt-threaded' : ''} ${item._hasChildren && item._visualDepth === 0 ? 'cmt-has-replies' : ''}`}
-        onTouchStart={(e) => { if (!item.is_deleted) handleTouchStart(item.id) }}
+        onTouchStart={(e) => { if (!item.is_deleted) handleTouchStart(item.id, e) }}
         onTouchEnd={handleTouchEnd}
         onTouchMove={handleTouchMove}
         onContextMenu={(e) => { if (longPressId) e.preventDefault() }}
+        style={swipeId === item.id ? { transform: `translateX(${swipeX}px)`, transition: swipeX === 0 ? 'transform 0.2s ease' : 'none' } : (swipeId === null ? {} : {})}
       >
-
 
         <div className="cmt-item-body">
           {item.is_pinned && (
@@ -405,7 +485,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
             <div className="cmt-actions">
               <button className="cmt-action-btn" onClick={() => { setReplyingTo(isReplying ? null : replyTargetId); setReplyContent('') }}>{t('comments.reply')}</button>
 
-              <div className="cmt-reaction-trigger-wrap">
+              <div className="cmt-reaction-trigger-wrap cmt-desktop-only">
                 <button className="cmt-action-btn" onClick={() => setShowReactionPicker(showReactionPicker === item.id ? null : item.id)}>
                   <span className="cmt-react-emoji">😀</span>
                   <span className="cmt-react-text">{t('comments.react')}</span>
@@ -442,6 +522,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
             </form>
           )}
         </div>
+      </div>
       </div>
     )
   }
