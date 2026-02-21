@@ -1051,6 +1051,13 @@
     "justNow": "przed chwilą",
     "empty": "Brak komentarzy. Bądź pierwszy!",
     "loadError": "Nie udało się załadować komentarzy.",
-    "replyPlaceholder": "Napisz odpowiedź..."
+    "replyPlaceholder": "Napisz odpowiedź...",
+    "tabEvent": "To wydarzenie",
+    "tabGeneral": "Czat ogólny",
+    "placeholderGeneral": "Napisz na czacie ogólnym...",
+    "emptyGeneral": "Brak wiadomości. Rozpocznij rozmowę!",
+    "chatTitle": "Czat",
+    "chatBubble": "Czat",
+    "loading": "Ładowanie..."
   }
 }

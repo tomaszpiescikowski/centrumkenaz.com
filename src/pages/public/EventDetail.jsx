@@ -10,6 +10,7 @@ import DatePickerField from '../../components/forms/DatePickerField'
 import AuthGateCard from '../../components/ui/AuthGateCard'
 import CustomSelect from '../../components/controls/CustomSelect'
 import CommentsSection from '../../components/common/CommentsSection'
+import ChatModal from '../../components/ui/ChatModal'
 
 function EventDetail() {
   const { id } = useParams()
@@ -33,6 +34,7 @@ function EventDetail() {
   const [fieldHints, setFieldHints] = useState({})
   const [savingAdmin, setSavingAdmin] = useState(false)
   const [deletingAdmin, setDeletingAdmin] = useState(false)
+  const [chatOpen, setChatOpen] = useState(false)
   const isAdmin = user?.role === 'admin'
 
   const userAccountStatus = user?.account_status
@@ -875,10 +877,31 @@ function EventDetail() {
             />
           </div>
 
-          {/* Comments section */}
-          <div className="ev-card" style={{ marginTop: '0.75rem', padding: '1rem 1.25rem' }}>
+          {/* Comments section – hidden on mobile (replaced by chat bubble) */}
+          <div className="ev-card hidden sm:block" style={{ marginTop: '0.75rem', padding: '1rem 1.25rem' }}>
             <CommentsSection resourceType="event" resourceId={event.id} />
           </div>
+
+          {/* Mobile chat bubble */}
+          <button
+            type="button"
+            onClick={() => setChatOpen(true)}
+            className="chat-bubble-btn sm:hidden"
+            aria-label={t('comments.chatBubble')}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+            </svg>
+            {t('comments.chatBubble')}
+          </button>
+
+          {/* Mobile chat modal */}
+          <ChatModal
+            open={chatOpen}
+            onClose={() => setChatOpen(false)}
+            resourceType="event"
+            resourceId={event.id}
+          />
         </div>
 
         {/* ────── RIGHT COLUMN ────── */}

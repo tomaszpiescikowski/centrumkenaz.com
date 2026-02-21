@@ -1051,6 +1051,13 @@
     "justNow": "just now",
     "empty": "No comments yet. Be the first!",
     "loadError": "Failed to load comments.",
-    "replyPlaceholder": "Write a reply..."
+    "replyPlaceholder": "Write a reply...",
+    "tabEvent": "This event",
+    "tabGeneral": "General chat",
+    "placeholderGeneral": "Write to general chat...",
+    "emptyGeneral": "No messages yet. Start the conversation!",
+    "chatTitle": "Chat",
+    "chatBubble": "Chat",
+    "loading": "Loading..."
   }
 }

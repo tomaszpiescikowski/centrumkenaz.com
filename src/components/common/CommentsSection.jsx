@@ -21,12 +21,53 @@ const REACTION_EMOJIS = {
   fire: '🔥',
 }
 
-function CommentsSection({ resourceType, resourceId }) {
+/**
+ * Flatten nested comment tree into a list with thread metadata.
+ * Visual depth is capped at 1 — replies to replies stay at depth 1
+ * but show a "replying to X" indicator (git-graph style).
+ */
+function flattenComments(comments, parentAuthor = null, depth = 0) {
+  const result = []
+  if (!comments) return result
+  for (let i = 0; i < comments.length; i++) {
+    const c = comments[i]
+    const visualDepth = Math.min(depth, 1)
+    const replyToName = depth > 1 ? parentAuthor : null
+
+    result.push({
+      ...c,
+      _depth: depth,
+      _visualDepth: visualDepth,
+      _replyToName: replyToName,
+      _hasChildren: c.replies && c.replies.length > 0,
+    })
+
+    if (c.replies && c.replies.length > 0) {
+      const children = flattenComments(c.replies, c.author?.full_name, depth + 1)
+      result.push(...children)
+    }
+  }
+  return result
+}
+
+/** Count total comments (including nested) */
+function countAll(comments) {
+  if (!comments) return 0
+  let n = 0
+  for (const c of comments) {
+    n += 1
+    if (c.replies) n += countAll(c.replies)
+  }
+  return n
+}
+
+function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onTabChange, hideHeader, hideTabs }) {
   const { user, authFetch } = useAuth()
   const { t } = useLanguage()
   const isAdmin = user?.role === 'admin'
 
   const [comments, setComments] = useState([])
+  const [generalComments, setGeneralComments] = useState([])
   const [loading, setLoading] = useState(true)
   const [newContent, setNewContent] = useState('')
   const [replyingTo, setReplyingTo] = useState(null)
@@ -37,9 +78,17 @@ function CommentsSection({ resourceType, resourceId }) {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
   const [showReactionPicker, setShowReactionPicker] = useState(null)
+  const [internalTab, setInternalTab] = useState('event')
+
+  const activeTab = externalTab ?? internalTab
+  const setActiveTab = onTabChange ?? setInternalTab
 
   const replyInputRef = useRef(null)
   const editInputRef = useRef(null)
+  const listRef = useRef(null)
+
+  const isGeneralTab = activeTab === 'general'
+  const currentComments = isGeneralTab ? generalComments : comments
 
   const loadComments = useCallback(async () => {
     try {
@@ -52,21 +101,31 @@ function CommentsSection({ resourceType, resourceId }) {
     }
   }, [resourceType, resourceId, authFetch, t])
 
-  useEffect(() => {
-    loadComments()
-  }, [loadComments])
+  const loadGeneralComments = useCallback(async () => {
+    try {
+      const data = await fetchComments('general', 'global', authFetch)
+      setGeneralComments(data)
+    } catch {
+      /* silent */
+    }
+  }, [authFetch])
 
   useEffect(() => {
-    if (replyingTo && replyInputRef.current) {
-      replyInputRef.current.focus()
-    }
+    loadComments()
+    loadGeneralComments()
+  }, [loadComments, loadGeneralComments])
+
+  useEffect(() => {
+    if (replyingTo && replyInputRef.current) replyInputRef.current.focus()
   }, [replyingTo])
 
   useEffect(() => {
-    if (editingId && editInputRef.current) {
-      editInputRef.current.focus()
-    }
+    if (editingId && editInputRef.current) editInputRef.current.focus()
   }, [editingId])
+
+  const currentResourceType = isGeneralTab ? 'general' : resourceType
+  const currentResourceId = isGeneralTab ? 'global' : resourceId
+  const reloadCurrent = isGeneralTab ? loadGeneralComments : loadComments
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -74,9 +133,9 @@ function CommentsSection({ resourceType, resourceId }) {
     setSubmitting(true)
     setError(null)
     try {
-      await createComment(resourceType, resourceId, authFetch, { content: newContent.trim() })
+      await createComment(currentResourceType, currentResourceId, authFetch, { content: newContent.trim() })
       setNewContent('')
-      await loadComments()
+      await reloadCurrent()
     } catch (err) {
       setError(err.message)
     } finally {
@@ -90,13 +149,13 @@ function CommentsSection({ resourceType, resourceId }) {
     setSubmitting(true)
     setError(null)
     try {
-      await createComment(resourceType, resourceId, authFetch, {
+      await createComment(currentResourceType, currentResourceId, authFetch, {
         content: replyContent.trim(),
         parentId,
       })
       setReplyContent('')
       setReplyingTo(null)
-      await loadComments()
+      await reloadCurrent()
     } catch (err) {
       setError(err.message)
     } finally {
@@ -110,14 +169,11 @@ function CommentsSection({ resourceType, resourceId }) {
     setSubmitting(true)
     setError(null)
     try {
-      await updateComment(commentId, authFetch, {
-        content: editContent.trim(),
-        version: editVersion,
-      })
+      await updateComment(commentId, authFetch, { content: editContent.trim(), version: editVersion })
       setEditingId(null)
       setEditContent('')
       setEditVersion(null)
-      await loadComments()
+      await reloadCurrent()
     } catch (err) {
       setError(err.message)
     } finally {
@@ -131,7 +187,7 @@ function CommentsSection({ resourceType, resourceId }) {
     setError(null)
     try {
       await deleteComment(commentId, authFetch)
-      await loadComments()
+      await reloadCurrent()
     } catch (err) {
       setError(err.message)
     } finally {
@@ -145,7 +201,7 @@ function CommentsSection({ resourceType, resourceId }) {
     setError(null)
     try {
       await togglePinComment(commentId, authFetch)
-      await loadComments()
+      await reloadCurrent()
     } catch (err) {
       setError(err.message)
     } finally {
@@ -157,7 +213,7 @@ function CommentsSection({ resourceType, resourceId }) {
     setError(null)
     try {
       await toggleReaction(commentId, authFetch, reactionType)
-      await loadComments()
+      await reloadCurrent()
     } catch (err) {
       setError(err.message)
     }
@@ -192,197 +248,128 @@ function CommentsSection({ resourceType, resourceId }) {
     }) + ' ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
   }
 
-  const renderComment = (comment, depth = 0) => {
-    const isOwn = user?.id === comment.author.id
-    const isEditing = editingId === comment.id
-    const isReplying = replyingTo === comment.id
-    const maxDepth = 3
+  const renderFlatComment = (item) => {
+    const isOwn = user?.id === item.author.id
+    const isEditingThis = editingId === item.id
+    const isReplying = replyingTo === item.id
+    // Always reply to the nearest top-level or depth-1 ancestor
+    const replyTargetId = item._depth === 0 ? item.id : (item.parent_id || item.id)
 
     return (
       <div
-        key={comment.id}
-        className={`cmt-item ${comment.is_pinned ? 'cmt-pinned' : ''} ${depth > 0 ? 'cmt-reply' : ''}`}
-        style={depth > 0 ? { marginLeft: Math.min(depth, maxDepth) * 1.5 + 'rem' } : undefined}
+        key={item.id}
+        className={`cmt-item ${item.is_pinned ? 'cmt-pinned' : ''} ${item._visualDepth > 0 ? 'cmt-threaded' : ''}`}
       >
-        {comment.is_pinned && (
-          <div className="cmt-pin-badge">
-            <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M9.828.722a.5.5 0 0 1 .354.146l4.95 4.95a.5.5 0 0 1-.707.707l-.708-.707-3.535 3.536.707.707a.5.5 0 0 1-.707.707l-1.414-1.414-2.829 2.828a.5.5 0 0 1-.707 0l-.707-.707L1.414 14.5l-.707-.707 3.182-3.182-.707-.707a.5.5 0 0 1 0-.707l2.829-2.829L4.596 5.04a.5.5 0 1 1 .707-.707l.707.707L9.546 1.5l-.707-.707a.5.5 0 0 1 .283-.849l.707-.222z" />
-            </svg>
-            {t('comments.pinned')}
-          </div>
-        )}
+        {/* Thread connector line */}
+        {item._visualDepth > 0 && <div className="cmt-thread-line" />}
 
-        <div className="cmt-header">
-          <Link to={`/people/${comment.author.id}`} className="cmt-avatar-link">
-            <div className="cmt-av-wrap">
-              {comment.author.picture_url ? (
-                <img
-                  src={comment.author.picture_url}
-                  alt={comment.author.full_name}
-                  className="cmt-av cmt-av-img"
-                />
-              ) : (
-                <div className="cmt-av">{initials(comment.author.full_name)}</div>
-              )}
+        <div className="cmt-item-body">
+          {item.is_pinned && (
+            <div className="cmt-pin-badge">
+              <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M9.828.722a.5.5 0 0 1 .354.146l4.95 4.95a.5.5 0 0 1-.707.707l-.708-.707-3.535 3.536.707.707a.5.5 0 0 1-.707.707l-1.414-1.414-2.829 2.828a.5.5 0 0 1-.707 0l-.707-.707L1.414 14.5l-.707-.707 3.182-3.182-.707-.707a.5.5 0 0 1 0-.707l2.829-2.829L4.596 5.04a.5.5 0 1 1 .707-.707l.707.707L9.546 1.5l-.707-.707a.5.5 0 0 1 .283-.849l.707-.222z" />
+              </svg>
+              {t('comments.pinned')}
             </div>
-          </Link>
-          <div className="cmt-meta">
-            <Link to={`/people/${comment.author.id}`} className="cmt-author">
-              {comment.author.full_name}
+          )}
+
+          {/* "replying to X" for deeply nested */}
+          {item._replyToName && (
+            <div className="cmt-reply-to">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 10 20 15 15 20" />
+                <path d="M4 4v7a4 4 0 004 4h12" />
+              </svg>
+              <span>{item._replyToName}</span>
+            </div>
+          )}
+
+          <div className="cmt-header">
+            <Link to={`/people/${item.author.id}`} className="cmt-avatar-link">
+              <div className="cmt-av-wrap">
+                {item.author.picture_url ? (
+                  <img src={item.author.picture_url} alt={item.author.full_name} className="cmt-av cmt-av-img" />
+                ) : (
+                  <div className="cmt-av">{initials(item.author.full_name)}</div>
+                )}
+              </div>
             </Link>
-            <span className="cmt-time">{formatTime(comment.created_at)}</span>
-            {comment.updated_at && !comment.is_deleted && (
-              <span className="cmt-edited">{t('comments.edited')}</span>
-            )}
-          </div>
-        </div>
-
-        {isEditing ? (
-          <form className="cmt-edit-form" onSubmit={(e) => handleEdit(e, comment.id)}>
-            <textarea
-              ref={editInputRef}
-              className="cmt-input"
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
-              rows={2}
-              maxLength={2000}
-            />
-            <div className="cmt-edit-actions">
-              <button type="submit" className="cmt-btn cmt-btn-primary" disabled={submitting || !editContent.trim()}>
-                {t('comments.save')}
-              </button>
-              <button
-                type="button"
-                className="cmt-btn"
-                onClick={() => { setEditingId(null); setEditContent(''); setEditVersion(null) }}
-              >
-                {t('comments.cancel')}
-              </button>
+            <div className="cmt-meta">
+              <Link to={`/people/${item.author.id}`} className="cmt-author">{item.author.full_name}</Link>
+              <span className="cmt-time">{formatTime(item.created_at)}</span>
+              {item.updated_at && !item.is_deleted && <span className="cmt-edited">{t('comments.edited')}</span>}
             </div>
-          </form>
-        ) : (
-          <div className={`cmt-content ${comment.is_deleted ? 'cmt-deleted' : ''}`}>
-            {comment.content}
           </div>
-        )}
 
-        {/* Reactions display */}
-        {!comment.is_deleted && comment.reactions && comment.reactions.length > 0 && (
-          <div className="cmt-reactions">
-            {comment.reactions.map((r) => (
-              <button
-                key={r.reaction_type}
-                className={`cmt-reaction-chip ${r.reacted_by_me ? 'cmt-reaction-mine' : ''}`}
-                onClick={() => handleReaction(comment.id, r.reaction_type)}
-                title={r.reaction_type}
-              >
-                <span>{REACTION_EMOJIS[r.reaction_type] || r.reaction_type}</span>
-                <span className="cmt-reaction-count">{r.count}</span>
-              </button>
-            ))}
-          </div>
-        )}
+          {isEditingThis ? (
+            <form className="cmt-edit-form" onSubmit={(e) => handleEdit(e, item.id)}>
+              <textarea ref={editInputRef} className="cmt-input" value={editContent} onChange={(e) => setEditContent(e.target.value)} rows={2} maxLength={2000} />
+              <div className="cmt-edit-actions">
+                <button type="submit" className="cmt-btn cmt-btn-primary" disabled={submitting || !editContent.trim()}>{t('comments.save')}</button>
+                <button type="button" className="cmt-btn" onClick={() => { setEditingId(null); setEditContent(''); setEditVersion(null) }}>{t('comments.cancel')}</button>
+              </div>
+            </form>
+          ) : (
+            <div className={`cmt-content ${item.is_deleted ? 'cmt-deleted' : ''}`}>{item.content}</div>
+          )}
 
-        {/* Actions row */}
-        {!comment.is_deleted && !isEditing && (
-          <div className="cmt-actions">
-            <button
-              className="cmt-action-btn"
-              onClick={() => {
-                setReplyingTo(isReplying ? null : comment.id)
-                setReplyContent('')
-              }}
-            >
-              {t('comments.reply')}
-            </button>
+          {/* Reactions */}
+          {!item.is_deleted && item.reactions?.length > 0 && (
+            <div className="cmt-reactions">
+              {item.reactions.map((r) => (
+                <button key={r.reaction_type} className={`cmt-reaction-chip ${r.reacted_by_me ? 'cmt-reaction-mine' : ''}`} onClick={() => handleReaction(item.id, r.reaction_type)} title={r.reaction_type}>
+                  <span>{REACTION_EMOJIS[r.reaction_type] || r.reaction_type}</span>
+                  <span className="cmt-reaction-count">{r.count}</span>
+                </button>
+              ))}
+            </div>
+          )}
 
-            <div className="cmt-reaction-trigger-wrap">
-              <button
-                className="cmt-action-btn"
-                onClick={() => setShowReactionPicker(showReactionPicker === comment.id ? null : comment.id)}
-              >
-                😀
-              </button>
-              {showReactionPicker === comment.id && (
-                <div className="cmt-reaction-picker">
-                  {Object.entries(REACTION_EMOJIS).map(([type, emoji]) => (
-                    <button
-                      key={type}
-                      className="cmt-reaction-pick"
-                      onClick={() => handleReaction(comment.id, type)}
-                      title={type}
-                    >
-                      {emoji}
-                    </button>
-                  ))}
-                </div>
+          {/* Actions */}
+          {!item.is_deleted && !isEditingThis && (
+            <div className="cmt-actions">
+              <button className="cmt-action-btn" onClick={() => { setReplyingTo(isReplying ? null : replyTargetId); setReplyContent('') }}>{t('comments.reply')}</button>
+
+              <div className="cmt-reaction-trigger-wrap">
+                <button className="cmt-action-btn" onClick={() => setShowReactionPicker(showReactionPicker === item.id ? null : item.id)}>😀</button>
+                {showReactionPicker === item.id && (
+                  <div className="cmt-reaction-picker">
+                    {Object.entries(REACTION_EMOJIS).map(([type, emoji]) => (
+                      <button key={type} className="cmt-reaction-pick" onClick={() => handleReaction(item.id, type)} title={type}>{emoji}</button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {isOwn && (
+                <button className="cmt-action-btn" onClick={() => { setEditingId(item.id); setEditContent(item.content); setEditVersion(item.version) }}>{t('comments.edit')}</button>
+              )}
+              {(isOwn || isAdmin) && (
+                <button className="cmt-action-btn cmt-action-danger" onClick={() => handleDelete(item.id)}>{t('comments.delete')}</button>
+              )}
+              {isAdmin && (
+                <button className="cmt-action-btn" onClick={() => handlePin(item.id)}>{item.is_pinned ? t('comments.unpin') : t('comments.pin')}</button>
               )}
             </div>
+          )}
 
-            {isOwn && (
-              <button
-                className="cmt-action-btn"
-                onClick={() => {
-                  setEditingId(comment.id)
-                  setEditContent(comment.content)
-                  setEditVersion(comment.version)
-                }}
-              >
-                {t('comments.edit')}
-              </button>
-            )}
-
-            {(isOwn || isAdmin) && (
-              <button className="cmt-action-btn cmt-action-danger" onClick={() => handleDelete(comment.id)}>
-                {t('comments.delete')}
-              </button>
-            )}
-
-            {isAdmin && (
-              <button className="cmt-action-btn" onClick={() => handlePin(comment.id)}>
-                {comment.is_pinned ? t('comments.unpin') : t('comments.pin')}
-              </button>
-            )}
-          </div>
-        )}
-
-        {/* Reply form */}
-        {isReplying && (
-          <form className="cmt-reply-form" onSubmit={(e) => handleReply(e, comment.id)}>
-            <textarea
-              ref={replyInputRef}
-              className="cmt-input cmt-input-sm"
-              placeholder={t('comments.replyPlaceholder')}
-              value={replyContent}
-              onChange={(e) => setReplyContent(e.target.value)}
-              rows={2}
-              maxLength={2000}
-            />
-            <div className="cmt-edit-actions">
-              <button type="submit" className="cmt-btn cmt-btn-primary" disabled={submitting || !replyContent.trim()}>
-                {t('comments.send')}
-              </button>
-              <button
-                type="button"
-                className="cmt-btn"
-                onClick={() => { setReplyingTo(null); setReplyContent('') }}
-              >
-                {t('comments.cancel')}
-              </button>
-            </div>
-          </form>
-        )}
-
-        {/* Nested replies */}
-        {comment.replies && comment.replies.length > 0 && (
-          <div className="cmt-replies">
-            {comment.replies.map((reply) => renderComment(reply, depth + 1))}
-          </div>
-        )}
+          {/* Reply form */}
+          {isReplying && (
+            <form className="cmt-reply-form" onSubmit={(e) => handleReply(e, replyTargetId)}>
+              <textarea ref={replyInputRef} className="cmt-input cmt-input-sm" placeholder={t('comments.replyPlaceholder')} value={replyContent} onChange={(e) => setReplyContent(e.target.value)} rows={2} maxLength={2000} />
+              <div className="cmt-edit-actions">
+                <button type="submit" className="cmt-btn cmt-btn-primary" disabled={submitting || !replyContent.trim()}>{t('comments.send')}</button>
+                <button type="button" className="cmt-btn" onClick={() => { setReplyingTo(null); setReplyContent('') }}>{t('comments.cancel')}</button>
+              </div>
+            </form>
+          )}
+        </div>
       </div>
     )
   }
+
+  const flatList = flattenComments(currentComments)
+  const totalCount = countAll(isGeneralTab ? generalComments : comments)
 
   if (loading) {
     return <div className="cmt-loading">{t('comments.loading')}</div>
@@ -390,10 +377,25 @@ function CommentsSection({ resourceType, resourceId }) {
 
   return (
     <div className="cmt-section">
-      <div className="cmt-section-header">
-        <h3 className="cmt-title">{t('comments.title')}</h3>
-        <span className="cmt-count">{comments.length}</span>
-      </div>
+      {!hideHeader && (
+        <div className="cmt-section-header">
+          <h3 className="cmt-title">{t('comments.title')}</h3>
+          <span className="cmt-count">{totalCount}</span>
+        </div>
+      )}
+
+      {/* Tab switcher: Event / General */}
+      {!hideTabs && (
+        <div className="cmt-tabs">
+          <button className={`cmt-tab ${activeTab === 'event' ? 'cmt-tab-active' : ''}`} onClick={() => setActiveTab('event')}>
+            {t('comments.tabEvent')}
+          </button>
+          <button className={`cmt-tab ${activeTab === 'general' ? 'cmt-tab-active' : ''}`} onClick={() => setActiveTab('general')}>
+            {t('comments.tabGeneral')}
+            {generalComments.length > 0 && <span className="cmt-tab-badge">{countAll(generalComments)}</span>}
+          </button>
+        </div>
+      )}
 
       {error && <div className="cmt-error">{error}</div>}
 
@@ -409,7 +411,7 @@ function CommentsSection({ resourceType, resourceId }) {
           </div>
           <textarea
             className="cmt-input cmt-input-new"
-            placeholder={t('comments.placeholder')}
+            placeholder={isGeneralTab ? t('comments.placeholderGeneral') : t('comments.placeholder')}
             value={newContent}
             onChange={(e) => setNewContent(e.target.value)}
             rows={1}
@@ -430,14 +432,14 @@ function CommentsSection({ resourceType, resourceId }) {
         )}
       </form>
 
-      {/* Comments list */}
-      <div className="cmt-list">
-        {comments.length === 0 ? (
+      {/* Scrollable comments list */}
+      <div className="cmt-list" ref={listRef}>
+        {flatList.length === 0 ? (
           <div className="cmt-empty">
-            <p>{t('comments.empty')}</p>
+            <p>{isGeneralTab ? t('comments.emptyGeneral') : t('comments.empty')}</p>
           </div>
         ) : (
-          comments.map((c) => renderComment(c))
+          flatList.map((item) => renderFlatComment(item))
         )}
       </div>
     </div>
