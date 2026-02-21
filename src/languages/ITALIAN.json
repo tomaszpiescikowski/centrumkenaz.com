@@ -330,7 +330,8 @@
     "adminDeleteError": "Impossibile eliminare l'evento.",
     "cancellationDeadline": "Annullamento possibile fino al",
     "cancellationExpired": "Il periodo di annullamento è scaduto",
-    "cancellationTimeLeft": "rimasti per annullare"
+    "cancellationTimeLeft": "rimasti per annullare",
+    "cancellationTimeRemaining": "Rimangono {time} per annullare."
   },
   "registration": {
     "noSpots": "Posti esauriti",

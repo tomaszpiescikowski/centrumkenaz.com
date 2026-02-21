@@ -330,7 +330,8 @@
     "adminDeleteError": "Niy idzie skasować wydarzynio.",
     "cancellationDeadline": "Rezygnacyjo możliwŏ do",
     "cancellationExpired": "Czas na rezygnacyjo sie skōńczōł",
-    "cancellationTimeLeft": "ôstało na rezygnacyjo"
+    "cancellationTimeLeft": "ôstało na rezygnacyjo",
+    "cancellationTimeRemaining": "Ôstało {time} na rezygnacyjo."
   },
   "registration": {
     "noSpots": "Brak miyjsc",

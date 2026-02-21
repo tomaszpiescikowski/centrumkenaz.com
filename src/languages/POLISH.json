@@ -330,7 +330,8 @@
     "adminDeleteError": "Nie udało się usunąć wydarzenia.",
     "cancellationDeadline": "Rezygnacja możliwa do",
     "cancellationExpired": "Okres rezygnacji minął",
-    "cancellationTimeLeft": "do zamknięcia okna rezygnacji"
+    "cancellationTimeLeft": "do zamknięcia okna rezygnacji",
+    "cancellationTimeRemaining": "Pozostało {time} do zamknięcia możliwości rezygnacji."
   },
   "registration": {
     "noSpots": "Brak miejsc",

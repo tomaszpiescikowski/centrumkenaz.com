@@ -330,7 +330,8 @@
     "adminDeleteError": "Could not delete event.",
     "cancellationDeadline": "Cancellation possible until",
     "cancellationExpired": "Cancellation period has ended",
-    "cancellationTimeLeft": "left to cancel"
+    "cancellationTimeLeft": "left to cancel",
+    "cancellationTimeRemaining": "{time} left to cancel."
   },
   "registration": {
     "noSpots": "No spots left",

@@ -330,7 +330,8 @@
     "adminDeleteError": "删除活动失败。",
     "cancellationDeadline": "取消截止时间",
     "cancellationExpired": "取消期限已过",
-    "cancellationTimeLeft": "剩余取消时间"
+    "cancellationTimeLeft": "剩余取消时间",
+    "cancellationTimeRemaining": "还剩 {time} 可以取消。"
   },
   "registration": {
     "noSpots": "没有名额",

@@ -819,11 +819,6 @@ function EventDetail() {
                 if (days === 0 && mins > 0) parts.push(`${mins}${t('common.minutes')}`)
                 const timeStr = parts.join(' ')
 
-                const locale = currentLanguage === 'pl' ? 'pl-PL' : 'en-GB'
-                const deadlineStr = deadline.toLocaleDateString(locale, {
-                  weekday: 'short', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit',
-                })
-
                 const isUrgent = remaining < 24 * 3600000
 
                 return (
@@ -831,10 +826,7 @@ function EventDetail() {
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span>
-                      {t('event.cancellationDeadline')}: {deadlineStr}
-                      {isUrgent && <span className="ev-cancel-countdown"> ({timeStr} {t('event.cancellationTimeLeft')})</span>}
-                    </span>
+                    <span>{t('event.cancellationTimeRemaining', { time: timeStr })}</span>
                   </div>
                 )
               }

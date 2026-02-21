@@ -330,7 +330,8 @@
     "adminDeleteError": "Kon event niet verwijderen.",
     "cancellationDeadline": "Annulering mogelijk tot",
     "cancellationExpired": "Annuleringsperiode is verlopen",
-    "cancellationTimeLeft": "over om te annuleren"
+    "cancellationTimeLeft": "over om te annuleren",
+    "cancellationTimeRemaining": "Nog {time} om te annuleren."
   },
   "registration": {
     "noSpots": "Geen plaatsen",
