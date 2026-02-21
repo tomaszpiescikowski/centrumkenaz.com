@@ -218,6 +218,8 @@ server {
     }
 
     # Backend API endpoints
+    # /auth/callback is a frontend SPA route — do NOT proxy it
+    location = /auth/callback { try_files /index.html =404; }
     location /auth/ { proxy_pass http://127.0.0.1:8000/auth/; include /etc/nginx/proxy_params; }
     location /events/ { proxy_pass http://127.0.0.1:8000/events/; include /etc/nginx/proxy_params; }
     location /payments/ { proxy_pass http://127.0.0.1:8000/payments/; include /etc/nginx/proxy_params; }
