@@ -579,6 +579,43 @@ async def list_registered_event_ids(
     return [str(row[0]) for row in result.all()]
 
 
+@router.get("/registered-details", response_model=list[EventResponse])
+async def list_registered_events(
+    user: User = Depends(get_active_user_dependency),
+    db: AsyncSession = Depends(get_db),
+) -> list[EventResponse]:
+    """
+    Return full event objects for the current user's active registrations.
+
+    Only future events (start_date >= today) are returned, ordered by
+    start_date ascending.
+    """
+    sub = (
+        select(Registration.event_id)
+        .where(
+            legacy_id_eq(Registration.user_id, user.id),
+            Registration.status.in_(
+                [
+                    RegistrationStatus.CONFIRMED.value,
+                    RegistrationStatus.PENDING.value,
+                    RegistrationStatus.MANUAL_PAYMENT_REQUIRED.value,
+                    RegistrationStatus.MANUAL_PAYMENT_VERIFICATION.value,
+                    RegistrationStatus.WAITLIST.value,
+                ]
+            ),
+        )
+        .distinct()
+        .subquery()
+    )
+    stmt = (
+        select(Event)
+        .where(Event.id.in_(select(sub.c.event_id)))
+        .order_by(Event.start_date.asc())
+    )
+    result = await db.execute(stmt)
+    return [EventResponse.model_validate(e) for e in result.scalars().all()]
+
+
 @router.get("/{event_id}", response_model=EventResponse)
 async def get_event(
     event_id: str = Path(..., min_length=1),

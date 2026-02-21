@@ -2,10 +2,10 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { useAuth } from '../../context/AuthContext'
+import { useChat } from '../../context/ChatContext'
 import ThemeToggle from '../controls/ThemeToggle'
 import LoginButton from '../forms/LoginButton'
 import FeedbackModal from '../ui/FeedbackModal'
-import ChatModal from '../ui/ChatModal'
 
 const BRAND_MARK_CLASS = `h-10 w-10 rounded-full bg-navy transition-colors duration-300 dark:bg-cream
   [mask-image:url('/static/render.png')] [mask-repeat:no-repeat]
@@ -37,8 +37,8 @@ function Navbar({ darkMode, setDarkMode }) {
   const navigate = useNavigate()
   const { t } = useLanguage()
   const { user, isAuthenticated, logout } = useAuth()
+  const { openChat } = useChat()
   const [feedbackOpen, setFeedbackOpen] = useState(false)
-  const [chatOpen, setChatOpen] = useState(false)
 
   const isActive = (path) => (
     location.pathname === path || location.pathname.startsWith(`${path}/`)
@@ -124,14 +124,14 @@ function Navbar({ darkMode, setDarkMode }) {
             {isAuthenticated && (
               <button
                 type="button"
-                onClick={() => setChatOpen(true)}
+                onClick={() => openChat()}
                 className="btn-nav h-10 px-3 lg:px-4 transition-colors text-indigo-600 dark:text-indigo-400 border-indigo-400/40 dark:border-indigo-400/30 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 font-semibold text-xs"
-                aria-label={t('comments.tabGeneral')}
+                aria-label={t('comments.chatTitle')}
               >
                 <svg className="h-4 w-4 lg:mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
                 </svg>
-                <span className="hidden lg:inline">{t('comments.tabGeneral')}</span>
+                <span className="hidden lg:inline">{t('comments.chatTitle')}</span>
               </button>
             )}
             <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
@@ -141,13 +141,6 @@ function Navbar({ darkMode, setDarkMode }) {
       </div>
     </nav>
     <FeedbackModal open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
-    <ChatModal
-      open={chatOpen}
-      onClose={() => setChatOpen(false)}
-      resourceType="general"
-      resourceId="global"
-      generalOnly
-    />
     </>
   )
 }

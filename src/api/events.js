@@ -104,6 +104,15 @@ export async function fetchRegisteredEventIds(authFetch) {
   return Array.isArray(data) ? data : []
 }
 
+export async function fetchRegisteredEvents(authFetch) {
+  const response = await authFetch(`${API_URL}/events/registered-details`)
+  if (!response.ok) {
+    throw new Error('Failed to fetch registered events')
+  }
+  const data = await response.json()
+  return Array.isArray(data) ? data.map(normalizeEvent) : []
+}
+
 export async function fetchEventAvailability(eventId, authFetch = null) {
   const response = await requestWithAuth(authFetch, `${API_URL}/events/${eventId}/availability`)
   if (!response.ok) {

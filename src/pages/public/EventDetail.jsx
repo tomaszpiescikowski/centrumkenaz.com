@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext'
 import { useAuth } from '../../context/AuthContext'
 import { useNotification } from '../../context/NotificationContext'
+import { useChat } from '../../context/ChatContext'
 import { deleteEvent, fetchEventById, fetchRegisteredEventIds, fetchEventAvailability, updateEvent } from '../../api/events'
 import { API_URL } from '../../api/config'
 import RegisterButton from '../../components/forms/RegisterButton'
@@ -10,7 +11,6 @@ import DatePickerField from '../../components/forms/DatePickerField'
 import AuthGateCard from '../../components/ui/AuthGateCard'
 import CustomSelect from '../../components/controls/CustomSelect'
 import CommentsSection from '../../components/common/CommentsSection'
-import ChatModal from '../../components/ui/ChatModal'
 import EventIcon from '../../components/common/EventIcon'
 
 function buildGoogleCalendarUrl(event) {
@@ -49,7 +49,7 @@ function EventDetail() {
   const [fieldHints, setFieldHints] = useState({})
   const [savingAdmin, setSavingAdmin] = useState(false)
   const [deletingAdmin, setDeletingAdmin] = useState(false)
-  const [chatOpen, setChatOpen] = useState(false)
+  const { openChat } = useChat()
   const isAdmin = user?.role === 'admin'
 
   // ── Resizable chat card (persisted) ──
@@ -961,26 +961,17 @@ function EventDetail() {
             <CommentsSection resourceType="event" resourceId={event.id} hideTabs messengerLayout />
           </div>
 
-          {/* Mobile chat bubble – always visible on event page */}
+          {/* Mobile full-width event chat button */}
           <button
             type="button"
-            onClick={() => setChatOpen(true)}
-            className="chat-bubble-btn sm:hidden"
-            aria-label={t('comments.eventChat')}
+            onClick={() => openChat({ eventId: event.id, eventTitle: event.title })}
+            className="ev-chat-open-btn sm:hidden"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
             </svg>
             {t('comments.eventChat')}
           </button>
-
-          {/* Mobile chat modal */}
-          <ChatModal
-            open={chatOpen}
-            onClose={() => setChatOpen(false)}
-            resourceType="event"
-            resourceId={event.id}
-          />
         </div>
 
         {/* ────── RIGHT COLUMN ────── */}

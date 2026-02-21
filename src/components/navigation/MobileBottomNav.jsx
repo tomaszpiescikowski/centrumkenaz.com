@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { useAuth } from '../../context/AuthContext'
+import { useChat } from '../../context/ChatContext'
 import FeedbackModal from '../ui/FeedbackModal'
 
 const ICON_CLASS = 'h-6 w-6'
@@ -49,6 +50,14 @@ function AccountIcon() {
   )
 }
 
+function ChatIcon() {
+  return (
+    <svg className={ICON_CLASS} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+    </svg>
+  )
+}
+
 function NavItem({ to, label, icon, active }) {
   return (
     <Link
@@ -65,6 +74,7 @@ function NavItem({ to, label, icon, active }) {
 function MobileBottomNav() {
   const { t } = useLanguage()
   const { user, isAuthenticated, login } = useAuth()
+  const { openChat } = useChat()
   const location = useLocation()
   const navigate = useNavigate()
   const [feedbackOpen, setFeedbackOpen] = useState(false)
@@ -107,6 +117,9 @@ function MobileBottomNav() {
       active: location.pathname.startsWith('/calendar') || location.pathname.startsWith('/event/'),
       icon: <CalendarIcon />,
     },
+  ]
+
+  const navItemsRight = [
     {
       key: 'panel',
       to: '/panel',
@@ -145,6 +158,27 @@ function MobileBottomNav() {
     >
       <div className="flex items-end">
         {navItems.map((item) => (
+          <NavItem
+            key={item.key}
+            to={item.to}
+            label={item.label}
+            icon={item.icon}
+            active={item.active}
+          />
+        ))}
+
+        {/* ── Central chat button ── */}
+        <button
+          type="button"
+          onClick={() => openChat()}
+          aria-label={t('comments.chatTitle')}
+          className={ITEM_BASE}
+        >
+          <span className="text-indigo-500 dark:text-indigo-400"><ChatIcon /></span>
+          <span className="truncate text-indigo-500 dark:text-indigo-400">{t('comments.chatTitle')}</span>
+        </button>
+
+        {navItemsRight.map((item) => (
           <NavItem
             key={item.key}
             to={item.to}

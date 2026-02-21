@@ -4,6 +4,7 @@ import { LanguageProvider } from './context/LanguageContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { CityProvider } from './context/CityContext'
 import { NotificationProvider } from './context/NotificationContext'
+import { ChatProvider } from './context/ChatContext'
 import Layout from './components/layout/Layout'
 import Home from './pages/public/Home'
 import CalendarPage from './pages/public/CalendarPage'
@@ -106,6 +107,7 @@ function App() {
       <LanguageProvider>
         <NotificationProvider>
           <CityProvider>
+            <ChatProvider>
             <Layout darkMode={darkMode} setDarkMode={setDarkMode}>
               <ScrollToTop />
               <div
@@ -145,6 +147,7 @@ function App() {
                 </Routes>
               </div>
             </Layout>
+            </ChatProvider>
           </CityProvider>
         </NotificationProvider>
       </LanguageProvider>

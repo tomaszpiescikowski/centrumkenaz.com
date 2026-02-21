@@ -5,6 +5,7 @@ import NotificationBanner from '../common/NotificationBanner'
 import MobileBottomNav from '../navigation/MobileBottomNav'
 import PwaInstallBanner from '../common/PwaInstallBanner'
 import PendingApprovalOverlay from '../common/PendingApprovalOverlay'
+import ChatModal from '../ui/ChatModal'
 
 const MOBILE_APP_SHELL_PATHS = new Set([
   '/',
@@ -40,6 +41,7 @@ function Layout({ children, darkMode, setDarkMode }) {
       </div>
       <PwaInstallBanner />
       <MobileBottomNav />
+      <ChatModal />
       <PendingApprovalOverlay />
     </div>
   )

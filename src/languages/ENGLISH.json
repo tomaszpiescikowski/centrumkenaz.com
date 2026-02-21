@@ -1062,6 +1062,11 @@
     "chatBubble": "Chat",
     "react": "React",
     "eventChat": "Event chat",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "tabEvents": "Event chats",
+    "back": "Back",
+    "goToEvent": "Go to event",
+    "loginToSeeEvents": "Log in to see your event chats",
+    "noRegisteredEvents": "You have no registered events yet"
   }
 }

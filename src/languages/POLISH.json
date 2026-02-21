@@ -1062,6 +1062,11 @@
     "chatBubble": "Czat",
     "react": "Zareaguj",
     "eventChat": "Chat wydarzenia",
-    "loading": "Ładowanie..."
+    "loading": "Ładowanie...",
+    "tabEvents": "Czaty wydarzeń",
+    "back": "Wróć",
+    "goToEvent": "Przejdź do wydarzenia",
+    "loginToSeeEvents": "Zaloguj się, aby zobaczyć czaty wydarzeń",
+    "noRegisteredEvents": "Nie masz jeszcze zapisanych wydarzeń"
   }
 }
