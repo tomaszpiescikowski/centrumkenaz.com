@@ -192,7 +192,6 @@ class AuthService:
                 and (user.password_hash or user.username)
             ):
                 raise AuthPolicyError("This admin email must sign in with Google only")
-            # Update user info from Google
             user.google_id = google_id
             user.email = email
             user.full_name = full_name or user.full_name
@@ -208,7 +207,6 @@ class AuthService:
             await self.db.refresh(user)
             return user
 
-        # Create new user
         user = User(
             google_id=google_id,
             email=email,

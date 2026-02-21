@@ -95,7 +95,6 @@ class TestFreeEventRegistration:
             cancel_url="http://localhost/cancel",
         )
 
-        # Check database
         participants = await registration_service.get_confirmed_participants(test_free_event.id)
         assert len(participants) == 1
         assert participants[0]["full_name"] == test_user.full_name
@@ -171,7 +170,6 @@ class TestRegistrationValidation:
         test_free_event: Event,
     ):
         """Test that user cannot register twice for same event."""
-        # First registration
         await registration_service.initiate_registration(
             user=test_user,
             event_id=test_free_event.id,
@@ -179,7 +177,6 @@ class TestRegistrationValidation:
             cancel_url="http://localhost/cancel",
         )
 
-        # Second registration should fail
         with pytest.raises(AlreadyRegisteredError):
             await registration_service.initiate_registration(
                 user=test_user,
@@ -198,7 +195,6 @@ class TestRegistrationValidation:
         db_session,
     ):
         """Test that registration fails when event is full."""
-        # Fill up the event (max 2 participants)
         reg1 = Registration(
             user_id=test_user.id,
             event_id=test_full_event.id,
@@ -208,7 +204,6 @@ class TestRegistrationValidation:
         db_session.add(reg1)
         await db_session.commit()
 
-        # Create another user
         from models.user import User, UserRole, AccountStatus
         user3 = User(
             google_id="google_789",
@@ -230,7 +225,6 @@ class TestRegistrationValidation:
         db_session.add(reg2)
         await db_session.commit()
 
-        # Now event is full - user should land on waitlist
         result = await registration_service.initiate_registration(
             user=test_member,
             event_id=test_full_event.id,
@@ -383,7 +377,6 @@ class TestPaymentConfirmation:
         test_event: Event,
     ):
         """Test confirming registration after payment."""
-        # Initiate registration
         result = await registration_service.initiate_registration(
             user=test_user,
             event_id=test_event.id,
@@ -393,10 +386,8 @@ class TestPaymentConfirmation:
 
         payment_id = result["payment_id"]
 
-        # Simulate payment completion
         payment_gateway.complete_payment(payment_id)
 
-        # Confirm registration
         registration = await registration_service.confirm_registration(payment_id)
 
         assert registration is not None
@@ -450,7 +441,6 @@ class TestCancellation:
         test_free_event: Event,
     ):
         """Test cancelling a registration."""
-        # Register
         result = await registration_service.initiate_registration(
             user=test_user,
             event_id=test_free_event.id,
@@ -458,7 +448,6 @@ class TestCancellation:
             cancel_url="http://localhost/cancel",
         )
 
-        # Cancel
         cancel_result = await registration_service.cancel_registration(
             registration_id=result["registration_id"],
             user_id=test_user.id,
@@ -537,7 +526,6 @@ class TestParticipantsList:
         test_free_event: Event,
     ):
         """Test getting list of confirmed participants."""
-        # Register two users
         await registration_service.initiate_registration(
             user=test_user,
             event_id=test_free_event.id,
@@ -624,7 +612,6 @@ class TestConcurrency:
             cancel_url="http://localhost/cancel",
         )
 
-        # Refresh event from database
         await db_session.refresh(test_free_event)
 
         assert test_free_event.version == initial_version + 1
@@ -638,11 +625,9 @@ class TestConcurrency:
         payment_gateway,
     ):
         """Test that available spots decrease after confirmed registration."""
-        # Check initial availability
         initial = await registration_service.check_availability(test_event.id)
         assert initial["available_spots"] == 10
 
-        # Register and confirm
         result = await registration_service.initiate_registration(
             user=test_user,
             event_id=test_event.id,
@@ -650,11 +635,9 @@ class TestConcurrency:
             cancel_url="http://localhost/cancel",
         )
 
-        # Complete payment
         payment_gateway.complete_payment(result["payment_id"])
         await registration_service.confirm_registration(result["payment_id"])
 
-        # Check availability again
         after = await registration_service.check_availability(test_event.id)
         assert after["available_spots"] == 9
         assert after["confirmed_count"] == 1

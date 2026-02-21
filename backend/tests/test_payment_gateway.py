@@ -141,7 +141,6 @@ class TestFakePaymentAdapterVerification:
         )
         create_result = await payment_gateway.create_payment(request)
 
-        # Complete the payment
         payment_gateway.complete_payment(create_result.payment_id)
 
         verify_result = await payment_gateway.verify_payment(create_result.payment_id)
@@ -373,7 +372,6 @@ class TestFakePaymentAdapterSimulation:
     @pytest.mark.asyncio
     async def test_failure_rate(self):
         """Test that failure rate causes random failures."""
-        # Gateway with 100% failure rate
         gateway = FakePaymentAdapter(failure_rate=1.0)
 
         request = PaymentRequest(

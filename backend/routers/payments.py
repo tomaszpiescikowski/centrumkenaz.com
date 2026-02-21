@@ -474,14 +474,12 @@ async def handle_payment_webhook(
     except ValidationError:
         raise HTTPException(status_code=422, detail="Invalid webhook payload")
 
-    # Get signature from headers (for real gateway)
     signature = request.headers.get("X-Signature")
 
     payment_gateway = get_payment_gateway()
     payment_service = PaymentService(db, payment_gateway)
     registration_service = RegistrationService(db, payment_service)
 
-    # Process webhook
     payment = await payment_service.process_webhook(payload.model_dump(), signature)
 
     if not payment:
@@ -490,7 +488,6 @@ async def handle_payment_webhook(
             message="Payment not found",
         )
 
-    # If payment completed, run domain-specific post-payment handlers
     if payment.status == PaymentStatus.COMPLETED.value:
         if payment.payment_type == PaymentType.EVENT.value:
             await registration_service.confirm_registration(payment.external_id)
@@ -604,11 +601,9 @@ async def complete_fake_payment(
     payment_service = PaymentService(db, payment_gateway)
     registration_service = RegistrationService(db, payment_service)
 
-    # Complete payment in fake gateway
     if hasattr(payment_gateway, 'complete_payment'):
         payment_gateway.complete_payment(payment_id)
 
-    # Process as webhook
     payment = await payment_service.process_webhook({
         "payment_id": payment_id,
         "status": PaymentStatus.COMPLETED.value,
@@ -655,11 +650,9 @@ async def fail_fake_payment(
 
     payment_service = PaymentService(db, payment_gateway)
 
-    # Fail payment in fake gateway
     if hasattr(payment_gateway, 'fail_payment'):
         payment_gateway.fail_payment(payment_id)
 
-    # Process as webhook
     payment = await payment_service.process_webhook({
         "payment_id": payment_id,
         "status": PaymentStatus.FAILED.value,

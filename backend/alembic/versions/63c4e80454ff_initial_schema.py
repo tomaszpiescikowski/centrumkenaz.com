@@ -33,9 +33,7 @@ depends_on = None
 
 def upgrade() -> None:
     """Create all tables from SQLAlchemy models."""
-    # Get a connection from alembic context
     bind = op.get_bind()
-    # Create all tables defined in Base.metadata
     Base.metadata.create_all(bind=bind)
 
 

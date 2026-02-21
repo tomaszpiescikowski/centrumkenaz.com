@@ -334,14 +334,12 @@ async def list_events(
         except ValueError:
             raise HTTPException(status_code=400, detail="Invalid month format, expected YYYY-MM")
 
-        # Compute UTC range [month_start, next_month_start)
         month_start = datetime(year, month_num, 1)
         if month_num == 12:
             next_month_start = datetime(year + 1, 1, 1)
         else:
             next_month_start = datetime(year, month_num + 1, 1)
         start_from = month_start
-        # inclusive end
         start_to = next_month_start - timedelta(microseconds=1)
 
     stmt = select(Event)
@@ -727,7 +725,6 @@ async def cancel_registration(
     payment_service = PaymentService(db, payment_gateway)
     registration_service = RegistrationService(db, payment_service)
 
-    # Find registration
     registrations = await registration_service.get_user_registrations(user.id)
     registration = next(
         (

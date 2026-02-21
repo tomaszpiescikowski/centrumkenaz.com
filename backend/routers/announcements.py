@@ -87,7 +87,6 @@ async def create_announcement(
     await db.commit()
     await db.refresh(announcement)
 
-    # Eagerly load author for response
     result = await db.execute(
         select(Announcement)
         .options(joinedload(Announcement.author))

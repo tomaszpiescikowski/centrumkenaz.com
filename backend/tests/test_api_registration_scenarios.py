@@ -103,39 +103,41 @@ async def _create_paid_manual_event(
 
 @pytest.mark.asyncio
 async def test_scenario_waitlist_cancellation_promotion_manual_payment_and_stats(db_session):
-    """Scenariusz: event płatny (manual verification), zapełnienie, waitlista, rezygnacja, promocja, finalny bilans.
+    """
+    Full waitlist-promotion-manual-payment lifecycle with stats verification.
 
-    Cel biznesowy:
-    - Odtworzyć realny flow: A i B zapisują się na płatne wydarzenie z limitowanymi miejscami,
-      C trafia na waitlistę. B rezygnuje przed cutoffem -> C zostaje wypromowany z waitlisty
-      do statusu wymagającego manualnej płatności. Następnie A i C przechodzą przez manual
-      confirmation + admin approval, a na końcu sprawdzamy: uczestników, availability,
-      refund task dla B oraz statystyki płatności/eventu.
+    Reproduces a real flow: users A and B register for a paid event with limited
+    spots (manual verification mode), user C lands on the waitlist. B cancels
+    before the cutoff, promoting C from the waitlist to manual_payment_required.
+    A and C then go through manual confirmation + admin approval. Finally, the
+    test verifies participants, availability, B's refund task, and payment/event
+    statistics.
 
-    Endpoints użyte w teście (kolejność):
-    1) POST /events/{event_id}/register (A)  -> 200 manual_payment_required
-    2) POST /events/{event_id}/register (B)  -> 200 manual_payment_required
-    3) POST /events/{event_id}/register (C)  -> 200 waitlist
-    4) GET  /events/{event_id}/availability  -> zajęte miejsca liczone także przez manual_payment_required
-    5) POST /registrations/{regA}/manual-payment/confirm -> 200 manual_payment_verification
-    6) GET  /admin/manual-payments/pending  -> zawiera A
-    7) POST /admin/manual-payments/{regA}/approve -> 200 status confirmed
-    8) POST /registrations/{regB}/cancel -> 200 success:true + refund_task_id
-       - efekt uboczny: promocja C z waitlisty
-    9) GET  /registrations/{regC}/manual-payment (C) -> 200 status manual_payment_required + promoted_from_waitlist:true
+    Endpoints exercised (in order):
+     1) POST /events/{event_id}/register (A)  -> 200 manual_payment_required
+     2) POST /events/{event_id}/register (B)  -> 200 manual_payment_required
+     3) POST /events/{event_id}/register (C)  -> 200 waitlist
+     4) GET  /events/{event_id}/availability  -> spots occupied by manual_payment_required too
+     5) POST /registrations/{regA}/manual-payment/confirm -> 200 manual_payment_verification
+     6) GET  /admin/manual-payments/pending  -> includes A
+     7) POST /admin/manual-payments/{regA}/approve -> 200 status confirmed
+     8) POST /registrations/{regB}/cancel -> 200 success + refund_task_id (side-effect: promotes C)
+     9) GET  /registrations/{regC}/manual-payment -> 200 manual_payment_required, promoted_from_waitlist
     10) POST /registrations/{regC}/manual-payment/confirm -> 200 manual_payment_verification
     11) POST /admin/manual-payments/{regC}/approve -> 200 confirmed
-    12) GET  /events/{event_id}/participants  -> A i C
-    13) GET  /admin/manual-payments/refunds   -> refund task dla B (bez rekomendacji refundu, bo brak payment_id)
+    12) GET  /events/{event_id}/participants  -> A and C
+    13) GET  /admin/manual-payments/refunds   -> refund task for B (no refund recommendation, no payment_id)
     14) GET  /admin/stats/payments            -> completed_count=2, refunded_count=0, completed_amount=100.00 PLN
-    15) GET  /admin/stats/events              -> dla eventu total_paid=100.00 PLN
+    15) GET  /admin/stats/events              -> total_paid=100.00 PLN for the event
 
-    Oczekiwane kluczowe własności domenowe:
-    - Statusy `manual_payment_required` zajmują miejsce (availability => available_spots=0, is_available=false).
-    - Rezygnacja B przed cutoffem generuje `RegistrationRefundTask`, ale nie procesuje refundu automatycznie
-      (bo event jest w manual-payment mode).
-    - Promocja z waitlisty dla eventu manual-payment ustawia C na `manual_payment_required` i deadline.
-    - Admin approval manualnej płatności zmienia payment na completed oraz registration na confirmed.
+    Key domain invariants verified:
+    - manual_payment_required registrations occupy a spot (available_spots=0, is_available=false).
+    - Cancelling before cutoff creates a RegistrationRefundTask but does not process an
+      automatic refund (event uses manual-payment mode).
+    - Waitlist promotion for a manual-payment event sets the promoted user to
+      manual_payment_required with a deadline.
+    - Admin approval of a manual payment sets Payment.status=completed and
+      Registration.status=confirmed.
     """
 
     admin = await _create_user(
@@ -325,19 +327,20 @@ async def test_scenario_waitlist_cancellation_promotion_manual_payment_and_stats
 
 @pytest.mark.asyncio
 async def test_scenario_manual_payment_then_cancel_then_admin_marks_refund_paid(db_session):
-    """Scenariusz: płatność manualna -> rezygnacja -> admin oznacza refund jako wypłacony (offline).
+    """
+    Manual payment, cancellation, and admin-marked offline refund lifecycle.
 
-    Cel:
-    - Sprawdzić pełny cykl manualnej płatności eventowej, następnie rezygnacji w oknie anulowania,
-      i ręcznego oznaczenia zwrotu przez admina w module refund tasków.
+    Covers the full cycle: user registers for a paid event (manual mode), declares
+    a bank transfer, admin approves the payment, user cancels within the cutoff
+    window, and admin marks the refund as paid offline via the refund-tasks module.
 
-    Logika domenowa do pokrycia:
-    - User deklaruje przelew: Payment trafia do DB jako EVENT + status=processing.
-    - Admin akceptuje przelew: Payment.status -> completed i Registration.status -> confirmed.
-    - User anuluje: Registration.status -> cancelled; tworzy się RegistrationRefundTask z rekomendacją refundu
-      (bo refund_eligible=True i payment_id istnieje).
-    - Admin oznacza refund jako wypłacony: Payment.status -> refunded i Registration.status -> refunded.
-    - Statystyki płatności oraz eventu uwzględniają zmianę statusu na refunded.
+    Domain logic verified:
+    - User declares transfer: Payment created as EVENT with status=processing.
+    - Admin approves: Payment.status -> completed, Registration.status -> confirmed.
+    - User cancels: Registration.status -> cancelled; RegistrationRefundTask created
+      with refund_eligible=True (payment_id exists, so refund is recommended).
+    - Admin marks refund paid: Payment.status -> refunded, Registration.status -> refunded.
+    - Payment and event statistics reflect the refunded status.
 
     Endpoints:
     - POST /events/{id}/register

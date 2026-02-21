@@ -27,21 +27,17 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan - startup and shutdown."""
-    # Startup
     await ensure_db_schema()
     yield
-    # Shutdown
-    pass
 
 
 app = FastAPI(
     title=settings.app_name,
-    description="API dla platformy społecznościowej Kenaz",
+    description="API for the Kenaz social platform",
     version="1.0.0",
     lifespan=lifespan,
 )
 
-# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[settings.frontend_url],
@@ -50,7 +46,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
 app.include_router(auth_router)
 app.include_router(events_router)
 app.include_router(payments_router)

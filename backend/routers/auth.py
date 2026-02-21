@@ -232,21 +232,12 @@ async def google_callback(
     auth_service = AuthService(db)
 
     try:
-        # Exchange code for tokens
         tokens = await auth_service.exchange_code_for_tokens(code)
-
-        # Get user info from Google
         user_info = await auth_service.get_google_user_info(tokens["access_token"])
-
-        # Get or create user
         user = await auth_service.get_or_create_user(user_info)
         await auth_service.update_google_tokens(user, tokens)
-
-        # Create JWT tokens
         access_token = auth_service.create_access_token(user)
         refresh_token = auth_service.create_refresh_token(user)
-
-        # Redirect to frontend with tokens
         redirect_url = f"{settings.frontend_url}/auth/callback?access_token={access_token}&refresh_token={refresh_token}"
         return RedirectResponse(url=redirect_url)
 

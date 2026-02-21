@@ -814,14 +814,16 @@ class TestBalanceEdgeCases:
 
 
 class TestBoundaryTimestamps:
-    """Testy weryfikujące poprawność filtrowania na granicy okresów."""
+    """Verify correct filtering at period boundaries."""
 
     @pytest.mark.asyncio
     async def test_payment_at_midnight_first_day_of_month_included(self, db_session, admin_client, admin_user):
-        """Scenariusz: Płatność została zarejestrowana dokładnie o 00:00:00.000000
-        pierwszego dnia miesiąca (2026-03-01 00:00:00). Endpoint powinien ją
-        uwzględnić w bilansie za marzec 2026, ponieważ date_from to 2026-03-01
-        bez godziny (domyślnie 00:00:00)."""
+        """
+        Verify that a payment at exactly midnight on the first day of a month is included.
+
+        A payment created at 2026-03-01 00:00:00.000000 must appear in the March 2026
+        balance because date_from defaults to the first day at 00:00:00.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("11.11"),
             payment_type="event",
@@ -834,9 +836,12 @@ class TestBoundaryTimestamps:
 
     @pytest.mark.asyncio
     async def test_payment_at_last_microsecond_of_month_included(self, db_session, admin_client, admin_user):
-        """Scenariusz: Płatność zarejestrowana o 23:59:59.999999 ostatniego dnia
-        miesiąca (2026-03-31). date_to to 2026-03-31 23:59:59.999999, więc ta
-        płatność powinna być uwzględniona."""
+        """
+        Verify that a payment at the last microsecond of a month is included.
+
+        A payment created at 2026-03-31 23:59:59.999999 falls within the date_to
+        boundary and must be counted in the March 2026 balance.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("22.22"),
             payment_type="event",
@@ -848,8 +853,12 @@ class TestBoundaryTimestamps:
 
     @pytest.mark.asyncio
     async def test_payment_one_second_before_period_excluded(self, db_session, admin_client, admin_user):
-        """Scenariusz: Płatność o 23:59:59 dnia 28 lutego 2026, odpytujemy bilans
-        za marzec. Płatność jest sprzed początku okresu — nie powinna się liczyć."""
+        """
+        Verify that a payment one second before the period start is excluded.
+
+        A payment at 23:59:59 on February 28, 2026 precedes the March period start
+        and must not appear in the March balance.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("33.33"),
             payment_type="event",
@@ -862,8 +871,11 @@ class TestBoundaryTimestamps:
 
     @pytest.mark.asyncio
     async def test_quarter_boundary_last_second_of_q1_included(self, db_session, admin_client, admin_user):
-        """Scenariusz: Płatność na samym końcu Q1 — 31 marca 23:59:59. Powinna
-        zostać uwzględniona w Q1, ale nie w Q2."""
+        """
+        Verify that a payment at the last second of Q1 is included in Q1 only.
+
+        A payment on March 31 at 23:59:59 belongs to Q1 and must not leak into Q2.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("44.44"),
             payment_type="event",
@@ -876,9 +888,12 @@ class TestBoundaryTimestamps:
 
     @pytest.mark.asyncio
     async def test_year_boundary_dec31_vs_jan1(self, db_session, admin_client, admin_user):
-        """Scenariusz: Dwie płatności — jedna 31 grudnia 2025 o 23:59, druga
-        1 stycznia 2026 o 00:00. Bilans za 2025 powinien zawierać tylko
-        pierwszą, za 2026 — tylko drugą."""
+        """
+        Verify that year boundary correctly separates December 31 from January 1.
+
+        A payment on Dec 31, 2025 at 23:59 must appear only in the 2025 balance,
+        while a payment on Jan 1, 2026 at 00:00 must appear only in January 2026.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("100.00"),
             payment_type="event",
@@ -896,13 +911,16 @@ class TestBoundaryTimestamps:
 
 
 class TestMultiUserAggregation:
-    """Testy potwierdzające, że bilans sumuje płatności od wielu użytkowników."""
+    """Verify that the balance aggregates payments from multiple users."""
 
     @pytest.mark.asyncio
     async def test_payments_from_different_users_summed(self, db_session, admin_client, admin_user):
-        """Scenariusz: Trzech różnych użytkowników dokonuje płatności za
-        wydarzenia w tym samym miesiącu. Bilans powinien zsumować kwoty
-        od wszystkich użytkowników — endpoint nie filtruje po user_id."""
+        """
+        Verify that payments from different users are summed together.
+
+        Three users make event payments in the same month. The balance endpoint
+        does not filter by user_id, so all amounts must be aggregated.
+        """
         user_a = await _make_user(db_session)
         user_b = await _make_user(db_session)
         for user, amount in [(admin_user, "10.00"), (user_a, "20.00"), (user_b, "30.00")]:
@@ -917,9 +935,12 @@ class TestMultiUserAggregation:
 
     @pytest.mark.asyncio
     async def test_same_event_paid_by_multiple_users(self, db_session, admin_client, admin_user):
-        """Scenariusz: Jedno wydarzenie, dwóch uczestników płaci osobno.
-        Oba płatności powinny się pojawić w per-event breakdown
-        z poprawną sumą przychodu."""
+        """
+        Verify that multiple users paying for the same event are summed in the breakdown.
+
+        Two users pay separately for one event. The per-event breakdown must show
+        both payments with the correct total income.
+        """
         ev = await _make_event(db_session, "Multi-user event", datetime(2027, 2, 10))
         user_b = await _make_user(db_session)
         p1 = await _make_payment(
@@ -941,93 +962,131 @@ class TestMultiUserAggregation:
 
 
 class TestPeriodParsingHardcore:
-    """Intensywne testy parsowania parametru period z dziwnymi wartościami."""
+    """Stress tests for parsing the period parameter with unusual values."""
 
     @pytest.mark.asyncio
     async def test_month_00_invalid(self, admin_client):
-        """Scenariusz: Miesiąc '00' jest pozornie poprawny formatem YYYY-MM,
-        ale miesiąc 0 nie istnieje. Endpoint musi zwrócić 400."""
+        """
+        Verify that month '00' is rejected as invalid.
+
+        The format YYYY-MM is syntactically correct, but month 0 does not exist.
+        The endpoint must return 400.
+        """
         resp = await admin_client.get("/admin/balance?period=2026-00")
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
     async def test_quarter_0_invalid(self, admin_client):
-        """Scenariusz: Kwartał Q0 nie istnieje (dozwolone: Q1-Q4).
-        Endpoint powinien zwrócić 400."""
+        """
+        Verify that quarter Q0 is rejected as invalid.
+
+        Only Q1 through Q4 are valid quarters. The endpoint must return 400.
+        """
         resp = await admin_client.get("/admin/balance?period=2026-Q0")
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
     async def test_negative_year_invalid(self, admin_client):
-        """Scenariusz: Rok ujemny (-2026). Regex wymaga dokładnie 4 cyfr,
-        więc minus na początku nie pasuje do żadnego wzorca."""
+        """
+        Verify that a negative year is rejected.
+
+        The regex requires exactly four digits, so a leading minus sign does not
+        match any accepted pattern.
+        """
         resp = await admin_client.get("/admin/balance?period=-2026")
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
     async def test_period_with_trailing_whitespace(self, admin_client):
-        """Scenariusz: Parametr z trailing space '2026-01 '. Serwer
-        powinien go odrzucić jako niepasujący do wzorca."""
+        """
+        Verify that trailing whitespace in the period parameter is rejected.
+
+        The value '2026-01 ' does not match the expected pattern and must
+        return 400.
+        """
         resp = await admin_client.get("/admin/balance?period=2026-01 ")
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
     async def test_period_with_leading_zero_year(self, admin_client):
-        """Scenariusz: Rok z zerem na początku '0026-01'. Regex wymaga 4 cyfr,
-        więc '0026' pasuje do formatu. Sprawdzamy, czy nie powoduje
-        wewnętrznego błędu — oczekujemy 200 (poprawna odpowiedź, ale puste dane)."""
+        """
+        Verify that a leading-zero year like '0026-01' is accepted gracefully.
+
+        The regex requires exactly four digits, so '0026' matches. The endpoint
+        should return 200 with empty data rather than an internal error.
+        """
         resp = await admin_client.get("/admin/balance?period=0026-01")
         assert resp.status_code == 200
         assert resp.json()["total_income"] == "0.00 PLN"
 
     @pytest.mark.asyncio
     async def test_very_far_future_year(self, admin_client):
-        """Scenariusz: Bilans za rok 9999. Nie powinno być żadnych danych,
-        ale endpoint musi odpowiedzieć poprawnie bez wyjątku."""
+        """
+        Verify that a far-future year like 9999 returns an empty balance.
+
+        No data should exist, but the endpoint must respond successfully without
+        raising an exception.
+        """
         resp = await admin_client.get("/admin/balance?period=9999")
         assert resp.status_code == 200
         assert resp.json()["total_income"] == "0.00 PLN"
 
     @pytest.mark.asyncio
     async def test_five_digit_year_invalid(self, admin_client):
-        """Scenariusz: Rok pięciocyfrowy '10000'. Regex wymaga dokładnie 4 cyfr,
-        więc powinien zwrócić 400."""
+        """
+        Verify that a five-digit year like '10000' is rejected.
+
+        The regex requires exactly four digits, so five digits must return 400.
+        """
         resp = await admin_client.get("/admin/balance?period=10000")
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
     async def test_empty_period_defaults_to_current(self, admin_client):
-        """Scenariusz: Pusty string jako period (?period=). W Pythonie
-        pusty string jest falsy, więc `if not period:` jest True i endpoint
-        używa domyślnego bieżącego miesiąca. Odpowiedź powinna być 200."""
+        """
+        Verify that an empty period parameter defaults to the current month.
+
+        In Python an empty string is falsy, so the endpoint falls back to the
+        current month. The response should be 200 with a valid period_label.
+        """
         resp = await admin_client.get("/admin/balance?period=")
         assert resp.status_code == 200
-        # odpowiedź zawiera dane domyślnego bieżącego miesiąca
         assert "period_label" in resp.json()
 
     @pytest.mark.asyncio
     async def test_period_sql_injection_attempt(self, admin_client):
-        """Scenariusz: Parametr period zawiera próbę SQL injection:
-        '2026-01; DROP TABLE payments;--'. Regex nie dopuści tego formatu."""
+        """
+        Verify that an SQL injection attempt in the period parameter is rejected.
+
+        The value '2026-01; DROP TABLE payments;--' does not match the expected
+        regex and must return 400.
+        """
         resp = await admin_client.get("/admin/balance?period=2026-01; DROP TABLE payments;--")
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
     async def test_period_with_unicode(self, admin_client):
-        """Scenariusz: Parametr period z polskimi znakami '2026-Q①'.
-        Regex powinien odrzucić taki format."""
+        """
+        Verify that Unicode characters in the period parameter are rejected.
+
+        The value '2026-Q①' contains a non-ASCII circled digit and must not
+        match the expected regex pattern.
+        """
         resp = await admin_client.get("/admin/balance?period=2026-Q①")
         assert resp.status_code == 400
 
 
 class TestDecimalPrecision:
-    """Testy weryfikujące precyzję arytmetyki dziesiętnej w bilansie."""
+    """Verify decimal arithmetic precision in the balance calculations."""
 
     @pytest.mark.asyncio
     async def test_fractional_amounts_summed_precisely(self, db_session, admin_client, admin_user):
-        """Scenariusz: Trzy płatności po 33.33 PLN powinny dać 99.99 PLN,
-        a nie 100.00 PLN (co byłoby błędem zaokrąglenia float).
-        Weryfikujemy, że Decimal arithmetic jest używany poprawnie."""
+        """
+        Verify that fractional amounts are summed with exact decimal precision.
+
+        Three payments of 33.33 PLN must total 99.99 PLN, not 100.00 PLN, which
+        would indicate a floating-point rounding error instead of proper Decimal use.
+        """
         for _ in range(3):
             await _make_payment(
                 db_session, admin_user.id, Decimal("33.33"),
@@ -1040,8 +1099,11 @@ class TestDecimalPrecision:
 
     @pytest.mark.asyncio
     async def test_one_cent_payment(self, db_session, admin_client, admin_user):
-        """Scenariusz: Płatność na minimalną kwotę — 0.01 PLN.
-        Upewniamy się, że nie jest pomijana ani zaokrąglana do zera."""
+        """
+        Verify that a minimal 0.01 PLN payment is correctly tracked.
+
+        The smallest possible amount must not be skipped or rounded to zero.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("0.01"),
             payment_type="subscription",
@@ -1055,9 +1117,12 @@ class TestDecimalPrecision:
 
     @pytest.mark.asyncio
     async def test_large_amount_payment(self, db_session, admin_client, admin_user):
-        """Scenariusz: Płatność na bardzo dużą kwotę — 99999999.99 (maksimum
-        dla Numeric(10,2)). Sprawdzamy, czy formatowanie i sumowanie
-        nie powodują overflow ani obcięcia."""
+        """
+        Verify that a very large payment amount is handled without overflow.
+
+        A payment of 99999999.99 (the maximum for Numeric(10,2)) must be
+        formatted and summed without truncation.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("99999999.99"),
             payment_type="event",
@@ -1069,9 +1134,12 @@ class TestDecimalPrecision:
 
     @pytest.mark.asyncio
     async def test_many_small_payments_accumulated(self, db_session, admin_client, admin_user):
-        """Scenariusz: 100 płatności po 0.01 PLN. Suma powinna wynosić
-        dokładnie 1.00 PLN. Testuje akumulację wielu małych wartości
-        bez dryfu precyzji."""
+        """
+        Verify that many small payments accumulate without precision drift.
+
+        One hundred payments of 0.01 PLN must total exactly 1.00 PLN, testing
+        that repeated small additions do not introduce floating-point errors.
+        """
         for _ in range(100):
             await _make_payment(
                 db_session, admin_user.id, Decimal("0.01"),
@@ -1085,8 +1153,12 @@ class TestDecimalPrecision:
 
     @pytest.mark.asyncio
     async def test_net_exact_zero_when_income_equals_refunds(self, db_session, admin_client, admin_user):
-        """Scenariusz: Przychód = 123.45 PLN, zwrot = 123.45 PLN. Bilans
-        netto powinien wynosić dokładnie 0.00 PLN, nie -0.00 czy epsilon."""
+        """
+        Verify that matching income and refunds produce exactly zero net.
+
+        Income of 123.45 PLN and a refund of 123.45 PLN must yield a net
+        of exactly 0.00 PLN, not -0.00 or an epsilon residue.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("123.45"),
             payment_type="event",
@@ -1101,17 +1173,20 @@ class TestDecimalPrecision:
         resp = await admin_client.get("/admin/balance?period=2027-07")
         data = resp.json()
         assert data["total_net"] == "0.00 PLN"
-        # upewniamy się, że nie ma "-0.00"
         assert "-" not in data["total_net"]
 
 
 class TestSubscriptionExtraDataEdgeCases:
-    """Testy obejmujące dziwne wartości extra_data w płatnościach subskrypcyjnych."""
+    """Cover unusual extra_data values in subscription payments."""
 
     @pytest.mark.asyncio
     async def test_extra_data_null(self, db_session, admin_client, admin_user):
-        """Scenariusz: Płatność subskrypcyjna z extra_data = NULL w bazie.
-        Parser powinien przypisać plan_code = 'unknown' zamiast wyrzucać wyjątek."""
+        """
+        Verify that a subscription payment with NULL extra_data gets plan_code 'unknown'.
+
+        The parser must assign 'unknown' as the plan_code instead of raising an exception
+        when extra_data is absent from the database.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("20.00"),
             payment_type="subscription",
@@ -1125,8 +1200,12 @@ class TestSubscriptionExtraDataEdgeCases:
 
     @pytest.mark.asyncio
     async def test_extra_data_empty_json_object(self, db_session, admin_client, admin_user):
-        """Scenariusz: extra_data to poprawny JSON '{}', ale nie zawiera klucza
-        'plan_code'. Parser powinien ustawić plan_code = 'unknown'."""
+        """
+        Verify that an empty JSON object '{}' yields plan_code 'unknown'.
+
+        The JSON is valid but contains no 'plan_code' key, so the parser must
+        fall back to 'unknown'.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("20.00"),
             payment_type="subscription",
@@ -1139,9 +1218,12 @@ class TestSubscriptionExtraDataEdgeCases:
 
     @pytest.mark.asyncio
     async def test_extra_data_json_array_instead_of_object(self, db_session, admin_client, admin_user):
-        """Scenariusz: extra_data to poprawny JSON, ale tablica '[1, 2, 3]'
-        zamiast obiektu. isinstance(parsed, dict) powinno zwrócić False,
-        więc plan_code = 'unknown'."""
+        """
+        Verify that a JSON array instead of an object yields plan_code 'unknown'.
+
+        When extra_data is '[1, 2, 3]', isinstance(parsed, dict) returns False,
+        so the parser must default to 'unknown'.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("20.00"),
             payment_type="subscription",
@@ -1154,8 +1236,12 @@ class TestSubscriptionExtraDataEdgeCases:
 
     @pytest.mark.asyncio
     async def test_extra_data_plan_code_is_integer(self, db_session, admin_client, admin_user):
-        """Scenariusz: extra_data = '{"plan_code": 42}' — plan_code jest liczbą,
-        nie stringiem. Parser konwertuje przez str(), więc plan_code = '42'."""
+        """
+        Verify that a numeric plan_code is converted to its string representation.
+
+        When extra_data is '{"plan_code": 42}', the parser converts via str(),
+        so plan_code must be '42'.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("20.00"),
             payment_type="subscription",
@@ -1168,9 +1254,12 @@ class TestSubscriptionExtraDataEdgeCases:
 
     @pytest.mark.asyncio
     async def test_extra_data_plan_code_is_null(self, db_session, admin_client, admin_user):
-        """Scenariusz: extra_data = '{"plan_code": null}'. parsed.get('plan_code')
-        zwraca None, ale domyślna wartość w .get('plan_code', 'unknown') nie
-        działa bo klucz istnieje. Sprawdzamy, czy wynik to 'None' lub 'unknown'."""
+        """
+        Verify handling of a null plan_code inside valid JSON.
+
+        With extra_data '{"plan_code": null}', the key exists but its value is None.
+        The result may be 'None', 'unknown', or 'none' depending on implementation.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("20.00"),
             payment_type="subscription",
@@ -1179,15 +1268,16 @@ class TestSubscriptionExtraDataEdgeCases:
         )
         resp = await admin_client.get("/admin/balance?period=2027-12")
         data = resp.json()
-        # plan_code: null → .get daje None (klucz istnieje), str(None) = "None"
-        # albo endpoint obsługuje to jako "unknown" — oba są akceptowalne
         assert data["subscriptions"][0]["plan_code"] in ("None", "unknown", "none")
 
     @pytest.mark.asyncio
     async def test_extra_data_with_nested_plan_code(self, db_session, admin_client, admin_user):
-        """Scenariusz: extra_data = '{"subscription": {"plan_code": "monthly"}}'.
-        Klucz plan_code jest zagnieżdżony, więc .get('plan_code') na najwyższym
-        poziomie zwraca 'unknown'."""
+        """
+        Verify that a nested plan_code is not extracted from a child object.
+
+        When extra_data is '{"subscription": {"plan_code": "monthly"}}', the top-level
+        .get('plan_code') returns nothing, so plan_code must be 'unknown'.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("20.00"),
             payment_type="subscription",
@@ -1200,8 +1290,12 @@ class TestSubscriptionExtraDataEdgeCases:
 
     @pytest.mark.asyncio
     async def test_extra_data_empty_string_plan_code(self, db_session, admin_client, admin_user):
-        """Scenariusz: extra_data = '{"plan_code": ""}'. Pusty string jako
-        plan_code. Parser powinien go zaakceptować — str('') = ''."""
+        """
+        Verify that an empty string plan_code is preserved as-is.
+
+        When extra_data is '{"plan_code": ""}', the parser accepts the empty string
+        as a valid value.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("20.00"),
             payment_type="subscription",
@@ -1210,23 +1304,22 @@ class TestSubscriptionExtraDataEdgeCases:
         )
         resp = await admin_client.get("/admin/balance?period=2028-02")
         data = resp.json()
-        # pusty string to nadal poprawna wartość
         assert data["subscriptions"][0]["plan_code"] == ""
 
 
 class TestStatusCombinations:
-    """Testy pokrywające wszystkie statusy płatności i ich wpływ na bilans."""
+    """Cover all payment statuses and their impact on the balance."""
 
     @pytest.mark.asyncio
     async def test_all_six_statuses_at_once(self, db_session, admin_client, admin_user):
-        """Scenariusz: W jednym miesiącu mamy po jednej płatności na każdy
-        z 6 statusów (pending, processing, completed, failed, refunded, cancelled).
-        Bilans powinien:
-          - income: tylko completed (100 PLN)
-          - refunds: tylko refunded (50 PLN)
-          - net: 50 PLN
-          - pending: pending + processing (60 + 70 = 130 PLN)
-          - failed i cancelled: ignorowane całkowicie"""
+        """
+        Verify correct accounting when all six payment statuses coexist.
+
+        In one month, one payment per status (pending, processing, completed,
+        failed, refunded, cancelled). Income must include only completed,
+        refunds only refunded, pending must include pending + processing,
+        and failed/cancelled must be ignored entirely.
+        """
         statuses = [
             (DBPaymentStatus.PENDING.value, Decimal("60.00")),
             (DBPaymentStatus.PROCESSING.value, Decimal("70.00")),
@@ -1253,9 +1346,12 @@ class TestStatusCombinations:
 
     @pytest.mark.asyncio
     async def test_failed_not_counted_in_pending(self, db_session, admin_client, admin_user):
-        """Scenariusz: Dwie płatności — jedna failed, jedna cancelled.
-        Pending powinno być 0, income też 0. Te statusy nie powinny
-        pojawiać się nigdzie w bilansie."""
+        """
+        Verify that failed and cancelled payments do not appear anywhere in the balance.
+
+        Two payments (one failed, one cancelled) must result in zero income, zero
+        refunds, and zero pending.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("100.00"),
             status=DBPaymentStatus.FAILED.value,
@@ -1271,16 +1367,18 @@ class TestStatusCombinations:
         assert data["total_income"] == "0.00 PLN"
         assert data["total_refunds"] == "0.00 PLN"
         assert data["pending"]["pending_total"] == "0.00 PLN"
-        # failed/cancelled tworzą wpisy miesiąca z zerami (query nie filtruje statusów)
         for m in data["months"]:
             assert m["income_total"] == "0.00 PLN"
             assert m["refunds"] == "0.00 PLN"
 
     @pytest.mark.asyncio
     async def test_refunded_subscription_affects_subscription_breakdown(self, db_session, admin_client, admin_user):
-        """Scenariusz: Użytkownik kupił subskrypcję monthly za 20 PLN (completed),
-        potem dostał zwrot za taką samą (refunded, 20 PLN). Per-subscription
-        breakdown powinien pokazać: income=20, refunds=20, net=0."""
+        """
+        Verify that a refunded subscription appears in the subscription breakdown.
+
+        A completed monthly subscription (20 PLN) and a refunded one (20 PLN)
+        must show income=20, refunds=20, net=0 in the per-plan breakdown.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("20.00"),
             status=DBPaymentStatus.COMPLETED.value,
@@ -1306,14 +1404,17 @@ class TestStatusCombinations:
 
 
 class TestEventBreakdownHardcore:
-    """Testy krawędziowe dla podziału per-event."""
+    """Edge-case tests for the per-event breakdown."""
 
     @pytest.mark.asyncio
     async def test_event_payment_without_registration_not_in_events(self, db_session, admin_client, admin_user):
-        """Scenariusz: Płatność typu 'event' completed, ale zero powiązań
-        w tabeli registrations (np. orphaned payment). Totals powinien ją
-        policzyć (bo sumuje z tabeli payments), ale per-event breakdown
-        nie powinien jej pokazać (bo JOIN z registrations nie dopasuje)."""
+        """
+        Verify that an orphaned event payment is counted in totals but not in the event breakdown.
+
+        A completed event payment with no matching registration record still contributes
+        to total income, but the per-event breakdown excludes it because the JOIN with
+        registrations finds no match.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("50.00"),
             payment_type="event",
@@ -1323,14 +1424,16 @@ class TestEventBreakdownHardcore:
         data = resp.json()
         assert data["total_income"] == "50.00 PLN"
         assert data["total_income_event"] == "50.00 PLN"
-        # brak rejestracji → brak w per-event breakdown
         assert len(data["events"]) == 0
 
     @pytest.mark.asyncio
     async def test_multiple_events_sorted_by_income_desc(self, db_session, admin_client, admin_user):
-        """Scenariusz: Trzy wydarzenia z przychodami 10, 200, 50 PLN.
-        Per-event breakdown powinien być posortowany malejąco po income:
-        200, 50, 10."""
+        """
+        Verify that the per-event breakdown is sorted by income in descending order.
+
+        Three events with incomes of 10, 200, and 50 PLN must appear in the
+        breakdown ordered as 200, 50, 10.
+        """
         user_b = await _make_user(db_session)
         user_c = await _make_user(db_session)
         events_data = [
@@ -1354,8 +1457,12 @@ class TestEventBreakdownHardcore:
 
     @pytest.mark.asyncio
     async def test_event_with_zero_income_only_refund(self, db_session, admin_client, admin_user):
-        """Scenariusz: Wydarzenie ma tylko zwroty (refunded), zero completed.
-        Per-event breakdown powinien pokazać income=0, refunds=X, net ujemny."""
+        """
+        Verify that an event with only refunded payments shows negative net.
+
+        When an event has zero completed payments and only refunded ones, the
+        breakdown must show income=0, refunds=X, and a negative net value.
+        """
         ev = await _make_event(db_session, "AllRefunded", datetime(2028, 8, 1))
         p = await _make_payment(
             db_session, admin_user.id, Decimal("75.00"),
@@ -1373,9 +1480,12 @@ class TestEventBreakdownHardcore:
 
     @pytest.mark.asyncio
     async def test_event_city_is_null(self, db_session, admin_client, admin_user):
-        """Scenariusz: Wydarzenie z city=None (nieuzupełnione). Endpoint
-        powinien zwrócić pusty string zamiast null, aby frontend
-        nie musiał obsługiwać None."""
+        """
+        Verify that an event with no city returns an empty string instead of null.
+
+        When the event has city=None, the endpoint must return an empty string
+        so the frontend does not need to handle null values.
+        """
         ev = await _make_event(db_session, "Bezmiasto", datetime(2028, 9, 1), city="")
         p = await _make_payment(
             db_session, admin_user.id, Decimal("10.00"),
@@ -1389,13 +1499,16 @@ class TestEventBreakdownHardcore:
 
 
 class TestMonthlyBreakdownHardcore:
-    """Testy weryfikujące logikę podziału miesięcznego w rzadkich sytuacjach."""
+    """Verify monthly breakdown logic under rare edge cases."""
 
     @pytest.mark.asyncio
     async def test_monthly_missing_months_not_filled(self, db_session, admin_client, admin_user):
-        """Scenariusz: W Q1 2028 są płatności tylko w styczniu i marcu,
-        nie w lutym. Monthly breakdown powinien mieć tylko 2 wiersze
-        (styczeń, marzec) — endpoint NIE uzupełnia brakujących miesięcy zerami."""
+        """
+        Verify that months with no payments are omitted from the breakdown.
+
+        In Q1 2028, payments exist only in January and March. The endpoint
+        must return exactly 2 rows without filling in February with zeros.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("10.00"),
             payment_type="event", created_at=datetime(2028, 1, 15),
@@ -1412,10 +1525,13 @@ class TestMonthlyBreakdownHardcore:
 
     @pytest.mark.asyncio
     async def test_monthly_refund_in_different_month_than_income(self, db_session, admin_client, admin_user):
-        """Scenariusz: Completed w styczniu, refunded w lutym (w ramach Q1).
-        Styczeń powinien mieć income=100, refunds=0, net=100.
-        Luty powinien mieć income=0, refunds=80, net=-80.
-        Total Q1: income=100, refunds=80, net=20."""
+        """
+        Verify correct allocation when a refund falls in a different month than the income.
+
+        Completed payment in January (100 PLN) and refund in February (80 PLN)
+        within Q1. January shows income=100/refunds=0, February shows income=0/
+        refunds=80, and the quarterly total nets to 20 PLN.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("100.00"),
             payment_type="event",
@@ -1442,9 +1558,12 @@ class TestMonthlyBreakdownHardcore:
 
     @pytest.mark.asyncio
     async def test_monthly_event_and_subscription_split_in_same_month(self, db_session, admin_client, admin_user):
-        """Scenariusz: W jednym miesiącu mamy płatność za event (50 PLN)
-        i za subscription (20 PLN). Monthly breakdown powinien rozbić
-        income_event i income_subscription."""
+        """
+        Verify that event and subscription income are split within the same month.
+
+        One month with an event payment (50 PLN) and a subscription payment (20 PLN).
+        The monthly breakdown must separate income_event and income_subscription.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("50.00"),
             payment_type="event", created_at=datetime(2028, 10, 5),
@@ -1464,13 +1583,16 @@ class TestMonthlyBreakdownHardcore:
 
 
 class TestPendingEdgeCases:
-    """Testy krawędziowe dotyczące sekcji pending."""
+    """Edge cases for the pending payments section."""
 
     @pytest.mark.asyncio
     async def test_pending_and_processing_both_counted(self, db_session, admin_client, admin_user):
-        """Scenariusz: W jednym miesiącu — 2 płatności pending i 1 processing,
-        wszystkie event. pending_event powinno zsumować kwoty ze wszystkich
-        trzech. Weryfikujemy, że obie statusy wliczają się do pending."""
+        """
+        Verify that both pending and processing statuses count toward the pending total.
+
+        Two pending and one processing event payments in one month. The pending_event
+        field must sum all three amounts, confirming both statuses contribute.
+        """
         for status in [DBPaymentStatus.PENDING.value, DBPaymentStatus.PENDING.value, DBPaymentStatus.PROCESSING.value]:
             await _make_payment(
                 db_session, admin_user.id, Decimal("10.00"),
@@ -1484,9 +1606,13 @@ class TestPendingEdgeCases:
 
     @pytest.mark.asyncio
     async def test_pending_not_included_in_income(self, db_session, admin_client, admin_user):
-        """Scenariusz: 5 pending + 1 completed, wszystkie event. income
-        powinno zawierać tylko completed (50 PLN), nie pending (5×10=50 PLN).
-        Pending ma osobną sekcję."""
+        """
+        Verify that pending payments are excluded from income.
+
+        Five pending event payments (5x10 PLN) plus one completed (50 PLN).
+        Income must only include the completed payment; pending amounts appear
+        exclusively in the pending section.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("50.00"),
             status=DBPaymentStatus.COMPLETED.value,
@@ -1505,9 +1631,12 @@ class TestPendingEdgeCases:
 
     @pytest.mark.asyncio
     async def test_pending_subscription_and_event_separated(self, db_session, admin_client, admin_user):
-        """Scenariusz: Pending event (30 PLN) + pending subscription (20 PLN).
-        Pending sekcja powinna rozdzielić je na event i subscription
-        z poprawnymi kwotami i liczbami."""
+        """
+        Verify that pending amounts are separated by payment type.
+
+        Pending event (30 PLN) and pending subscription (20 PLN) must appear
+        as distinct entries in the pending section with correct amounts and counts.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("30.00"),
             status=DBPaymentStatus.PENDING.value,
@@ -1528,13 +1657,16 @@ class TestPendingEdgeCases:
 
 
 class TestConcurrentPeriodsIsolation:
-    """Testy weryfikujące, że zapytania o różne okresy nie mieszają danych."""
+    """Verify that queries for different periods do not leak data between them."""
 
     @pytest.mark.asyncio
     async def test_adjacent_months_isolated(self, db_session, admin_client, admin_user):
-        """Scenariusz: Płatności w styczniu (100 PLN) i lutym (200 PLN) 2029.
-        Zapytanie o styczeń zwraca 100, o luty 200. Dane nie przenikają między
-        sąsiednimi miesiącami."""
+        """
+        Verify that adjacent months are fully isolated.
+
+        Payments in January (100 PLN) and February (200 PLN) 2029. Querying January
+        returns 100, February returns 200, and Q1 returns 300.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("100.00"),
             payment_type="event", created_at=datetime(2029, 1, 15),
@@ -1553,9 +1685,12 @@ class TestConcurrentPeriodsIsolation:
 
     @pytest.mark.asyncio
     async def test_month_within_quarter_sums_correctly(self, db_session, admin_client, admin_user):
-        """Scenariusz: Płatności w kwietniu (10), maju (20), czerwcu (30) 2029.
-        Q2 powinno dać 60 PLN. Każdy miesiąc osobno — swoją kwotę.
-        Ponadto bilans roczny za 2029 = 60 (brak innych)."""
+        """
+        Verify that quarterly totals equal the sum of individual months.
+
+        Payments in April (10), May (20), June (30) 2029. Q2 must total 60 PLN,
+        each month returns its own amount, and the yearly balance also equals 60.
+        """
         for m, amt in [(4, "10.00"), (5, "20.00"), (6, "30.00")]:
             await _make_payment(
                 db_session, admin_user.id, Decimal(amt),
@@ -1570,15 +1705,16 @@ class TestConcurrentPeriodsIsolation:
 
 
 class TestMixedPaymentTypes:
-    """Testy obejmujące jednoczesne płatności event i subscription
-    w różnych statusach w tym samym okresie."""
+    """Cover concurrent event and subscription payments with mixed statuses in the same period."""
 
     @pytest.mark.asyncio
     async def test_subscription_refund_not_counted_as_event_refund(self, db_session, admin_client, admin_user):
-        """Scenariusz: Completed event (50 PLN) + refunded subscription (20 PLN).
-        income_event=50, income_subscription=0, refunds=20 (od subskrypcji).
-        Net powinno wynosić 30 PLN. Zwrot subskrypcji nie powinien wpływać
-        na income_event."""
+        """
+        Verify that a subscription refund does not affect event income.
+
+        Completed event (50 PLN) plus refunded subscription (20 PLN). Event income
+        must remain 50, subscription income 0, total refunds 20, and net 30 PLN.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("50.00"),
             payment_type="event", created_at=datetime(2029, 3, 1),
@@ -1599,10 +1735,12 @@ class TestMixedPaymentTypes:
 
     @pytest.mark.asyncio
     async def test_pending_event_and_completed_subscription_together(self, db_session, admin_client, admin_user):
-        """Scenariusz: Pending event (100 PLN) + completed subscription (200 PLN).
-        Income powinno zawierać tylko completed sub (200 PLN).
-        Pending sekcja powinna pokazać event=100 PLN.
-        Subscription breakdown: 200 PLN income. Event breakdown: brak (bo pending)."""
+        """
+        Verify correct separation of pending events and completed subscriptions.
+
+        Pending event (100 PLN) plus completed subscription (200 PLN). Income must
+        include only the completed subscription. The pending section shows the event.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("100.00"),
             status=DBPaymentStatus.PENDING.value,
@@ -1623,12 +1761,16 @@ class TestMixedPaymentTypes:
 
 
 class TestSpecialDates:
-    """Testy obejmujące specyficzne daty kalendarzowe."""
+    """Cover special calendar dates and boundary conditions."""
 
     @pytest.mark.asyncio
     async def test_leap_year_feb29_payment_included(self, db_session, admin_client, admin_user):
-        """Scenariusz: Płatność dokładnie 29 lutego 2024 (rok przestępny).
-        Bilans za 2024-02 powinien ją uwzględnić, a date_to = 2024-02-29."""
+        """
+        Verify that a payment on Feb 29 of a leap year is included.
+
+        A payment created on 2024-02-29 must appear in the February 2024 balance
+        and the period end date must be 2024-02-29.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("29.02"),
             payment_type="event",
@@ -1641,25 +1783,36 @@ class TestSpecialDates:
 
     @pytest.mark.asyncio
     async def test_century_leap_year_2000(self, admin_client):
-        """Scenariusz: Rok 2000 jest wyjątkowo rokiem przestępnym (podzielny
-        przez 400). Luty 2000 ma 29 dni."""
+        """
+        Verify that the year 2000 is treated as a leap year.
+
+        The year 2000 is divisible by 400, making it a leap year.
+        February 2000 must have 29 days.
+        """
         resp = await admin_client.get("/admin/balance?period=2000-02")
         assert resp.status_code == 200
         assert resp.json()["date_to"] == "2000-02-29"
 
     @pytest.mark.asyncio
     async def test_non_leap_century_year_1900(self, admin_client):
-        """Scenariusz: Rok 1900 NIE jest przestępny (podzielny przez 100,
-        ale nie przez 400). Luty 1900 ma 28 dni."""
+        """
+        Verify that the year 1900 is NOT a leap year.
+
+        The year 1900 is divisible by 100 but not by 400, so February 1900
+        must have only 28 days.
+        """
         resp = await admin_client.get("/admin/balance?period=1900-02")
         assert resp.status_code == 200
         assert resp.json()["date_to"] == "1900-02-28"
 
     @pytest.mark.asyncio
     async def test_new_years_eve_midnight_boundary(self, db_session, admin_client, admin_user):
-        """Scenariusz: Płatność 31 grudnia 2029 o 23:59:59 i 1 stycznia 2030
-        o 00:00:00. Roczny bilans za 2029 powinien uwzględnić tylko pierwszą.
-        Q4 2029 — tylko pierwszą. Q1 2030 — tylko drugą."""
+        """
+        Verify correct boundary handling at midnight between years.
+
+        A payment at 2029-12-31 23:59:59 and one at 2030-01-01 00:00:00. The 2029
+        annual and Q4 balances must include only the first; Q1 2030 only the second.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("500.00"),
             payment_type="event",
@@ -1679,8 +1832,12 @@ class TestSpecialDates:
 
     @pytest.mark.asyncio
     async def test_all_four_quarters_sum_to_year(self, db_session, admin_client, admin_user):
-        """Scenariusz: Jedna płatność w każdym kwartale. Suma Q1+Q2+Q3+Q4
-        powinna równać się bilansowi rocznemu."""
+        """
+        Verify that the sum of all four quarterly balances equals the annual balance.
+
+        One payment per quarter. The sum of Q1+Q2+Q3+Q4 income must match the
+        yearly total.
+        """
         expected_total = Decimal("0")
         for m, amt in [(1, "10.00"), (4, "20.00"), (7, "30.00"), (10, "40.00")]:
             await _make_payment(
@@ -1701,12 +1858,16 @@ class TestSpecialDates:
 
 
 class TestResponseConsistency:
-    """Testy weryfikujące spójność wewnętrzną odpowiedzi."""
+    """Verify internal arithmetic consistency of the response."""
 
     @pytest.mark.asyncio
     async def test_total_income_equals_event_plus_subscription(self, db_session, admin_client, admin_user):
-        """Scenariusz: Mieszanka event i subscription completed. total_income
-        musi być dokładnie równe total_income_event + total_income_subscription."""
+        """
+        Verify that total_income equals event income plus subscription income.
+
+        Mixed event and subscription completed payments. The total_income field
+        must be exactly the sum of total_income_event and total_income_subscription.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("77.77"),
             payment_type="event", created_at=datetime(2030, 2, 1),
@@ -1725,8 +1886,12 @@ class TestResponseConsistency:
 
     @pytest.mark.asyncio
     async def test_net_equals_income_minus_refunds(self, db_session, admin_client, admin_user):
-        """Scenariusz: Przychody i zwroty w jednym miesiącu. total_net musi
-        być dokładnie total_income − total_refunds. Weryfikacja arytmetyczna."""
+        """
+        Verify that total_net equals total_income minus total_refunds.
+
+        Income and refunds in one month. The arithmetic identity
+        net = income - refunds must hold exactly.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("150.00"),
             payment_type="event", created_at=datetime(2030, 3, 1),
@@ -1745,9 +1910,12 @@ class TestResponseConsistency:
 
     @pytest.mark.asyncio
     async def test_monthly_rows_sum_to_totals(self, db_session, admin_client, admin_user):
-        """Scenariusz: Płatności rozłożone na 3 miesiące kwartału. Suma
-        income_total ze wszystkich wierszy monthly powinna równać się
-        total_income z odpowiedzi."""
+        """
+        Verify that monthly income rows sum to the quarterly total.
+
+        Payments spread across all 3 months of a quarter. The sum of income_total
+        from each monthly row must equal the response-level total_income.
+        """
         for m, amt in [(1, "11.11"), (2, "22.22"), (3, "33.33")]:
             await _make_payment(
                 db_session, admin_user.id, Decimal(amt),
@@ -1761,8 +1929,12 @@ class TestResponseConsistency:
 
     @pytest.mark.asyncio
     async def test_pending_total_equals_event_plus_subscription(self, db_session, admin_client, admin_user):
-        """Scenariusz: Pending event (30) + pending subscription (20).
-        pending_total musi być = pending_event + pending_subscription."""
+        """
+        Verify that pending_total equals pending_event plus pending_subscription.
+
+        Pending event (30 PLN) and pending subscription (20 PLN). The pending_total
+        field must equal the sum of its components.
+        """
         await _make_payment(
             db_session, admin_user.id, Decimal("30.00"),
             status=DBPaymentStatus.PENDING.value,
@@ -1782,8 +1954,12 @@ class TestResponseConsistency:
 
     @pytest.mark.asyncio
     async def test_tx_count_equals_sum_of_monthly_tx_counts(self, db_session, admin_client, admin_user):
-        """Scenariusz: Wiele płatności w różnych miesiącach Q2. Łączna
-        total_tx_count musi być równa sumie tx_count z wierszy monthly."""
+        """
+        Verify that total transaction count equals the sum of monthly counts.
+
+        Multiple payments across different months in Q2. The total_tx_count must
+        equal the sum of tx_count values from each monthly row.
+        """
         for m in [4, 5, 6]:
             for _ in range(m):  # 4+5+6 = 15 transakcji
                 await _make_payment(
@@ -1797,13 +1973,17 @@ class TestResponseConsistency:
 
 
 class TestHighVolumeData:
-    """Testy obciążeniowe z dużą liczbą rekordów."""
+    """Stress tests with a large number of records."""
 
     @pytest.mark.asyncio
     async def test_50_events_in_one_month(self, db_session, admin_client, admin_user):
-        """Scenariusz: 50 różnych wydarzeń, każde z 1 completed payment
-        w jednym miesiącu. Per-event breakdown powinien mieć 50 wierszy,
-        posortowanych malejąco po income. Total powinien się zgadzać."""
+        """
+        Verify the per-event breakdown handles 50 distinct events.
+
+        Fifty different events, each with one completed payment in a single month.
+        The breakdown must contain 50 rows sorted by income descending and the
+        total must match the sum of all individual amounts.
+        """
         total_expected = Decimal("0")
         users = [admin_user] + [await _make_user(db_session) for _ in range(49)]
         for i, user in enumerate(users):
@@ -1820,14 +2000,17 @@ class TestHighVolumeData:
         data = resp.json()
         assert len(data["events"]) == 50
         assert data["total_income"] == f"{total_expected:.2f} PLN"
-        # sprawdzamy sortowanie malejące
         incomes = [Decimal(e["income"].replace(" PLN", "")) for e in data["events"]]
         assert incomes == sorted(incomes, reverse=True)
 
     @pytest.mark.asyncio
     async def test_12_months_full_year(self, db_session, admin_client, admin_user):
-        """Scenariusz: Po jednej płatności w każdym z 12 miesięcy (10 PLN każda).
-        Bilans roczny: 120 PLN, 12 wierszy monthly. Weryfikujemy kompletność."""
+        """
+        Verify a full-year balance with payments in every month.
+
+        One payment per month for 12 months (10 PLN each). The annual balance
+        must total 120 PLN with 12 monthly rows and 12 transactions.
+        """
         for m in range(1, 13):
             await _make_payment(
                 db_session, admin_user.id, Decimal("10.00"),
@@ -1844,13 +2027,16 @@ class TestHighVolumeData:
 
 
 class TestSubscriptionPlanAggregation:
-    """Testy obejmujące nietypowe scenariusze z podziałem subskrypcji."""
+    """Cover unusual scenarios for the per-subscription-plan breakdown."""
 
     @pytest.mark.asyncio
     async def test_same_plan_multiple_payments_summed(self, db_session, admin_client, admin_user):
-        """Scenariusz: 5 completed payments na plan 'monthly', każda po 20 PLN.
-        Per-subscription breakdown powinien mieć 1 wiersz z income=100,
-        tx_count=5."""
+        """
+        Verify that multiple payments for the same plan are aggregated.
+
+        Five completed payments on plan 'monthly' at 20 PLN each. The subscription
+        breakdown must show one row with income=100 and tx_count=5.
+        """
         for _ in range(5):
             await _make_payment(
                 db_session, admin_user.id, Decimal("20.00"),
@@ -1867,8 +2053,12 @@ class TestSubscriptionPlanAggregation:
 
     @pytest.mark.asyncio
     async def test_three_plans_sorted_alphabetically(self, db_session, admin_client, admin_user):
-        """Scenariusz: Trzy plany — 'yearly', 'monthly', 'free'. W subscription
-        breakdown powinny być posortowane alfabetycznie (free, monthly, yearly)."""
+        """
+        Verify that subscription plans are sorted alphabetically.
+
+        Three plans ('yearly', 'monthly', 'free') must appear in the breakdown
+        in alphabetical order: free, monthly, yearly.
+        """
         for plan in ["yearly", "monthly", "free"]:
             await _make_payment(
                 db_session, admin_user.id, Decimal("10.00"),
@@ -1882,8 +2072,13 @@ class TestSubscriptionPlanAggregation:
 
     @pytest.mark.asyncio
     async def test_subscription_with_mixed_completed_and_refunded(self, db_session, admin_client, admin_user):
-        """Scenariusz: Plan 'yearly' — 3 completed (200 PLN każda) + 1 refunded (200 PLN).
-        Per-subscription: income=600, refunds=200, net=400, tx_count=3, refund_count=1."""
+        """
+        Verify plan breakdown with mixed completed and refunded payments.
+
+        Plan 'yearly' with 3 completed (200 PLN each) and 1 refunded (200 PLN).
+        Breakdown must show income=600, refunds=200, net=400, tx_count=3,
+        refund_count=1.
+        """
         for _ in range(3):
             await _make_payment(
                 db_session, admin_user.id, Decimal("200.00"),

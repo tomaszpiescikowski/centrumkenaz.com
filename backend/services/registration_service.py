@@ -502,7 +502,6 @@ class RegistrationService:
             except ConcurrencyError:
                 if attempt == max_retries - 1:
                     raise
-                # Retry with fresh data
                 await self.db.rollback()
                 continue
 
@@ -522,7 +521,6 @@ class RegistrationService:
         This method handles capacity checks, waitlists, manual payment flows,
         and payment initiation for paid events.
         """
-        # Get event with current version
         event = await self.get_event_with_registrations(event_id)
         if not event:
             raise EventNotFoundError(f"Event {event_id} not found")
@@ -530,7 +528,6 @@ class RegistrationService:
         resolved_occurrence_date = self._resolve_occurrence_date(event, occurrence_date)
         occurrence_start_dt, _ = self.get_occurrence_datetimes(event, resolved_occurrence_date)
 
-        # Check if user already registered for this specific occurrence.
         existing = next(
             (
                 r
@@ -548,16 +545,13 @@ class RegistrationService:
                 f"User {user.id} is already registered for event {event_id}"
             )
 
-        # Block registrations for past events
         now = datetime.now(occurrence_start_dt.tzinfo) if occurrence_start_dt.tzinfo else datetime.now()
         if occurrence_start_dt < now:
             raise RegistrationError("Cannot register for past events")
 
-        # Enforce subscription-only events
         if event.requires_subscription and not await self._is_active_subscriber(user, now):
             raise RegistrationError("Subscription required for this event")
 
-        # Determine price based on user subscription
         price = await self._resolve_price_for_user(user, event, now)
         manual_payment_mode = self._requires_manual_payment_for_registration(event, price)
 
@@ -586,7 +580,6 @@ class RegistrationService:
                 "occurrence_date": resolved_occurrence_date.isoformat(),
             }
 
-        # Check availability for this occurrence.
         occupied_count = len([
             r for r in event.registrations
             if self._occupies_spot(r.status) and r.occurrence_date == resolved_occurrence_date
@@ -637,12 +630,10 @@ class RegistrationService:
                 "occurrence_date": resolved_occurrence_date.isoformat(),
             }
 
-        # Try to acquire spot with optimistic lock
         current_version = event.version
         if not await self._acquire_spot_with_optimistic_lock(event_id, current_version):
             raise ConcurrencyError("Concurrent modification detected")
 
-        # Create or reuse registration
         pending_status = (
             RegistrationStatus.MANUAL_PAYMENT_REQUIRED.value
             if manual_payment_mode
@@ -672,7 +663,6 @@ class RegistrationService:
         if manual_payment_mode and not registration.manual_payment_due_at:
             registration.manual_payment_due_at = self._manual_payment_due_at(event, now)
 
-        # Handle free events
         if price == 0:
             registration.status = RegistrationStatus.CONFIRMED.value
             await self.db.commit()
@@ -712,7 +702,6 @@ class RegistrationService:
                 "occurrence_date": resolved_occurrence_date.isoformat(),
             }
 
-        # Create payment for paid gateway events
         payment, payment_result = await self.payment_service.create_event_payment(
             user=user,
             event_id=event_id,
@@ -1176,7 +1165,6 @@ class RegistrationService:
                 "error": "Cancellation window closed",
             }
 
-        # Update registration status
         previous_status = registration.status
         registration.status = RegistrationStatus.CANCELLED.value
 

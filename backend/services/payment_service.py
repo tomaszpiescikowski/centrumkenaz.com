@@ -156,7 +156,6 @@ class PaymentService:
         The method creates a gateway payment, persists a Payment record, and
         returns both the database record and gateway result.
         """
-        # Create payment request
         request = PaymentRequest(
             amount=amount,
             currency=Currency.PLN.value,
@@ -169,10 +168,8 @@ class PaymentService:
             metadata={"event_id": event_id, "type": "event"},
         )
 
-        # Call payment gateway
         result = await self.gateway.create_payment(request)
 
-        # Create payment record in database
         payment = Payment(
             user_id=user.id,
             external_id=result.payment_id,
@@ -328,7 +325,6 @@ class PaymentService:
         The method returns the updated Payment record or None when the payment
         does not exist in the database.
         """
-        # Get payment from database
         stmt = select(Payment).where(Payment.external_id == payment_id)
         result = await self.db.execute(stmt)
         payment = result.scalar_one_or_none()
@@ -336,10 +332,8 @@ class PaymentService:
         if not payment:
             return None
 
-        # Check status with gateway
         verification = await self.gateway.verify_payment(payment_id)
 
-        # Update payment status
         payment.status = verification.status.value
         if verification.raw_response:
             payment.gateway_response = json.dumps(verification.raw_response)
@@ -363,7 +357,6 @@ class PaymentService:
         if not verification.payment_id:
             return None
 
-        # Get and update payment
         stmt = select(Payment).where(Payment.external_id == verification.payment_id)
         result = await self.db.execute(stmt)
         payment = result.scalar_one_or_none()
@@ -443,7 +436,6 @@ class PaymentService:
         The method validates payment existence and status before requesting a
         refund, and updates the local status when the refund succeeds.
         """
-        # Get payment
         stmt = select(Payment).where(Payment.external_id == payment_id)
         result = await self.db.execute(stmt)
         payment = result.scalar_one_or_none()
@@ -460,7 +452,6 @@ class PaymentService:
                 error_message=f"Cannot refund payment with status {payment.status}",
             )
 
-        # Request refund from gateway
         refund_request = RefundRequest(
             payment_id=payment_id,
             reason=reason,
@@ -640,7 +631,6 @@ class PaymentService:
 
         now = datetime.utcnow()
 
-        # Create manual payment record
         if not purchase.payment_id:
             plan = self.get_subscription_plan(purchase.plan_code)
             plan_label = plan.code if plan else purchase.plan_code
@@ -695,14 +685,11 @@ class PaymentService:
         if purchase.status != SubscriptionPurchaseStatus.MANUAL_PAYMENT_VERIFICATION.value:
             raise ValueError("Purchase is not awaiting manual payment verification")
 
-        # Ensure payment record exists
         if not purchase.payment_id:
             raise ValueError("No payment record linked to this purchase")
 
-        # Mark payment completed
         await self.mark_manual_event_payment_completed(purchase.payment_id)
 
-        # Get the payment to apply subscription
         pay_result = await self.db.execute(
             select(Payment).where(Payment.external_id == purchase.payment_id)
         )
@@ -710,7 +697,6 @@ class PaymentService:
         if not payment:
             raise ValueError("Payment record not found")
 
-        # Calculate total duration
         plan = self.get_subscription_plan(purchase.plan_code)
         if not plan:
             raise ValueError("Plan not found")
@@ -741,7 +727,6 @@ class PaymentService:
         if user.role == UserRole.GUEST:
             user.role = UserRole.MEMBER
 
-        # Update payment extra_data
         extra_data = self._parse_extra_data(payment)
         extra_data["plan_code"] = plan.code
         extra_data["duration_days"] = total_days

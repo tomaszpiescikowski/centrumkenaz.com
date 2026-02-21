@@ -8,7 +8,6 @@ import sys
 
 settings = get_settings()
 
-# Normalize sync-style PostgreSQL URLs to async SQLAlchemy dialect.
 database_url = settings.database_url
 if database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql+asyncpg://", 1)
