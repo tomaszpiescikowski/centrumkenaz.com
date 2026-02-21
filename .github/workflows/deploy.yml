@@ -417,6 +417,15 @@ jobs:
           INCLUDE_LINE="include /etc/nginx/snippets/kenaz-backend.conf;"
 
           if [ -f "$CONF" ]; then
+            # Remove old inline backend location blocks that are now in the snippet
+            echo "Removing inline backend location blocks from $CONF ..."
+            sudo sed -i '/^[[:space:]]*location.*proxy_pass http:\/\/127\.0\.0\.1:8000\//d' "$CONF"
+            sudo sed -i '/^[[:space:]]*location = \/auth\/callback/d' "$CONF"
+            sudo sed -i '/^[[:space:]]*location = \/health/d' "$CONF"
+            sudo sed -i '/^[[:space:]]*location = \/docs[[:space:]]/d' "$CONF"
+            sudo sed -i '/^[[:space:]]*location = \/redoc/d' "$CONF"
+            sudo sed -i '/^[[:space:]]*location = \/openapi\.json/d' "$CONF"
+
             if ! grep -qF "$INCLUDE_LINE" "$CONF"; then
               echo "Injecting backend-locations include into $CONF ..."
               # Insert the include line after every 'server_name' directive
@@ -424,6 +433,14 @@ jobs:
             else
               echo "Include already present in $CONF"
             fi
+
+            # Verify no duplicates
+            echo "Checking for duplicate locations..."
+            sudo nginx -t 2>&1 || {
+              echo "⚠️  nginx -t failed after patching, dumping $CONF for debug:"
+              sudo cat "$CONF"
+              exit 1
+            }
           else
             echo "⚠️  $CONF not found — skip include injection"
           fi
