@@ -492,6 +492,7 @@
     "decreasePeriods": "减少期数",
     "increasePeriods": "增加期数",
     "totalAmount": "合计",
+    "validUntil": "有效期至",
     "manualTransferInfo": "通过银行转账付款"
   },
   "admin": {

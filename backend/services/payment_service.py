@@ -579,7 +579,7 @@ class PaymentService:
         The response dict mirrors the event manual payment details structure
         for consistent frontend consumption.
         """
-        from config import settings
+        from config import get_settings
 
         stmt = select(SubscriptionPurchase).where(
             legacy_id_eq(SubscriptionPurchase.id, purchase_id),
@@ -592,6 +592,7 @@ class PaymentService:
 
         plan = self.get_subscription_plan(purchase.plan_code)
         plan_label = plan.code if plan else purchase.plan_code
+        settings = get_settings()
 
         return {
             "purchase_id": str(purchase.id),

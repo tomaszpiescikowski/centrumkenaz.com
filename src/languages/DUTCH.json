@@ -494,6 +494,7 @@
     "decreasePeriods": "Verminder aantal periodes",
     "increasePeriods": "Verhoog aantal periodes",
     "totalAmount": "Totaal",
+    "validUntil": "Geldig tot",
     "manualTransferInfo": "Betaling via bankoverschrijving"
   },
   "admin": {

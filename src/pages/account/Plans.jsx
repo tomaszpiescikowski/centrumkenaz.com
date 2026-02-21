@@ -246,15 +246,17 @@ function Plans() {
       )
     }
 
+    const isBlocked = !!pendingPurchase || hasActiveSubscription
+
     return (
       <button
         type="button"
-        disabled={isProcessing}
+        disabled={isProcessing || isBlocked}
         onClick={() => handleCheckout(code)}
         className={
           `inline-flex h-11 w-full items-center justify-center rounded-2xl border px-4 text-sm font-bold transition ` +
           'border-navy/45 bg-transparent text-navy dark:border-cream/45 dark:text-cream' +
-          (isProcessing ? ' cursor-not-allowed opacity-60' : '')
+          (isProcessing || isBlocked ? ' cursor-not-allowed opacity-60' : '')
         }
         aria-label={t(ariaKey)}
       >
@@ -434,6 +436,16 @@ function Plans() {
                             {t('plans.totalAmount')}: {((periodsMap[code] || 1) * Number(plan.amount)).toFixed(2)} {plan.currency}
                           </p>
                         )}
+                        {plan.duration_days > 0 && (() => {
+                          const endDate = new Date()
+                          endDate.setDate(endDate.getDate() + plan.duration_days * (periodsMap[code] || 1))
+                          const label = formatDateLabel(endDate, currentLanguage)
+                          return label ? (
+                            <p className="mt-1 text-xs text-navy/60 dark:text-cream/60">
+                              {t('plans.validUntil')}: {label}
+                            </p>
+                          ) : null
+                        })()}
                       </div>
                     )}
 
@@ -446,15 +458,7 @@ function Plans() {
               })}
             </div>
 
-            {/* Trust / payment info bar */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-xs text-navy/50 dark:text-cream/50">
-              <span className="inline-flex items-center gap-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4" aria-hidden="true">
-                  <path fillRule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clipRule="evenodd" />
-                </svg>
-                {t('plans.manualTransferInfo')}
-              </span>
-            </div>
+
           </div>
         )}
       </div>

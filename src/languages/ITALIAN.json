@@ -494,6 +494,7 @@
     "decreasePeriods": "Diminuisci il numero di periodi",
     "increasePeriods": "Aumenta il numero di periodi",
     "totalAmount": "Totale",
+    "validUntil": "Valido fino al",
     "manualTransferInfo": "Pagamento tramite bonifico bancario"
   },
   "admin": {

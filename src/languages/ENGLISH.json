@@ -494,6 +494,7 @@
     "decreasePeriods": "Decrease number of periods",
     "increasePeriods": "Increase number of periods",
     "totalAmount": "Total",
+    "validUntil": "Valid until",
     "manualTransferInfo": "Payment via bank transfer"
   },
   "admin": {
