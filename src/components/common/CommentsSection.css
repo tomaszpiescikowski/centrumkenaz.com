@@ -722,11 +722,11 @@ img.cmt-av-img {
 }
 
 .dark .chat-modal-panel {
-  background: var(--bg-dark, rgba(15, 18, 40, 1));
+  background: var(--bg-dark, rgba(26, 26, 78, 1));
   border-color: rgba(255, 253, 245, 0.08);
 
   --b:    rgba(255, 253, 245, 0.10);
-  --surf: rgba(15, 23, 74, 0.68);
+  --surf: rgba(26, 26, 78, 0.68);
   --muted: rgba(255, 253, 245, 0.44);
   --txt:  rgba(255, 253, 245, 0.93);
 }
