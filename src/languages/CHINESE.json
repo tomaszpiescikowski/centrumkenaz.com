@@ -333,6 +333,7 @@
     "errorGeneric": "发生错误，请重试。",
     "errorFailed": "报名失败",
     "errorSubscriptionRequired": "报名此活动需要有效订阅。",
+    "subscriptionDisabledHint": "此活动仅面向 Kenaz 会员开放。购买订阅后即可报名。",
     "manualPaymentRedirectTitle": "完成手动付款",
     "manualPaymentRedirectSuccess": "打开转账说明并确认你的付款。"
   },

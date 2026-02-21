@@ -333,6 +333,7 @@
     "errorGeneric": "Wystąpił błąd. Spróbuj ponownie.",
     "errorFailed": "Wystąpił błąd podczas rejestracji",
     "errorSubscriptionRequired": "Aby zapisać się na to wydarzenie, potrzebujesz aktywnej subskrypcji.",
+    "subscriptionDisabledHint": "To wydarzenie jest dostępne tylko dla członków Kenaz. Wykup subskrypcję, aby się zapisać.",
     "manualPaymentRedirectTitle": "Dokończ płatność ręczną",
     "manualPaymentRedirectSuccess": "Przejdź do instrukcji przelewu i potwierdź płatność."
   },

@@ -4,9 +4,12 @@ import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
 import { API_URL } from '../../api/config'
 
-function RegisterButton({ eventId, price, isFull, isPast, isRegistered, onSuccess }) {
+function RegisterButton({ eventId, price, isFull, isPast, isRegistered, requiresSubscription, onSuccess }) {
   const { t } = useLanguage()
-  const { isAuthenticated, login, authFetch } = useAuth()
+  const { isAuthenticated, login, authFetch, user } = useAuth()
+
+  const needsSubscription = requiresSubscription && isAuthenticated
+    && user?.role !== 'member' && user?.role !== 'admin'
   const { showError, showSuccess } = useNotification()
   const [loading, setLoading] = useState(false)
   const [locked, setLocked] = useState(false)
@@ -135,6 +138,24 @@ function RegisterButton({ eventId, price, isFull, isPast, isRegistered, onSucces
       >
         {t('registration.alreadyRegistered')}
       </button>
+    )
+  }
+
+  if (needsSubscription) {
+    return (
+      <div className="space-y-2">
+        <button
+          disabled
+          className="ev-cta-btn
+            bg-navy/20 dark:bg-cream/20 text-navy/50 dark:text-cream/50
+            cursor-not-allowed"
+        >
+          {t('registration.ctaSignUp')}
+        </button>
+        <p className="text-center text-xs text-navy/50 dark:text-cream/50">
+          {t('registration.subscriptionDisabledHint')}
+        </p>
+      </div>
     )
   }
 

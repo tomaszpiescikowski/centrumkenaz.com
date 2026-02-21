@@ -820,6 +820,7 @@ function EventDetail() {
               isFull={isFull}
               isPast={isPast}
               isRegistered={isRegistered}
+              requiresSubscription={event.requiresSubscription}
               onSuccess={handleRegistrationSuccess}
             />
           </div>

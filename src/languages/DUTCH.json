@@ -333,6 +333,7 @@
     "errorGeneric": "Er ging iets mis. Probeer opnieuw.",
     "errorFailed": "Inschrijving mislukt",
     "errorSubscriptionRequired": "Je hebt een actief abonnement nodig om je voor dit evenement in te schrijven.",
+    "subscriptionDisabledHint": "Dit evenement is alleen beschikbaar voor Kenaz-leden. Koop een abonnement om je in te schrijven.",
     "manualPaymentRedirectTitle": "Handmatige betaling voltooien",
     "manualPaymentRedirectSuccess": "Open de overschrijvingsinstructies en bevestig je betaling."
   },
