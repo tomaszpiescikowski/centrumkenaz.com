@@ -517,14 +517,14 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
             </div>
           )}
 
-          {/* Scrollable messages – newest at bottom */}
+          {/* Scrollable messages – oldest top, newest bottom */}
           <div className="cmt-list cmt-list-messenger" ref={listRef}>
             {regularItems.length === 0 ? (
               <div className="cmt-empty">
                 <p>{isGeneralTab ? t('comments.emptyGeneral') : t('comments.empty')}</p>
               </div>
             ) : (
-              [...regularItems].reverse().map((item) => renderFlatComment(item))
+              regularItems.map((item) => renderFlatComment(item))
             )}
           </div>
 
@@ -533,7 +533,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
         </>
       ) : (
         <>
-          {/* Standard layout: form on top, newest first */}
+          {/* Standard layout: form on top, newest at bottom */}
           {commentForm}
 
           <div className="cmt-list" ref={listRef}>
