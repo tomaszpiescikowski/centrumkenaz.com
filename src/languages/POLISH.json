@@ -891,6 +891,7 @@
     "statusConfirmed": "Potwierdzony",
     "statusPending": "Oczekuje",
     "statusPayment": "Nieopłacony",
+    "legendTitle": "Legenda statusów",
     "tooltipConfirmed": "Płatność została zrealizowana – miejsce jest potwierdzone.",
     "tooltipPending": "Płatność online jest w trakcie przetwarzania.",
     "tooltipPayment": "Uczestnik nie dokonał jeszcze przelewu.",

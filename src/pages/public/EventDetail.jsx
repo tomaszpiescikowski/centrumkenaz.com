@@ -890,11 +890,25 @@ function EventDetail() {
 
             {/* Legend */}
             {hasMultipleStatuses && (
-              <div className="ev-legend">
-                <span className="ev-leg-pill ev-leg-ok" title={t('participants.tooltipConfirmed')}>{t('participants.statusConfirmed')}</span>
-                <span className="ev-leg-pill ev-leg-wait" title={t('participants.tooltipPending')}>{t('participants.statusPending')}</span>
-                <span className="ev-leg-pill ev-leg-pay" title={t('participants.tooltipPayment')}>{t('participants.statusPayment')}</span>
-              </div>
+              <details className="ev-legend-details">
+                <summary className="ev-legend-summary">
+                  {t('participants.legendTitle')}
+                </summary>
+                <div className="ev-legend-grid">
+                  <div className="ev-legend-item">
+                    <span className="ev-leg-pill ev-leg-ok">{t('participants.statusConfirmed')}</span>
+                    <span className="ev-legend-desc">{t('participants.tooltipConfirmed')}</span>
+                  </div>
+                  <div className="ev-legend-item">
+                    <span className="ev-leg-pill ev-leg-wait">{t('participants.statusPending')}</span>
+                    <span className="ev-legend-desc">{t('participants.tooltipPending')}</span>
+                  </div>
+                  <div className="ev-legend-item">
+                    <span className="ev-leg-pill ev-leg-pay">{t('participants.statusPayment')}</span>
+                    <span className="ev-legend-desc">{t('participants.tooltipPayment')}</span>
+                  </div>
+                </div>
+              </details>
             )}
           </div>
 

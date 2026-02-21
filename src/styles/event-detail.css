@@ -729,13 +729,52 @@ img.ev-av-img {
 
 /* ── Legend ─────────────────────────────────────────── */
 
-.ev-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.375rem;
-  padding: 0.5rem 0.875rem;
+/* Legend – expandable details panel */
+.ev-legend-details {
+  padding: 0 0.875rem 0.625rem;
   border-top: 1px solid var(--b);
   flex-shrink: 0;
+}
+
+.ev-legend-summary {
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0.5rem 0;
+  color: rgba(15, 23, 74, 0.55);
+}
+.dark .ev-legend-summary {
+  color: rgba(255, 253, 245, 0.55);
+}
+
+.ev-legend-grid {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.ev-legend-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(15, 23, 74, 0.08);
+  background: rgba(255, 253, 245, 0.4);
+  padding: 0.375rem 0.625rem;
+  overflow: hidden;
+}
+.dark .ev-legend-item {
+  border-color: rgba(255, 253, 245, 0.08);
+  background: rgba(15, 23, 74, 0.4);
+}
+
+.ev-legend-desc {
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: rgba(15, 23, 74, 0.6);
+}
+.dark .ev-legend-desc {
+  color: rgba(255, 253, 245, 0.6);
 }
 
 .ev-leg-pill {

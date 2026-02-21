@@ -891,6 +891,7 @@
     "statusConfirmed": "Confirmed",
     "statusPending": "Pending",
     "statusPayment": "Unpaid",
+    "legendTitle": "Status legend",
     "tooltipConfirmed": "Payment completed – spot is confirmed.",
     "tooltipPending": "Online payment is being processed.",
     "tooltipPayment": "Participant has not yet made the transfer.",
