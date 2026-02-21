@@ -1058,11 +1058,18 @@ class TestOverrideFlipFlop:
     correct ``recommendation_code`` and that the final ``override_reason``
     reflects the last override supplied, not any earlier one.
 
-    Sequence:
-      1. Start: recommended=True, should_refund=True → REFUND_CANCELLED_BEFORE_CUTOFF
+    Key insight: ``_compute_recommendation_code()`` only returns an
+    ``ADMIN_OVERRIDE`` variant when the current ``should_refund`` differs
+    from ``recommended_should_refund``.  When an admin flips the decision
+    *back* to match the recommendation, the code reverts to the base
+    recommendation code even though ``reviewed_by_admin_id`` is set.
+
+    Sequence (recommended=True throughout):
+      1. Start: should_refund=True → REFUND_CANCELLED_BEFORE_CUTOFF
       2. Override to no-refund (reason A) → NO_REFUND_ADMIN_OVERRIDE, is_resolved=True
-      3. Override back to refund (reason B) → REFUND_ADMIN_OVERRIDE, is_resolved=False
-      4. Override back to no-refund (reason C) → NO_REFUND_ADMIN_OVERRIDE, is_resolved=True
+      3. Flip back to refund (reason B) → REFUND_CANCELLED_BEFORE_CUTOFF, is_resolved=False
+         (matches recommendation, so no override code)
+      4. Override to no-refund (reason C) → NO_REFUND_ADMIN_OVERRIDE, is_resolved=True
     """
 
     @pytest.mark.asyncio
@@ -1077,6 +1084,13 @@ class TestOverrideFlipFlop:
           - ``is_resolved`` toggles correctly
           - ``override_reason`` is the most-recently supplied value
           - ``reviewed_at`` is always present after first review
+
+        Flip 2 sets ``should_refund=True`` which matches
+        ``recommended_should_refund=True``, so the code reverts to
+        ``REFUND_CANCELLED_BEFORE_CUTOFF`` (not ``REFUND_ADMIN_OVERRIDE``).
+        The ``override_reason`` is still stored via the ``elif`` branch in
+        the endpoint, but the recommendation code reflects the fact that the
+        decision is no longer an override.
         """
         user = await _make_user(db_session)
         event = await _make_event(db_session)
@@ -1100,7 +1114,7 @@ class TestOverrideFlipFlop:
         await db_session.commit()
         await db_session.refresh(task)
 
-        # Flip 1: refund → no-refund
+        # Flip 1: refund → no-refund (diverges from recommendation)
         resp = await admin_client.patch(
             f"/admin/manual-payments/refunds/{task.id}",
             json={"should_refund": False, "override_reason": "Reason Alpha: no grounds for refund"},
@@ -1112,18 +1126,22 @@ class TestOverrideFlipFlop:
         assert body["override_reason"] == "Reason Alpha: no grounds for refund"
         assert body["reviewed_at"] is not None
 
-        # Flip 2: no-refund → refund
+        # Flip 2: no-refund → refund (back to matching recommendation)
+        # Because should_refund == recommended_should_refund, the endpoint
+        # does NOT require override_reason (the 8-char check only triggers
+        # when should_refund != recommended_should_refund).  We still pass
+        # a reason which gets stored via the elif branch.
         resp = await admin_client.patch(
             f"/admin/manual-payments/refunds/{task.id}",
             json={"should_refund": True, "override_reason": "Reason Beta: manager approved exception"},
         )
         assert resp.status_code == 200
         body = resp.json()
-        assert body["recommendation_code"] == "REFUND_ADMIN_OVERRIDE"
+        assert body["recommendation_code"] == "REFUND_CANCELLED_BEFORE_CUTOFF"
         assert body["is_resolved"] is False
         assert body["override_reason"] == "Reason Beta: manager approved exception"
 
-        # Flip 3: refund → no-refund again
+        # Flip 3: refund → no-refund again (diverges from recommendation)
         resp = await admin_client.patch(
             f"/admin/manual-payments/refunds/{task.id}",
             json={"should_refund": False, "override_reason": "Reason Gamma: final decision after escalation"},
@@ -1790,6 +1808,13 @@ class TestMultiUserPendingPaymentApprovalIsolation:
     transition to CONFIRMED; the untouched ones remain in
     MANUAL_PAYMENT_VERIFICATION.  The pending list shrinks by exactly
     the number of approved registrations.
+
+    Implementation note: the session identity map is cleared via
+    ``expunge_all()`` before issuing approve calls.  This prevents a
+    ``MissingGreenlet`` that arises when SQLAlchemy's ``joinedload``
+    in ``approve_manual_payment`` tries to populate ``back_populates``
+    on an ``Event`` whose ``registrations`` collection was never loaded
+    (lazy-load in async context).
     """
 
     @pytest.mark.asyncio
@@ -1805,9 +1830,15 @@ class TestMultiUserPendingPaymentApprovalIsolation:
           - C: CONFIRMED
           - D: MANUAL_PAYMENT_VERIFICATION (still in pending list)
           - Pending list contains exactly B and D.
+
+        The test clears the session identity map before approve calls
+        to avoid ``MissingGreenlet`` from back-populated relationship
+        loading on the shared ``Event`` object.
         """
+        from sqlalchemy import select as sa_select
+
         event = await _make_event(db_session, manual=True, title="Four-User-Event")
-        reg_objs = []
+        reg_ids = []
         for _ in range(4):
             user = await _make_user(db_session)
             payment = Payment(
@@ -1826,17 +1857,24 @@ class TestMultiUserPendingPaymentApprovalIsolation:
             db_session.add_all([payment, reg])
             await db_session.commit()
             await db_session.refresh(reg)
-            reg_objs.append(reg)
+            reg_ids.append(reg.id)
+
+        # Clear identity map to prevent MissingGreenlet from back_populates
+        # lazy-loading on the shared Event.registrations collection.
+        db_session.expunge_all()
 
         # Approve A (index 0) and C (index 2)
         for idx in (0, 2):
-            resp = await admin_client.post(f"/admin/manual-payments/{reg_objs[idx].id}/approve")
+            resp = await admin_client.post(f"/admin/manual-payments/{reg_ids[idx]}/approve")
             assert resp.status_code == 200
             assert resp.json()["status"] == RegistrationStatus.CONFIRMED.value
 
-        # Verify DB states
-        for i, reg in enumerate(reg_objs):
-            await db_session.refresh(reg)
+        # Verify DB states via fresh queries
+        for i, rid in enumerate(reg_ids):
+            row = await db_session.execute(
+                sa_select(Registration).where(Registration.id == rid)
+            )
+            reg = row.scalar_one()
             if i in (0, 2):
                 assert reg.status == RegistrationStatus.CONFIRMED.value
             else:
@@ -1845,8 +1883,8 @@ class TestMultiUserPendingPaymentApprovalIsolation:
         # Pending list should contain only B and D
         resp = await admin_client.get("/admin/manual-payments/pending")
         rows = resp.json()
-        pending_ids = {r["registration_id"] for r in rows if r["registration_id"] in [r.id for r in reg_objs]}
-        assert pending_ids == {reg_objs[1].id, reg_objs[3].id}
+        pending_ids = {r["registration_id"] for r in rows if r["registration_id"] in reg_ids}
+        assert pending_ids == {reg_ids[1], reg_ids[3]}
 
 
 class TestRefundPaymentStatusTransition:
