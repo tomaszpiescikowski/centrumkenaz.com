@@ -351,34 +351,36 @@
 }
 
 .ev-gcal-btn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.375rem;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
   margin-top: 0.5rem;
-  padding: 0.3rem 0.75rem;
+  padding: 0.5rem 0.75rem;
   font-size: 0.8125rem;
   font-weight: 600;
-  border-radius: 9999px;
-  color: var(--navy);
-  background: var(--cream);
-  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  color: #fff;
+  background: #4285f4;
+  border: none;
   text-decoration: none;
   transition: background 0.15s, box-shadow 0.15s;
 }
 
 .ev-gcal-btn:hover {
-  background: var(--bg-hover);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: #3367d6;
+  box-shadow: 0 2px 6px rgba(66, 133, 244, 0.35);
 }
 
 .dark .ev-gcal-btn {
-  color: var(--cream);
-  background: var(--navy-light, #2a2e3a);
-  border-color: var(--border);
+  color: #fff;
+  background: #4285f4;
+  border: none;
 }
 
 .dark .ev-gcal-btn:hover {
-  background: var(--bg-hover);
+  background: #3367d6;
 }
 
 .ev-gcal-btn svg {
