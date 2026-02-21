@@ -402,20 +402,20 @@ function EventDetail() {
   /* ── helpers for participant rows ──────────────────── */
   const statusRowClass = (s) => {
     if (s === 'confirmed') return 'ev-row-ok'
-    if (s === 'pending') return 'ev-row-wait'
-    if (s === 'manual_payment_required' || s === 'manual_payment_verification') return 'ev-row-pay'
+    if (s === 'pending' || s === 'manual_payment_verification') return 'ev-row-wait'
+    if (s === 'manual_payment_required') return 'ev-row-pay'
     return ''
   }
   const statusAvClass = (s) => {
     if (s === 'confirmed') return 'ev-av-ok'
-    if (s === 'pending') return 'ev-av-wait'
-    if (s === 'manual_payment_required' || s === 'manual_payment_verification') return 'ev-av-pay'
+    if (s === 'pending' || s === 'manual_payment_verification') return 'ev-av-wait'
+    if (s === 'manual_payment_required') return 'ev-av-pay'
     return ''
   }
   const statusDotClass = (s) => {
     if (s === 'confirmed') return 'ev-d-ok'
-    if (s === 'pending') return 'ev-d-wait'
-    if (s === 'manual_payment_required' || s === 'manual_payment_verification') return 'ev-d-pay'
+    if (s === 'pending' || s === 'manual_payment_verification') return 'ev-d-wait'
+    if (s === 'manual_payment_required') return 'ev-d-pay'
     return ''
   }
   const initials = (name) => {

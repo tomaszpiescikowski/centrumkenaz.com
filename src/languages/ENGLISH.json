@@ -893,7 +893,7 @@
     "statusPayment": "Unpaid",
     "legendTitle": "Status legend",
     "tooltipConfirmed": "Payment completed – spot is confirmed.",
-    "tooltipPending": "Online payment is being processed.",
+    "tooltipPending": "Payment is being processed or awaiting verification.",
     "tooltipPayment": "Participant has not yet made the transfer.",
     "noLimit": "No limit",
     "openInMaps": "Open in Google Maps",
