@@ -854,7 +854,8 @@ img.cmt-av-img {
 .chat-bubble-btn {
   position: fixed;
   right: 0.75rem;
-  bottom: calc(7.5rem + env(safe-area-inset-bottom));
+  /* Nav bar ~3.5rem + feedback fab ~2.5rem + gaps 1rem */
+  bottom: calc(4rem + 2.5rem + 0.75rem + env(safe-area-inset-bottom, 0px));
   z-index: 50;
   display: flex;
   align-items: center;
