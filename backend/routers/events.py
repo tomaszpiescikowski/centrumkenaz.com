@@ -373,6 +373,10 @@ async def create_event(
     This endpoint enforces manual payment configuration rules, applies daily
     event limits per city, and normalizes pricing for subscription-only events.
     """
+    now = datetime.now(payload.start_date.tzinfo) if payload.start_date.tzinfo else datetime.utcnow()
+    if payload.start_date < now:
+        raise HTTPException(status_code=422, detail="Cannot create events in the past")
+
     manual_payment_url = str(payload.manual_payment_url) if payload.manual_payment_url else None
     if _manual_payment_link_required(
         requires_subscription=payload.requires_subscription,

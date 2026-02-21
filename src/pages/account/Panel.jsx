@@ -111,13 +111,13 @@ function Panel() {
               {/* My events mock tile */}
               <div className="panel-tile flex-1">
                 <div className="panel-tile-header">
-                  <h2 className="text-lg font-bold text-navy dark:text-cream">{t('events.myEventsTitle')}</h2>
+                  <h2 className="text-sm font-bold text-navy dark:text-cream">{t('events.myEventsTitle')}</h2>
                 </div>
                 <div className="divide-y divide-navy/10 dark:divide-cream/10">
                   {mockCards.slice(0, 2).map((e, i) => (
                     <div key={i} className="panel-row panel-row-ok flex flex-col gap-2">
-                      <div className="text-lg font-black text-navy dark:text-cream leading-tight">{e.title}</div>
-                      <div className="flex flex-wrap gap-3 text-sm text-navy/60 dark:text-cream/60">
+                      <div className="text-sm font-semibold text-navy dark:text-cream leading-tight">{e.title}</div>
+                      <div className="flex flex-wrap gap-3 text-xs text-navy/60 dark:text-cream/60">
                         <span>{e.date}</span>
                       </div>
                     </div>
@@ -127,7 +127,7 @@ function Panel() {
               {/* Announcements mock tile */}
               <div className="panel-tile flex-1">
                 <div className="panel-tile-header">
-                  <h2 className="text-lg font-bold text-navy dark:text-cream">{t('announcements.title')}</h2>
+                  <h2 className="text-sm font-bold text-navy dark:text-cream">{t('announcements.title')}</h2>
                 </div>
                 <div className="divide-y divide-navy/10 dark:divide-cream/10">
                   {[1, 2].map((i) => (
@@ -158,7 +158,7 @@ function Panel() {
         {/* Left tile – My Events */}
         <section className="panel-tile flex min-h-0 flex-1 flex-col">
           <div className="panel-tile-header">
-            <h2 className="text-lg font-bold text-navy dark:text-cream">
+            <h2 className="text-sm font-bold text-navy dark:text-cream">
               {t('events.myEventsTitle')}
             </h2>
           </div>
@@ -193,12 +193,13 @@ function Panel() {
                       tabIndex={0}
                       onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/event/${reg.event.id}`) }}
                     >
-                      <div className="flex flex-wrap justify-between gap-4">
-                        <div className={pointsEarned ? 'pr-16' : ''}>
-                          <h3 className="text-lg font-bold text-navy dark:text-cream">
+                      <div className="flex gap-3">
+                        {/* Left 2/3 – event data */}
+                        <div className="flex-[2] min-w-0">
+                          <h3 className="text-sm font-semibold text-navy dark:text-cream">
                             {reg.event.title}
                           </h3>
-                          <p className="text-sm text-navy/60 dark:text-cream/60">
+                          <p className="text-xs text-navy/60 dark:text-cream/60">
                             {formatDate(reg.event.start_date)}
                             {reg.event.city ? ` • ${reg.event.city}` : ''}
                           </p>
@@ -207,91 +208,95 @@ function Panel() {
                               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(reg.event.location)}`}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-sm font-semibold text-navy dark:text-cream"
+                              className="text-xs font-semibold text-navy dark:text-cream"
                               onClick={(e) => e.stopPropagation()}
                             >
                               {reg.event.location} ↗
                             </a>
                           )}
-                        </div>
-                        {pointsEarned && (
-                          <div className="flex items-start gap-1 rounded-full bg-navy/10 px-2 py-1 text-xs font-bold text-navy dark:bg-cream/20 dark:text-cream">
-                            <span>+{reg.event.points_value}</span>
-                            <span className="opacity-70">{t('admin.pointsAbbr')}</span>
+
+                          <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+                            <StatusPill status={reg.status} label={t(`account.statuses.${reg.status}`)} />
+                            {!isFree && (
+                              <span className="panel-info-chip">
+                                <span className="panel-info-label">{t('account.price')}:</span> {price.toFixed(2)} zł
+                              </span>
+                            )}
+                            {isFree && (
+                              <span className="panel-info-chip">
+                                {t('account.free')}
+                              </span>
+                            )}
+                            {reg.event.points_value > 0 && !pointsEarned && (
+                              <span className="panel-info-chip">
+                                <span className="panel-info-label">{t('account.pointsForEvent')}:</span> +{reg.event.points_value}
+                              </span>
+                            )}
+                            {pointsEarned && (
+                              <span className="panel-info-chip">
+                                <span>+{reg.event.points_value}</span>
+                                <span className="opacity-70 ml-1">{t('admin.pointsAbbr')}</span>
+                              </span>
+                            )}
                           </div>
-                        )}
-                      </div>
 
-                      <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
-                        <StatusPill status={reg.status} label={t(`account.statuses.${reg.status}`)} />
-                        {!isFree && (
-                          <span className="panel-info-chip">
-                            <span className="panel-info-label">{t('account.price')}:</span> {price.toFixed(2)} zł
-                          </span>
-                        )}
-                        {isFree && (
-                          <span className="panel-info-chip">
-                            {t('account.free')}
-                          </span>
-                        )}
-                        {reg.event.points_value > 0 && !pointsEarned && (
-                          <span className="panel-info-chip">
-                            <span className="panel-info-label">{t('account.pointsForEvent')}:</span> +{reg.event.points_value}
-                          </span>
-                        )}
-                        {showTransferRef && (
-                          <span className="panel-info-chip">
-                            <span className="panel-info-label">{t('account.transferTitle')}:</span> {reg.manual_payment_transfer_reference}
-                          </span>
-                        )}
-                        {(reg.status === 'confirmed' || reg.status === 'pending' || reg.status === 'manual_payment_required' || reg.status === 'manual_payment_verification') && (
-                          reg.added_to_google_calendar ? (
-                            <span className="panel-info-chip panel-gcal-added" title={t('account.addedToCalendar')}>
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                              {t('account.inCalendar')}
-                            </span>
-                          ) : (
-                            <a
-                              href={buildGoogleCalendarUrl(reg)}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="panel-info-chip panel-gcal-btn"
-                              title={t('account.addToCalendar')}
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/><path d="M12 14v4"/><path d="M10 16h4"/></svg>
-                              {t('account.addToCalendar')}
-                            </a>
-                          )
-                        )}
-                      </div>
+                          {reg.can_confirm_manual_payment && (
+                            <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+                              <Link
+                                to={`/manual-payment/${reg.registration_id}`}
+                                className="btn-primary inline-block px-3 py-1.5 text-xs"
+                              >
+                                {t('account.openManualPayment')}
+                              </Link>
+                            </div>
+                          )}
+                        </div>
 
-                      <div className="mt-3 flex flex-wrap items-center gap-3" onClick={(e) => e.stopPropagation()}>
-                        {reg.can_confirm_manual_payment && (
-                          <Link
-                            to={`/manual-payment/${reg.registration_id}`}
-                            className="btn-primary px-4 py-2 text-sm"
-                          >
-                            {t('account.openManualPayment')}
-                          </Link>
-                        )}
-                        {!eventPassed && reg.status !== 'cancelled' && reg.status !== 'refunded' && (
-                          reg.can_cancel ? (
-                            <button
-                              onClick={() => handleCancel(reg)}
-                              className="btn-primary px-4 py-2 text-sm"
-                            >
-                              {t('account.cancelStandard')}
-                            </button>
-                          ) : (
-                            <span
-                              className="panel-cancel-disabled"
-                              title={t('account.cancellationNotPossible')}
-                            >
-                              {t('account.cancelStandard')}
-                            </span>
-                          )
-                        )}
+                        {/* Right 1/3 – actions */}
+                        <div className="flex-1 flex flex-col items-end justify-between" onClick={(e) => e.stopPropagation()}>
+                          {/* Top-right: Add to calendar */}
+                          <div>
+                            {(reg.status === 'confirmed' || reg.status === 'pending' || reg.status === 'manual_payment_required' || reg.status === 'manual_payment_verification') && (
+                              reg.added_to_google_calendar ? (
+                                <span className="panel-info-chip panel-gcal-added" title={t('account.addedToCalendar')}>
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                                  {t('account.inCalendar')}
+                                </span>
+                              ) : (
+                                <a
+                                  href={buildGoogleCalendarUrl(reg)}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="panel-info-chip panel-gcal-btn"
+                                  title={t('account.addToCalendar')}
+                                >
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/><path d="M12 14v4"/><path d="M10 16h4"/></svg>
+                                  {t('account.addToCalendar')}
+                                </a>
+                              )
+                            )}
+                          </div>
+                          {/* Bottom-right: Cancel */}
+                          <div>
+                            {!eventPassed && reg.status !== 'cancelled' && reg.status !== 'refunded' && (
+                              reg.can_cancel ? (
+                                <button
+                                  onClick={() => handleCancel(reg)}
+                                  className="btn-primary px-3 py-1.5 text-xs"
+                                >
+                                  {t('account.cancelStandard')}
+                                </button>
+                              ) : (
+                                <span
+                                  className="panel-cancel-disabled text-xs"
+                                  title={t('account.cancellationNotPossible')}
+                                >
+                                  {t('account.cancelStandard')}
+                                </span>
+                              )
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )
@@ -304,7 +309,7 @@ function Panel() {
         {/* Right tile – Announcements */}
         <section className="panel-tile flex min-h-0 flex-1 flex-col">
           <div className="panel-tile-header">
-            <h2 className="text-lg font-bold text-navy dark:text-cream">
+            <h2 className="text-sm font-bold text-navy dark:text-cream">
               {t('announcements.title')}
             </h2>
           </div>

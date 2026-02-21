@@ -148,7 +148,7 @@ def _event_create_payload(**overrides):
         "title": "Validation event",
         "description": "Validation description",
         "event_type": "mors",
-        "start_date": "2026-02-14T10:00:00Z",
+        "start_date": "2027-06-14T10:00:00Z",
         "end_date": None,
         "time_info": "10:00",
         "city": "Poznań",

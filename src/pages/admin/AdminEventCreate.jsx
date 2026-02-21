@@ -212,7 +212,11 @@ function AdminEventCreate() {
 
     const requiredHints = {}
     if (!form.title.trim()) requiredHints.title = 'admin.validationRequired'
-    if (!form.startDate) requiredHints.startDate = 'admin.validationRequired'
+    if (!form.startDate) {
+      requiredHints.startDate = 'admin.validationRequired'
+    } else if (new Date(form.startDate) < new Date()) {
+      requiredHints.startDate = 'admin.validation.notPastDate'
+    }
     if (!form.city.trim()) requiredHints.city = 'admin.validationRequired'
     const hasPaidPrice = Number(form.requiresSubscription ? form.priceMember : form.priceGuest) > 0
       || Number(form.priceMember) > 0

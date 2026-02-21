@@ -876,7 +876,7 @@ function EventDetail() {
           </div>
 
           {/* Comments section */}
-          <div className="ev-card" style={{ marginTop: '0.75rem' }}>
+          <div className="ev-card" style={{ marginTop: '0.75rem', padding: '1rem 1.25rem' }}>
             <CommentsSection resourceType="event" resourceId={event.id} />
           </div>
         </div>

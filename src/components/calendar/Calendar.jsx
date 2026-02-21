@@ -252,15 +252,21 @@ function Calendar({ className = '' }) {
     const gridStart = new Date(year, month, 1 - mondayOffset)
     const todayKey = toLocalDateKey(new Date())
 
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
     return Array.from({ length: 42 }).map((_, index) => {
       const date = new Date(gridStart)
       date.setDate(gridStart.getDate() + index)
       const key = toLocalDateKey(date)
+      const cellDate = new Date(date)
+      cellDate.setHours(0, 0, 0, 0)
       return {
         key,
         date,
         isCurrentMonth: date.getMonth() === month,
         isToday: key === todayKey,
+        isPast: cellDate < today,
         events: eventsByDay.get(key) || [],
       }
     })
@@ -272,6 +278,13 @@ function Calendar({ className = '' }) {
   const adminCreatePath = selectedDayKey && DATE_KEY_PATTERN.test(selectedDayKey)
     ? `/admin/events/new?prefill_date=${selectedDayKey}`
     : '/admin/events/new'
+  const isSelectedDayPast = useMemo(() => {
+    if (!selectedDayKey) return false
+    const d = new Date(`${selectedDayKey}T00:00:00`)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    return d < today
+  }, [selectedDayKey])
   const selectedDayLabel = useMemo(() => {
     if (!selectedDayKey) return ''
     const date = new Date(`${selectedDayKey}T00:00:00`)
@@ -357,7 +370,7 @@ function Calendar({ className = '' }) {
         </button>
       </div>
 
-      {isAdmin && (
+      {isAdmin && !isSelectedDayPast && (
         <div className="mb-3">
           <Link
             to={adminCreatePath}
@@ -381,6 +394,7 @@ function Calendar({ className = '' }) {
             {monthCells.map((cell) => {
               const isSelected = cell.key === selectedDayKey
               const isOutside = !cell.isCurrentMonth
+              const isPastDay = cell.isPast && !isOutside
               return (
                 <button
                   key={cell.key}
@@ -391,7 +405,9 @@ function Calendar({ className = '' }) {
                     `min-h-[44px] rounded-xl border px-1 py-1 text-center transition ` +
                     `${isOutside
                       ? 'cursor-default border-transparent text-navy/25 dark:text-cream/25'
-                      : 'border-navy/10 text-navy dark:border-cream/15 dark:text-cream'} ` +
+                      : isPastDay && !isSelected
+                        ? 'border-navy/5 text-navy/35 dark:border-cream/10 dark:text-cream/35'
+                        : 'border-navy/10 text-navy dark:border-cream/15 dark:text-cream'} ` +
                     `${isSelected ? 'bg-navy text-cream dark:bg-cream dark:text-navy' : 'bg-transparent'} ` +
                     `${cell.isToday && !isSelected ? 'ring-1 ring-navy/30 dark:ring-cream/30' : ''}`
                   }
@@ -399,7 +415,7 @@ function Calendar({ className = '' }) {
                   <div
                     className={
                       `text-sm font-bold leading-none ` +
-                      `${isSelected ? 'text-cream dark:text-navy' : 'text-navy dark:text-cream'}`
+                      `${isSelected ? 'text-cream dark:text-navy' : isPastDay ? 'text-navy/35 dark:text-cream/35' : 'text-navy dark:text-cream'}`
                     }
                   >
                     {cell.date.getDate()}

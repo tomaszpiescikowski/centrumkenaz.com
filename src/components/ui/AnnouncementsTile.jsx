@@ -65,10 +65,10 @@ function AnnouncementsTile() {
                   {formatAnnouncementDate(a.created_at)}
                 </span>
               </div>
-              <h3 className="mt-1 text-base font-bold text-navy dark:text-cream leading-snug">
+              <h3 className="mt-1 text-sm font-semibold text-navy dark:text-cream leading-snug">
                 {a.title}
               </h3>
-              <p className="mt-1 whitespace-pre-line text-sm text-navy/70 dark:text-cream/70 leading-relaxed">
+              <p className="mt-1 whitespace-pre-line text-xs text-navy/70 dark:text-cream/70 leading-relaxed">
                 {a.content}
               </p>
             </div>
