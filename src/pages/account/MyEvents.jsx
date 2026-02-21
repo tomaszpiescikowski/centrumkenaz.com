@@ -149,7 +149,7 @@ function MyEvents() {
                 return (
                   <div
                     key={reg.registration_id}
-                    className="page-card relative"
+                    className="myev-card relative"
                   >
                     {pointsEarned && (
                       <div className="absolute right-4 top-4 flex items-center gap-1 rounded-full bg-navy/10 px-2 py-1 text-xs font-bold text-navy dark:bg-cream/20 dark:text-cream">
@@ -179,7 +179,8 @@ function MyEvents() {
                       </div>
                       <Link
                         to={`/event/${reg.event.id}`}
-                        className="text-sm font-semibold text-navy dark:text-cream"
+                        data-no-hover
+                        className="text-sm font-semibold text-navy/70 dark:text-cream/70"
                       >
                         {t('account.viewEvent')}
                       </Link>
@@ -187,12 +188,6 @@ function MyEvents() {
 
                     <div className="mt-4 flex flex-wrap gap-3 text-sm">
                       <Badge label={t('account.status')} value={t(`account.statuses.${reg.status}`)} />
-                      <Badge
-                        label={t('account.cancellationWindow')}
-                        value={reg.can_cancel
-                          ? t('account.cancellationOpen')
-                          : t('account.cancellationClosed')}
-                      />
                     </div>
 
                     <div className="mt-4 flex flex-wrap gap-3">
@@ -204,27 +199,13 @@ function MyEvents() {
                           {t('account.openManualPayment')}
                         </Link>
                       )}
-                      {reg.status !== 'confirmed'
-                        && reg.status !== 'pending'
-                        && reg.status !== 'manual_payment_required'
-                        && reg.status !== 'manual_payment_verification' ? (
-                        <button
-                          disabled
-                          className="cursor-not-allowed rounded-full bg-navy/20 px-4 py-2 text-sm font-semibold text-navy/50 dark:bg-cream/20 dark:text-cream/50"
-                        >
-                          {t('account.cancellationClosedMessage')}
-                        </button>
-                      ) : reg.can_cancel ? (
+                      {reg.can_cancel && (
                         <button
                           onClick={() => handleCancel(reg.registration_id)}
                           className="btn-primary px-4 py-2 text-sm"
                         >
                           {t('account.cancelStandard')}
                         </button>
-                      ) : (
-                        <p className="text-sm text-navy/60 dark:text-cream/60">
-                          {t('account.cancellationClosedMessage')}
-                        </p>
                       )}
                     </div>
                   </div>

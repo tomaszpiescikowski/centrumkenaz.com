@@ -15,6 +15,18 @@
     @apply rounded-2xl border border-navy/10 bg-cream/60 p-4 dark:border-cream/10 dark:bg-navy/60;
   }
 
+  /* My Events tile — matches ev-legend-item from event detail */
+  .myev-card {
+    border-radius: 0.75rem;
+    border: 1px solid rgba(15, 23, 74, 0.08);
+    background: rgba(255, 253, 245, 0.4);
+    padding: 1.25rem;
+  }
+  .dark .myev-card {
+    border-color: rgba(255, 253, 245, 0.08);
+    background: rgba(15, 23, 74, 0.4);
+  }
+
   .btn-primary {
     @apply inline-flex items-center justify-center rounded-full border border-navy/25 bg-transparent
       px-5 py-2.5 text-sm font-semibold text-navy dark:border-cream/30 dark:text-cream;
