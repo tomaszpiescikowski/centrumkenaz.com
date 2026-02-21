@@ -40,7 +40,7 @@ function AuthCallback() {
       }
       const nextManualPayment = userData?.next_action_manual_payment
       if (nextManualPayment?.registration_id) {
-        navigate(`/registrations/${nextManualPayment.registration_id}/manual-payment?from=waitlist`)
+        navigate(`/manual-payment/${nextManualPayment.registration_id}?from=waitlist`)
         return
       }
       navigate(returnTo || '/')

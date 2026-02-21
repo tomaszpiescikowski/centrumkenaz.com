@@ -99,7 +99,7 @@ function RegisterButton({ eventId, price, isFull, isPast, isRegistered, onSucces
           title: t('registration.manualPaymentRedirectTitle'),
         })
         if (onSuccess) onSuccess()
-        window.location.href = `/registrations/${data.registration_id}/manual-payment`
+        window.location.href = `/manual-payment/${data.registration_id}`
       } else if (data.redirect_url) {
         // Paid event - redirect to payment
         window.location.href = data.redirect_url

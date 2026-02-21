@@ -133,7 +133,7 @@ function App() {
                     <Route path="/plans" element={<Plans />} />
                     <Route path="/pending-approval" element={<PendingApproval />} />
                     <Route path="/people/:userId" element={<UserProfile />} />
-                    <Route path="/registrations/:registrationId/manual-payment" element={<ManualPaymentPage />} />
+                    <Route path="/manual-payment/:registrationId" element={<ManualPaymentPage />} />
                     <Route path="/subscription-purchases/:purchaseId/manual-payment" element={<SubscriptionManualPaymentPage />} />
                   </Route>
                   <Route path="/auth/callback" element={<AuthCallback />} />

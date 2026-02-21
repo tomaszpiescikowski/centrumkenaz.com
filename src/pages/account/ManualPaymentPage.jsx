@@ -101,7 +101,7 @@ function ManualPaymentPage() {
         title={t('manualPayment.title')}
         message={t('manualPayment.loginRequired')}
         actionLabel={t('manualPayment.loginButton')}
-        onAction={() => login({ returnTo: `/registrations/${registrationId}/manual-payment` })}
+        onAction={() => login({ returnTo: `/manual-payment/${registrationId}` })}
       />
     )
   }

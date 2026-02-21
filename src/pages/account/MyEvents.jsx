@@ -198,7 +198,7 @@ function MyEvents() {
                     <div className="mt-4 flex flex-wrap gap-3">
                       {reg.can_confirm_manual_payment && (
                         <Link
-                          to={`/registrations/${reg.registration_id}/manual-payment`}
+                          to={`/manual-payment/${reg.registration_id}`}
                           className="btn-primary px-4 py-2 text-sm"
                         >
                           {t('account.openManualPayment')}
