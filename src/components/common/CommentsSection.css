@@ -836,7 +836,7 @@ img.cmt-av-img {
 @media (min-width: 640px) {
   .chat-modal-panel {
     resize: both;
-    overflow: auto;
+    overflow: hidden;
     min-width: 320px;
     min-height: 360px;
     max-width: calc(100vw - 2rem);
