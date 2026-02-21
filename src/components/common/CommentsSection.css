@@ -313,9 +313,9 @@
 /* Pinned comment */
 .cmt-pinned {
   background: rgba(245, 158, 11, 0.05);
-  border-radius: 0.375rem;
-  padding: 0.5rem 0.625rem;
-  margin-bottom: 0.25rem;
+  border-radius: 0.5rem;
+  padding: 0.75rem 0.875rem;
+  margin-bottom: 0.375rem;
 }
 
 .dark .cmt-pinned {
