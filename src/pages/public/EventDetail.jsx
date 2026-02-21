@@ -761,19 +761,6 @@ function EventDetail() {
                   )}
                 </div>
 
-                {/* Add to Google Calendar – only for registered users */}
-                {isRegistered && (
-                  <a
-                    href={buildGoogleCalendarUrl(event)}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="ev-gcal-btn"
-                    title={t('account.addToCalendar')}
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" fill="#fff" stroke="#fff" strokeWidth="1.5"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#4285f4" strokeWidth="2" strokeLinecap="round"/><path d="M12 14v4" stroke="#34a853" strokeWidth="2" strokeLinecap="round"/><path d="M10 16h4" stroke="#34a853" strokeWidth="2" strokeLinecap="round"/></svg>
-                    {t('account.addToCalendar')}
-                  </a>
-                )}
               </div>
 
               {/* Price box */}
@@ -797,6 +784,20 @@ function EventDetail() {
                 )}
               </div>
             </div>
+
+            {/* Add to Google Calendar – only for registered users */}
+            {isRegistered && (
+              <a
+                href={buildGoogleCalendarUrl(event)}
+                target="_blank"
+                rel="noreferrer"
+                className="ev-gcal-btn"
+                title={t('account.addToCalendar')}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="M12 14v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="M10 16h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+                {t('account.addToCalendar')}
+              </a>
+            )}
 
             {/* Cancellation deadline info */}
             {(() => {
