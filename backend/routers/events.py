@@ -98,6 +98,7 @@ class ParticipantResponse(BaseModel):
     is_member: bool = Field(description="Whether user has active membership.")
     points: int = Field(description="User points for ordering.")
     is_top_member: bool = Field(description="Whether user is in top points cohort.")
+    status: str = Field(default="confirmed", description="Registration status (confirmed, pending, manual_payment_required, manual_payment_verification, waitlist).")
 
 
 class RegistrationRequest(BaseModel):
@@ -627,17 +628,17 @@ async def get_event_participants(
     db: AsyncSession = Depends(get_db),
 ) -> list[ParticipantResponse]:
     """
-    Return confirmed participants for an event.
+    Return all spot-occupying participants for an event.
 
-    The registration service provides the confirmed list and a missing event is
-    mapped to a 404 response.
+    The registration service provides participants with confirmed, pending,
+    and manual-payment statuses. A missing event is mapped to a 404 response.
     """
     payment_gateway = get_payment_gateway()
     payment_service = PaymentService(db, payment_gateway)
     registration_service = RegistrationService(db, payment_service)
 
     try:
-        participants = await registration_service.get_confirmed_participants(
+        participants = await registration_service.get_spot_occupying_participants(
             event_id=event_id,
         )
         return [ParticipantResponse(**p) for p in participants]

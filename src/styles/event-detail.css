@@ -1,0 +1,778 @@
+/* ── Event Detail Page ─────────────────────────────── */
+
+/* Design tokens — light */
+.ev {
+  --b:    rgba(15, 23, 74, 0.09);
+  --surf: rgba(255, 253, 245, 0.72);
+  --muted: rgba(15, 23, 74, 0.50);
+  --txt:  rgba(15, 23, 74, 0.92);
+  --sub:  rgba(15, 23, 74, 0.05);
+}
+
+/* Design tokens — dark */
+.dark .ev {
+  --b:    rgba(255, 253, 245, 0.10);
+  --surf: rgba(15, 23, 74, 0.68);
+  --muted: rgba(255, 253, 245, 0.44);
+  --txt:  rgba(255, 253, 245, 0.93);
+  --sub:  rgba(255, 253, 245, 0.05);
+}
+
+/* ── Grid ─────────────────────────────────────────── */
+
+.ev-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+@media (min-width: 900px) {
+  .ev-grid {
+    grid-template-columns: 1fr 19.5rem;
+  }
+}
+
+/* ── Left / right columns ─────────────────────────── */
+
+.ev-left {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.ev-right {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 0.75rem;
+}
+
+/* ── Card base ─────────────────────────────────────── */
+
+.ev-card {
+  border-radius: 1rem;
+  border: 1px solid var(--b);
+  background: var(--surf);
+  overflow: hidden;
+}
+
+/* ── Hero card ─────────────────────────────────────── */
+
+.ev-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem 1rem 0 0;
+  border-bottom: none;
+  padding: 1.25rem;
+  gap: 0.75rem;
+}
+
+/* Title row */
+.ev-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.ev-bookmark-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.625rem;
+  border: 1px solid var(--b);
+  background: var(--sub);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: var(--muted);
+  transition: background 0.12s;
+}
+
+.ev-bookmark-btn:hover {
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.ev-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--txt);
+}
+
+@media (min-width: 640px) {
+  .ev-title {
+    font-size: 1.875rem;
+  }
+}
+
+.ev-city {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin-top: 0.125rem;
+}
+
+/* ── Tags row ──────────────────────────────────────── */
+
+.ev-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.ev-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.ev-tag svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+/* Availability tag — red (no spots) */
+.ev-tag-red {
+  background: rgba(239, 68, 68, 0.12);
+  color: rgb(185, 28, 28);
+  border-color: rgba(239, 68, 68, 0.20);
+}
+
+.dark .ev-tag-red {
+  background: rgba(239, 68, 68, 0.16);
+  color: rgb(252, 165, 165);
+}
+
+/* Availability tag — amber (last spots) */
+.ev-tag-amber {
+  background: rgba(245, 158, 11, 0.12);
+  color: rgb(146, 64, 14);
+  border-color: rgba(245, 158, 11, 0.20);
+}
+
+.dark .ev-tag-amber {
+  background: rgba(245, 158, 11, 0.16);
+  color: rgb(252, 211, 77);
+}
+
+/* Availability tag — green (open) */
+.ev-tag-green {
+  background: rgba(34, 197, 94, 0.10);
+  color: rgb(21, 128, 61);
+  border-color: rgba(34, 197, 94, 0.20);
+}
+
+.dark .ev-tag-green {
+  background: rgba(34, 197, 94, 0.14);
+  color: rgb(134, 239, 172);
+}
+
+/* Category / access tags — outlined */
+.ev-tag-outline {
+  background: transparent;
+  color: var(--muted);
+  border-color: var(--b);
+}
+
+.ev-tag-outline:hover {
+  background: var(--sub);
+}
+
+/* ── Meta row (date · time · price) ────────────────── */
+
+.ev-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+}
+
+.ev-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--txt);
+}
+
+.ev-meta-item svg {
+  width: 14px;
+  height: 14px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.ev-meta-sep {
+  color: var(--muted);
+  font-size: 0.75rem;
+  align-self: center;
+}
+
+.ev-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.ev-price strong {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: var(--txt);
+}
+
+/* ── Description ───────────────────────────────────── */
+
+.ev-desc {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--muted);
+  white-space: pre-wrap;
+}
+
+/* Filler expander */
+.ev-filler {
+  flex: 1;
+}
+
+/* ── Location strip ────────────────────────────────── */
+
+.ev-loc {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1.25rem;
+  text-decoration: none;
+  flex-shrink: 0;
+  border: 1px solid var(--b);
+  border-top: none;
+  border-bottom: none;
+  background: var(--surf);
+  transition: background 0.12s;
+}
+
+.ev-loc:hover {
+  background: var(--sub);
+}
+
+.ev-loc-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: rgba(59, 130, 246, 0.10);
+  border: 1px solid rgba(59, 130, 246, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: rgb(59, 130, 246);
+}
+
+.ev-loc-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ev-loc-name {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--txt);
+  line-height: 1.3;
+}
+
+.ev-loc-sub {
+  display: block;
+  font-size: 0.6875rem;
+  color: var(--muted);
+  margin-top: 0.0625rem;
+}
+
+/* ── CTA card ──────────────────────────────────────── */
+
+.ev-cta-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.375rem;
+  padding: 0.875rem 1.25rem;
+  flex-shrink: 0;
+  border: 1px solid var(--b);
+  border-top: none;
+  border-radius: 0 0 1rem 1rem;
+  background: var(--surf);
+}
+
+.ev-cta-btn {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.10s;
+}
+
+.ev-cta-btn:hover:not(:disabled) {
+  transform: scale(1.01);
+}
+
+.ev-cta-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ev-cta-hint {
+  text-align: center;
+  font-size: 0.6875rem;
+  color: var(--muted);
+}
+
+/* ── Participants card structure ────────────────────── */
+
+.ev-tcard {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ev-tcard-wl {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card header */
+.ev-thead {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  border-bottom: 1px solid var(--b);
+  flex-shrink: 0;
+}
+
+.ev-thead-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--txt);
+  flex: 1;
+}
+
+.ev-thead-count {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--txt);
+}
+
+/* Badge */
+.ev-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ev-badge-red {
+  background: rgba(239, 68, 68, 0.14);
+  color: rgb(185, 28, 28);
+}
+
+.dark .ev-badge-red {
+  background: rgba(239, 68, 68, 0.18);
+  color: rgb(252, 165, 165);
+}
+
+.ev-badge-amber {
+  background: rgba(245, 158, 11, 0.12);
+  color: rgb(146, 64, 14);
+}
+
+.dark .ev-badge-amber {
+  background: rgba(245, 158, 11, 0.18);
+  color: rgb(252, 211, 77);
+}
+
+.ev-badge-green {
+  background: rgba(34, 197, 94, 0.10);
+  color: rgb(21, 128, 61);
+}
+
+.dark .ev-badge-green {
+  background: rgba(34, 197, 94, 0.14);
+  color: rgb(134, 239, 172);
+}
+
+.ev-badge-grey {
+  background: rgba(15, 23, 74, 0.07);
+  color: rgba(15, 23, 74, 0.60);
+}
+
+.dark .ev-badge-grey {
+  background: rgba(255, 253, 245, 0.08);
+  color: rgba(255, 253, 245, 0.52);
+}
+
+/* Progress bar */
+.ev-bar {
+  height: 2px;
+  background: rgba(15, 23, 74, 0.07);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.dark .ev-bar {
+  background: rgba(255, 253, 245, 0.08);
+}
+
+.ev-bar-fill {
+  height: 100%;
+  transition: width 0.4s;
+}
+
+/* Stats strip */
+.ev-stats {
+  padding: 0.4rem 1rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--muted);
+  border-bottom: 1px solid var(--b);
+  flex-shrink: 0;
+}
+
+.ev-stats strong {
+  font-weight: 700;
+  color: var(--txt);
+}
+
+/* Column headers */
+.ev-col-headers {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.25rem 0.875rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--b);
+  flex-shrink: 0;
+}
+
+/* Scrollable area */
+.ev-scroll {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15, 23, 74, 0.12) transparent;
+}
+
+.dark .ev-scroll {
+  scrollbar-color: rgba(255, 253, 245, 0.10) transparent;
+}
+
+/* ── Participant rows ──────────────────────────────── */
+
+.ev-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0.3125rem 0.875rem;
+  border-bottom: 1px solid var(--b);
+  position: relative;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+  transition: filter 0.1s;
+}
+
+.ev-row:hover {
+  filter: brightness(1.06);
+}
+
+/* Status row tints */
+.ev-row-ok {
+  background: rgba(34, 197, 94, 0.06);
+  border-left-color: rgba(34, 197, 94, 0.40);
+}
+
+.ev-row-wait {
+  background: rgba(245, 158, 11, 0.07);
+  border-left-color: rgba(245, 158, 11, 0.40);
+}
+
+.ev-row-pay {
+  background: rgba(99, 102, 241, 0.07);
+  border-left-color: rgba(99, 102, 241, 0.40);
+}
+
+.ev-row-wl {
+  border-left-color: rgba(148, 163, 184, 0.35);
+}
+
+.dark .ev-row-ok {
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.dark .ev-row-wait {
+  background: rgba(245, 158, 11, 0.09);
+}
+
+.dark .ev-row-pay {
+  background: rgba(99, 102, 241, 0.09);
+}
+
+/* Avatar wrapper */
+.ev-av-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Avatar circle */
+.ev-av {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.4375rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  position: relative;
+  flex-shrink: 0;
+  letter-spacing: 0;
+  background: rgba(15, 23, 74, 0.10);
+  color: rgba(15, 23, 74, 0.70);
+}
+
+.dark .ev-av {
+  background: rgba(255, 253, 245, 0.14);
+  color: rgba(255, 253, 245, 0.72);
+}
+
+/* Avatar status tints */
+.ev-av-ok {
+  background: rgba(34, 197, 94, 0.18);
+  color: rgb(21, 128, 61);
+}
+
+.ev-av-wait {
+  background: rgba(245, 158, 11, 0.18);
+  color: rgb(146, 64, 14);
+}
+
+.ev-av-pay {
+  background: rgba(99, 102, 241, 0.18);
+  color: rgb(67, 56, 202);
+}
+
+.dark .ev-av-ok {
+  background: rgba(34, 197, 94, 0.22);
+  color: rgb(134, 239, 172);
+}
+
+.dark .ev-av-wait {
+  background: rgba(245, 158, 11, 0.22);
+  color: rgb(252, 211, 77);
+}
+
+.dark .ev-av-pay {
+  background: rgba(99, 102, 241, 0.22);
+  color: rgb(165, 180, 252);
+}
+
+/* Status dot */
+.ev-dot {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  border: 1.5px solid var(--surf);
+}
+
+.ev-d-ok {
+  background: #22c55e;
+}
+
+.ev-d-wait {
+  background: #f59e0b;
+}
+
+.ev-d-pay {
+  background: #6366f1;
+}
+
+.ev-d-wl {
+  background: #94a3b8;
+}
+
+/* Name cell */
+.ev-nc {
+  padding-left: 0.5rem;
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.ev-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--txt);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Points */
+.ev-pts {
+  text-align: right;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  padding-left: 0.5rem;
+}
+
+.ev-pts-v {
+  color: rgb(217, 119, 6);
+}
+
+.dark .ev-pts-v {
+  color: rgb(252, 211, 77);
+}
+
+.ev-pts-n {
+  color: rgba(15, 23, 74, 0.22);
+}
+
+.dark .ev-pts-n {
+  color: rgba(255, 253, 245, 0.18);
+}
+
+/* Waitlist position */
+.ev-wl-pos {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* ── Legend ─────────────────────────────────────────── */
+
+.ev-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  border-top: 1px solid var(--b);
+  flex-shrink: 0;
+}
+
+.ev-leg-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.1875rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.ev-leg-ok {
+  background: rgba(34, 197, 94, 0.12);
+  color: rgb(21, 128, 61);
+  border-color: rgba(34, 197, 94, 0.22);
+}
+
+.ev-leg-wait {
+  background: rgba(245, 158, 11, 0.12);
+  color: rgb(146, 64, 14);
+  border-color: rgba(245, 158, 11, 0.22);
+}
+
+.ev-leg-pay {
+  background: rgba(99, 102, 241, 0.12);
+  color: rgb(67, 56, 202);
+  border-color: rgba(99, 102, 241, 0.22);
+}
+
+.dark .ev-leg-ok {
+  background: rgba(34, 197, 94, 0.14);
+  color: rgb(134, 239, 172);
+}
+
+.dark .ev-leg-wait {
+  background: rgba(245, 158, 11, 0.14);
+  color: rgb(252, 211, 77);
+}
+
+.dark .ev-leg-pay {
+  background: rgba(99, 102, 241, 0.14);
+  color: rgb(165, 180, 252);
+}
+
+/* ── Back link ─────────────────────────────────────── */
+
+.ev-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--muted);
+  text-decoration: none;
+  margin-bottom: 1rem;
+  transition: color 0.12s;
+}
+
+.ev-back:hover {
+  color: var(--txt);
+}
+
+.ev-back svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* ── Empty state ───────────────────────────────────── */
+
+.ev-empty {
+  padding: 1.5rem 0.875rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+/* ── Admin section ─────────────────────────────────── */
+
+.ev-admin-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--b);
+  flex-shrink: 0;
+}

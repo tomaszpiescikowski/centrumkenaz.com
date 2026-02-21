@@ -298,6 +298,76 @@ class RegistrationService:
                     "is_member": is_member,
                     "points": points if is_member else 0,
                     "is_top_member": str(reg.user_id) in top_ids,
+                    "status": reg.status,
+                }
+            )
+        return response
+
+    async def get_spot_occupying_participants(
+        self,
+        event_id: str,
+        occurrence_date: date | None = None,
+    ) -> list[dict]:
+        """
+        Return all participants that occupy a spot for an event occurrence.
+
+        Includes confirmed, pending, manual_payment_required, and
+        manual_payment_verification statuses.
+        """
+        now = datetime.utcnow()
+        top_rows = await self.db.execute(
+            select(User.id)
+            .outerjoin(Subscription, Subscription.user_id == User.id)
+            .order_by(func.coalesce(Subscription.points, 0).desc(), User.created_at.asc())
+            .limit(3)
+        )
+        top_ids = {str(row[0]) for row in top_rows.all()}
+        event = await self.get_event_with_registrations(event_id)
+        if not event:
+            raise EventNotFoundError(f"Event {event_id} not found")
+        resolved_occurrence_date = self._resolve_occurrence_date(event, occurrence_date)
+
+        spot_statuses = [
+            RegistrationStatus.CONFIRMED.value,
+            RegistrationStatus.PENDING.value,
+            RegistrationStatus.MANUAL_PAYMENT_REQUIRED.value,
+            RegistrationStatus.MANUAL_PAYMENT_VERIFICATION.value,
+        ]
+        stmt = (
+            select(Registration)
+            .options(joinedload(Registration.user).joinedload(User.subscription))
+            .where(
+                legacy_id_eq(Registration.event_id, event_id),
+                Registration.occurrence_date == resolved_occurrence_date,
+                Registration.status.in_(spot_statuses),
+            )
+            .order_by(Registration.created_at)
+        )
+        result = await self.db.execute(stmt)
+        registrations = result.scalars().all()
+
+        response: list[dict] = []
+        for reg in registrations:
+            subscription = reg.user.subscription
+            subscription_end = subscription.end_date if subscription else None
+            points = int(subscription.points or 0) if subscription else 0
+            is_member = (
+                reg.user.role == UserRole.MEMBER and
+                (
+                    subscription_end is None or
+                    subscription_end > now
+                )
+            )
+            response.append(
+                {
+                    "id": str(reg.id),
+                    "user_id": str(reg.user_id),
+                    "full_name": reg.user.full_name,
+                    "registered_at": reg.created_at.isoformat(),
+                    "is_member": is_member,
+                    "points": points if is_member else 0,
+                    "is_top_member": str(reg.user_id) in top_ids,
+                    "status": reg.status,
                 }
             )
         return response
