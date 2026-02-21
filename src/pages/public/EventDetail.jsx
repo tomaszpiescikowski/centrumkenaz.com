@@ -703,32 +703,57 @@ function EventDetail() {
               </div>
             )}
 
-            {/* Title */}
-            <h1 className="ev-title">{event.title}</h1>
+            {/* Title + Price row */}
+            <div className="ev-header-row">
+              <div className="ev-header-left">
+                <h1 className="ev-title">{event.title}</h1>
 
-            {/* Date & time */}
-            <div className="ev-meta">
-              <span className="ev-meta-item">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                {formatDate(selectedOccurrenceDate)}
-                {selectedEndDate && selectedEndDate !== selectedOccurrenceDate && (
-                  <> – {formatDate(selectedEndDate)}</>
-                )}
-              </span>
-
-              {event.time && (
-                <>
-                  <span className="ev-meta-sep">·</span>
+                {/* Date & time */}
+                <div className="ev-meta">
                   <span className="ev-meta-item">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    {event.time}
+                    {formatDate(selectedOccurrenceDate)}
+                    {selectedEndDate && selectedEndDate !== selectedOccurrenceDate && (
+                      <> – {formatDate(selectedEndDate)}</>
+                    )}
                   </span>
-                </>
-              )}
+
+                  {event.time && (
+                    <>
+                      <span className="ev-meta-sep">·</span>
+                      <span className="ev-meta-item">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {event.time}
+                      </span>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Price box */}
+              <div className="ev-price-box">
+                {event.requiresSubscription ? (
+                  <div className="ev-price-line ev-price-member">
+                    <span className="ev-price-label">{t('event.priceMember')}</span>
+                    <span className="ev-price-val">{formatPrice(event.priceMember)}</span>
+                  </div>
+                ) : (
+                  <>
+                    <div className="ev-price-line">
+                      <span className="ev-price-label">{t('event.priceGuest')}</span>
+                      <span className="ev-price-val">{formatPrice(event.priceGuest)}</span>
+                    </div>
+                    <div className="ev-price-line ev-price-member">
+                      <span className="ev-price-label">{t('event.priceMember')}</span>
+                      <span className="ev-price-val">{formatPrice(event.priceMember)}</span>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
 
             {/* Tags */}
@@ -789,23 +814,6 @@ function EventDetail() {
 
           {/* CTA card */}
           <div className="ev-cta-card">
-            {/* Price line */}
-            <div className="ev-cta-price">
-              {event.requiresSubscription ? (
-                <>
-                  <span className="ev-cta-price-label">{t('event.priceMember')}</span>
-                  <span className="ev-cta-price-value">{formatPrice(event.priceMember)}</span>
-                </>
-              ) : (
-                <>
-                  <span className="ev-cta-price-label">{t('event.priceGuest')}</span>
-                  <span className="ev-cta-price-value">{formatPrice(event.priceGuest)}</span>
-                  <span className="ev-cta-price-sep">/</span>
-                  <span className="ev-cta-price-label">{t('event.priceMember')}</span>
-                  <span className="ev-cta-price-value">{formatPrice(event.priceMember)}</span>
-                </>
-              )}
-            </div>
             <RegisterButton
               eventId={event.id}
               price={0}

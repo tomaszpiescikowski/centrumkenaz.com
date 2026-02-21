@@ -95,6 +95,22 @@
   background: rgba(59, 130, 246, 0.08);
 }
 
+/* Header row — title+date left, price right */
+.ev-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ev-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+  flex: 1;
+}
+
 .ev-title {
   font-size: 1.5rem;
   font-weight: 700;
@@ -106,6 +122,45 @@
   .ev-title {
     font-size: 1.875rem;
   }
+}
+
+/* Price box — right side */
+.ev-price-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.ev-price-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  text-align: left;
+}
+
+.ev-price-label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: lowercase;
+  white-space: nowrap;
+}
+
+.ev-price-val {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: var(--txt);
+  white-space: nowrap;
+}
+
+.ev-price-member .ev-price-val {
+  color: rgb(202, 138, 4);
+}
+
+.dark .ev-price-member .ev-price-val {
+  color: rgb(250, 204, 21);
 }
 
 .ev-city {
@@ -337,33 +392,7 @@
   background: var(--surf);
 }
 
-/* Price row inside CTA */
-.ev-cta-price {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 0.25rem;
-  flex-wrap: wrap;
-}
 
-.ev-cta-price-label {
-  font-size: 0.6875rem;
-  font-weight: 500;
-  color: var(--muted);
-  text-transform: lowercase;
-}
-
-.ev-cta-price-value {
-  font-size: 0.875rem;
-  font-weight: 800;
-  color: var(--txt);
-}
-
-.ev-cta-price-sep {
-  font-size: 0.6875rem;
-  color: var(--muted);
-  margin: 0 0.125rem;
-}
 
 .ev-cta-btn {
   width: 100%;
