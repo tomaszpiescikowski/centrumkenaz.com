@@ -805,7 +805,7 @@
       "title": "Manual payments",
       "subtitle": "Manage offline transfers, refunds, and waitlist promotions.",
       "loadError": "Failed to load manual payment data.",
-      "pendingTitle": "Payments waiting approval",
+      "pendingTitle": "Pending payments",
       "pendingSubtitle": "Users declared transfer completion and await admin approval.",
       "pendingEmpty": "No payments waiting for approval.",
       "referenceColumn": "Transfer message",
@@ -832,7 +832,7 @@
       "saving": "Saving...",
       "refundSaveSuccess": "Refund settings saved.",
       "refundSaveError": "Could not save refund settings.",
-      "promotionsTitle": "Users promoted from waitlist",
+      "promotionsTitle": "Waitlist promotions",
       "promotionsSubtitle": "Mark users who were already notified to pay.",
       "promotionsEmpty": "No waitlist promotions.",
       "deadlineColumn": "Payment deadline",
@@ -1023,5 +1023,24 @@
     "passwordMismatch": "Passwords do not match.",
     "genericError": "Unable to sign in.",
     "openLogin": "Log in"
+  },
+  "comments": {
+    "title": "Comments",
+    "placeholder": "Write a comment...",
+    "send": "Send",
+    "sending": "Sending...",
+    "cancel": "Cancel",
+    "reply": "Reply",
+    "edit": "Edit",
+    "save": "Save",
+    "delete": "Delete",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "pinned": "Pinned",
+    "edited": "edited",
+    "justNow": "just now",
+    "empty": "No comments yet. Be the first!",
+    "loadError": "Failed to load comments.",
+    "replyPlaceholder": "Write a reply..."
   }
 }

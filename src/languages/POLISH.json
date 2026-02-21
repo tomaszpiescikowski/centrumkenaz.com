@@ -805,7 +805,7 @@
       "title": "Manualne płatności",
       "subtitle": "Zarządzanie przelewami offline, zwrotami i awansami z listy rezerwowej.",
       "loadError": "Nie udało się wczytać danych manualnych płatności.",
-      "pendingTitle": "Płatności oczekujące na zatwierdzenie",
+      "pendingTitle": "Oczekujące wpłaty",
       "pendingSubtitle": "Użytkownicy potwierdzili wykonanie przelewu i czekają na akceptację.",
       "pendingEmpty": "Brak płatności oczekujących na zatwierdzenie.",
       "referenceColumn": "Wiadomość przelewu",
@@ -832,7 +832,7 @@
       "saving": "Zapisywanie...",
       "refundSaveSuccess": "Zapisano ustawienia zwrotu.",
       "refundSaveError": "Nie udało się zapisać ustawień zwrotu.",
-      "promotionsTitle": "Osoby awansowane z listy rezerwowej",
+      "promotionsTitle": "Awanse z rezerwy",
       "promotionsSubtitle": "Oznaczaj osoby, które zostały już poinformowane o obowiązku płatności.",
       "promotionsEmpty": "Brak awansów z listy rezerwowej.",
       "deadlineColumn": "Termin płatności",
@@ -1023,5 +1023,24 @@
     "passwordMismatch": "Hasła nie są takie same.",
     "genericError": "Nie udało się zalogować.",
     "openLogin": "Zaloguj się"
+  },
+  "comments": {
+    "title": "Komentarze",
+    "placeholder": "Napisz komentarz...",
+    "send": "Wyślij",
+    "sending": "Wysyłanie...",
+    "cancel": "Anuluj",
+    "reply": "Odpowiedz",
+    "edit": "Edytuj",
+    "save": "Zapisz",
+    "delete": "Usuń",
+    "pin": "Przypnij",
+    "unpin": "Odepnij",
+    "pinned": "Przypięty",
+    "edited": "edytowany",
+    "justNow": "przed chwilą",
+    "empty": "Brak komentarzy. Bądź pierwszy!",
+    "loadError": "Nie udało się załadować komentarzy.",
+    "replyPlaceholder": "Napisz odpowiedź..."
   }
 }

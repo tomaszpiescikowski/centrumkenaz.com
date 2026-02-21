@@ -783,7 +783,7 @@ function AdminManualPayments() {
         <p className="text-navy/70 dark:text-cream/70">{t('common.loading')}</p>
       ) : (
         <>
-          <section className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <ViewCard
               title={t('admin.manualPayments.pendingTitle')}
               description={t('admin.manualPayments.pendingSubtitle')}
