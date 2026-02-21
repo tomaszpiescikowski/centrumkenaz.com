@@ -76,9 +76,9 @@ function Panel() {
                 <div className="panel-tile-header">
                   <h2 className="text-lg font-bold text-navy dark:text-cream">{t('events.myEventsTitle')}</h2>
                 </div>
-                <div className="panel-tile-body space-y-4">
+                <div className="divide-y divide-navy/10 dark:divide-cream/10">
                   {mockCards.slice(0, 2).map((e, i) => (
-                    <div key={i} className="myev-card flex flex-col gap-2">
+                    <div key={i} className="panel-row panel-row-ok flex flex-col gap-2">
                       <div className="text-lg font-black text-navy dark:text-cream leading-tight">{e.title}</div>
                       <div className="flex flex-wrap gap-3 text-sm text-navy/60 dark:text-cream/60">
                         <span>{e.date}</span>
@@ -92,9 +92,9 @@ function Panel() {
                 <div className="panel-tile-header">
                   <h2 className="text-lg font-bold text-navy dark:text-cream">{t('announcements.title')}</h2>
                 </div>
-                <div className="panel-tile-body space-y-4">
+                <div className="divide-y divide-navy/10 dark:divide-cream/10">
                   {[1, 2].map((i) => (
-                    <div key={i} className="myev-card flex flex-col gap-2">
+                    <div key={i} className="panel-row flex flex-col gap-2">
                       <div className="h-4 w-3/4 rounded bg-navy/20 dark:bg-cream/20" />
                       <div className="h-3 w-full rounded bg-navy/10 dark:bg-cream/10" />
                       <div className="h-3 w-2/3 rounded bg-navy/10 dark:bg-cream/10" />
@@ -125,15 +125,17 @@ function Panel() {
               {t('events.myEventsTitle')}
             </h2>
           </div>
-          <div className="panel-tile-body min-h-0 flex-1 overflow-y-auto">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             {loading ? (
-              <p className="text-navy/60 dark:text-cream/60">{t('common.loading')}</p>
+              <p className="px-5 py-4 text-navy/60 dark:text-cream/60">{t('common.loading')}</p>
             ) : registrations.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-navy/20 p-6 dark:border-cream/20">
-                <p className="text-navy/70 dark:text-cream/70">{t('account.noEvents')}</p>
+              <div className="px-5 py-4">
+                <div className="rounded-2xl border border-dashed border-navy/20 p-6 dark:border-cream/20">
+                  <p className="text-navy/70 dark:text-cream/70">{t('account.noEvents')}</p>
+                </div>
               </div>
             ) : (
-              <div className="space-y-4 pr-1 sm:pr-2">
+              <div className="divide-y divide-navy/10 dark:divide-cream/10">
                 {registrations.map((reg) => {
                   const eventPassed = new Date(reg.event.start_date) < new Date()
                   const pointsEarned = eventPassed && reg.status === 'confirmed' && reg.event.points_value > 0
@@ -141,7 +143,7 @@ function Panel() {
                   return (
                     <div
                       key={reg.registration_id}
-                      className="myev-card relative"
+                      className={`panel-row relative ${statusRowClass(reg.status)}`}
                     >
                       {pointsEarned && (
                         <div className="absolute right-4 top-4 flex items-center gap-1 rounded-full bg-navy/10 px-2 py-1 text-xs font-bold text-navy dark:bg-cream/20 dark:text-cream">
@@ -215,13 +217,20 @@ function Panel() {
               {t('announcements.title')}
             </h2>
           </div>
-          <div className="panel-tile-body min-h-0 flex-1 overflow-y-auto">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <AnnouncementsTile />
           </div>
         </section>
       </div>
     </div>
   )
+}
+
+function statusRowClass(status) {
+  if (status === 'confirmed') return 'panel-row-ok'
+  if (status === 'pending' || status === 'manual_payment_verification') return 'panel-row-wait'
+  if (status === 'manual_payment_required') return 'panel-row-pay'
+  return ''
 }
 
 function Badge({ label, value, title }) {

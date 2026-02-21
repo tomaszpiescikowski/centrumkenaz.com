@@ -25,22 +25,24 @@ function AnnouncementsTile() {
 
   if (loading) {
     return (
-      <p className="mt-3 text-navy/60 dark:text-cream/60">{t('common.loading')}</p>
+      <p className="px-5 py-4 text-navy/60 dark:text-cream/60">{t('common.loading')}</p>
     )
   }
 
   if (announcements.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-navy/20 p-6 dark:border-cream/20">
-        <p className="text-navy/70 dark:text-cream/70">{t('announcements.empty')}</p>
+      <div className="px-5 py-4">
+        <div className="rounded-2xl border border-dashed border-navy/20 p-6 dark:border-cream/20">
+          <p className="text-navy/70 dark:text-cream/70">{t('announcements.empty')}</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-4 overflow-y-auto pr-1 sm:pr-2">
+    <div className="divide-y divide-navy/10 overflow-y-auto dark:divide-cream/10">
       {announcements.map((a) => (
-        <div key={a.id} className="myev-card">
+        <div key={a.id} className="px-5 py-3.5">
           <div className="flex items-start gap-3">
             {a.author?.picture_url ? (
               <img
