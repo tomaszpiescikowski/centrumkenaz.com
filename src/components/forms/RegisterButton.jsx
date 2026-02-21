@@ -5,7 +5,7 @@ import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
 import { API_URL } from '../../api/config'
 
-function RegisterButton({ eventId, price, isFull, isPast, isRegistered, requiresSubscription, onSuccess }) {
+function RegisterButton({ eventId, price, isFull, isPast, isTooFarFuture, isRegistered, requiresSubscription, onSuccess }) {
   const { t } = useLanguage()
   const { isAuthenticated, login, authFetch, user } = useAuth()
 
@@ -35,6 +35,13 @@ function RegisterButton({ eventId, price, isFull, isPast, isRegistered, requires
       || normalized.includes('cannot register for past')
     ) {
       return t('registration.errorPastEvent')
+    }
+    if (
+      normalized.includes('3 weeks')
+      || normalized.includes('registration opens')
+      || normalized.includes('too far')
+    ) {
+      return t('registration.errorTooFarFuture')
     }
     if (raw) {
       return raw
@@ -125,6 +132,19 @@ function RegisterButton({ eventId, price, isFull, isPast, isRegistered, requires
           cursor-not-allowed"
       >
         {t('registration.pastEvent')}
+      </button>
+    )
+  }
+
+  if (isTooFarFuture) {
+    return (
+      <button
+        disabled
+        className="ev-cta-btn
+          bg-navy/20 dark:bg-cream/20 text-navy/50 dark:text-cream/50
+          cursor-not-allowed"
+      >
+        {t('registration.tooFarFuture')}
       </button>
     )
   }

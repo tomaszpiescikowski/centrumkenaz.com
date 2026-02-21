@@ -552,6 +552,10 @@ class RegistrationService:
         if occurrence_start_dt < now:
             raise RegistrationError("Cannot register for past events")
 
+        max_future = now + timedelta(days=21)
+        if occurrence_start_dt > max_future:
+            raise RegistrationError("Registration opens 3 weeks before the event")
+
         if event.requires_subscription and not await self._is_active_subscriber(user, now):
             raise RegistrationError("Subscription required for this event")
 

@@ -7,9 +7,9 @@ import '../common/CommentsSection.css'
  * Near-fullscreen mobile chat overlay with Event / General tab switch.
  * Follows the same pattern as FeedbackModal (fixed overlay, backdrop, ESC, body scroll lock).
  */
-function ChatModal({ open, onClose, resourceType, resourceId }) {
+function ChatModal({ open, onClose, resourceType, resourceId, generalOnly }) {
   const { t } = useLanguage()
-  const [activeTab, setActiveTab] = useState('event')
+  const [activeTab, setActiveTab] = useState(generalOnly ? 'general' : 'event')
 
   // Close on Escape key
   useEffect(() => {
@@ -30,8 +30,8 @@ function ChatModal({ open, onClose, resourceType, resourceId }) {
 
   // Reset tab when opening
   useEffect(() => {
-    if (open) setActiveTab('event')
-  }, [open])
+    if (open) setActiveTab(generalOnly ? 'general' : 'event')
+  }, [open, generalOnly])
 
   if (!open) return null
 
@@ -46,20 +46,24 @@ function ChatModal({ open, onClose, resourceType, resourceId }) {
       <div className="chat-modal-panel">
         {/* Header with tabs + close */}
         <div className="chat-modal-header">
-          <div className="cmt-tabs" style={{ margin: 0, flex: 1 }}>
-            <button
-              className={`cmt-tab ${activeTab === 'event' ? 'cmt-tab-active' : ''}`}
-              onClick={() => setActiveTab('event')}
-            >
-              {t('comments.tabEvent')}
-            </button>
-            <button
-              className={`cmt-tab ${activeTab === 'general' ? 'cmt-tab-active' : ''}`}
-              onClick={() => setActiveTab('general')}
-            >
-              {t('comments.tabGeneral')}
-            </button>
-          </div>
+          {generalOnly ? (
+            <span className="chat-modal-title">{t('comments.tabGeneral')}</span>
+          ) : (
+            <div className="cmt-tabs" style={{ margin: 0, flex: 1 }}>
+              <button
+                className={`cmt-tab ${activeTab === 'event' ? 'cmt-tab-active' : ''}`}
+                onClick={() => setActiveTab('event')}
+              >
+                {t('comments.tabEvent')}
+              </button>
+              <button
+                className={`cmt-tab ${activeTab === 'general' ? 'cmt-tab-active' : ''}`}
+                onClick={() => setActiveTab('general')}
+              >
+                {t('comments.tabGeneral')}
+              </button>
+            </div>
+          )}
 
           <button
             className="chat-modal-close"
@@ -82,6 +86,7 @@ function ChatModal({ open, onClose, resourceType, resourceId }) {
             onTabChange={setActiveTab}
             hideHeader
             hideTabs
+            messengerLayout
           />
         </div>
       </div>

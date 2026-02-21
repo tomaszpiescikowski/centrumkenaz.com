@@ -522,14 +522,6 @@ class PaymentService:
         if periods < 1 or periods > max_p:
             raise ValueError(f"periods must be between 1 and {max_p}")
 
-        # Prevent duplicate purchase while subscription is still active
-        sub_result = await self.db.execute(
-            select(Subscription).where(legacy_id_eq(Subscription.user_id, user.id))
-        )
-        subscription = sub_result.scalar_one_or_none()
-        if subscription and subscription.end_date and subscription.end_date > datetime.utcnow():
-            raise ValueError("Cannot purchase while subscription is still active")
-
         # Prevent duplicate pending purchase
         pending_result = await self.db.execute(
             select(SubscriptionPurchase).where(

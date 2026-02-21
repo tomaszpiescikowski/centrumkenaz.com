@@ -337,6 +337,8 @@
     "submitting": "Zapisuję...",
     "pastEvent": "Wydarzenie zakończone",
     "errorPastEvent": "Nie możesz zapisać się na wydarzenie, które już się rozpoczęło.",
+    "tooFarFuture": "Zapisy jeszcze nie otwarte",
+    "errorTooFarFuture": "Zapisy otwierają się 3 tygodnie przed wydarzeniem.",
     "alreadyRegistered": "Jesteś zapisany",
     "waitlistTitle": "Lista rezerwowa",
     "waitlistSuccess": "Dodano Cię do listy rezerwowej tego wydarzenia.",
@@ -1058,6 +1060,8 @@
     "emptyGeneral": "Brak wiadomości. Rozpocznij rozmowę!",
     "chatTitle": "Czat",
     "chatBubble": "Czat",
+    "react": "Zareaguj",
+    "eventChat": "Chat wydarzenia",
     "loading": "Ładowanie..."
   }
 }

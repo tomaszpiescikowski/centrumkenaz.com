@@ -11,6 +11,7 @@ import AuthGateCard from '../../components/ui/AuthGateCard'
 import CustomSelect from '../../components/controls/CustomSelect'
 import CommentsSection from '../../components/common/CommentsSection'
 import ChatModal from '../../components/ui/ChatModal'
+import EventIcon from '../../components/common/EventIcon'
 
 function buildGoogleCalendarUrl(event) {
   const start = new Date(event.startDateTime)
@@ -259,6 +260,13 @@ function EventDetail() {
   const isPast = occurrenceStart && !Number.isNaN(occurrenceStart.getTime())
     ? occurrenceStart < new Date()
     : false
+  const isTooFarFuture = (() => {
+    if (!occurrenceStart || Number.isNaN(occurrenceStart.getTime())) return false
+    const maxFuture = new Date()
+    maxFuture.setHours(0, 0, 0, 0)
+    maxFuture.setDate(maxFuture.getDate() + 21)
+    return occurrenceStart >= maxFuture
+  })()
   const baseAdminInputClass = 'ui-input'
   const validationHintClass = 'ui-field-hint'
   const validationBorderClass = 'ui-input-invalid'
@@ -723,7 +731,10 @@ function EventDetail() {
             {/* Title + Price row */}
             <div className="ev-header-row">
               <div className="ev-header-left">
-                <h1 className="ev-title">{event.title}</h1>
+                <h1 className="ev-title">
+                  <EventIcon type={event.type || 'inne'} size="sm" />
+                  {event.title}
+                </h1>
 
                 {/* Date & time */}
                 <div className="ev-meta">
@@ -813,14 +824,16 @@ function EventDetail() {
                   weekday: 'short', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit',
                 })
 
+                const isUrgent = remaining < 24 * 3600000
+
                 return (
-                  <div className="ev-cancel-info ev-cancel-open">
+                  <div className={`ev-cancel-info ev-cancel-open ${isUrgent ? 'ev-cancel-urgent' : ''}`}>
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span>
                       {t('event.cancellationDeadline')}: {deadlineStr}
-                      <span className="ev-cancel-countdown"> ({timeStr} {t('event.cancellationTimeLeft')})</span>
+                      {isUrgent && <span className="ev-cancel-countdown"> ({timeStr} {t('event.cancellationTimeLeft')})</span>}
                     </span>
                   </div>
                 )
@@ -899,6 +912,7 @@ function EventDetail() {
               price={0}
               isFull={isFull}
               isPast={isPast}
+              isTooFarFuture={isTooFarFuture}
               isRegistered={isRegistered}
               requiresSubscription={event.requiresSubscription}
               onSuccess={handleRegistrationSuccess}
@@ -907,20 +921,20 @@ function EventDetail() {
 
           {/* Comments section – hidden on mobile (replaced by chat bubble) */}
           <div className="ev-card hidden sm:block" style={{ marginTop: '0.75rem', padding: '1rem 1.25rem' }}>
-            <CommentsSection resourceType="event" resourceId={event.id} />
+            <CommentsSection resourceType="event" resourceId={event.id} hideTabs />
           </div>
 
-          {/* Mobile chat bubble */}
+          {/* Mobile chat bubble – always visible on event page */}
           <button
             type="button"
             onClick={() => setChatOpen(true)}
             className="chat-bubble-btn sm:hidden"
-            aria-label={t('comments.chatBubble')}
+            aria-label={t('comments.eventChat')}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
             </svg>
-            {t('comments.chatBubble')}
+            {t('comments.eventChat')}
           </button>
 
           {/* Mobile chat modal */}

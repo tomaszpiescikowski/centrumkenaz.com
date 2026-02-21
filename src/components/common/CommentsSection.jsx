@@ -61,7 +61,7 @@ function countAll(comments) {
   return n
 }
 
-function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onTabChange, hideHeader, hideTabs }) {
+function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onTabChange, hideHeader, hideTabs, messengerLayout }) {
   const { user, authFetch } = useAuth()
   const { t } = useLanguage()
   const isAdmin = user?.role === 'admin'
@@ -301,8 +301,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
         onTouchMove={handleTouchMove}
         onContextMenu={(e) => { if (longPressId) e.preventDefault() }}
       >
-        {/* Thread connector line */}
-        {item._visualDepth > 0 && <div className="cmt-thread-line" />}
+
 
         <div className="cmt-item-body">
           {item.is_pinned && (
@@ -386,7 +385,10 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
               <button className="cmt-action-btn" onClick={() => { setReplyingTo(isReplying ? null : replyTargetId); setReplyContent('') }}>{t('comments.reply')}</button>
 
               <div className="cmt-reaction-trigger-wrap">
-                <button className="cmt-action-btn" onClick={() => setShowReactionPicker(showReactionPicker === item.id ? null : item.id)}>😀</button>
+                <button className="cmt-action-btn" onClick={() => setShowReactionPicker(showReactionPicker === item.id ? null : item.id)}>
+                  <span className="cmt-react-emoji">😀</span>
+                  <span className="cmt-react-text">{t('comments.react')}</span>
+                </button>
                 {showReactionPicker === item.id && (
                   <div className="cmt-reaction-picker">
                     {Object.entries(REACTION_EMOJIS).map(([type, emoji]) => (
@@ -430,8 +432,46 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     return <div className="cmt-loading">{t('comments.loading')}</div>
   }
 
+  // Separate pinned and regular comments for messenger layout
+  const pinnedItems = messengerLayout ? flatList.filter((item) => item.is_pinned) : []
+  const regularItems = messengerLayout ? flatList.filter((item) => !item.is_pinned) : flatList
+
+  const commentForm = (
+    <form className="cmt-new-form" onSubmit={handleSubmit}>
+      <div className="cmt-new-row">
+        <div className="cmt-av-wrap">
+          {user?.picture_url ? (
+            <img src={user.picture_url} alt={user.full_name} className="cmt-av cmt-av-img" />
+          ) : (
+            <div className="cmt-av">{initials(user?.full_name)}</div>
+          )}
+        </div>
+        <textarea
+          className="cmt-input cmt-input-new"
+          placeholder={isGeneralTab ? t('comments.placeholderGeneral') : t('comments.placeholder')}
+          value={newContent}
+          onChange={(e) => setNewContent(e.target.value)}
+          rows={1}
+          maxLength={2000}
+          onFocus={(e) => { e.target.rows = 3 }}
+          onBlur={(e) => { if (!e.target.value.trim()) e.target.rows = 1 }}
+        />
+      </div>
+      {newContent.trim() && (
+        <div className="cmt-new-actions">
+          <button type="submit" className="cmt-btn cmt-btn-primary" disabled={submitting}>
+            {submitting ? t('comments.sending') : t('comments.send')}
+          </button>
+          <button type="button" className="cmt-btn" onClick={() => setNewContent('')}>
+            {t('comments.cancel')}
+          </button>
+        </div>
+      )}
+    </form>
+  )
+
   return (
-    <div className="cmt-section">
+    <div className={`cmt-section ${messengerLayout ? 'cmt-messenger' : ''}`}>
       {!hideHeader && (
         <div className="cmt-section-header">
           <h3 className="cmt-title">{t('comments.title')}</h3>
@@ -454,49 +494,45 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
 
       {error && <div className="cmt-error">{error}</div>}
 
-      {/* New comment form */}
-      <form className="cmt-new-form" onSubmit={handleSubmit}>
-        <div className="cmt-new-row">
-          <div className="cmt-av-wrap">
-            {user?.picture_url ? (
-              <img src={user.picture_url} alt={user.full_name} className="cmt-av cmt-av-img" />
+      {messengerLayout ? (
+        <>
+          {/* Pinned comments float at top */}
+          {pinnedItems.length > 0 && (
+            <div className="cmt-pinned-float">
+              {pinnedItems.map((item) => renderFlatComment(item))}
+            </div>
+          )}
+
+          {/* Scrollable messages – newest at bottom */}
+          <div className="cmt-list cmt-list-messenger" ref={listRef}>
+            {regularItems.length === 0 ? (
+              <div className="cmt-empty">
+                <p>{isGeneralTab ? t('comments.emptyGeneral') : t('comments.empty')}</p>
+              </div>
             ) : (
-              <div className="cmt-av">{initials(user?.full_name)}</div>
+              [...regularItems].reverse().map((item) => renderFlatComment(item))
             )}
           </div>
-          <textarea
-            className="cmt-input cmt-input-new"
-            placeholder={isGeneralTab ? t('comments.placeholderGeneral') : t('comments.placeholder')}
-            value={newContent}
-            onChange={(e) => setNewContent(e.target.value)}
-            rows={1}
-            maxLength={2000}
-            onFocus={(e) => { e.target.rows = 3 }}
-            onBlur={(e) => { if (!e.target.value.trim()) e.target.rows = 1 }}
-          />
-        </div>
-        {newContent.trim() && (
-          <div className="cmt-new-actions">
-            <button type="submit" className="cmt-btn cmt-btn-primary" disabled={submitting}>
-              {submitting ? t('comments.sending') : t('comments.send')}
-            </button>
-            <button type="button" className="cmt-btn" onClick={() => setNewContent('')}>
-              {t('comments.cancel')}
-            </button>
-          </div>
-        )}
-      </form>
 
-      {/* Scrollable comments list */}
-      <div className="cmt-list" ref={listRef}>
-        {flatList.length === 0 ? (
-          <div className="cmt-empty">
-            <p>{isGeneralTab ? t('comments.emptyGeneral') : t('comments.empty')}</p>
+          {/* Input at bottom */}
+          {commentForm}
+        </>
+      ) : (
+        <>
+          {/* Standard layout: form on top, newest first */}
+          {commentForm}
+
+          <div className="cmt-list" ref={listRef}>
+            {flatList.length === 0 ? (
+              <div className="cmt-empty">
+                <p>{isGeneralTab ? t('comments.emptyGeneral') : t('comments.empty')}</p>
+              </div>
+            ) : (
+              flatList.map((item) => renderFlatComment(item))
+            )}
           </div>
-        ) : (
-          flatList.map((item) => renderFlatComment(item))
-        )}
-      </div>
+        </>
+      )}
     </div>
   )
 }

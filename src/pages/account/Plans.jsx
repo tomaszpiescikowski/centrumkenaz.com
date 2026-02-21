@@ -246,7 +246,7 @@ function Plans() {
       )
     }
 
-    const isBlocked = !!pendingPurchase || hasActiveSubscription
+    const isBlocked = !!pendingPurchase
 
     return (
       <button

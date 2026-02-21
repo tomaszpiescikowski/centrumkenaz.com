@@ -337,6 +337,8 @@
     "submitting": "Registering...",
     "pastEvent": "Event finished",
     "errorPastEvent": "You cannot register for an event that has already started.",
+    "tooFarFuture": "Registration not yet open",
+    "errorTooFarFuture": "Registration opens 3 weeks before the event.",
     "alreadyRegistered": "Already registered",
     "waitlistTitle": "Waitlist",
     "waitlistSuccess": "You have been added to this event waitlist.",
@@ -1058,6 +1060,8 @@
     "emptyGeneral": "No messages yet. Start the conversation!",
     "chatTitle": "Chat",
     "chatBubble": "Chat",
+    "react": "React",
+    "eventChat": "Event chat",
     "loading": "Loading..."
   }
 }

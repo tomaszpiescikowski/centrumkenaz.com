@@ -254,6 +254,8 @@ function Calendar({ className = '' }) {
 
     const today = new Date()
     today.setHours(0, 0, 0, 0)
+    const maxFutureDate = new Date(today)
+    maxFutureDate.setDate(maxFutureDate.getDate() + 21)
 
     return Array.from({ length: 42 }).map((_, index) => {
       const date = new Date(gridStart)
@@ -267,6 +269,7 @@ function Calendar({ className = '' }) {
         isCurrentMonth: date.getMonth() === month,
         isToday: key === todayKey,
         isPast: cellDate < today,
+        isTooFarFuture: cellDate >= maxFutureDate,
         events: eventsByDay.get(key) || [],
       }
     })
@@ -284,6 +287,15 @@ function Calendar({ className = '' }) {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     return d < today
+  }, [selectedDayKey])
+  const isSelectedDayTooFarFuture = useMemo(() => {
+    if (!selectedDayKey) return false
+    const d = new Date(`${selectedDayKey}T00:00:00`)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const maxFuture = new Date(today)
+    maxFuture.setDate(maxFuture.getDate() + 21)
+    return d >= maxFuture
   }, [selectedDayKey])
   const selectedDayLabel = useMemo(() => {
     if (!selectedDayKey) return ''
@@ -370,7 +382,7 @@ function Calendar({ className = '' }) {
         </button>
       </div>
 
-      {isAdmin && !isSelectedDayPast && (
+      {isAdmin && !isSelectedDayPast && !isSelectedDayTooFarFuture && (
         <div className="mb-3">
           <Link
             to={adminCreatePath}
@@ -395,6 +407,8 @@ function Calendar({ className = '' }) {
               const isSelected = cell.key === selectedDayKey
               const isOutside = !cell.isCurrentMonth
               const isPastDay = cell.isPast && !isOutside
+              const isFarFutureDay = cell.isTooFarFuture && !isOutside
+              const isGrayedOut = (isPastDay || isFarFutureDay) && !isSelected
               return (
                 <button
                   key={cell.key}
@@ -405,7 +419,7 @@ function Calendar({ className = '' }) {
                     `min-h-[44px] rounded-xl border px-1 py-1 text-center transition ` +
                     `${isOutside
                       ? 'cursor-default border-transparent text-navy/25 dark:text-cream/25'
-                      : isPastDay && !isSelected
+                      : isGrayedOut
                         ? 'border-navy/5 text-navy/35 dark:border-cream/10 dark:text-cream/35'
                         : 'border-navy/10 text-navy dark:border-cream/15 dark:text-cream'} ` +
                     `${isSelected ? 'bg-navy text-cream dark:bg-cream dark:text-navy' : 'bg-transparent'} ` +
@@ -415,7 +429,7 @@ function Calendar({ className = '' }) {
                   <div
                     className={
                       `text-sm font-bold leading-none ` +
-                      `${isSelected ? 'text-cream dark:text-navy' : isPastDay ? 'text-navy/35 dark:text-cream/35' : 'text-navy dark:text-cream'}`
+                      `${isSelected ? 'text-cream dark:text-navy' : (isPastDay || isFarFutureDay) ? 'text-navy/35 dark:text-cream/35' : 'text-navy dark:text-cream'}`
                     }
                   >
                     {cell.date.getDate()}
