@@ -280,6 +280,17 @@
   border-left-color: rgba(255, 253, 245, 0.10);
 }
 
+/* Clear visual break after a thread group ends */
+.cmt-threaded + .cmt-item:not(.cmt-threaded) {
+  margin-top: 0.25rem;
+  border-top: 1px solid rgba(15, 23, 74, 0.06);
+  padding-top: 0.75rem;
+}
+
+.dark .cmt-threaded + .cmt-item:not(.cmt-threaded) {
+  border-top-color: rgba(255, 253, 245, 0.06);
+}
+
 .cmt-item-body {
   position: relative;
 }
