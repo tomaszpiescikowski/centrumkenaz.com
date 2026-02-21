@@ -57,6 +57,7 @@
     "shop": "Shop",
     "myEvents": "Mijn events",
     "events": "Events",
+    "panel": "Paneel",
     "myAccount": "Mijn account",
     "admin": "Admin",
     "city": "Stad",
@@ -711,6 +712,10 @@
       "announcements": {
         "title": "Aankondigingen",
         "description": "Maak en beheer aankondigingen."
+      },
+      "balance": {
+        "title": "Financieel overzicht",
+        "description": "Inkomsten, terugbetalingen en maandelijks/kwartaaloverzicht."
       }
     },
     "feedback": {
@@ -874,7 +879,43 @@
     },
     "approvalSuccess": "Gebruiker is goedgekeurd.",
     "recurringUpdateSuccess": "Terugkerend evenement bijgewerkt.",
-    "recurringDeleteSuccess": "Terugkerend evenement verwijderd."
+    "recurringDeleteSuccess": "Terugkerend evenement verwijderd.",
+    "balance": {
+      "title": "Financieel overzicht",
+      "subtitle": "Inkomsten, terugbetalingen en nettosaldo voor de geselecteerde periode.",
+      "loadError": "Kan balansgegevens niet laden.",
+      "period_month": "Maand",
+      "period_quarter": "Kwartaal",
+      "period_year": "Jaar",
+      "totalIncome": "Totale inkomsten",
+      "incomeEvent": "Evenementinkomsten",
+      "incomeSub": "Abonnementsinkomsten",
+      "totalRefunds": "Totale terugbetalingen",
+      "totalNet": "Nettosaldo",
+      "txCount": "Transacties",
+      "refundCount": "Terugbetalingen",
+      "pendingTotal": "Totaal in afwachting",
+      "pendingTitle": "Lopende betalingen",
+      "pendingEvent": "Evenementen",
+      "pendingSub": "Abonnementen",
+      "monthlyTitle": "Maandelijks overzicht",
+      "eventsTitle": "Overzicht per evenement",
+      "subscriptionsTitle": "Overzicht per abonnement",
+      "noData": "Geen gegevens voor de geselecteerde periode.",
+      "colMonth": "Maand",
+      "colIncomeEvent": "Inkomsten (evenementen)",
+      "colIncomeSub": "Inkomsten (abonnementen)",
+      "colIncomeTotal": "Totale inkomsten",
+      "colRefunds": "Terugbetalingen",
+      "colNet": "Netto",
+      "colTxCount": "Transacties",
+      "colEventTitle": "Evenement",
+      "colDate": "Datum",
+      "colCity": "Stad",
+      "colIncome": "Inkomsten",
+      "colPlan": "Plan",
+      "colRefundCount": "Terugbetalingen (st.)"
+    }
   },
   "participants": {
     "title": "Deelnemers",

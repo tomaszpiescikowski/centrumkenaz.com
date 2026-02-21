@@ -9,7 +9,7 @@ import PendingApprovalOverlay from '../common/PendingApprovalOverlay'
 const MOBILE_APP_SHELL_PATHS = new Set([
   '/',
   '/calendar',
-  '/my-events',
+  '/panel',
   '/shop',
   '/me',
   '/plans',

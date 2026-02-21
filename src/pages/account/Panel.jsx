@@ -6,7 +6,7 @@ import { useNotification } from '../../context/NotificationContext'
 import { fetchMyRegistrations, cancelRegistration } from '../../api/user'
 import AnnouncementsTile from '../../components/ui/AnnouncementsTile'
 
-function MyEvents() {
+function Panel() {
   const { user, isAuthenticated, authFetch } = useAuth()
   const { t } = useLanguage()
   const { showError, showSuccess } = useNotification()
@@ -68,15 +68,17 @@ function MyEvents() {
         <div className="pointer-events-none select-none blur-[3px]">
           <div className="mx-auto w-full max-w-6xl">
             <h1 className="text-3xl font-black text-navy dark:text-cream md:text-4xl">
-              {t('nav.events')}
+              {t('nav.panel')}
             </h1>
             <div className="mt-6 flex flex-col gap-6 lg:flex-row">
-              {/* My events mock */}
-              <div className="flex-1">
-                <h2 className="mb-3 text-xl font-bold text-navy dark:text-cream">{t('events.myEventsTitle')}</h2>
-                <div className="space-y-4">
+              {/* My events mock tile */}
+              <div className="panel-tile flex-1">
+                <div className="panel-tile-header">
+                  <h2 className="text-lg font-bold text-navy dark:text-cream">{t('events.myEventsTitle')}</h2>
+                </div>
+                <div className="panel-tile-body space-y-4">
                   {mockCards.slice(0, 2).map((e, i) => (
-                    <div key={i} className="rounded-2xl bg-navy/10 dark:bg-cream/10 border border-navy/15 dark:border-cream/15 p-5 flex flex-col gap-2">
+                    <div key={i} className="myev-card flex flex-col gap-2">
                       <div className="text-lg font-black text-navy dark:text-cream leading-tight">{e.title}</div>
                       <div className="flex flex-wrap gap-3 text-sm text-navy/60 dark:text-cream/60">
                         <span>{e.date}</span>
@@ -85,12 +87,14 @@ function MyEvents() {
                   ))}
                 </div>
               </div>
-              {/* Announcements mock */}
-              <div className="flex-1">
-                <h2 className="mb-3 text-xl font-bold text-navy dark:text-cream">{t('announcements.title')}</h2>
-                <div className="space-y-4">
+              {/* Announcements mock tile */}
+              <div className="panel-tile flex-1">
+                <div className="panel-tile-header">
+                  <h2 className="text-lg font-bold text-navy dark:text-cream">{t('announcements.title')}</h2>
+                </div>
+                <div className="panel-tile-body space-y-4">
                   {[1, 2].map((i) => (
-                    <div key={i} className="rounded-2xl bg-navy/10 dark:bg-cream/10 border border-navy/15 dark:border-cream/15 p-5 flex flex-col gap-2">
+                    <div key={i} className="myev-card flex flex-col gap-2">
                       <div className="h-4 w-3/4 rounded bg-navy/20 dark:bg-cream/20" />
                       <div className="h-3 w-full rounded bg-navy/10 dark:bg-cream/10" />
                       <div className="h-3 w-2/3 rounded bg-navy/10 dark:bg-cream/10" />
@@ -109,17 +113,19 @@ function MyEvents() {
     <div className="page-shell flex h-full min-h-0 flex-col gap-4 sm:gap-6" style={{ maxWidth: '72rem' }}>
       <div className="shrink-0">
         <h1 className="text-3xl font-black text-navy dark:text-cream md:text-4xl">
-          {t('nav.events')}
+          {t('nav.panel')}
         </h1>
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col gap-6 lg:flex-row">
         {/* Left tile – My Events */}
-        <section className="flex min-h-0 flex-1 flex-col">
-          <h2 className="mb-3 text-xl font-bold text-navy dark:text-cream">
-            {t('events.myEventsTitle')}
-          </h2>
-          <div className="min-h-0 flex-1 overflow-y-auto">
+        <section className="panel-tile flex min-h-0 flex-1 flex-col">
+          <div className="panel-tile-header">
+            <h2 className="text-lg font-bold text-navy dark:text-cream">
+              {t('events.myEventsTitle')}
+            </h2>
+          </div>
+          <div className="panel-tile-body min-h-0 flex-1 overflow-y-auto">
             {loading ? (
               <p className="text-navy/60 dark:text-cream/60">{t('common.loading')}</p>
             ) : registrations.length === 0 ? (
@@ -203,11 +209,13 @@ function MyEvents() {
         </section>
 
         {/* Right tile – Announcements */}
-        <section className="flex min-h-0 flex-1 flex-col">
-          <h2 className="mb-3 text-xl font-bold text-navy dark:text-cream">
-            {t('announcements.title')}
-          </h2>
-          <div className="min-h-0 flex-1 overflow-y-auto">
+        <section className="panel-tile flex min-h-0 flex-1 flex-col">
+          <div className="panel-tile-header">
+            <h2 className="text-lg font-bold text-navy dark:text-cream">
+              {t('announcements.title')}
+            </h2>
+          </div>
+          <div className="panel-tile-body min-h-0 flex-1 overflow-y-auto">
             <AnnouncementsTile />
           </div>
         </section>
@@ -235,4 +243,4 @@ function formatDate(dateStr) {
   })
 }
 
-export default MyEvents
+export default Panel

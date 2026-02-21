@@ -57,6 +57,7 @@
     "shop": "Shop",
     "myEvents": "My events",
     "events": "Events",
+    "panel": "Panel",
     "myAccount": "My account",
     "admin": "Admin",
     "city": "City",
@@ -711,6 +712,10 @@
       "announcements": {
         "title": "Announcements",
         "description": "Create and manage announcements."
+      },
+      "balance": {
+        "title": "Financial balance",
+        "description": "Revenue, refunds, and monthly/quarterly balance."
       }
     },
     "feedback": {
@@ -878,7 +883,43 @@
     },
     "approvalSuccess": "User has been approved.",
     "recurringUpdateSuccess": "Recurring event updated.",
-    "recurringDeleteSuccess": "Recurring event deleted."
+    "recurringDeleteSuccess": "Recurring event deleted.",
+    "balance": {
+      "title": "Financial balance",
+      "subtitle": "Revenue, refunds, and net balance for the selected period.",
+      "loadError": "Could not load balance data.",
+      "period_month": "Month",
+      "period_quarter": "Quarter",
+      "period_year": "Year",
+      "totalIncome": "Total income",
+      "incomeEvent": "Event income",
+      "incomeSub": "Subscription income",
+      "totalRefunds": "Total refunds",
+      "totalNet": "Net balance",
+      "txCount": "Transactions",
+      "refundCount": "Refunds",
+      "pendingTotal": "Total pending",
+      "pendingTitle": "Pending payments",
+      "pendingEvent": "Events",
+      "pendingSub": "Subscriptions",
+      "monthlyTitle": "Monthly breakdown",
+      "eventsTitle": "Breakdown by event",
+      "subscriptionsTitle": "Breakdown by subscription",
+      "noData": "No data for the selected period.",
+      "colMonth": "Month",
+      "colIncomeEvent": "Income (events)",
+      "colIncomeSub": "Income (subscriptions)",
+      "colIncomeTotal": "Total income",
+      "colRefunds": "Refunds",
+      "colNet": "Net",
+      "colTxCount": "Transactions",
+      "colEventTitle": "Event",
+      "colDate": "Date",
+      "colCity": "City",
+      "colIncome": "Income",
+      "colPlan": "Plan",
+      "colRefundCount": "Refunds (qty)"
+    }
   },
   "approval": {
     "title": "Awaiting approval",

@@ -146,3 +146,13 @@ export async function approveSubscriptionPurchase(authFetch, purchaseId) {
   }
   return data
 }
+
+export async function fetchAdminBalance(authFetch, period) {
+  const query = period ? `?period=${encodeURIComponent(period)}` : ''
+  const response = await authFetch(`${API_URL}/admin/balance${query}`)
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.detail || 'Failed to fetch balance')
+  }
+  return safeJson(response)
+}

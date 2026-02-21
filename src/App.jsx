@@ -16,6 +16,7 @@ import AdminManualPayments from './pages/admin/AdminManualPayments'
 import AdminFeedback from './pages/admin/AdminFeedback'
 import AdminAnnouncements from './pages/admin/AdminAnnouncements'
 import AdminUsersApproval from './pages/admin/AdminUsersApproval'
+import AdminBalance from './pages/admin/AdminBalance'
 import Account from './pages/account/Account'
 import Plans from './pages/account/Plans'
 import AboutSection from './pages/public/AboutSection'
@@ -26,7 +27,7 @@ import PendingApproval from './pages/account/PendingApproval'
 import UserProfile from './pages/account/UserProfile'
 import ManualPaymentPage from './pages/account/ManualPaymentPage'
 import SubscriptionManualPaymentPage from './pages/account/SubscriptionManualPaymentPage'
-import MyEvents from './pages/account/MyEvents'
+import Panel from './pages/account/Panel'
 import Login from './pages/auth/Login'
 
 function RequireAuth() {
@@ -114,7 +115,7 @@ function App() {
                 <Routes location={location}>
                   <Route path="/" element={<Home />} />
                   <Route path="/calendar" element={<CalendarPage />} />
-                  <Route path="/my-events" element={<MyEvents />} />
+                  <Route path="/panel" element={<Panel />} />
                   <Route path="/about" element={<AboutSection />} />
                   <Route path="/shop" element={<Shop />} />
                   <Route path="/privacy" element={<Privacy />} />
@@ -129,6 +130,7 @@ function App() {
                     <Route path="/admin/manual-payments" element={<AdminManualPayments />} />
                     <Route path="/admin/feedback" element={<AdminFeedback />} />
                     <Route path="/admin/announcements" element={<AdminAnnouncements />} />
+                    <Route path="/admin/balance" element={<AdminBalance />} />
                   </Route>
                   <Route element={<RequireAuth />}>
                     <Route path="/me" element={<Account darkMode={darkMode} setDarkMode={setDarkMode} />} />

@@ -57,6 +57,7 @@
     "shop": "商店",
     "myEvents": "我的活动",
     "events": "活动",
+    "panel": "面板",
     "myAccount": "我的账户",
     "admin": "管理",
     "city": "城市",
@@ -709,6 +710,10 @@
       "announcements": {
         "title": "公告",
         "description": "创建和管理公告。"
+      },
+      "balance": {
+        "title": "财务报表",
+        "description": "收入、退款和月度/季度结算。"
       }
     },
     "feedback": {
@@ -872,7 +877,43 @@
     },
     "approvalSuccess": "用户已通过审核。",
     "recurringUpdateSuccess": "周期活动已更新。",
-    "recurringDeleteSuccess": "周期活动已删除。"
+    "recurringDeleteSuccess": "周期活动已删除。",
+    "balance": {
+      "title": "财务报表",
+      "subtitle": "所选期间的收入、退款和净额报表。",
+      "loadError": "无法加载报表数据。",
+      "period_month": "月",
+      "period_quarter": "季度",
+      "period_year": "年",
+      "totalIncome": "总收入",
+      "incomeEvent": "活动收入",
+      "incomeSub": "订阅收入",
+      "totalRefunds": "总退款",
+      "totalNet": "净额",
+      "txCount": "交易数",
+      "refundCount": "退款数",
+      "pendingTotal": "待处理总额",
+      "pendingTitle": "待处理付款",
+      "pendingEvent": "活动",
+      "pendingSub": "订阅",
+      "monthlyTitle": "月度明细",
+      "eventsTitle": "按活动分类",
+      "subscriptionsTitle": "按订阅分类",
+      "noData": "所选期间无数据。",
+      "colMonth": "月份",
+      "colIncomeEvent": "收入（活动）",
+      "colIncomeSub": "收入（订阅）",
+      "colIncomeTotal": "总收入",
+      "colRefunds": "退款",
+      "colNet": "净额",
+      "colTxCount": "交易",
+      "colEventTitle": "活动",
+      "colDate": "日期",
+      "colCity": "城市",
+      "colIncome": "收入",
+      "colPlan": "计划",
+      "colRefundCount": "退款（件）"
+    }
   },
   "participants": {
     "title": "参与者",

@@ -57,6 +57,7 @@
     "shop": "Shop",
     "myEvents": "I miei eventi",
     "events": "Eventi",
+    "panel": "Pannello",
     "myAccount": "Il mio account",
     "admin": "Admin",
     "city": "Città",
@@ -711,6 +712,10 @@
       "announcements": {
         "title": "Annunci",
         "description": "Crea e gestisci annunci."
+      },
+      "balance": {
+        "title": "Bilancio finanziario",
+        "description": "Ricavi, rimborsi e bilancio mensile/trimestrale."
       }
     },
     "feedback": {
@@ -874,7 +879,43 @@
     },
     "approvalSuccess": "Utente approvato.",
     "recurringUpdateSuccess": "Evento ricorrente aggiornato.",
-    "recurringDeleteSuccess": "Evento ricorrente eliminato."
+    "recurringDeleteSuccess": "Evento ricorrente eliminato.",
+    "balance": {
+      "title": "Bilancio finanziario",
+      "subtitle": "Ricavi, rimborsi e saldo netto per il periodo selezionato.",
+      "loadError": "Impossibile caricare i dati del bilancio.",
+      "period_month": "Mese",
+      "period_quarter": "Trimestre",
+      "period_year": "Anno",
+      "totalIncome": "Ricavo totale",
+      "incomeEvent": "Ricavo eventi",
+      "incomeSub": "Ricavo abbonamenti",
+      "totalRefunds": "Rimborsi totali",
+      "totalNet": "Saldo netto",
+      "txCount": "Transazioni",
+      "refundCount": "Rimborsi",
+      "pendingTotal": "Totale in sospeso",
+      "pendingTitle": "Pagamenti in sospeso",
+      "pendingEvent": "Eventi",
+      "pendingSub": "Abbonamenti",
+      "monthlyTitle": "Ripartizione mensile",
+      "eventsTitle": "Ripartizione per evento",
+      "subscriptionsTitle": "Ripartizione per abbonamento",
+      "noData": "Nessun dato per il periodo selezionato.",
+      "colMonth": "Mese",
+      "colIncomeEvent": "Ricavo (eventi)",
+      "colIncomeSub": "Ricavo (abbonamenti)",
+      "colIncomeTotal": "Ricavo totale",
+      "colRefunds": "Rimborsi",
+      "colNet": "Netto",
+      "colTxCount": "Transazioni",
+      "colEventTitle": "Evento",
+      "colDate": "Data",
+      "colCity": "Citt\u00e0",
+      "colIncome": "Ricavo",
+      "colPlan": "Piano",
+      "colRefundCount": "Rimborsi (n.)"
+    }
   },
   "participants": {
     "title": "Partecipanti",

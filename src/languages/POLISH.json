@@ -57,6 +57,7 @@
     "shop": "Sklep",
     "myEvents": "Moje wydarzenia",
     "events": "Wydarzenia",
+    "panel": "Panel",
     "myAccount": "Moje konto",
     "admin": "Admin",
     "city": "Miasto",
@@ -711,6 +712,10 @@
       "announcements": {
         "title": "Ogłoszenia",
         "description": "Twórz i zarządzaj ogłoszeniami."
+      },
+      "balance": {
+        "title": "Bilans finansowy",
+        "description": "Przychody, zwroty i bilans miesięczny/kwartalny."
       }
     },
     "feedback": {
@@ -878,7 +883,43 @@
     },
     "approvalSuccess": "Użytkownik został zaakceptowany.",
     "recurringUpdateSuccess": "Wydarzenie cykliczne zostało zaktualizowane.",
-    "recurringDeleteSuccess": "Wydarzenie cykliczne zostało usunięte."
+    "recurringDeleteSuccess": "Wydarzenie cykliczne zostało usunięte.",
+    "balance": {
+      "title": "Bilans finansowy",
+      "subtitle": "Zestawienie przychodów, zwrotów i bilansu za wybrany okres.",
+      "loadError": "Nie udało się załadować danych bilansu.",
+      "period_month": "Miesiąc",
+      "period_quarter": "Kwartał",
+      "period_year": "Rok",
+      "totalIncome": "Przychód łączny",
+      "incomeEvent": "Przychód z wydarzeń",
+      "incomeSub": "Przychód z subskrypcji",
+      "totalRefunds": "Zwroty łączne",
+      "totalNet": "Bilans netto",
+      "txCount": "Liczba transakcji",
+      "refundCount": "Liczba zwrotów",
+      "pendingTotal": "Oczekujące łącznie",
+      "pendingTitle": "Oczekujące płatności",
+      "pendingEvent": "Wydarzenia",
+      "pendingSub": "Subskrypcje",
+      "monthlyTitle": "Podział miesięczny",
+      "eventsTitle": "Podział wg wydarzeń",
+      "subscriptionsTitle": "Podział wg subskrypcji",
+      "noData": "Brak danych w wybranym okresie.",
+      "colMonth": "Miesiąc",
+      "colIncomeEvent": "Przychód (wydarzenia)",
+      "colIncomeSub": "Przychód (subskrypcje)",
+      "colIncomeTotal": "Przychód łączny",
+      "colRefunds": "Zwroty",
+      "colNet": "Netto",
+      "colTxCount": "Transakcje",
+      "colEventTitle": "Wydarzenie",
+      "colDate": "Data",
+      "colCity": "Miasto",
+      "colIncome": "Przychód",
+      "colPlan": "Plan",
+      "colRefundCount": "Zwroty (szt.)"
+    }
   },
   "approval": {
     "title": "Oczekiwanie na akceptację",

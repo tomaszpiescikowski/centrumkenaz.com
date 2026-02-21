@@ -1335,3 +1335,427 @@ async def approve_subscription_purchase(
     if not result:
         raise HTTPException(status_code=404, detail="Purchase not found")
     return _serialize_subscription_purchase_pending_row(*result)
+
+
+# ---------------------------------------------------------------------------
+# Balance / Financial Statement
+# ---------------------------------------------------------------------------
+
+
+class BalanceMonthRow(BaseModel):
+    """Monthly breakdown used in the balance sheet."""
+
+    month: str = Field(description="Month in YYYY-MM format.")
+    income_event: str = Field(description="Completed event payment revenue.")
+    income_subscription: str = Field(description="Completed subscription payment revenue.")
+    income_total: str = Field(description="Total income (events + subscriptions).")
+    refunds: str = Field(description="Total refunded amount (positive value).")
+    net: str = Field(description="Net = income_total − refunds.")
+    tx_count: int = Field(description="Number of completed transactions.")
+    refund_count: int = Field(description="Number of refunded transactions.")
+
+
+class BalanceEventRow(BaseModel):
+    """Per-event revenue in the selected period."""
+
+    event_id: str = Field(description="Event identifier.")
+    title: str = Field(description="Event title.")
+    start_date: str = Field(description="Event start date YYYY-MM-DD.")
+    city: str = Field(description="City.")
+    income: str = Field(description="Completed revenue for this event.")
+    refunds: str = Field(description="Refunded amount for this event.")
+    net: str = Field(description="Net revenue.")
+    tx_count: int = Field(description="Completed transaction count.")
+    refund_count: int = Field(description="Refunded transaction count.")
+
+
+class BalanceSubscriptionRow(BaseModel):
+    """Per-plan subscription revenue in the selected period."""
+
+    plan_code: str = Field(description="Subscription plan code.")
+    income: str = Field(description="Completed subscription revenue.")
+    refunds: str = Field(description="Refunded subscription amount.")
+    net: str = Field(description="Net subscription revenue.")
+    tx_count: int = Field(description="Completed transaction count.")
+    refund_count: int = Field(description="Refunded transaction count.")
+
+
+class BalancePendingRow(BaseModel):
+    """Summary of still-pending amounts."""
+
+    pending_event: str = Field(description="Pending event payment amounts.")
+    pending_subscription: str = Field(description="Pending subscription payment amounts.")
+    pending_total: str = Field(description="Total pending amounts.")
+    pending_event_count: int = Field(description="Pending event payment count.")
+    pending_subscription_count: int = Field(description="Pending subscription payment count.")
+
+
+class BalanceResponse(BaseModel):
+    """
+    Comprehensive financial balance sheet for admin reporting.
+
+    Aggregates income, refunds, and net across months, events, and subscription
+    plans for the selected period.
+    """
+
+    period_label: str = Field(description="Human-readable period label.")
+    date_from: str = Field(description="Period start date YYYY-MM-DD.")
+    date_to: str = Field(description="Period end date YYYY-MM-DD.")
+
+    total_income: str = Field(description="Total completed revenue.")
+    total_income_event: str = Field(description="Revenue from events.")
+    total_income_subscription: str = Field(description="Revenue from subscriptions.")
+    total_refunds: str = Field(description="Total refunded amount.")
+    total_net: str = Field(description="Net = total_income − total_refunds.")
+    total_tx_count: int = Field(description="Total completed transaction count.")
+    total_refund_count: int = Field(description="Total refund count.")
+
+    months: list[BalanceMonthRow] = Field(description="Monthly breakdown rows.")
+    events: list[BalanceEventRow] = Field(description="Per-event breakdown rows.")
+    subscriptions: list[BalanceSubscriptionRow] = Field(description="Per-plan breakdown rows.")
+    pending: BalancePendingRow = Field(description="Pending payment summary.")
+
+
+def _fmt(amount: Decimal) -> str:
+    """Format a Decimal amount as 'X.XX PLN'."""
+    return f"{amount:.2f} PLN"
+
+
+def _parse_period(period: str) -> tuple[datetime, datetime, str]:
+    """
+    Parse a period string and return (start, end, label).
+
+    Supported formats:
+      - YYYY-MM       → single month
+      - YYYY-QN       → quarter (N = 1..4)
+      - YYYY          → full year
+    """
+    import re
+
+    m_month = re.match(r"^(\d{4})-(\d{2})$", period)
+    if m_month:
+        year, month = int(m_month.group(1)), int(m_month.group(2))
+        if month < 1 or month > 12:
+            raise ValueError("Invalid month")
+        last_day = calendar.monthrange(year, month)[1]
+        start = datetime(year, month, 1)
+        end = datetime(year, month, last_day, 23, 59, 59, 999999)
+        label = f"{year}-{month:02d}"
+        return start, end, label
+
+    m_quarter = re.match(r"^(\d{4})-Q(\d)$", period, re.IGNORECASE)
+    if m_quarter:
+        year, q = int(m_quarter.group(1)), int(m_quarter.group(2))
+        if q < 1 or q > 4:
+            raise ValueError("Invalid quarter")
+        q_start_month = (q - 1) * 3 + 1
+        q_end_month = q_start_month + 2
+        last_day = calendar.monthrange(year, q_end_month)[1]
+        start = datetime(year, q_start_month, 1)
+        end = datetime(year, q_end_month, last_day, 23, 59, 59, 999999)
+        label = f"{year} Q{q}"
+        return start, end, label
+
+    m_year = re.match(r"^(\d{4})$", period)
+    if m_year:
+        year = int(m_year.group(1))
+        start = datetime(year, 1, 1)
+        end = datetime(year, 12, 31, 23, 59, 59, 999999)
+        label = str(year)
+        return start, end, label
+
+    raise ValueError("Invalid period format. Use YYYY-MM, YYYY-QN, or YYYY.")
+
+
+@router.get("/balance", response_model=BalanceResponse)
+async def get_balance(
+    db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(get_admin_user_dependency),
+    period: str | None = Query(
+        default=None,
+        description="Period: YYYY-MM (month), YYYY-QN (quarter), or YYYY (year). Defaults to current month.",
+    ),
+) -> BalanceResponse:
+    """
+    Return a comprehensive financial balance sheet for admin reporting.
+
+    Aggregates completed payments (income), refunds, and net amounts with
+    monthly, per-event, and per-subscription-plan breakdowns for the selected
+    period.
+    """
+    import re as _re  # noqa: F811 - local import to avoid top-level clash
+
+    now = datetime.utcnow()
+    if not period:
+        period = f"{now.year}-{now.month:02d}"
+
+    try:
+        date_from, date_to, period_label = _parse_period(period)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    time_filter = (Payment.created_at >= date_from, Payment.created_at <= date_to)
+
+    # ---- Aggregate totals ----
+    totals_q = await db.execute(
+        select(
+            Payment.payment_type,
+            Payment.status,
+            func.count(Payment.id),
+            func.coalesce(func.sum(Payment.amount), 0),
+        )
+        .where(*time_filter)
+        .group_by(Payment.payment_type, Payment.status)
+    )
+    income_event = Decimal("0")
+    income_sub = Decimal("0")
+    refund_event = Decimal("0")
+    refund_sub = Decimal("0")
+    tx_count = 0
+    refund_count = 0
+    for ptype, status, cnt, total in totals_q.all():
+        cnt = int(cnt)
+        total = Decimal(str(total))
+        if status == DBPaymentStatus.COMPLETED.value:
+            if ptype == "event":
+                income_event += total
+            else:
+                income_sub += total
+            tx_count += cnt
+        elif status == DBPaymentStatus.REFUNDED.value:
+            if ptype == "event":
+                refund_event += total
+            else:
+                refund_sub += total
+            refund_count += cnt
+
+    total_income = income_event + income_sub
+    total_refunds = refund_event + refund_sub
+    total_net = total_income - total_refunds
+
+    # ---- Monthly breakdown ----
+    month_q = await db.execute(
+        select(
+            func.to_char(Payment.created_at, "YYYY-MM").label("month"),
+            Payment.payment_type,
+            Payment.status,
+            func.count(Payment.id),
+            func.coalesce(func.sum(Payment.amount), 0),
+        )
+        .where(*time_filter)
+        .group_by("month", Payment.payment_type, Payment.status)
+        .order_by("month")
+    )
+    month_data: dict[str, dict] = {}
+    for month_str, ptype, status, cnt, total in month_q.all():
+        if month_str not in month_data:
+            month_data[month_str] = {
+                "income_event": Decimal("0"),
+                "income_sub": Decimal("0"),
+                "refunds": Decimal("0"),
+                "tx_count": 0,
+                "refund_count": 0,
+            }
+        d = month_data[month_str]
+        cnt = int(cnt)
+        total = Decimal(str(total))
+        if status == DBPaymentStatus.COMPLETED.value:
+            if ptype == "event":
+                d["income_event"] += total
+            else:
+                d["income_sub"] += total
+            d["tx_count"] += cnt
+        elif status == DBPaymentStatus.REFUNDED.value:
+            d["refunds"] += total
+            d["refund_count"] += cnt
+
+    months = []
+    for m, d in sorted(month_data.items()):
+        inc_total = d["income_event"] + d["income_sub"]
+        months.append(
+            BalanceMonthRow(
+                month=m,
+                income_event=_fmt(d["income_event"]),
+                income_subscription=_fmt(d["income_sub"]),
+                income_total=_fmt(inc_total),
+                refunds=_fmt(d["refunds"]),
+                net=_fmt(inc_total - d["refunds"]),
+                tx_count=d["tx_count"],
+                refund_count=d["refund_count"],
+            )
+        )
+
+    # ---- Per-event breakdown ----
+    event_q = await db.execute(
+        select(
+            Registration.event_id,
+            Event.title,
+            Event.start_date,
+            Event.city,
+            Payment.status,
+            func.count(Payment.id),
+            func.coalesce(func.sum(Payment.amount), 0),
+        )
+        .join(Registration, Payment.external_id == Registration.payment_id)
+        .join(Event, Registration.event_id == Event.id)
+        .where(
+            *time_filter,
+            Payment.payment_type == "event",
+        )
+        .group_by(
+            Registration.event_id,
+            Event.title,
+            Event.start_date,
+            Event.city,
+            Payment.status,
+        )
+    )
+    event_data: dict[str, dict] = {}
+    for eid, title, start_date, city, status, cnt, total in event_q.all():
+        if eid not in event_data:
+            event_data[eid] = {
+                "title": title,
+                "start_date": start_date,
+                "city": city or "",
+                "income": Decimal("0"),
+                "refunds": Decimal("0"),
+                "tx_count": 0,
+                "refund_count": 0,
+            }
+        d = event_data[eid]
+        cnt = int(cnt)
+        total = Decimal(str(total))
+        if status == DBPaymentStatus.COMPLETED.value:
+            d["income"] += total
+            d["tx_count"] += cnt
+        elif status == DBPaymentStatus.REFUNDED.value:
+            d["refunds"] += total
+            d["refund_count"] += cnt
+
+    events = sorted(
+        [
+            BalanceEventRow(
+                event_id=eid,
+                title=d["title"],
+                start_date=d["start_date"].strftime("%Y-%m-%d") if d["start_date"] else "",
+                city=d["city"],
+                income=_fmt(d["income"]),
+                refunds=_fmt(d["refunds"]),
+                net=_fmt(d["income"] - d["refunds"]),
+                tx_count=d["tx_count"],
+                refund_count=d["refund_count"],
+            )
+            for eid, d in event_data.items()
+        ],
+        key=lambda r: Decimal(r.income.split(" ")[0]),
+        reverse=True,
+    )
+
+    # ---- Per-subscription-plan breakdown ----
+    sub_q = await db.execute(
+        select(
+            Payment.description,
+            Payment.extra_data,
+            Payment.status,
+            func.count(Payment.id),
+            func.coalesce(func.sum(Payment.amount), 0),
+        )
+        .where(
+            *time_filter,
+            Payment.payment_type == "subscription",
+        )
+        .group_by(Payment.description, Payment.extra_data, Payment.status)
+    )
+    sub_data: dict[str, dict] = {}
+    for desc, extra, status, cnt, total in sub_q.all():
+        plan_code = "unknown"
+        if extra:
+            try:
+                parsed = json.loads(extra)
+                if isinstance(parsed, dict):
+                    plan_code = str(parsed.get("plan_code", "unknown"))
+            except (TypeError, json.JSONDecodeError):
+                pass
+        if plan_code not in sub_data:
+            sub_data[plan_code] = {
+                "income": Decimal("0"),
+                "refunds": Decimal("0"),
+                "tx_count": 0,
+                "refund_count": 0,
+            }
+        d = sub_data[plan_code]
+        cnt = int(cnt)
+        total = Decimal(str(total))
+        if status == DBPaymentStatus.COMPLETED.value:
+            d["income"] += total
+            d["tx_count"] += cnt
+        elif status == DBPaymentStatus.REFUNDED.value:
+            d["refunds"] += total
+            d["refund_count"] += cnt
+
+    subscriptions = [
+        BalanceSubscriptionRow(
+            plan_code=pc,
+            income=_fmt(d["income"]),
+            refunds=_fmt(d["refunds"]),
+            net=_fmt(d["income"] - d["refunds"]),
+            tx_count=d["tx_count"],
+            refund_count=d["refund_count"],
+        )
+        for pc, d in sorted(sub_data.items())
+    ]
+
+    # ---- Pending payments ----
+    pending_q = await db.execute(
+        select(
+            Payment.payment_type,
+            func.count(Payment.id),
+            func.coalesce(func.sum(Payment.amount), 0),
+        )
+        .where(
+            *time_filter,
+            Payment.status.in_([
+                DBPaymentStatus.PENDING.value,
+                DBPaymentStatus.PROCESSING.value,
+            ]),
+        )
+        .group_by(Payment.payment_type)
+    )
+    pending_event = Decimal("0")
+    pending_sub = Decimal("0")
+    pending_event_count = 0
+    pending_sub_count = 0
+    for ptype, cnt, total in pending_q.all():
+        cnt = int(cnt)
+        total = Decimal(str(total))
+        if ptype == "event":
+            pending_event += total
+            pending_event_count += cnt
+        else:
+            pending_sub += total
+            pending_sub_count += cnt
+
+    pending = BalancePendingRow(
+        pending_event=_fmt(pending_event),
+        pending_subscription=_fmt(pending_sub),
+        pending_total=_fmt(pending_event + pending_sub),
+        pending_event_count=pending_event_count,
+        pending_subscription_count=pending_sub_count,
+    )
+
+    return BalanceResponse(
+        period_label=period_label,
+        date_from=date_from.strftime("%Y-%m-%d"),
+        date_to=date_to.strftime("%Y-%m-%d"),
+        total_income=_fmt(total_income),
+        total_income_event=_fmt(income_event),
+        total_income_subscription=_fmt(income_sub),
+        total_refunds=_fmt(total_refunds),
+        total_net=_fmt(total_net),
+        total_tx_count=tx_count,
+        total_refund_count=refund_count,
+        months=months,
+        events=events,
+        subscriptions=subscriptions,
+        pending=pending,
+    )
