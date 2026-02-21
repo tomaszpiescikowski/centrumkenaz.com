@@ -12,6 +12,7 @@ from models.approval_request import ApprovalRequest
 from models.payment_method import PaymentMethod
 from models.feedback import Feedback
 from models.announcement import Announcement
+from models.comment import Comment, CommentReaction, ReactionType
 
 __all__ = [
 	"User",
@@ -29,4 +30,7 @@ __all__ = [
 	"PaymentMethod",
 	"Feedback",
 	"Announcement",
+	"Comment",
+	"CommentReaction",
+	"ReactionType",
 ]
