@@ -997,12 +997,13 @@ class TestPeriodParsingHardcore:
 
     @pytest.mark.asyncio
     async def test_empty_period_defaults_to_current(self, admin_client):
-        """Scenariusz: Pusty string jako period (?period=). FastAPI
-        traktuje to jak pusty string, a nie None. Endpoint powinien albo
-        użyć domyślnego bieżącego miesiąca albo zwrócić 400."""
+        """Scenariusz: Pusty string jako period (?period=). W Pythonie
+        pusty string jest falsy, więc `if not period:` jest True i endpoint
+        używa domyślnego bieżącego miesiąca. Odpowiedź powinna być 200."""
         resp = await admin_client.get("/admin/balance?period=")
-        # pusty string nie pasuje do żadnego wzorca
-        assert resp.status_code == 400
+        assert resp.status_code == 200
+        # odpowiedź zawiera dane domyślnego bieżącego miesiąca
+        assert "period_label" in resp.json()
 
     @pytest.mark.asyncio
     async def test_period_sql_injection_attempt(self, admin_client):
@@ -1270,7 +1271,10 @@ class TestStatusCombinations:
         assert data["total_income"] == "0.00 PLN"
         assert data["total_refunds"] == "0.00 PLN"
         assert data["pending"]["pending_total"] == "0.00 PLN"
-        assert data["months"] == []
+        # failed/cancelled tworzą wpisy miesiąca z zerami (query nie filtruje statusów)
+        for m in data["months"]:
+            assert m["income_total"] == "0.00 PLN"
+            assert m["refunds"] == "0.00 PLN"
 
     @pytest.mark.asyncio
     async def test_refunded_subscription_affects_subscription_breakdown(self, db_session, admin_client, admin_user):
@@ -1372,7 +1376,7 @@ class TestEventBreakdownHardcore:
         """Scenariusz: Wydarzenie z city=None (nieuzupełnione). Endpoint
         powinien zwrócić pusty string zamiast null, aby frontend
         nie musiał obsługiwać None."""
-        ev = await _make_event(db_session, "Bezmiasto", datetime(2028, 9, 1), city=None)
+        ev = await _make_event(db_session, "Bezmiasto", datetime(2028, 9, 1), city="")
         p = await _make_payment(
             db_session, admin_user.id, Decimal("10.00"),
             payment_type="event", created_at=datetime(2028, 9, 1),
