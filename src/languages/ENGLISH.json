@@ -342,7 +342,8 @@
     "errorGeneric": "Something went wrong. Please try again.",
     "errorFailed": "Registration failed",
     "errorSubscriptionRequired": "You need an active subscription to register for this event.",
-    "subscriptionDisabledHint": "This event is available only to Kenaz members. Purchase a subscription to sign up.",
+    "subscriptionDisabledHint": "This event is available only to Kenaz members.",
+    "subscriptionDisabledLink": "Purchase a subscription to sign up.",
     "manualPaymentRedirectTitle": "Complete manual payment",
     "manualPaymentRedirectSuccess": "Open transfer instructions and confirm your payment."
   },

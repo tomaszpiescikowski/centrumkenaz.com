@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
@@ -155,6 +156,16 @@ function RegisterButton({ eventId, price, isFull, isPast, isRegistered, requires
         <p className="text-center text-xs text-navy/50 dark:text-cream/50">
           {t('registration.subscriptionDisabledHint')}
         </p>
+        <Link
+          to="/plans"
+          className="block text-center text-xs text-yellow-500 underline hover:text-yellow-400 transition-colors"
+        >
+          {t('registration.subscriptionDisabledLink')}
+          <svg xmlns="http://www.w3.org/2000/svg" className="inline-block ml-1 w-3 h-3" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+          </svg>
+        </Link>
       </div>
     )
   }

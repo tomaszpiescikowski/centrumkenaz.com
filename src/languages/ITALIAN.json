@@ -342,7 +342,8 @@
     "errorGeneric": "Si è verificato un errore. Riprova.",
     "errorFailed": "Iscrizione non riuscita",
     "errorSubscriptionRequired": "Per iscriverti a questo evento è necessario un abbonamento attivo.",
-    "subscriptionDisabledHint": "Questo evento è riservato ai membri Kenaz. Acquista un abbonamento per iscriverti.",
+    "subscriptionDisabledHint": "Questo evento è riservato ai membri Kenaz.",
+    "subscriptionDisabledLink": "Acquista un abbonamento per iscriverti.",
     "manualPaymentRedirectTitle": "Completa il pagamento manuale",
     "manualPaymentRedirectSuccess": "Apri le istruzioni per il bonifico e conferma il pagamento."
   },

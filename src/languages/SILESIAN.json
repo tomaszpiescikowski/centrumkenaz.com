@@ -342,7 +342,8 @@
     "errorGeneric": "Cosik poszło niy tak. Sprōbuj zaś.",
     "errorFailed": "Błōnd rejestracyje",
     "errorSubscriptionRequired": "Do zapisu na to wydarzynie trza mieć aktywno subskrypcyjõ.",
-    "subscriptionDisabledHint": "To wydarzynie je ino dlo człōnkōw Kenaz. Kup subskrypcyjõ, coby sie zapisać.",
+    "subscriptionDisabledHint": "To wydarzynie je ino dlo człōnkōw Kenaz.",
+    "subscriptionDisabledLink": "Kup subskrypcyjõ, coby sie zapisać.",
     "manualPaymentRedirectTitle": "Dokōńcz rynczno płatność",
     "manualPaymentRedirectSuccess": "Ôtwōrz instrukcyje przelewu i potwierdź płatność."
   },
