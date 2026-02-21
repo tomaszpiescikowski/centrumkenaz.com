@@ -441,6 +441,7 @@ class RegistrationService:
             "occurrence_date": resolved_occurrence_date.isoformat(),
             "max_participants": event.max_participants,
             "confirmed_count": confirmed_count,
+            "occupied_count": occupied_count,
             "waitlist_count": waitlist_count,
             "available_spots": (
                 event.max_participants - occupied_count

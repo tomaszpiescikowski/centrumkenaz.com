@@ -426,9 +426,9 @@ function EventDetail() {
   }
 
   /* ── availability tags ──────────────────────────────── */
-  const confirmedCount = availability?.confirmed_count ?? participantCount
+  const occupiedCount = availability?.occupied_count ?? participantCount
   const waitlistCount = availability?.waitlist_count ?? waitlist.length
-  const availableSpots = availability?.available_spots ?? (maxParticipants != null ? Math.max(0, maxParticipants - confirmedCount) : null)
+  const availableSpots = availability?.available_spots ?? (maxParticipants != null ? Math.max(0, maxParticipants - occupiedCount) : null)
 
   const availabilityTag = (() => {
     if (maxParticipants == null) return { label: t('participants.noLimit'), cls: 'ev-tag-green' }
@@ -438,7 +438,7 @@ function EventDetail() {
   })()
 
   /* ── progress bar ───────────────────────────────────── */
-  const barPercent = maxParticipants ? Math.min(100, Math.round((confirmedCount / maxParticipants) * 100)) : 0
+  const barPercent = maxParticipants ? Math.min(100, Math.round((occupiedCount / maxParticipants) * 100)) : 0
   const barColor = barPercent >= 100 ? '#ef4444' : barPercent >= 80 ? '#f59e0b' : '#22c55e'
 
   /* ── badge for participant card header ──────────────── */
@@ -834,8 +834,8 @@ function EventDetail() {
               <span className="ev-thead-title">{t('participants.title')}</span>
               <span className={`ev-badge ${badgeCls}`}>
                 {maxParticipants != null
-                  ? `${confirmedCount} / ${maxParticipants}`
-                  : confirmedCount}
+                  ? `${occupiedCount} / ${maxParticipants}`
+                  : occupiedCount}
               </span>
             </div>
 

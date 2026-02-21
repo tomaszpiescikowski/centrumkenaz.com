@@ -77,6 +77,7 @@ class EventAvailabilityResponse(BaseModel):
     occurrence_date: str = Field(description="Occurrence date in YYYY-MM-DD.")
     max_participants: int | None = Field(default=None, description="Capacity limit if configured.")
     confirmed_count: int = Field(description="Number of confirmed registrations.")
+    occupied_count: int = Field(description="Number of registrations occupying a spot (confirmed + pending + manual payment).")
     waitlist_count: int = Field(description="Number of waitlisted registrations.")
     available_spots: int | None = Field(default=None, description="Remaining spots if limited.")
     is_available: bool = Field(description="Whether registration is currently available.")

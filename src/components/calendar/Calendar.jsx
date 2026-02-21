@@ -479,9 +479,9 @@ function Calendar({ className = '' }) {
                   const isRegistered = registeredEventIds.has(eventItem.id)
                   const availability = availabilityByEventId[eventItem.id] || null
                   const maxParticipants = availability?.max_participants ?? null
-                  const confirmedCount = availability?.confirmed_count ?? null
+                  const occupiedCount = availability?.occupied_count ?? null
                   const progressRatio = maxParticipants
-                    ? Math.min(Math.max((confirmedCount || 0) / maxParticipants, 0), 1)
+                    ? Math.min(Math.max((occupiedCount || 0) / maxParticipants, 0), 1)
                     : 0
                   const progressPercent = progressRatio * 100
                   const progressTone = getProgressTone(progressRatio)
@@ -504,7 +504,7 @@ function Calendar({ className = '' }) {
                           {eventItem.time || t('common.today')}
                           {eventItem.location ? ` · ${eventItem.location}` : ''}
                         </div>
-                        {maxParticipants != null && confirmedCount != null && (
+                        {maxParticipants != null && occupiedCount != null && (
                           <div className="mt-2">
                             <div className="relative h-2 w-full rounded-full bg-navy/10 dark:bg-cream/10">
                               <span
@@ -530,8 +530,8 @@ function Calendar({ className = '' }) {
                               {t('calendar.registered')}
                             </span>
                           )}
-                          {maxParticipants != null && confirmedCount != null && (
-                            <span>{confirmedCount}/{maxParticipants}</span>
+                          {maxParticipants != null && occupiedCount != null && (
+                            <span>{occupiedCount}/{maxParticipants}</span>
                           )}
                         </div>
                       </div>
