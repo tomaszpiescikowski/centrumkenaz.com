@@ -208,6 +208,7 @@ server {
     location /products/ { proxy_pass http://127.0.0.1:8000/products/; include /etc/nginx/proxy_params; }
     location /uploads/ { proxy_pass http://127.0.0.1:8000/uploads/; include /etc/nginx/proxy_params; }
     location /cities/ { proxy_pass http://127.0.0.1:8000/cities/; include /etc/nginx/proxy_params; }
+    location /api/ { proxy_pass http://127.0.0.1:8000/api/; include /etc/nginx/proxy_params; }
 
     # Admin endpoints
     location /admin/ { proxy_pass http://127.0.0.1:8000/admin/; include /etc/nginx/proxy_params; }
