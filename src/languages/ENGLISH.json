@@ -890,7 +890,10 @@
     "waitlistTitle": "Waitlist",
     "statusConfirmed": "Confirmed",
     "statusPending": "Pending",
-    "statusPayment": "Payment required",
+    "statusPayment": "Unpaid",
+    "tooltipConfirmed": "Payment completed – spot is confirmed.",
+    "tooltipPending": "Online payment is being processed.",
+    "tooltipPayment": "Participant has not yet made the transfer.",
     "noLimit": "No limit",
     "openInMaps": "Open in Google Maps",
     "subscribersOnly": "Subscribers"

@@ -890,7 +890,10 @@
     "waitlistTitle": "Lista rezerwowa",
     "statusConfirmed": "Potwierdzony",
     "statusPending": "Oczekuje",
-    "statusPayment": "Wymaga przelewu",
+    "statusPayment": "Nieopłacony",
+    "tooltipConfirmed": "Płatność została zrealizowana – miejsce jest potwierdzone.",
+    "tooltipPending": "Płatność online jest w trakcie przetwarzania.",
+    "tooltipPayment": "Uczestnik nie dokonał jeszcze przelewu.",
     "noLimit": "Brak limitu",
     "openInMaps": "Otwórz w Mapach Google",
     "subscribersOnly": "Subskrybenci"
