@@ -261,6 +261,29 @@
   border-bottom: none;
 }
 
+/* ── Parent comment with replies ───────────────────── */
+
+.cmt-has-replies {
+  border-bottom: none;
+  position: relative;
+}
+
+/* Vertical thread line from parent avatar to bottom */
+.cmt-has-replies::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 1.75rem;
+  bottom: 0;
+  width: 2px;
+  background: rgba(15, 23, 74, 0.08);
+  pointer-events: none;
+}
+
+.dark .cmt-has-replies::after {
+  background: rgba(255, 253, 245, 0.10);
+}
+
 /* ── Threaded reply (max visual depth = 1) ─────────── */
 
 .cmt-threaded {

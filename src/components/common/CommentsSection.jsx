@@ -316,7 +316,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     return (
       <div
         key={item.id}
-        className={`cmt-item ${item.is_pinned ? 'cmt-pinned' : ''} ${item._visualDepth > 0 ? 'cmt-threaded' : ''}`}
+        className={`cmt-item ${item.is_pinned ? 'cmt-pinned' : ''} ${item._visualDepth > 0 ? 'cmt-threaded' : ''} ${item._hasChildren && item._visualDepth === 0 ? 'cmt-has-replies' : ''}`}
         onTouchStart={(e) => { if (!item.is_deleted) handleTouchStart(item.id) }}
         onTouchEnd={handleTouchEnd}
         onTouchMove={handleTouchMove}
