@@ -12,6 +12,20 @@ import CustomSelect from '../../components/controls/CustomSelect'
 import CommentsSection from '../../components/common/CommentsSection'
 import ChatModal from '../../components/ui/ChatModal'
 
+function buildGoogleCalendarUrl(event) {
+  const start = new Date(event.startDateTime)
+  const end = event.endDateTime ? new Date(event.endDateTime) : new Date(start.getTime() + 60 * 60 * 1000)
+  const fmt = (d) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: event.title,
+    dates: `${fmt(start)}/${fmt(end)}`,
+  })
+  if (event.location) params.set('location', event.location)
+  if (event.city && !event.location) params.set('location', event.city)
+  return `https://calendar.google.com/calendar/render?${params.toString()}`
+}
+
 function EventDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -735,6 +749,20 @@ function EventDetail() {
                     </>
                   )}
                 </div>
+
+                {/* Add to Google Calendar – only for registered users */}
+                {isRegistered && (
+                  <a
+                    href={buildGoogleCalendarUrl(event)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="ev-gcal-btn"
+                    title={t('account.addToCalendar')}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/><path d="M12 14v4"/><path d="M10 16h4"/></svg>
+                    {t('account.addToCalendar')}
+                  </a>
+                )}
               </div>
 
               {/* Price box */}
