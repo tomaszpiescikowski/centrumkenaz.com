@@ -1,4 +1,4 @@
-import { API_URL } from './config'
+import { API_URL, safeJson } from './config'
 
 export async function fetchAdminEventStats(authFetch, month) {
   const query = month ? `?month=${encodeURIComponent(month)}` : ''
@@ -7,7 +7,7 @@ export async function fetchAdminEventStats(authFetch, month) {
     const data = await response.json().catch(() => ({}))
     throw new Error(data.detail || 'Failed to fetch event stats')
   }
-  return response.json()
+  return safeJson(response)
 }
 
 export async function fetchAdminUserStats(authFetch) {
@@ -16,7 +16,7 @@ export async function fetchAdminUserStats(authFetch) {
     const data = await response.json().catch(() => ({}))
     throw new Error(data.detail || 'Failed to fetch user stats')
   }
-  return response.json()
+  return safeJson(response)
 }
 
 export async function fetchAdminPaymentStats(authFetch, month) {
@@ -26,7 +26,7 @@ export async function fetchAdminPaymentStats(authFetch, month) {
     const data = await response.json().catch(() => ({}))
     throw new Error(data.detail || 'Failed to fetch payment stats')
   }
-  return response.json()
+  return safeJson(response)
 }
 
 export async function fetchAdminRegistrationStats(authFetch, month) {
@@ -36,7 +36,7 @@ export async function fetchAdminRegistrationStats(authFetch, month) {
     const data = await response.json().catch(() => ({}))
     throw new Error(data.detail || 'Failed to fetch registration stats')
   }
-  return response.json()
+  return safeJson(response)
 }
 
 export async function fetchPendingUsers(authFetch) {
@@ -45,7 +45,7 @@ export async function fetchPendingUsers(authFetch) {
     const data = await response.json().catch(() => ({}))
     throw new Error(data.detail || 'Failed to fetch pending users')
   }
-  return response.json()
+  return safeJson(response)
 }
 
 export async function approveUser(authFetch, userId) {
@@ -56,7 +56,7 @@ export async function approveUser(authFetch, userId) {
     const data = await response.json().catch(() => ({}))
     throw new Error(data.detail || 'Failed to approve user')
   }
-  return response.json()
+  return safeJson(response)
 }
 
 export async function fetchPendingManualPayments(authFetch) {
@@ -65,7 +65,7 @@ export async function fetchPendingManualPayments(authFetch) {
     const data = await response.json().catch(() => ({}))
     throw new Error(data.detail || 'Failed to fetch pending manual payments')
   }
-  return response.json()
+  return safeJson(response)
 }
 
 export async function approveManualPayment(authFetch, registrationId) {
@@ -85,7 +85,7 @@ export async function fetchManualRefundTasks(authFetch) {
     const data = await response.json().catch(() => ({}))
     throw new Error(data.detail || 'Failed to fetch manual refund tasks')
   }
-  return response.json()
+  return safeJson(response)
 }
 
 export async function updateManualRefundTask(authFetch, taskId, payload) {
@@ -109,7 +109,7 @@ export async function fetchWaitlistPromotions(authFetch) {
     const data = await response.json().catch(() => ({}))
     throw new Error(data.detail || 'Failed to fetch waitlist promotions')
   }
-  return response.json()
+  return safeJson(response)
 }
 
 export async function updateWaitlistPromotion(authFetch, registrationId, payload) {
@@ -133,7 +133,7 @@ export async function fetchPendingSubscriptionPurchases(authFetch) {
     const data = await response.json().catch(() => ({}))
     throw new Error(data.detail || 'Failed to fetch pending subscription purchases')
   }
-  return response.json()
+  return safeJson(response)
 }
 
 export async function approveSubscriptionPurchase(authFetch, purchaseId) {

@@ -13,3 +13,18 @@ export const API_URL = explicitApiUrl
   : import.meta.env.DEV
     ? getDevApiUrl()
     : ''
+
+/**
+ * Safely parse a JSON response, detecting HTML responses that indicate
+ * a proxy misconfiguration (e.g. SPA fallback serving index.html).
+ *
+ * @param {Response} response - fetch Response to parse
+ * @returns {Promise<any>} parsed JSON body
+ */
+export async function safeJson(response) {
+  const ct = response.headers.get('content-type') || ''
+  if (ct.includes('text/html')) {
+    throw new Error('Server returned HTML instead of JSON – check backend/proxy configuration')
+  }
+  return response.json()
+}

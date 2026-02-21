@@ -82,7 +82,7 @@ export default defineConfig({
           },
         ],
         navigateFallback: 'index.html',
-        navigateFallbackDenylist: [/^\/api/, /^\/auth\/google/, /^\/docs/, /^\/uploads/, /^\/health/],
+        navigateFallbackDenylist: [/^\/admin\//, /^\/api/, /^\/auth\//, /^\/cities\//, /^\/docs/, /^\/events\//, /^\/health/, /^\/payments\//, /^\/products\//, /^\/registrations\//, /^\/uploads\//, /^\/users\//, /^\/openapi\.json/],
       },
     }),
   ],
