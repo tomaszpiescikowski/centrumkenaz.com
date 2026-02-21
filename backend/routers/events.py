@@ -97,6 +97,7 @@ class ParticipantResponse(BaseModel):
     registered_at: str = Field(description="Registration timestamp.")
     is_member: bool = Field(description="Whether user has active membership.")
     points: int = Field(description="User points for ordering.")
+    picture_url: str | None = Field(default=None, description="Profile avatar URL.")
     is_top_member: bool = Field(description="Whether user is in top points cohort.")
     status: str = Field(default="confirmed", description="Registration status (confirmed, pending, manual_payment_required, manual_payment_verification, waitlist).")
 

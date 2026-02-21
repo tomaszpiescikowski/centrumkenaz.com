@@ -130,6 +130,7 @@ function ParticipantsTable({
               const isMember = Boolean(participant.is_member)
               const points = Number(participant.points || 0)
               const fallbackInitial = (participant.full_name || '?').trim().charAt(0).toUpperCase() || '?'
+              const avatarUrl = participant.picture_url || (user && participant.user_id === user.id ? user.picture_url : null)
               return (
                 <Link
                   key={participant.id}
@@ -137,10 +138,10 @@ function ParticipantsTable({
                   className={`grid grid-cols-[auto_1fr_auto] items-center gap-2 border-b border-navy/10 px-2 text-navy transition hover:bg-navy/5 dark:border-cream/10 dark:text-cream dark:hover:bg-cream/5 ${compact ? 'py-1.5' : 'py-2'}`}
                 >
                   <div className="flex w-6 items-center justify-center">
-                    {user && participant.user_id === user.id && user.picture_url ? (
+                    {avatarUrl ? (
                       <img
-                        src={user.picture_url}
-                        alt={user.full_name || 'User'}
+                        src={avatarUrl}
+                        alt={participant.full_name || 'User'}
                         className="h-4 w-4 min-h-4 min-w-4 rounded-full object-cover"
                       />
                     ) : (
@@ -199,6 +200,7 @@ function ParticipantsTable({
               const isMember = Boolean(participant.is_member)
               const points = Number(participant.points || 0)
               const fallbackInitial = (participant.full_name || '?').trim().charAt(0).toUpperCase() || '?'
+              const avatarUrl = participant.picture_url || (user && participant.user_id === user.id ? user.picture_url : null)
               return (
                 <Link
                   key={`waitlist-${participant.id}`}
@@ -206,10 +208,10 @@ function ParticipantsTable({
                   className={`grid grid-cols-[auto_1fr_auto] items-center gap-2 border-b border-navy/10 px-2 text-navy transition hover:bg-navy/5 dark:border-cream/10 dark:text-cream dark:hover:bg-cream/5 ${compact ? 'py-1.5' : 'py-2'}`}
                 >
                   <div className="flex w-6 items-center justify-center">
-                    {user && participant.user_id === user.id && user.picture_url ? (
+                    {avatarUrl ? (
                       <img
-                        src={user.picture_url}
-                        alt={user.full_name || 'User'}
+                        src={avatarUrl}
+                        alt={participant.full_name || 'User'}
                         className="h-4 w-4 min-h-4 min-w-4 rounded-full object-cover"
                       />
                     ) : (

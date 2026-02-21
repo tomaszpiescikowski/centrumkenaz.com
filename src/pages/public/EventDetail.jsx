@@ -864,9 +864,17 @@ function EventDetail() {
                     className={`ev-row ${statusRowClass(p.status)}`}
                   >
                     <div className="ev-av-wrap">
-                      <div className={`ev-av ${statusAvClass(p.status)}`}>
-                        {initials(p.full_name)}
-                      </div>
+                      {p.picture_url ? (
+                        <img
+                          src={p.picture_url}
+                          alt={p.full_name}
+                          className={`ev-av ev-av-img ${statusAvClass(p.status)}`}
+                        />
+                      ) : (
+                        <div className={`ev-av ${statusAvClass(p.status)}`}>
+                          {initials(p.full_name)}
+                        </div>
+                      )}
                       <span className={`ev-dot ${statusDotClass(p.status)}`} />
                     </div>
                     <div className="ev-nc">
@@ -905,9 +913,17 @@ function EventDetail() {
                     className="ev-row ev-row-wl"
                   >
                     <div className="ev-av-wrap">
-                      <div className="ev-av">
-                        {initials(w.full_name)}
-                      </div>
+                      {w.picture_url ? (
+                        <img
+                          src={w.picture_url}
+                          alt={w.full_name}
+                          className="ev-av ev-av-img"
+                        />
+                      ) : (
+                        <div className="ev-av">
+                          {initials(w.full_name)}
+                        </div>
+                      )}
                       <span className="ev-dot ev-d-wl" />
                     </div>
                     <div className="ev-nc">
