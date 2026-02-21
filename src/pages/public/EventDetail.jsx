@@ -703,30 +703,10 @@ function EventDetail() {
               </div>
             )}
 
-            {/* Title row */}
-            <div className="ev-title-row">
-              <div style={{ flex: 1 }}>
-                <h1 className="ev-title">{event.title}</h1>
-                <p className="ev-city">{event.city}</p>
-              </div>
-            </div>
+            {/* Title */}
+            <h1 className="ev-title">{event.title}</h1>
 
-            {/* Tags */}
-            <div className="ev-tags">
-              <span className={`ev-tag ${availabilityTag.cls}`}>
-                {availabilityTag.label}
-              </span>
-              <span className="ev-tag ev-tag-outline">
-                {t(`eventTypes.${event.type}`) || event.type}
-              </span>
-              {event.requiresSubscription && (
-                <span className="ev-tag ev-tag-outline">
-                  {t('participants.subscribersOnly')}
-                </span>
-              )}
-            </div>
-
-            {/* Meta row */}
+            {/* Date & time */}
             <div className="ev-meta">
               <span className="ev-meta-item">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -749,8 +729,38 @@ function EventDetail() {
                   </span>
                 </>
               )}
+            </div>
 
-              <span className="ev-meta-sep">·</span>
+            {/* Separator */}
+            <hr className="ev-separator" />
+
+            {/* Description */}
+            {event.description && (
+              <div className="ev-desc">{event.description}</div>
+            )}
+
+            {/* Tags */}
+            <div className="ev-tags">
+              <span className={`ev-tag ${availabilityTag.cls}`}>
+                {availabilityTag.label}
+              </span>
+              <span className="ev-tag ev-tag-outline">
+                {t(`eventTypes.${event.type}`) || event.type}
+              </span>
+              {event.requiresSubscription && (
+                <span className="ev-tag ev-tag-outline">
+                  {t('participants.subscribersOnly')}
+                </span>
+              )}
+              {event.city && (
+                <span className="ev-tag ev-tag-outline">
+                  {event.city}
+                </span>
+              )}
+            </div>
+
+            {/* Price */}
+            <div className="ev-meta">
               <span className="ev-price">
                 {event.requiresSubscription ? (
                   <>
@@ -768,11 +778,6 @@ function EventDetail() {
                 )}
               </span>
             </div>
-
-            {/* Description */}
-            {event.description && (
-              <div className="ev-desc">{event.description}</div>
-            )}
 
             {/* Filler to push location/CTA to bottom */}
             <div className="ev-filler" />
@@ -809,7 +814,6 @@ function EventDetail() {
               isRegistered={isRegistered}
               onSuccess={handleRegistrationSuccess}
             />
-            <p className="ev-cta-hint">{t('event.interested')}</p>
           </div>
         </div>
 
