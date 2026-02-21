@@ -5,6 +5,7 @@ import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
 import { fetchMyRegistrations, cancelRegistration } from '../../api/user'
 import AnnouncementsTile from '../../components/ui/AnnouncementsTile'
+import EventIcon from '../../components/common/EventIcon'
 
 function buildGoogleCalendarUrl(reg) {
   const start = new Date(reg.event.start_date)
@@ -175,7 +176,6 @@ function Panel() {
               <div className="divide-y divide-navy/10 dark:divide-cream/10">
                 {registrations.map((reg) => {
                   const eventPassed = new Date(reg.event.start_date) < new Date()
-                  const pointsEarned = eventPassed && reg.status === 'confirmed' && reg.event.points_value > 0
                   const price = parseFloat(reg.effective_price || '0')
                   const isFree = price === 0
                   const showTransferRef = reg.manual_payment_transfer_reference && (
@@ -196,9 +196,10 @@ function Panel() {
                       <div className="flex gap-3">
                         {/* Left 2/3 – event data */}
                         <div className="flex-[2] min-w-0">
-                          <h3 className="text-sm font-semibold text-navy dark:text-cream">
-                            {reg.event.title}
-                          </h3>
+                          <div className="flex items-center gap-2 text-sm font-semibold text-navy dark:text-cream">
+                            <EventIcon type={reg.event.event_type || 'inne'} size="sm" />
+                            <span className="truncate">{reg.event.title}</span>
+                          </div>
                           <p className="text-xs text-navy/60 dark:text-cream/60">
                             {formatDate(reg.event.start_date)}
                             {reg.event.city ? ` • ${reg.event.city}` : ''}
@@ -227,28 +228,18 @@ function Panel() {
                                 {t('account.free')}
                               </span>
                             )}
-                            {reg.event.points_value > 0 && !pointsEarned && (
-                              <span className="panel-info-chip">
-                                <span className="panel-info-label">{t('account.pointsForEvent')}:</span> +{reg.event.points_value}
-                              </span>
-                            )}
-                            {pointsEarned && (
-                              <span className="panel-info-chip">
-                                <span>+{reg.event.points_value}</span>
-                                <span className="opacity-70 ml-1">{t('admin.pointsAbbr')}</span>
-                              </span>
-                            )}
+
                           </div>
 
                         </div>
 
                         {/* Right 1/3 – actions */}
-                        <div className="flex-1 flex flex-col items-end justify-between" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex-1 flex flex-col items-stretch justify-between" onClick={(e) => e.stopPropagation()}>
                           {/* Top-right: Add to calendar */}
                           <div>
                             {(reg.status === 'confirmed' || reg.status === 'pending' || reg.status === 'manual_payment_required' || reg.status === 'manual_payment_verification') && (
                               reg.added_to_google_calendar ? (
-                                <span className="panel-info-chip panel-gcal-added" title={t('account.addedToCalendar')}>
+                                <span className="panel-info-chip panel-gcal-added w-full justify-center" title={t('account.addedToCalendar')}>
                                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                                   {t('account.inCalendar')}
                                 </span>
@@ -257,7 +248,7 @@ function Panel() {
                                   href={buildGoogleCalendarUrl(reg)}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className="panel-info-chip panel-gcal-btn"
+                                  className="panel-info-chip panel-gcal-btn w-full justify-center"
                                   title={t('account.addToCalendar')}
                                 >
                                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/><path d="M12 14v4"/><path d="M10 16h4"/></svg>
@@ -267,11 +258,11 @@ function Panel() {
                             )}
                           </div>
                           {/* Bottom-right: Manual payment + Cancel */}
-                          <div className="flex flex-col items-end gap-1.5">
+                          <div className="flex flex-col items-stretch gap-1.5">
                             {reg.can_confirm_manual_payment && (
                               <Link
                                 to={`/manual-payment/${reg.registration_id}`}
-                                className="btn-primary px-3 py-1.5 text-xs"
+                                className="btn-primary px-3 py-1.5 text-xs w-full text-center"
                               >
                                 {t('account.openManualPayment')}
                               </Link>
@@ -280,13 +271,13 @@ function Panel() {
                               reg.can_cancel ? (
                                 <button
                                   onClick={() => handleCancel(reg)}
-                                  className="btn-primary px-3 py-1.5 text-xs"
+                                  className="btn-primary px-3 py-1.5 text-xs w-full text-center"
                                 >
                                   {t('account.cancelStandard')}
                                 </button>
                               ) : (
                                 <span
-                                  className="panel-cancel-disabled text-xs"
+                                  className="panel-cancel-disabled text-xs w-full text-center"
                                   title={t('account.cancellationNotPossible')}
                                 >
                                   {t('account.cancelStandard')}

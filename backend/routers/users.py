@@ -38,6 +38,7 @@ class EventSummary(BaseModel):
 
     id: str = Field(description="Event identifier.")
     title: str = Field(description="Event title for display.")
+    event_type: str = Field(default="inne", description="Event category tag.")
     start_date: str = Field(description="Start datetime for the occurrence.")
     end_date: str | None = Field(default=None, description="End datetime if provided.")
     time_info: str | None = Field(default=None, description="Free-form time window label.")
@@ -387,6 +388,7 @@ async def get_my_registrations(
                 event=EventSummary(
                     id=event.id,
                     title=event.title,
+                    event_type=event.event_type or "inne",
                     start_date=occurrence_start.isoformat(),
                     end_date=occurrence_end.isoformat() if occurrence_end else None,
                     time_info=event.time_info,
