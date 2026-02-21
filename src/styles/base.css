@@ -108,7 +108,9 @@ img, a, button {
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    /* NOTE: intentionally no `transform` here – a persisted transform
+       (even translateY(0)) creates a new containing‑block for `fixed`
+       children, which breaks full‑screen overlays / modals inside routes. */
   }
 }
 
