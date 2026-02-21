@@ -3,14 +3,39 @@
 
 from typing import Annotated
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Request
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import get_settings
+from database import get_db
 from models.user import AccountStatus, User, UserRole
 from routers.auth import get_current_user_dependency
 from security.rate_limit import enforce_rate_limit
 
 settings = get_settings()
+
+
+async def get_optional_active_user_dependency(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+) -> User | None:
+    """Return the active user if a valid token is present, otherwise None."""
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return None
+    try:
+        from services.auth_service import AuthService
+        token = auth_header.split(" ")[1]
+        auth_service = AuthService(db)
+        payload = auth_service.verify_token(token)
+        if not payload or payload.get("type") != "access":
+            return None
+        user = await auth_service.get_user_by_id(payload["sub"])
+        if not user or user.account_status != AccountStatus.ACTIVE:
+            return None
+        return user
+    except Exception:
+        return None
 
 
 async def get_authenticated_user_dependency(
@@ -66,3 +91,4 @@ async def get_admin_user_dependency(
 AuthenticatedUser = Annotated[User, Depends(get_authenticated_user_dependency)]
 ActiveUser = Annotated[User, Depends(get_active_user_dependency)]
 AdminUser = Annotated[User, Depends(get_admin_user_dependency)]
+OptionalActiveUser = Annotated[User | None, Depends(get_optional_active_user_dependency)]

@@ -633,10 +633,10 @@ async def test_unauthenticated_user_cannot_create_comment(comments_api_client, d
 
 
 @pytest.mark.asyncio
-async def test_unauthenticated_user_cannot_list_comments(comments_api_client, db_session):
-    """Anonymous users should receive 401 on list."""
+async def test_unauthenticated_user_can_list_comments(comments_api_client, db_session):
+    """Anonymous users should be able to read comments (200)."""
     resp = await comments_api_client.get("/comments/event/some-id")
-    assert resp.status_code == 401
+    assert resp.status_code == 200
 
 
 @pytest.mark.asyncio

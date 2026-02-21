@@ -17,7 +17,7 @@ from sqlalchemy.orm import selectinload
 from database import get_db
 from models.comment import Comment, CommentReaction, ReactionType
 from models.user import UserRole
-from security.guards import ActiveUser, AdminUser
+from security.guards import ActiveUser, AdminUser, OptionalActiveUser
 
 router = APIRouter(prefix="/comments", tags=["comments"])
 
@@ -327,7 +327,7 @@ async def toggle_reaction(
 async def list_comments(
     resource_type: str = Path(..., min_length=1, max_length=50),
     resource_id: str = Path(..., min_length=1),
-    user: ActiveUser = None,
+    user: OptionalActiveUser = None,
     db: AsyncSession = Depends(get_db),
     offset: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),

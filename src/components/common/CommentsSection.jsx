@@ -394,7 +394,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           )}
 
           {/* Actions */}
-          {!item.is_deleted && !isEditingThis && (
+          {!item.is_deleted && !isEditingThis && user && (
             <div className="cmt-actions">
               <button className="cmt-action-btn" onClick={() => { setReplyingTo(isReplying ? null : replyTargetId); setReplyContent('') }}>{t('comments.reply')}</button>
 
@@ -450,7 +450,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const pinnedItems = messengerLayout ? flatList.filter((item) => item.is_pinned) : []
   const regularItems = messengerLayout ? flatList.filter((item) => !item.is_pinned) : flatList
 
-  const commentForm = (
+  const commentForm = user ? (
     <form className="cmt-new-form" onSubmit={handleSubmit}>
       <div className="cmt-new-row">
         <div className="cmt-av-wrap">
@@ -482,7 +482,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
         </div>
       )}
     </form>
-  )
+  ) : null
 
   return (
     <div className={`cmt-section ${messengerLayout ? 'cmt-messenger' : ''}`}>
