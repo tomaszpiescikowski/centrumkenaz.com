@@ -23,7 +23,7 @@ function buildGoogleCalendarUrl(reg) {
 function Panel() {
   const { user, isAuthenticated, authFetch } = useAuth()
   const { t } = useLanguage()
-  const { showError, showSuccess } = useNotification()
+  const { showError, showSuccess, showConfirm } = useNotification()
   const navigate = useNavigate()
   const [registrations, setRegistrations] = useState([])
   const [loading, setLoading] = useState(true)
@@ -58,15 +58,37 @@ function Panel() {
     }
   }, [authFetch, isAuthenticated, isPendingApproval, t, showError])
 
-  const handleCancel = async (registrationId) => {
-    try {
-      await cancelRegistration(authFetch, registrationId)
-      const data = await fetchMyRegistrations(authFetch)
-      setRegistrations(data)
-      showSuccess(t('account.cancelSuccess'))
-    } catch (err) {
-      showError(err.message || t('account.cancelError'))
+  const handleCancel = (reg) => {
+    const price = parseFloat(reg.effective_price || '0')
+    const isManualPaid = reg.event.manual_payment_verification && price > 0
+
+    let message = t('account.cancelConfirmMessage')
+    if (isManualPaid) {
+      message += '\n\n' + t('account.cancelConfirmManualRefund')
     }
+
+    showConfirm(message, {
+      actions: [
+        {
+          label: t('common.close'),
+          variant: 'neutral',
+        },
+        {
+          label: t('account.cancelConfirmButton'),
+          variant: 'danger',
+          onClick: async () => {
+            try {
+              await cancelRegistration(authFetch, reg.registration_id)
+              const data = await fetchMyRegistrations(authFetch)
+              setRegistrations(data)
+              showSuccess(t('account.cancelSuccess'))
+            } catch (err) {
+              showError(err.message || t('account.cancelError'))
+            }
+          },
+        },
+      ],
+    })
   }
 
   const mockCards = [
@@ -244,7 +266,7 @@ function Panel() {
                         )}
                       </div>
 
-                      <div className="mt-3 flex flex-wrap gap-3" onClick={(e) => e.stopPropagation()}>
+                      <div className="mt-3 flex flex-wrap items-center gap-3" onClick={(e) => e.stopPropagation()}>
                         {reg.can_confirm_manual_payment && (
                           <Link
                             to={`/manual-payment/${reg.registration_id}`}
@@ -253,13 +275,22 @@ function Panel() {
                             {t('account.openManualPayment')}
                           </Link>
                         )}
-                        {reg.can_cancel && (
-                          <button
-                            onClick={() => handleCancel(reg.registration_id)}
-                            className="btn-primary px-4 py-2 text-sm"
-                          >
-                            {t('account.cancelStandard')}
-                          </button>
+                        {!eventPassed && reg.status !== 'cancelled' && reg.status !== 'refunded' && (
+                          reg.can_cancel ? (
+                            <button
+                              onClick={() => handleCancel(reg)}
+                              className="btn-primary px-4 py-2 text-sm"
+                            >
+                              {t('account.cancelStandard')}
+                            </button>
+                          ) : (
+                            <span
+                              className="panel-cancel-disabled"
+                              title={t('account.cancellationNotPossible')}
+                            >
+                              {t('account.cancelStandard')}
+                            </span>
+                          )
                         )}
                       </div>
                     </div>

@@ -13,7 +13,10 @@
     "theme": "主题",
     "themeLight": "浅色",
     "themeDark": "深色",
-    "language": "语言"
+    "language": "语言",
+    "days": "天",
+    "hours": "时",
+    "minutes": "分"
   },
   "shop": {
     "label": "Kenaz 商店",
@@ -324,7 +327,10 @@
     "adminUpdateSuccess": "活动已更新。",
     "adminUpdateError": "更新活动失败。",
     "adminDeleteSuccess": "活动已删除。",
-    "adminDeleteError": "删除活动失败。"
+    "adminDeleteError": "删除活动失败。",
+    "cancellationDeadline": "取消截止时间",
+    "cancellationExpired": "取消期限已过",
+    "cancellationTimeLeft": "剩余取消时间"
   },
   "registration": {
     "noSpots": "没有名额",
@@ -445,6 +451,10 @@
     "cancellationOpen": "可取消",
     "cancellationClosed": "已关闭",
     "cancellationClosedMessage": "取消窗口已关闭。",
+    "cancellationNotPossible": "已无法取消——截止时间已过。",
+    "cancelConfirmMessage": "确定要取消此活动的报名吗？",
+    "cancelConfirmManualRefund": "由于您通过银行转账付款，退款请求将发送给管理员。",
+    "cancelConfirmButton": "是的，取消",
     "cancelStandard": "取消报名",
     "openManualPayment": "完成付款",
     "loadError": "加载账户数据失败",

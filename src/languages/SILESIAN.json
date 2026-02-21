@@ -13,7 +13,10 @@
     "theme": "Motyw",
     "themeLight": "Jasny",
     "themeDark": "Ciymny",
-    "language": "Godka"
+    "language": "Godka",
+    "days": "d",
+    "hours": "g",
+    "minutes": "min"
   },
   "shop": {
     "label": "Kenaz sklep",
@@ -324,7 +327,10 @@
     "adminUpdateSuccess": "Wydarzynie zaktualizowane.",
     "adminUpdateError": "Niy idzie zaktualizować wydarzynio.",
     "adminDeleteSuccess": "Wydarzynie skasowane.",
-    "adminDeleteError": "Niy idzie skasować wydarzynio."
+    "adminDeleteError": "Niy idzie skasować wydarzynio.",
+    "cancellationDeadline": "Rezygnacyjo możliwŏ do",
+    "cancellationExpired": "Czas na rezygnacyjo sie skōńczōł",
+    "cancellationTimeLeft": "ôstało na rezygnacyjo"
   },
   "registration": {
     "noSpots": "Brak miyjsc",
@@ -445,6 +451,10 @@
     "cancellationOpen": "Możliwŏ",
     "cancellationClosed": "Zamkniyntŏ",
     "cancellationClosedMessage": "Ôkno rezygnacyje zamkniynte.",
+    "cancellationNotPossible": "Rezygnacyjo już niy je możliwŏ — termin minōł.",
+    "cancelConfirmMessage": "Na zicher chcesz zrezygnować z zapisu na to wydarzynie?",
+    "cancelConfirmManualRefund": "Skuli tego, żeś płaciōł przelewym, prośba ô zwrot bydzie wysłanŏ do admina.",
+    "cancelConfirmButton": "Ja, zrezygnuj",
     "cancelStandard": "Zrezygnuj",
     "openManualPayment": "Dokōńcz płatność",
     "loadError": "Niy idzie wczytać danych kōnta",

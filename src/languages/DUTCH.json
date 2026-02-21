@@ -13,7 +13,10 @@
     "theme": "Thema",
     "themeLight": "Licht",
     "themeDark": "Donker",
-    "language": "Taal"
+    "language": "Taal",
+    "days": "d",
+    "hours": "u",
+    "minutes": "min"
   },
   "shop": {
     "label": "Kenaz shop",
@@ -324,7 +327,10 @@
     "adminUpdateSuccess": "Event bijgewerkt.",
     "adminUpdateError": "Kon event niet bijwerken.",
     "adminDeleteSuccess": "Event verwijderd.",
-    "adminDeleteError": "Kon event niet verwijderen."
+    "adminDeleteError": "Kon event niet verwijderen.",
+    "cancellationDeadline": "Annulering mogelijk tot",
+    "cancellationExpired": "Annuleringsperiode is verlopen",
+    "cancellationTimeLeft": "over om te annuleren"
   },
   "registration": {
     "noSpots": "Geen plaatsen",
@@ -447,6 +453,10 @@
     "cancellationOpen": "Mogelijk",
     "cancellationClosed": "Gesloten",
     "cancellationClosedMessage": "Annuleringsvenster gesloten.",
+    "cancellationNotPossible": "Annulering is niet meer mogelijk — de deadline is verstreken.",
+    "cancelConfirmMessage": "Weet je zeker dat je je inschrijving voor dit evenement wilt annuleren?",
+    "cancelConfirmManualRefund": "Aangezien je via bankoverschrijving hebt betaald, wordt een terugbetalingsverzoek naar de beheerder gestuurd.",
+    "cancelConfirmButton": "Ja, annuleren",
     "cancelStandard": "Annuleer inschrijving",
     "openManualPayment": "Betaling voltooien",
     "loadError": "Kon accountgegevens niet laden",

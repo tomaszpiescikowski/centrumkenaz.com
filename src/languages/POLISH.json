@@ -13,7 +13,10 @@
     "theme": "Motyw",
     "themeLight": "Jasny",
     "themeDark": "Ciemny",
-    "language": "Język"
+    "language": "Język",
+    "days": "d",
+    "hours": "h",
+    "minutes": "min"
   },
   "shop": {
     "label": "Kenaz sklep",
@@ -324,7 +327,10 @@
     "adminUpdateSuccess": "Wydarzenie zaktualizowane.",
     "adminUpdateError": "Nie udało się zaktualizować wydarzenia.",
     "adminDeleteSuccess": "Wydarzenie usunięte.",
-    "adminDeleteError": "Nie udało się usunąć wydarzenia."
+    "adminDeleteError": "Nie udało się usunąć wydarzenia.",
+    "cancellationDeadline": "Rezygnacja możliwa do",
+    "cancellationExpired": "Okres rezygnacji minął",
+    "cancellationTimeLeft": "do zamknięcia okna rezygnacji"
   },
   "registration": {
     "noSpots": "Brak miejsc",
@@ -447,6 +453,10 @@
     "cancellationOpen": "Możliwa",
     "cancellationClosed": "Zamknięta",
     "cancellationClosedMessage": "Okno rezygnacji zamknięte.",
+    "cancellationNotPossible": "Rezygnacja nie jest już możliwa — termin minął.",
+    "cancelConfirmMessage": "Czy na pewno chcesz zrezygnować z udziału w tym wydarzeniu?",
+    "cancelConfirmManualRefund": "Ponieważ płatność była przelewem, prośba o zwrot środków zostanie wysłana do administratora.",
+    "cancelConfirmButton": "Tak, zrezygnuj",
     "cancelStandard": "Zrezygnuj",
     "openManualPayment": "Dokończ płatność",
     "price": "Koszt",

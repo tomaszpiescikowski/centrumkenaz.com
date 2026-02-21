@@ -13,7 +13,10 @@
     "theme": "Theme",
     "themeLight": "Light",
     "themeDark": "Dark",
-    "language": "Language"
+    "language": "Language",
+    "days": "d",
+    "hours": "h",
+    "minutes": "min"
   },
   "shop": {
     "label": "Kenaz shop",
@@ -324,7 +327,10 @@
     "adminUpdateSuccess": "Event updated.",
     "adminUpdateError": "Could not update event.",
     "adminDeleteSuccess": "Event deleted.",
-    "adminDeleteError": "Could not delete event."
+    "adminDeleteError": "Could not delete event.",
+    "cancellationDeadline": "Cancellation possible until",
+    "cancellationExpired": "Cancellation period has ended",
+    "cancellationTimeLeft": "left to cancel"
   },
   "registration": {
     "noSpots": "No spots left",
@@ -447,6 +453,10 @@
     "cancellationOpen": "Open",
     "cancellationClosed": "Closed",
     "cancellationClosedMessage": "Cancellation window closed.",
+    "cancellationNotPossible": "Cancellation is no longer possible — the deadline has passed.",
+    "cancelConfirmMessage": "Are you sure you want to cancel your registration for this event?",
+    "cancelConfirmManualRefund": "Since you paid via bank transfer, a refund request will be sent to the admin.",
+    "cancelConfirmButton": "Yes, cancel",
     "cancelStandard": "Cancel registration",
     "openManualPayment": "Complete payment",
     "price": "Cost",

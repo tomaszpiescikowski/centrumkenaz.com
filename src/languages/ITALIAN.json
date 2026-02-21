@@ -13,7 +13,10 @@
     "theme": "Tema",
     "themeLight": "Chiaro",
     "themeDark": "Scuro",
-    "language": "Lingua"
+    "language": "Lingua",
+    "days": "g",
+    "hours": "h",
+    "minutes": "min"
   },
   "shop": {
     "label": "Kenaz shop",
@@ -324,7 +327,10 @@
     "adminUpdateSuccess": "Evento aggiornato.",
     "adminUpdateError": "Impossibile aggiornare l'evento.",
     "adminDeleteSuccess": "Evento eliminato.",
-    "adminDeleteError": "Impossibile eliminare l'evento."
+    "adminDeleteError": "Impossibile eliminare l'evento.",
+    "cancellationDeadline": "Annullamento possibile fino al",
+    "cancellationExpired": "Il periodo di annullamento è scaduto",
+    "cancellationTimeLeft": "rimasti per annullare"
   },
   "registration": {
     "noSpots": "Posti esauriti",
@@ -447,6 +453,10 @@
     "cancellationOpen": "Possibile",
     "cancellationClosed": "Chiuso",
     "cancellationClosedMessage": "Finestra di annullamento chiusa.",
+    "cancellationNotPossible": "L'annullamento non è più possibile — il termine è scaduto.",
+    "cancelConfirmMessage": "Sei sicuro di voler annullare la tua iscrizione a questo evento?",
+    "cancelConfirmManualRefund": "Dato che hai pagato tramite bonifico bancario, una richiesta di rimborso verrà inviata all'amministratore.",
+    "cancelConfirmButton": "Sì, annulla",
     "cancelStandard": "Annulla iscrizione",
     "openManualPayment": "Completa il pagamento",
     "loadError": "Impossibile caricare i dati dell'account",
