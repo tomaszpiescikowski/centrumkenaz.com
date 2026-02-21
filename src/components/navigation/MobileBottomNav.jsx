@@ -1,6 +1,8 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { useAuth } from '../../context/AuthContext'
+import FeedbackModal from '../ui/FeedbackModal'
 
 const ICON_CLASS = 'h-6 w-6'
 const ITEM_BASE = 'flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium'
@@ -65,6 +67,7 @@ function MobileBottomNav() {
   const { user, isAuthenticated, login } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
 
   if (location.pathname.startsWith('/auth/')) return null
 
@@ -123,6 +126,19 @@ function MobileBottomNav() {
   ]
 
   return (
+    <>
+    {/* Temporary feedback floating button */}
+    <button
+      type="button"
+      onClick={() => setFeedbackOpen(true)}
+      className="fixed right-3 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-50 sm:hidden flex items-center gap-1.5 rounded-full bg-amber-500 text-white shadow-lg px-3 py-2 text-xs font-semibold transition hover:bg-amber-600 active:scale-95"
+      aria-label={t('feedback.button')}
+    >
+      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+      </svg>
+      {t('feedback.button')}
+    </button>
     <nav
       className="fixed inset-x-0 bottom-0 z-50 border-t border-navy/10 bg-cream dark:border-cream/10 dark:bg-navy sm:hidden"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
@@ -149,6 +165,8 @@ function MobileBottomNav() {
         </button>
       </div>
     </nav>
+    <FeedbackModal open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
+    </>
   )
 }
 

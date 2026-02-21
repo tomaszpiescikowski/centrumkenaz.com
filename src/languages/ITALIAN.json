@@ -61,6 +61,30 @@
     "city": "Città",
     "addEvent": "Aggiungi"
   },
+  "feedback": {
+    "button": "Feedback",
+    "title": "Condividi la tua opinione",
+    "subtitle": "L'app è in fase di test iniziale — ogni opinione è molto importante!",
+    "hint": "Scrivi qualsiasi cosa tu abbia notato, ad esempio:",
+    "examples": [
+      "Qualcosa è brutto o difficile da leggere",
+      "È apparso un errore o un messaggio di errore",
+      "Viene visualizzato qualcosa di strano",
+      "Qualcosa non funziona come previsto",
+      "Alcuni dati sembrano errati",
+      "Hai un'idea per un miglioramento"
+    ],
+    "emailLabel": "La tua e-mail",
+    "emailPlaceholder": "mario@esempio.it",
+    "commentLabel": "Il tuo feedback",
+    "commentPlaceholder": "Descrivi cosa hai notato…",
+    "send": "Invia feedback",
+    "cancel": "Annulla",
+    "successTitle": "Grazie!",
+    "successMessage": "Il tuo feedback è stato inviato. Ci aiuti a migliorare l'app!",
+    "close": "Chiudi",
+    "errorMessage": "Invio feedback non riuscito. Riprova."
+  },
   "pwa": {
     "installCta": "Installa l'app sul telefono",
     "installBtn": "Installa",

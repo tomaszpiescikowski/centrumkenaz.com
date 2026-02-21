@@ -10,6 +10,7 @@ from models.subscription_purchase import PlanCode, SubscriptionPurchase
 from models.user_profile import UserProfile
 from models.approval_request import ApprovalRequest
 from models.payment_method import PaymentMethod
+from models.feedback import Feedback
 
 __all__ = [
 	"User",
@@ -25,4 +26,5 @@ __all__ = [
 	"UserProfile",
 	"ApprovalRequest",
 	"PaymentMethod",
+	"Feedback",
 ]

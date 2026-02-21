@@ -20,6 +20,7 @@ from models import approval_request  # noqa: F401
 from models import payment_method  # noqa: F401
 from models import product  # noqa: F401
 from models import registration_refund_task  # noqa: F401
+from models import feedback  # noqa: F401
 
 config = context.config
 

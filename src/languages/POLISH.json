@@ -61,6 +61,30 @@
     "city": "Miasto",
     "addEvent": "Dodaj"
   },
+  "feedback": {
+    "button": "Feedback",
+    "title": "Podziel się opinią",
+    "subtitle": "Aplikacja jest we wczesnej fazie testów — każda opinia jest dla nas bardzo ważna!",
+    "hint": "Napisz cokolwiek, co Ci się rzuciło w oczy, np.:",
+    "examples": [
+      "Coś brzydko wygląda lub jest nieczytelne",
+      "Pojawił się błąd lub komunikat o błędzie",
+      "Coś dziwnego się wyświetla",
+      "Coś nie działa tak jak powinno",
+      "Jakieś dane wyglądają na nieprawidłowe",
+      "Masz pomysł na ulepszenie"
+    ],
+    "emailLabel": "Twój e-mail",
+    "emailPlaceholder": "jan@przyklad.pl",
+    "commentLabel": "Twoja opinia",
+    "commentPlaceholder": "Opisz co zauważyłeś/aś…",
+    "send": "Wyślij opinię",
+    "cancel": "Anuluj",
+    "successTitle": "Dziękujemy!",
+    "successMessage": "Twoja opinia została wysłana. Dzięki Tobie aplikacja będzie lepsza!",
+    "close": "Zamknij",
+    "errorMessage": "Nie udało się wysłać opinii. Spróbuj ponownie."
+  },
   "pwa": {
     "installCta": "Zainstaluj aplikację na telefonie",
     "installBtn": "Zainstaluj",
@@ -839,7 +863,19 @@
     "emptyTitle": "Brak zapisanych uczestników",
     "emptySubtitle": "Bądź pierwszy!",
     "freeSpot": "wolne",
-    "pointsAbbr": "pkt"
+    "pointsAbbr": "pkt",
+    "enrolled": "zapisanych",
+    "free": "wolnych",
+    "onWaitlist": "na rez.",
+    "name": "Imię",
+    "points": "Pkt",
+    "waitlistTitle": "Lista rezerwowa",
+    "statusConfirmed": "Potwierdzony",
+    "statusPending": "Oczekuje",
+    "statusPayment": "Wymaga przelewu",
+    "noLimit": "Brak limitu",
+    "openInMaps": "Otwórz w Mapach Google",
+    "subscribersOnly": "Subskrybenci"
   },
   "profile": {
     "notFound": "Nie znaleziono profilu użytkownika.",

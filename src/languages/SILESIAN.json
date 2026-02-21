@@ -61,6 +61,30 @@
     "city": "Miasto",
     "addEvent": "Przidej"
   },
+  "feedback": {
+    "button": "Feedback",
+    "title": "Podziel sie ôpiniōm",
+    "subtitle": "Apka je we wczesnyj fazie testōw — kożdo ôpinijo je dlo nos fest ważno!",
+    "hint": "Napisz cosik, co Ci sie rzuciōło w ôczy, bp.:",
+    "examples": [
+      "Cosik brzidko wyglōndo abo je nieczytelne",
+      "Pokŏzoł sie feler abo kōmunikat ô felerze",
+      "Cosik dziwnego sie wyświetlo",
+      "Cosik nie działo tak jak powinno",
+      "Dane wyglōndajōm na niyprawidłowe",
+      "Mŏsz pōmysł na ulepszyńe"
+    ],
+    "emailLabel": "Twōj e-mail",
+    "emailPlaceholder": "jan@przikład.pl",
+    "commentLabel": "Twojo ôpinijo",
+    "commentPlaceholder": "Ôpisz co żeś zauważōł/a…",
+    "send": "Wyślij ôpinijo",
+    "cancel": "Anuluj",
+    "successTitle": "Dziynkuja!",
+    "successMessage": "Twojo ôpinijo została wysłano. Dziynki Tobie apka bydzie lepszo!",
+    "close": "Zamknij",
+    "errorMessage": "Ni idzie wysłać ôpinije. Sprōbuj jeszcze rŏz."
+  },
   "pwa": {
     "installCta": "Zainstaluj apka na telefonie",
     "installBtn": "Zainstaluj",

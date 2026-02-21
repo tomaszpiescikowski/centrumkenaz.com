@@ -61,6 +61,30 @@
     "city": "城市",
     "addEvent": "新增"
   },
+  "feedback": {
+    "button": "反馈",
+    "title": "分享你的意见",
+    "subtitle": "应用处于早期测试阶段——每条意见对我们都非常重要！",
+    "hint": "写下你注意到的任何事情，例如：",
+    "examples": [
+      "某些地方看起来不好看或难以阅读",
+      "出现了错误或错误提示",
+      "显示了奇怪的内容",
+      "某些功能没有按预期工作",
+      "某些数据看起来不正确",
+      "你有改进的建议"
+    ],
+    "emailLabel": "你的邮箱",
+    "emailPlaceholder": "user@example.com",
+    "commentLabel": "你的反馈",
+    "commentPlaceholder": "描述你发现的问题…",
+    "send": "发送反馈",
+    "cancel": "取消",
+    "successTitle": "谢谢！",
+    "successMessage": "你的反馈已发送。感谢你帮助改进这个应用！",
+    "close": "关闭",
+    "errorMessage": "发送反馈失败，请重试。"
+  },
   "pwa": {
     "installCta": "在手机上安装应用",
     "installBtn": "安装",

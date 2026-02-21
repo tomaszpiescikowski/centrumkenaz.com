@@ -61,6 +61,30 @@
     "city": "City",
     "addEvent": "Add"
   },
+  "feedback": {
+    "button": "Feedback",
+    "title": "Share your feedback",
+    "subtitle": "The app is in early testing — every opinion matters a lot!",
+    "hint": "Write anything you noticed, for example:",
+    "examples": [
+      "Something looks ugly or is hard to read",
+      "An error appeared or an error message showed up",
+      "Something weird is displayed",
+      "Something doesn't work as expected",
+      "Some data looks incorrect",
+      "You have an idea for improvement"
+    ],
+    "emailLabel": "Your e-mail",
+    "emailPlaceholder": "jane@example.com",
+    "commentLabel": "Your feedback",
+    "commentPlaceholder": "Describe what you noticed…",
+    "send": "Send feedback",
+    "cancel": "Cancel",
+    "successTitle": "Thank you!",
+    "successMessage": "Your feedback has been sent. You're helping make this app better!",
+    "close": "Close",
+    "errorMessage": "Failed to send feedback. Please try again."
+  },
   "pwa": {
     "installCta": "Install the app on your phone",
     "installBtn": "Install",
@@ -839,7 +863,19 @@
     "emptyTitle": "No participants yet",
     "emptySubtitle": "Be the first!",
     "freeSpot": "free",
-    "pointsAbbr": "pts"
+    "pointsAbbr": "pts",
+    "enrolled": "enrolled",
+    "free": "free",
+    "onWaitlist": "waitlist",
+    "name": "Name",
+    "points": "Pts",
+    "waitlistTitle": "Waitlist",
+    "statusConfirmed": "Confirmed",
+    "statusPending": "Pending",
+    "statusPayment": "Payment required",
+    "noLimit": "No limit",
+    "openInMaps": "Open in Google Maps",
+    "subscribersOnly": "Subscribers"
   },
   "profile": {
     "notFound": "User profile not found.",

@@ -61,6 +61,30 @@
     "city": "Stad",
     "addEvent": "Toevoegen"
   },
+  "feedback": {
+    "button": "Feedback",
+    "title": "Deel je feedback",
+    "subtitle": "De app is in een vroege testfase — elke mening is heel belangrijk!",
+    "hint": "Schrijf alles wat je opviel, bijvoorbeeld:",
+    "examples": [
+      "Iets ziet er lelijk uit of is moeilijk te lezen",
+      "Er verscheen een fout of foutmelding",
+      "Er wordt iets vreemds weergegeven",
+      "Iets werkt niet zoals verwacht",
+      "Sommige gegevens lijken onjuist",
+      "Je hebt een idee voor verbetering"
+    ],
+    "emailLabel": "Je e-mail",
+    "emailPlaceholder": "jan@voorbeeld.nl",
+    "commentLabel": "Je feedback",
+    "commentPlaceholder": "Beschrijf wat je opviel…",
+    "send": "Feedback verzenden",
+    "cancel": "Annuleren",
+    "successTitle": "Bedankt!",
+    "successMessage": "Je feedback is verzonden. Je helpt de app beter te maken!",
+    "close": "Sluiten",
+    "errorMessage": "Feedback verzenden mislukt. Probeer het opnieuw."
+  },
   "pwa": {
     "installCta": "Installeer de app op je telefoon",
     "installBtn": "Installeer",
