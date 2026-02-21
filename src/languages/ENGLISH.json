@@ -827,18 +827,22 @@
       "confirmPromotionUnmark": "Remove notification mark for this user.",
       "confirmButton": "Confirm",
       "cancelButton": "Cancel",
-      "recCode.REFUND_CANCELLED_BEFORE_CUTOFF": "Cancelled before cutoff",
-      "recCode.NO_REFUND_CANCELLED_AFTER_CUTOFF": "Cancelled after cutoff",
-      "recCode.NO_REFUND_NO_PAYMENT": "No payment recorded",
-      "recCode.REFUND_ADMIN_OVERRIDE": "Refund (admin override)",
-      "recCode.NO_REFUND_ADMIN_OVERRIDE": "No refund (admin override)",
-      "recCode.REFUND_COMPLETED": "Refund completed",
-      "recTooltip.REFUND_CANCELLED_BEFORE_CUTOFF": "User cancelled before the refund cutoff date. Refund recommended.",
-      "recTooltip.NO_REFUND_CANCELLED_AFTER_CUTOFF": "User cancelled after the refund cutoff date. No refund recommended.",
-      "recTooltip.NO_REFUND_NO_PAYMENT": "No payment was recorded for this registration. No refund needed.",
-      "recTooltip.REFUND_ADMIN_OVERRIDE": "Admin manually overrode the decision to refund.",
-      "recTooltip.NO_REFUND_ADMIN_OVERRIDE": "Admin manually overrode the decision to not refund.",
-      "recTooltip.REFUND_COMPLETED": "Refund has been paid out and marked as completed."
+      "recCode": {
+        "REFUND_CANCELLED_BEFORE_CUTOFF": "Cancelled before cutoff",
+        "NO_REFUND_CANCELLED_AFTER_CUTOFF": "Cancelled after cutoff",
+        "NO_REFUND_NO_PAYMENT": "No payment recorded",
+        "REFUND_ADMIN_OVERRIDE": "Refund (admin override)",
+        "NO_REFUND_ADMIN_OVERRIDE": "No refund (admin override)",
+        "REFUND_COMPLETED": "Refund completed"
+      },
+      "recTooltip": {
+        "REFUND_CANCELLED_BEFORE_CUTOFF": "User cancelled before the refund cutoff date. Refund recommended.",
+        "NO_REFUND_CANCELLED_AFTER_CUTOFF": "User cancelled after the refund cutoff date. No refund recommended.",
+        "NO_REFUND_NO_PAYMENT": "No payment was recorded for this registration. No refund needed.",
+        "REFUND_ADMIN_OVERRIDE": "Admin manually overrode the decision to refund.",
+        "NO_REFUND_ADMIN_OVERRIDE": "Admin manually overrode the decision to not refund.",
+        "REFUND_COMPLETED": "Refund has been paid out and marked as completed."
+      }
     },
     "approvalSuccess": "User has been approved.",
     "recurringUpdateSuccess": "Recurring event updated.",

@@ -825,18 +825,22 @@
       "confirmPromotionUnmark": "Usuń ôznaczynie powiadōmiynia.",
       "confirmButton": "Potwiyrdź",
       "cancelButton": "Anuluj",
-      "recCode.REFUND_CANCELLED_BEFORE_CUTOFF": "Anulowano przed terminem",
-      "recCode.NO_REFUND_CANCELLED_AFTER_CUTOFF": "Anulowano po terminie",
-      "recCode.NO_REFUND_NO_PAYMENT": "Bez płatnościi",
-      "recCode.REFUND_ADMIN_OVERRIDE": "Zwrot (nadpisanie admina)",
-      "recCode.NO_REFUND_ADMIN_OVERRIDE": "Bez zwrotu (nadpisanie admina)",
-      "recCode.REFUND_COMPLETED": "Zwrot zakōńczōny",
-      "recTooltip.REFUND_CANCELLED_BEFORE_CUTOFF": "Użytkownik anulowoł przed datōm granicznom. Zalecany zwrot.",
-      "recTooltip.NO_REFUND_CANCELLED_AFTER_CUTOFF": "Użytkownik anulowoł po dacie granicznyj. Zwrot niy zalecany.",
-      "recTooltip.NO_REFUND_NO_PAYMENT": "Niy zarejestrowano płatności. Zwrot niy je potrzebny.",
-      "recTooltip.REFUND_ADMIN_OVERRIDE": "Admin ryncznie nadpisoł decyzjō na zwrot.",
-      "recTooltip.NO_REFUND_ADMIN_OVERRIDE": "Admin ryncznie nadpisoł decyzjō na brak zwrotu.",
-      "recTooltip.REFUND_COMPLETED": "Zwrot zostoł wypłacōny i ôznaczōny za zakōńczōny."
+      "recCode": {
+        "REFUND_CANCELLED_BEFORE_CUTOFF": "Anulowano przed terminem",
+        "NO_REFUND_CANCELLED_AFTER_CUTOFF": "Anulowano po terminie",
+        "NO_REFUND_NO_PAYMENT": "Bez płatnościi",
+        "REFUND_ADMIN_OVERRIDE": "Zwrot (nadpisanie admina)",
+        "NO_REFUND_ADMIN_OVERRIDE": "Bez zwrotu (nadpisanie admina)",
+        "REFUND_COMPLETED": "Zwrot zakōńczōny"
+      },
+      "recTooltip": {
+        "REFUND_CANCELLED_BEFORE_CUTOFF": "Użytkownik anulowoł przed datōm granicznom. Zalecany zwrot.",
+        "NO_REFUND_CANCELLED_AFTER_CUTOFF": "Użytkownik anulowoł po dacie granicznyj. Zwrot niy zalecany.",
+        "NO_REFUND_NO_PAYMENT": "Niy zarejestrowano płatności. Zwrot niy je potrzebny.",
+        "REFUND_ADMIN_OVERRIDE": "Admin ryncznie nadpisoł decyzjō na zwrot.",
+        "NO_REFUND_ADMIN_OVERRIDE": "Admin ryncznie nadpisoł decyzjō na brak zwrotu.",
+        "REFUND_COMPLETED": "Zwrot zostoł wypłacōny i ôznaczōny za zakōńczōny."
+      }
     },
     "approvalSuccess": "Używoc sie ôstał zaakceptowany.",
     "recurringUpdateSuccess": "Cykliczne wydarzynie ôstało zaktualizowane.",

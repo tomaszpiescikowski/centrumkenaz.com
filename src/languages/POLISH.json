@@ -827,18 +827,22 @@
       "confirmPromotionUnmark": "Usuń oznaczenie powiadomienia.",
       "confirmButton": "Potwierdź",
       "cancelButton": "Anuluj",
-      "recCode.REFUND_CANCELLED_BEFORE_CUTOFF": "Anulowano przed terminem",
-      "recCode.NO_REFUND_CANCELLED_AFTER_CUTOFF": "Anulowano po terminie",
-      "recCode.NO_REFUND_NO_PAYMENT": "Brak płatności",
-      "recCode.REFUND_ADMIN_OVERRIDE": "Zwrot (nadpisanie admina)",
-      "recCode.NO_REFUND_ADMIN_OVERRIDE": "Brak zwrotu (nadpisanie admina)",
-      "recCode.REFUND_COMPLETED": "Zwrot zakończony",
-      "recTooltip.REFUND_CANCELLED_BEFORE_CUTOFF": "Użytkownik anulował przed datą graniczną. Zalecany zwrot.",
-      "recTooltip.NO_REFUND_CANCELLED_AFTER_CUTOFF": "Użytkownik anulował po dacie granicznej. Zwrot niezalecany.",
-      "recTooltip.NO_REFUND_NO_PAYMENT": "Nie zarejestrowano płatności. Zwrot nie jest potrzebny.",
-      "recTooltip.REFUND_ADMIN_OVERRIDE": "Admin ręcznie nadpisał decyzję na zwrot.",
-      "recTooltip.NO_REFUND_ADMIN_OVERRIDE": "Admin ręcznie nadpisał decyzję na brak zwrotu.",
-      "recTooltip.REFUND_COMPLETED": "Zwrot został wypłacony i oznaczony jako zakończony."
+      "recCode": {
+        "REFUND_CANCELLED_BEFORE_CUTOFF": "Anulowano przed terminem",
+        "NO_REFUND_CANCELLED_AFTER_CUTOFF": "Anulowano po terminie",
+        "NO_REFUND_NO_PAYMENT": "Brak płatności",
+        "REFUND_ADMIN_OVERRIDE": "Zwrot (nadpisanie admina)",
+        "NO_REFUND_ADMIN_OVERRIDE": "Brak zwrotu (nadpisanie admina)",
+        "REFUND_COMPLETED": "Zwrot zakończony"
+      },
+      "recTooltip": {
+        "REFUND_CANCELLED_BEFORE_CUTOFF": "Użytkownik anulował przed datą graniczną. Zalecany zwrot.",
+        "NO_REFUND_CANCELLED_AFTER_CUTOFF": "Użytkownik anulował po dacie granicznej. Zwrot niezalecany.",
+        "NO_REFUND_NO_PAYMENT": "Nie zarejestrowano płatności. Zwrot nie jest potrzebny.",
+        "REFUND_ADMIN_OVERRIDE": "Admin ręcznie nadpisał decyzję na zwrot.",
+        "NO_REFUND_ADMIN_OVERRIDE": "Admin ręcznie nadpisał decyzję na brak zwrotu.",
+        "REFUND_COMPLETED": "Zwrot został wypłacony i oznaczony jako zakończony."
+      }
     },
     "approvalSuccess": "Użytkownik został zaakceptowany.",
     "recurringUpdateSuccess": "Wydarzenie cykliczne zostało zaktualizowane.",

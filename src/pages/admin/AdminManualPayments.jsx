@@ -101,7 +101,7 @@ function LegendPanel({ t }) {
         {items.map((code) => (
           <div
             key={code}
-            className="flex items-start gap-2 rounded-xl border border-navy/10 dark:border-cream/10 bg-cream/40 dark:bg-navy/40 p-2.5"
+            className="flex flex-col gap-1.5 rounded-xl border border-navy/10 dark:border-cream/10 bg-cream/40 dark:bg-navy/40 p-2.5 overflow-hidden"
           >
             <RecommendationBadge code={code} t={t} />
             <span className="text-[11px] text-navy/70 dark:text-cream/70 leading-snug">
