@@ -16,9 +16,12 @@ import {
 import SortableDataTable from '../../components/ui/SortableDataTable'
 import ViewCard from '../../components/ui/ViewCard'
 import AuthGateCard from '../../components/ui/AuthGateCard'
+import ConfirmActionModal from '../../components/ui/ConfirmActionModal'
 import usePreserveScrollSearchSwitch from '../../hooks/usePreserveScrollSearchSwitch'
 import useViewSorts from '../../hooks/useViewSorts'
 import { parseAmount } from '../../utils/numberFormat'
+
+/* ────────────── constants ────────────── */
 
 const ALLOWED_VIEWS = ['pending', 'refunds', 'promotions', 'subscriptions']
 const createDefaultSorts = () => ({
@@ -28,6 +31,91 @@ const createDefaultSorts = () => ({
   subscriptions: [],
 })
 
+/**
+ * Recommendation code enum – mirrors backend RefundRecommendationCode.
+ * Each code maps to a badge colour and tooltip translation key.
+ */
+const RECOMMENDATION_CODES = {
+  REFUND_CANCELLED_BEFORE_CUTOFF: { color: 'emerald', icon: '✓', shouldRefund: true },
+  NO_REFUND_CANCELLED_AFTER_CUTOFF: { color: 'red', icon: '✗', shouldRefund: false },
+  NO_REFUND_NO_PAYMENT: { color: 'slate', icon: '—', shouldRefund: false },
+  REFUND_ADMIN_OVERRIDE: { color: 'amber', icon: '⚙', shouldRefund: true },
+  NO_REFUND_ADMIN_OVERRIDE: { color: 'amber', icon: '⚙', shouldRefund: false },
+  REFUND_COMPLETED: { color: 'blue', icon: '✓✓', shouldRefund: true },
+}
+
+/* ────────────── small presentational helpers ────────────── */
+
+function RecommendationBadge({ code, t }) {
+  const meta = RECOMMENDATION_CODES[code]
+  if (!meta) return <span className="text-xs text-navy/50 dark:text-cream/50">—</span>
+
+  const colorMap = {
+    emerald: 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-700',
+    red: 'bg-red-100 text-red-800 border-red-300 dark:bg-red-900/30 dark:text-red-300 dark:border-red-700',
+    slate: 'bg-navy/5 text-navy/60 border-navy/15 dark:bg-cream/5 dark:text-cream/60 dark:border-cream/15',
+    amber: 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-700',
+    blue: 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700',
+  }
+
+  const label = t(`admin.manualPayments.recCode.${code}`)
+  const tooltip = t(`admin.manualPayments.recTooltip.${code}`)
+
+  return (
+    <span
+      title={tooltip}
+      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold leading-tight cursor-help whitespace-nowrap ${colorMap[meta.color] || colorMap.slate}`}
+    >
+      <span aria-hidden="true">{meta.icon}</span>
+      {label}
+    </span>
+  )
+}
+
+function RefundDecisionSelect({ value, onChange, disabled, t }) {
+  return (
+    <select
+      value={value ? 'refund' : 'no_refund'}
+      onChange={(e) => onChange(e.target.value === 'refund')}
+      disabled={disabled}
+      className={`rounded-lg border px-2 py-1.5 text-xs font-semibold transition ${
+        disabled
+          ? 'cursor-not-allowed bg-navy/5 text-navy/40 border-navy/10 dark:bg-cream/5 dark:text-cream/40 dark:border-cream/10'
+          : 'bg-cream/70 text-navy border-navy/20 dark:bg-navy/70 dark:text-cream dark:border-cream/20'
+      }`}
+    >
+      <option value="refund">{t('admin.manualPayments.decisionRefund')}</option>
+      <option value="no_refund">{t('admin.manualPayments.decisionNoRefund')}</option>
+    </select>
+  )
+}
+
+function LegendPanel({ t }) {
+  const items = Object.keys(RECOMMENDATION_CODES)
+  return (
+    <details className="page-subcard text-xs" data-no-hover="true">
+      <summary className="cursor-pointer font-semibold text-navy dark:text-cream select-none">
+        {t('admin.manualPayments.legendTitle')}
+      </summary>
+      <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((code) => (
+          <div
+            key={code}
+            className="flex items-start gap-2 rounded-xl border border-navy/10 dark:border-cream/10 bg-cream/40 dark:bg-navy/40 p-2.5"
+          >
+            <RecommendationBadge code={code} t={t} />
+            <span className="text-[11px] text-navy/70 dark:text-cream/70 leading-snug">
+              {t(`admin.manualPayments.recTooltip.${code}`)}
+            </span>
+          </div>
+        ))}
+      </div>
+    </details>
+  )
+}
+
+/* ────────────── main component ────────────── */
+
 function AdminManualPayments() {
   const { user, isAuthenticated, login, authFetch } = useAuth()
   const { t } = useLanguage()
@@ -35,15 +123,23 @@ function AdminManualPayments() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [loading, setLoading] = useState(true)
   const { sortByView, toggleSort } = useViewSorts(createDefaultSorts)
+  /* ── data ── */
   const [pendingPayments, setPendingPayments] = useState([])
   const [refundTasks, setRefundTasks] = useState([])
   const [promotionTasks, setPromotionTasks] = useState([])
+  const [subscriptionPurchases, setSubscriptionPurchases] = useState([])
+
+  /* ── loading states ── */
   const [approvingId, setApprovingId] = useState(null)
   const [savingRefundId, setSavingRefundId] = useState(null)
   const [savingPromotionId, setSavingPromotionId] = useState(null)
-  const [refundDrafts, setRefundDrafts] = useState({})
-  const [subscriptionPurchases, setSubscriptionPurchases] = useState([])
   const [approvingSubId, setApprovingSubId] = useState(null)
+
+  /* ── refund draft edits ── */
+  const [refundDrafts, setRefundDrafts] = useState({})
+
+  /* ── confirmation modal ── */
+  const [confirmModal, setConfirmModal] = useState(null)
 
   const isAdmin = user?.role === 'admin'
   const requestedView = searchParams.get('view')
@@ -99,11 +195,16 @@ function AdminManualPayments() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, isAdmin, authFetch])
 
+  /* ── helpers ── */
+  const openConfirm = (opts) => setConfirmModal(opts)
+  const closeConfirm = () => setConfirmModal(null)
+
   const refundSummary = useMemo(() => {
     const total = refundTasks.length
-    const toRefund = refundTasks.filter((row) => row.should_refund).length
-    const refunded = refundTasks.filter((row) => row.refund_marked_paid).length
-    return { total, toRefund, refunded }
+    const toRefund = refundTasks.filter((r) => r.should_refund && !r.refund_marked_paid).length
+    const refunded = refundTasks.filter((r) => r.refund_marked_paid).length
+    const resolved = refundTasks.filter((r) => r.is_resolved).length
+    return { total, toRefund, refunded, resolved }
   }, [refundTasks])
 
   const handleApprove = async (registrationId) => {
@@ -116,17 +217,93 @@ function AdminManualPayments() {
       showError(err.message || t('admin.manualPayments.approveError'))
     } finally {
       setApprovingId(null)
+      closeConfirm()
     }
   }
 
   const updateRefundDraft = (taskId, patch) => {
     setRefundDrafts((prev) => ({
       ...prev,
-      [taskId]: {
-        ...(prev[taskId] || {}),
-        ...patch,
-      },
+      [taskId]: { ...(prev[taskId] || {}), ...patch },
     }))
+  }
+
+  /* ────────────── action handlers with confirmation ────────────── */
+
+  const requestApprovePayment = (row) => {
+    openConfirm({
+      title: t('admin.manualPayments.confirmApproveTitle'),
+      description: t('admin.manualPayments.confirmApproveDesc'),
+      details: [
+        { label: t('admin.tables.user'), value: row.user_name || row.user_email },
+        { label: t('admin.tables.event'), value: row.event_title },
+        { label: t('admin.tables.amount'), value: `${row.amount} ${row.currency}` },
+        { label: t('admin.manualPayments.referenceColumn'), value: row.transfer_reference },
+      ],
+      variant: 'default',
+      onConfirm: () => handleApprove(row.registration_id),
+    })
+  }
+
+  const requestApproveSubscription = (row) => {
+    openConfirm({
+      title: t('admin.manualPayments.confirmSubApproveTitle'),
+      description: t('admin.manualPayments.confirmSubApproveDesc'),
+      details: [
+        { label: t('admin.tables.user'), value: row.user_name || row.user_email },
+        { label: t('admin.manualPayments.subscriptionPlanColumn'), value: row.plan_label || row.plan_code },
+        { label: t('admin.tables.amount'), value: `${row.total_amount} ${row.currency}` },
+      ],
+      variant: 'default',
+      onConfirm: () => handleApproveSubscription(row.purchase_id),
+    })
+  }
+
+  const handleApproveSubscription = async (purchaseId) => {
+    try {
+      setApprovingSubId(purchaseId)
+      await approveSubscriptionPurchase(authFetch, purchaseId)
+      showSuccess(t('admin.manualPayments.subscriptionApproveSuccess'))
+      await loadData()
+    } catch (err) {
+      showError(err.message || t('admin.manualPayments.subscriptionApproveError'))
+    } finally {
+      setApprovingSubId(null)
+      closeConfirm()
+    }
+  }
+
+  const requestSaveRefund = (row) => {
+    const draft = refundDrafts[row.task_id] || {
+      should_refund: row.should_refund,
+      refund_marked_paid: row.refund_marked_paid,
+      override_reason: row.override_reason || '',
+    }
+    const changedFromRecommendation = draft.should_refund !== Boolean(row.recommended_should_refund)
+    if (changedFromRecommendation && (draft.override_reason || '').trim().length < 8) {
+      showError(t('admin.manualPayments.overrideReasonRequired'))
+      return
+    }
+
+    const actionSummary = draft.refund_marked_paid
+      ? t('admin.manualPayments.confirmRefundMarkPaid')
+      : draft.should_refund
+        ? t('admin.manualPayments.confirmRefundApprove')
+        : t('admin.manualPayments.confirmRefundReject')
+
+    openConfirm({
+      title: t('admin.manualPayments.confirmRefundTitle'),
+      description: actionSummary,
+      details: [
+        { label: t('admin.tables.user'), value: row.user_name || row.user_email },
+        { label: t('admin.tables.event'), value: row.event_title },
+        { label: t('admin.manualPayments.decisionLabel'), value: draft.should_refund ? t('admin.manualPayments.decisionRefund') : t('admin.manualPayments.decisionNoRefund') },
+        ...(draft.refund_marked_paid ? [{ label: t('admin.manualPayments.refundedColumn'), value: '✓' }] : []),
+        ...(draft.override_reason ? [{ label: t('admin.manualPayments.overrideReasonColumn'), value: draft.override_reason }] : []),
+      ],
+      variant: draft.refund_marked_paid ? 'warning' : 'default',
+      onConfirm: () => handleSaveRefundTask(row),
+    })
   }
 
   const handleSaveRefundTask = async (row) => {
@@ -162,7 +339,25 @@ function AdminManualPayments() {
       showError(err.message || t('admin.manualPayments.refundSaveError'))
     } finally {
       setSavingRefundId(null)
+      closeConfirm()
     }
+  }
+
+  const requestTogglePromotion = (row, checked) => {
+    const desc = checked
+      ? t('admin.manualPayments.confirmPromotionNotified')
+      : t('admin.manualPayments.confirmPromotionUnmark')
+
+    openConfirm({
+      title: t('admin.manualPayments.confirmPromotionTitle'),
+      description: desc,
+      details: [
+        { label: t('admin.tables.user'), value: row.user_name || row.user_email },
+        { label: t('admin.tables.event'), value: row.event_title },
+      ],
+      variant: 'default',
+      onConfirm: () => handleTogglePromotion(row.registration_id, checked),
+    })
   }
 
   const handleTogglePromotion = async (registrationId, checked) => {
@@ -179,19 +374,7 @@ function AdminManualPayments() {
       showError(err.message || t('admin.manualPayments.promotionSaveError'))
     } finally {
       setSavingPromotionId(null)
-    }
-  }
-
-  const handleApproveSubscription = async (purchaseId) => {
-    try {
-      setApprovingSubId(purchaseId)
-      await approveSubscriptionPurchase(authFetch, purchaseId)
-      showSuccess(t('admin.manualPayments.subscriptionApproveSuccess'))
-      await loadData()
-    } catch (err) {
-      showError(err.message || t('admin.manualPayments.subscriptionApproveError'))
-    } finally {
-      setApprovingSubId(null)
+      closeConfirm()
     }
   }
 
@@ -218,13 +401,13 @@ function AdminManualPayments() {
         ...draft,
         user_sort: `${row.user_name || ''} ${row.user_email || ''}`,
         event_sort: `${row.event_title || ''} ${row.occurrence_date || ''}`,
-        recommended_label: row.recommended_should_refund
-          ? t('admin.manualPayments.recommendRefund')
-          : t('admin.manualPayments.recommendNoRefund'),
       }
     }),
-    [refundTasks, refundDrafts, t]
+    [refundTasks, refundDrafts]
   )
+
+  const activeRefundRows = useMemo(() => refundRows.filter((r) => !r.is_resolved), [refundRows])
+  const resolvedRefundRows = useMemo(() => refundRows.filter((r) => r.is_resolved), [refundRows])
 
   const promotionRows = useMemo(
     () => promotionTasks.map((row) => ({
@@ -270,7 +453,7 @@ function AdminManualPayments() {
       key: 'transfer_reference',
       label: t('admin.manualPayments.referenceColumn'),
       sortValue: (row) => row.transfer_reference,
-      render: (row) => <code>{row.transfer_reference}</code>,
+      render: (row) => <code className="text-[11px]">{row.transfer_reference}</code>,
     },
     {
       key: 'status_label',
@@ -286,7 +469,7 @@ function AdminManualPayments() {
       render: (row) => (
         <button
           type="button"
-          onClick={() => handleApprove(row.registration_id)}
+          onClick={() => requestApprovePayment(row)}
           disabled={approvingId === row.registration_id}
           className={`px-3 py-1.5 rounded-full text-xs font-semibold ${
             approvingId === row.registration_id
@@ -302,13 +485,13 @@ function AdminManualPayments() {
     },
   ]
 
-  const refundColumns = [
+  const makeRefundColumns = (resolved) => [
     {
       key: 'user_sort',
       label: t('admin.tables.user'),
       sortValue: (row) => row.user_sort,
       render: (row) => (
-        <div>
+        <div className={resolved ? 'opacity-50' : ''}>
           <p className="font-semibold">{row.user_name || '—'}</p>
           <p className="text-[11px] text-navy/60 dark:text-cream/60">{row.user_email}</p>
         </div>
@@ -319,34 +502,39 @@ function AdminManualPayments() {
       label: t('admin.tables.event'),
       sortValue: (row) => row.event_sort,
       render: (row) => (
-        <div>
+        <div className={resolved ? 'opacity-50' : ''}>
           <p className="font-semibold">{row.event_title}</p>
           <p className="text-[11px] text-navy/60 dark:text-cream/60">{row.occurrence_date}</p>
         </div>
       ),
     },
     {
-      key: 'recommended_should_refund',
+      key: 'recommendation_code',
       label: t('admin.manualPayments.recommendedColumn'),
-      sortValue: (row) => Number(Boolean(row.recommended_should_refund)),
-      render: (row) => <span>{row.recommended_label}</span>,
+      sortValue: (row) => row.recommendation_code || '',
+      render: (row) => <RecommendationBadge code={row.recommendation_code} t={t} />,
     },
     {
       key: 'should_refund',
-      label: t('admin.manualPayments.shouldRefundColumn'),
+      label: t('admin.manualPayments.decisionLabel'),
       sortValue: (row) => Number(Boolean(row.should_refund)),
-      render: (row) => (
-        <label className="inline-flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={Boolean(row.should_refund)}
-            onChange={(e) => updateRefundDraft(row.task_id, { should_refund: e.target.checked })}
+      render: (row) =>
+        resolved ? (
+          <span className="text-xs font-semibold opacity-50">
+            {row.should_refund
+              ? t('admin.manualPayments.decisionRefund')
+              : t('admin.manualPayments.decisionNoRefund')}
+          </span>
+        ) : (
+          <RefundDecisionSelect
+            value={row.should_refund}
+            onChange={(val) => updateRefundDraft(row.task_id, { should_refund: val })}
+            disabled={false}
+            t={t}
           />
-          <span>{t('admin.manualPayments.shouldRefundLabel')}</span>
-        </label>
-      ),
+        ),
     },
-    {
+    ...(resolved ? [] : [{
       key: 'refund_marked_paid',
       label: t('admin.manualPayments.refundedColumn'),
       sortValue: (row) => Number(Boolean(row.refund_marked_paid)),
@@ -354,15 +542,16 @@ function AdminManualPayments() {
         <label className="inline-flex items-center gap-2">
           <input
             type="checkbox"
+            className="form-checkbox"
             checked={Boolean(row.refund_marked_paid)}
             onChange={(e) => updateRefundDraft(row.task_id, { refund_marked_paid: e.target.checked })}
             disabled={!row.should_refund}
           />
-          <span>{t('admin.manualPayments.refundedLabel')}</span>
+          <span className="text-xs">{t('admin.manualPayments.refundedLabel')}</span>
         </label>
       ),
-    },
-    {
+    }]),
+    ...(resolved ? [] : [{
       key: 'override_reason',
       label: t('admin.manualPayments.overrideReasonColumn'),
       sortValue: (row) => row.override_reason || '',
@@ -380,8 +569,13 @@ function AdminManualPayments() {
           />
         )
       },
-    },
-    {
+    }]),
+    ...(resolved ? [{
+      key: 'reviewed_at',
+      label: t('admin.manualPayments.resolvedAtColumn'),
+      sortValue: (row) => row.reviewed_at || '',
+      render: (row) => <span className="text-xs opacity-50">{row.reviewed_at || '—'}</span>,
+    }] : [{
       key: 'actions',
       label: t('admin.manualPayments.actionsColumn'),
       align: 'right',
@@ -389,7 +583,7 @@ function AdminManualPayments() {
       render: (row) => (
         <button
           type="button"
-          onClick={() => handleSaveRefundTask(row)}
+          onClick={() => requestSaveRefund(row)}
           disabled={savingRefundId === row.task_id}
           className={`px-3 py-1.5 rounded-full text-xs font-semibold ${
             savingRefundId === row.task_id
@@ -402,8 +596,13 @@ function AdminManualPayments() {
             : t('admin.manualPayments.saveButton')}
         </button>
       ),
-    },
+    }]),
   ]
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const activeRefundColumns = useMemo(() => makeRefundColumns(false), [t, savingRefundId, refundDrafts])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const resolvedRefundColumns = useMemo(() => makeRefundColumns(true), [t])
 
   const promotionColumns = [
     {
@@ -446,15 +645,20 @@ function AdminManualPayments() {
       align: 'right',
       sortValue: (row) => Number(Boolean(row.waitlist_notification_sent)),
       render: (row) => (
-        <label className="inline-flex items-center gap-2 text-navy dark:text-cream">
-          <input
-            type="checkbox"
-            checked={Boolean(row.waitlist_notification_sent)}
-            onChange={(e) => handleTogglePromotion(row.registration_id, e.target.checked)}
-            disabled={savingPromotionId === row.registration_id}
-          />
-          <span>{t('admin.manualPayments.notifiedLabel')}</span>
-        </label>
+        <button
+          type="button"
+          onClick={() => requestTogglePromotion(row, !row.waitlist_notification_sent)}
+          disabled={savingPromotionId === row.registration_id}
+          className={`px-3 py-1.5 rounded-full text-xs font-semibold ${
+            row.waitlist_notification_sent
+              ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-700'
+              : 'btn-primary'
+          } ${savingPromotionId === row.registration_id ? 'cursor-not-allowed opacity-50' : ''}`}
+        >
+          {row.waitlist_notification_sent
+            ? `✓ ${t('admin.manualPayments.notifiedLabel')}`
+            : t('admin.manualPayments.markNotifiedButton')}
+        </button>
       ),
     },
   ]
@@ -519,7 +723,7 @@ function AdminManualPayments() {
       render: (row) => (
         <button
           type="button"
-          onClick={() => handleApproveSubscription(row.purchase_id)}
+          onClick={() => requestApproveSubscription(row)}
           disabled={approvingSubId === row.purchase_id}
           className={`px-3 py-1.5 rounded-full text-xs font-semibold ${
             approvingSubId === row.purchase_id
@@ -625,22 +829,70 @@ function AdminManualPayments() {
           )}
 
           {activeView === 'refunds' && (
-            <section className="space-y-2">
-              <p className="text-xs text-navy/60 dark:text-cream/60">
-                {t('admin.manualPayments.refundsSummary')
-                  .replace('{total}', String(refundSummary.total))
-                  .replace('{to_refund}', String(refundSummary.toRefund))
-                  .replace('{refunded}', String(refundSummary.refunded))}
-              </p>
-              <SortableDataTable
-                columns={refundColumns}
-                rows={refundRows}
-                sort={sortByView.refunds}
-                onSort={(key) => toggleSort('refunds', key)}
-                rowKey={(row) => row.task_id}
-                emptyText={t('admin.manualPayments.refundsEmpty')}
-                t={t}
-              />
+            <section className="space-y-4">
+              {/* Summary bar */}
+              <div className="flex flex-wrap items-center gap-4 text-xs text-navy/60 dark:text-cream/60">
+                <span>
+                  {t('admin.manualPayments.refundsSummary')
+                    .replace('{total}', String(refundSummary.total))
+                    .replace('{to_refund}', String(refundSummary.toRefund))
+                    .replace('{refunded}', String(refundSummary.refunded))}
+                </span>
+                {refundSummary.resolved > 0 && (
+                  <span className="ml-auto font-medium text-navy/40 dark:text-cream/40">
+                    {t('admin.manualPayments.resolvedCount', { count: refundSummary.resolved })
+                      || `${refundSummary.resolved} resolved`}
+                  </span>
+                )}
+              </div>
+
+              {/* Legend */}
+              <LegendPanel t={t} />
+
+              {/* Active tasks */}
+              {activeRefundRows.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-navy dark:text-cream mb-2">
+                    {t('admin.manualPayments.activeTasksHeading') || 'Active tasks'}
+                  </h3>
+                  <SortableDataTable
+                    columns={activeRefundColumns}
+                    rows={activeRefundRows}
+                    sort={sortByView.refunds}
+                    onSort={(key) => toggleSort('refunds', key)}
+                    rowKey={(row) => row.task_id}
+                    emptyText={t('admin.manualPayments.refundsEmpty')}
+                    t={t}
+                  />
+                </div>
+              )}
+
+              {/* Resolved tasks (collapsed) */}
+              {resolvedRefundRows.length > 0 && (
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-semibold text-navy/50 dark:text-cream/50 hover:text-navy dark:hover:text-cream transition-colors select-none">
+                    {t('admin.manualPayments.resolvedTasksHeading') || 'Resolved tasks'}
+                    {' '}({resolvedRefundRows.length})
+                  </summary>
+                  <div className="mt-2 opacity-60">
+                    <SortableDataTable
+                      columns={resolvedRefundColumns}
+                      rows={resolvedRefundRows}
+                      sort={sortByView.refunds}
+                      onSort={(key) => toggleSort('refunds', key)}
+                      rowKey={(row) => row.task_id}
+                      emptyText=""
+                      t={t}
+                    />
+                  </div>
+                </details>
+              )}
+
+              {activeRefundRows.length === 0 && resolvedRefundRows.length === 0 && (
+                <p className="text-sm text-navy/40 dark:text-cream/40 text-center py-8">
+                  {t('admin.manualPayments.refundsEmpty')}
+                </p>
+              )}
             </section>
           )}
 
@@ -669,6 +921,19 @@ function AdminManualPayments() {
           )}
         </>
       )}
+
+      <ConfirmActionModal
+        open={Boolean(confirmModal)}
+        title={confirmModal?.title || ''}
+        description={confirmModal?.description || ''}
+        details={confirmModal?.details}
+        confirmLabel={confirmModal?.confirmLabel || t('admin.manualPayments.confirmButton')}
+        cancelLabel={t('admin.manualPayments.cancelButton')}
+        variant={confirmModal?.variant || 'default'}
+        loading={approvingId != null || savingRefundId != null || savingPromotionId != null || approvingSubId != null}
+        onConfirm={confirmModal?.onConfirm || (() => {})}
+        onCancel={closeConfirm}
+      />
     </div>
   )
 }

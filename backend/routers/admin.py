@@ -1,4 +1,5 @@
 import calendar
+import enum
 import json
 from datetime import datetime
 from decimal import Decimal
@@ -25,6 +26,39 @@ from services.registration_service import RegistrationService, RegistrationError
 from utils.legacy_ids import legacy_id_eq, optional_str_id
 
 router = APIRouter(prefix="/admin", tags=["admin"])
+
+
+class RefundRecommendationCode(str, enum.Enum):
+    """Enumerated refund recommendation codes with clear semantics."""
+
+    REFUND_CANCELLED_BEFORE_CUTOFF = "REFUND_CANCELLED_BEFORE_CUTOFF"
+    NO_REFUND_CANCELLED_AFTER_CUTOFF = "NO_REFUND_CANCELLED_AFTER_CUTOFF"
+    NO_REFUND_NO_PAYMENT = "NO_REFUND_NO_PAYMENT"
+    REFUND_ADMIN_OVERRIDE = "REFUND_ADMIN_OVERRIDE"
+    NO_REFUND_ADMIN_OVERRIDE = "NO_REFUND_ADMIN_OVERRIDE"
+    REFUND_COMPLETED = "REFUND_COMPLETED"
+
+
+def _compute_recommendation_code(
+    task: RegistrationRefundTask,
+) -> str:
+    """Derive a recommendation code from refund task state."""
+    if task.refund_marked_paid:
+        return RefundRecommendationCode.REFUND_COMPLETED.value
+    if task.reviewed_by_admin_id:
+        if task.should_refund != task.recommended_should_refund:
+            if task.should_refund:
+                return RefundRecommendationCode.REFUND_ADMIN_OVERRIDE.value
+            return RefundRecommendationCode.NO_REFUND_ADMIN_OVERRIDE.value
+    if not task.refund_eligible and not task.recommended_should_refund:
+        if task.should_refund:
+            return RefundRecommendationCode.REFUND_ADMIN_OVERRIDE.value
+        return RefundRecommendationCode.NO_REFUND_CANCELLED_AFTER_CUTOFF.value
+    if task.refund_eligible and not task.recommended_should_refund:
+        return RefundRecommendationCode.NO_REFUND_NO_PAYMENT.value
+    if task.refund_eligible and task.recommended_should_refund:
+        return RefundRecommendationCode.REFUND_CANCELLED_BEFORE_CUTOFF.value
+    return RefundRecommendationCode.NO_REFUND_NO_PAYMENT.value
 
 
 class EventStatsResponse(BaseModel):
@@ -272,8 +306,10 @@ class RefundTaskResponse(BaseModel):
     user_email: str = Field(description="User email address.")
     refund_eligible: bool = Field(description="Whether refund is eligible per policy.")
     recommended_should_refund: bool = Field(description="System recommendation for refund.")
+    recommendation_code: str = Field(description="Enum code describing the refund recommendation reason.")
     should_refund: bool = Field(description="Admin decision to refund.")
     refund_marked_paid: bool = Field(description="Whether refund was paid.")
+    is_resolved: bool = Field(description="Whether the task has been finally resolved by admin.")
     override_reason: str | None = Field(default=None, description="Reason for overriding recommendation.")
     reviewed_at: str | None = Field(default=None, description="Timestamp when reviewed.")
     reviewed_by_admin_id: str | None = Field(default=None, description="Admin who reviewed the task.")
@@ -936,8 +972,10 @@ def _serialize_refund_task_row(
         user_email=user.email,
         refund_eligible=bool(task.refund_eligible),
         recommended_should_refund=bool(task.recommended_should_refund),
+        recommendation_code=_compute_recommendation_code(task),
         should_refund=bool(task.should_refund),
         refund_marked_paid=bool(task.refund_marked_paid),
+        is_resolved=bool(task.refund_marked_paid) or (bool(task.reviewed_by_admin_id) and not bool(task.should_refund)),
         override_reason=task.override_reason,
         reviewed_at=task.reviewed_at.isoformat() if task.reviewed_at else None,
         reviewed_by_admin_id=optional_str_id(task.reviewed_by_admin_id),
