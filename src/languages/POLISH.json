@@ -892,9 +892,9 @@
     "statusPending": "Oczekuje",
     "statusPayment": "Nieopłacony",
     "legendTitle": "Legenda statusów",
-    "tooltipConfirmed": "Płatność została zrealizowana – miejsce jest potwierdzone.",
-    "tooltipPending": "Płatność jest w trakcie przetwarzania lub oczekuje na weryfikację.",
-    "tooltipPayment": "Uczestnik nie dokonał jeszcze przelewu.",
+    "tooltipConfirmed": "Płatność została potwierdzona przez admina.",
+    "tooltipPending": "Płatność oczekuje na potwierdzenie.",
+    "tooltipPayment": "Uczestnik nie potwierdził płatności.",
     "noLimit": "Brak limitu",
     "openInMaps": "Otwórz w Mapach Google",
     "subscribersOnly": "Subskrybenci"
