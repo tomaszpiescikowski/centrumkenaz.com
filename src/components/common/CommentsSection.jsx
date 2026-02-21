@@ -78,6 +78,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
   const [showReactionPicker, setShowReactionPicker] = useState(null)
+  const [longPressId, setLongPressId] = useState(null)
   const [internalTab, setInternalTab] = useState('event')
 
   const activeTab = externalTab ?? internalTab
@@ -86,6 +87,8 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const replyInputRef = useRef(null)
   const editInputRef = useRef(null)
   const listRef = useRef(null)
+  const longPressTimer = useRef(null)
+  const touchMoved = useRef(false)
 
   const isGeneralTab = activeTab === 'general'
   const currentComments = isGeneralTab ? generalComments : comments
@@ -248,6 +251,40 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     }) + ' ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
   }
 
+  /* ── Long-press handlers (mobile reaction picker) ── */
+  const handleTouchStart = useCallback((commentId) => {
+    touchMoved.current = false
+    longPressTimer.current = setTimeout(() => {
+      if (!touchMoved.current) {
+        setLongPressId(commentId)
+        setShowReactionPicker(null)
+        // Light haptic if available
+        if (navigator.vibrate) navigator.vibrate(30)
+      }
+    }, 500)
+  }, [])
+
+  const handleTouchEnd = useCallback(() => {
+    clearTimeout(longPressTimer.current)
+  }, [])
+
+  const handleTouchMove = useCallback(() => {
+    touchMoved.current = true
+    clearTimeout(longPressTimer.current)
+  }, [])
+
+  // Close long-press picker on outside tap / scroll
+  useEffect(() => {
+    if (!longPressId) return
+    const close = () => setLongPressId(null)
+    document.addEventListener('touchstart', close, { passive: true })
+    document.addEventListener('scroll', close, true)
+    return () => {
+      document.removeEventListener('touchstart', close)
+      document.removeEventListener('scroll', close, true)
+    }
+  }, [longPressId])
+
   const renderFlatComment = (item) => {
     const isOwn = user?.id === item.author.id
     const isEditingThis = editingId === item.id
@@ -259,6 +296,10 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
       <div
         key={item.id}
         className={`cmt-item ${item.is_pinned ? 'cmt-pinned' : ''} ${item._visualDepth > 0 ? 'cmt-threaded' : ''}`}
+        onTouchStart={(e) => { if (!item.is_deleted) handleTouchStart(item.id) }}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchMove}
+        onContextMenu={(e) => { if (longPressId) e.preventDefault() }}
       >
         {/* Thread connector line */}
         {item._visualDepth > 0 && <div className="cmt-thread-line" />}
@@ -311,6 +352,20 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
             </form>
           ) : (
             <div className={`cmt-content ${item.is_deleted ? 'cmt-deleted' : ''}`}>{item.content}</div>
+          )}
+
+          {/* Long-press reaction bar (mobile, Messenger-style) */}
+          {longPressId === item.id && (
+            <div className="cmt-longpress-bar" onTouchStart={(e) => e.stopPropagation()}>
+              {Object.entries(REACTION_EMOJIS).map(([type, emoji]) => (
+                <button
+                  key={type}
+                  className="cmt-longpress-emoji"
+                  onClick={() => { handleReaction(item.id, type); setLongPressId(null) }}
+                  title={type}
+                >{emoji}</button>
+              ))}
+            </div>
           )}
 
           {/* Reactions */}
