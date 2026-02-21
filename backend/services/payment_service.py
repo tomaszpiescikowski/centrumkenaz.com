@@ -412,7 +412,7 @@ class PaymentService:
         )
         subscription = subscription_result.scalar_one_or_none()
         if not subscription:
-            subscription = Subscription(user_id=user.id, points=0, is_test_data=bool(user.is_test_data))
+            subscription = Subscription(user_id=user.id, points=0)
 
         subscription.end_date = self._add_days_from_effective_start(
             current_end=subscription.end_date,
@@ -561,7 +561,6 @@ class PaymentService:
             total_amount=total,
             currency=plan.currency,
             status=SubscriptionPurchaseStatus.MANUAL_PAYMENT_REQUIRED.value,
-            is_test_data=bool(user.is_test_data),
         )
         self.db.add(purchase)
         await self.db.commit()
@@ -732,7 +731,7 @@ class PaymentService:
         subscription = sub_result.scalar_one_or_none()
         if not subscription:
             subscription = Subscription(
-                user_id=user.id, points=0, is_test_data=bool(user.is_test_data)
+                user_id=user.id, points=0
             )
 
         subscription.end_date = self._add_days_from_effective_start(

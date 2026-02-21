@@ -241,13 +241,13 @@ async def submit_join_request(
 
     profile = await db.get(UserProfile, user.id)
     if not profile:
-        profile = UserProfile(user_id=user.id, is_test_data=bool(user.is_test_data))
+        profile = UserProfile(user_id=user.id)
     profile.about_me = normalized_about
     profile.interest_tags = _serialize_interest_tags(payload.interest_tags)
 
     approval_request = await db.get(ApprovalRequest, user.id)
     if not approval_request:
-        approval_request = ApprovalRequest(user_id=user.id, is_test_data=bool(user.is_test_data))
+        approval_request = ApprovalRequest(user_id=user.id)
     approval_request.phone_country_code = (payload.phone_country_code or "+48").strip()
     approval_request.phone_number = (payload.phone_number or "").strip()
     approval_request.admin_message = (payload.admin_message or "").strip()
@@ -281,7 +281,7 @@ async def update_my_profile(
     """
     profile = await db.get(UserProfile, user.id)
     if not profile:
-        profile = UserProfile(user_id=user.id, is_test_data=bool(user.is_test_data))
+        profile = UserProfile(user_id=user.id)
     profile.about_me = (payload.about_me or "").strip() or None
     profile.interest_tags = _serialize_interest_tags(payload.interest_tags)
 

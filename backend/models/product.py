@@ -47,12 +47,6 @@ class Product(Base):
         default=True,
         comment="Whether the product is visible in the catalog.",
     )
-    is_test_data = Column(
-        Boolean,
-        default=False,
-        index=True,
-        comment="Marks rows created by seed/test tooling.",
-    )
 
     created_at = Column(
         DateTime(timezone=True),

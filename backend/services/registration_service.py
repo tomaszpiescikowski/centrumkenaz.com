@@ -1093,7 +1093,7 @@ class RegistrationService:
             return
         subscription = await self._get_subscription_for_user(user)
         if not subscription:
-            subscription = Subscription(user_id=user.id, points=0, is_test_data=bool(user.is_test_data))
+            subscription = Subscription(user_id=user.id, points=0)
         subscription.points = int(subscription.points or 0) + int(points)
         self.db.add(subscription)
         await self.db.commit()

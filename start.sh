@@ -91,15 +91,6 @@ for i in {1..10}; do
     sleep 1
 done
 
-# Auto-seed demo data
-SEED_DEMO=${SEED_DEMO:-1}
-if [ "$SEED_DEMO" = "1" ]; then
-    echo -e "${YELLOW}   Seeding demo data...${NC}"
-    (cd backend && source venv/bin/activate && python -m backend.cli seed-demo --reset --users 40 --per-event 0 >> ../logs/backend.log 2>&1)
-else
-    echo -e "${YELLOW}   Skipping demo data seed (SEED_DEMO=0)${NC}"
-fi
-
 # Start frontend in background
 echo -e "${GREEN}🎨 Starting frontend (Vite on :5173)...${NC}"
 # Bind to 0.0.0.0 so VS Code port-forwarding and host browser access work reliably.

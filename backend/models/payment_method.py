@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, ForeignKey, Boolean
+from sqlalchemy import Column, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
@@ -23,14 +23,6 @@ class PaymentMethod(Base):
         String(255),
         nullable=True,
         comment="Gateway token referencing stored card details.",
-    )
-
-    # Marks rows created by seed/test tooling so they can be safely wiped.
-    is_test_data = Column(
-        Boolean,
-        default=False,
-        index=True,
-        comment="Marks rows created by seed/test tooling.",
     )
 
     created_at = Column(

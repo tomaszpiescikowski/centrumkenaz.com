@@ -31,14 +31,6 @@ class Subscription(Base):
         comment="Accumulated loyalty points for the user.",
     )
 
-    # Marks rows created by seed/test tooling so they can be safely wiped.
-    is_test_data = Column(
-        Boolean,
-        default=False,
-        index=True,
-        comment="Marks rows created by seed/test tooling.",
-    )
-
     created_at = Column(
         DateTime(timezone=True),
         server_default=func.now(),

@@ -158,14 +158,6 @@ class Event(Base):
         comment="Points awarded for confirmed participation.",
     )
 
-    # Marks rows created by seed/test tooling so they can be safely wiped.
-    is_test_data = Column(
-        Boolean,
-        default=False,
-        index=True,
-        comment="Marks rows created by seed/test tooling.",
-    )
-
     # Version for optimistic locking
     version = Column(
         Integer,

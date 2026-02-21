@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, ForeignKey, Boolean
+from sqlalchemy import Column, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
@@ -38,14 +38,6 @@ class ApprovalRequest(Base):
         DateTime(timezone=True),
         server_default=func.now(),
         comment="Timestamp when the approval request was submitted.",
-    )
-
-    # Marks rows created by seed/test tooling so they can be safely wiped.
-    is_test_data = Column(
-        Boolean,
-        default=False,
-        index=True,
-        comment="Marks rows created by seed/test tooling.",
     )
 
     user = relationship("User", back_populates="approval_request")
