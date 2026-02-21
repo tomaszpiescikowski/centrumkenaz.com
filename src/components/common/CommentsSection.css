@@ -783,7 +783,7 @@ img.cmt-av-img {
   margin-top: 0;
 }
 
-.chat-modal-body .cmt-list {
+.chat-modal-body .cmt-list:not(.cmt-list-messenger) {
   max-height: none;
   overflow-y: visible;
 }
@@ -824,6 +824,7 @@ img.cmt-av-img {
   display: flex;
   flex-direction: column;
   padding: 1rem 1.25rem;
+  overflow-y: hidden;
 }
 
 /* Bigger top margin in modal */
