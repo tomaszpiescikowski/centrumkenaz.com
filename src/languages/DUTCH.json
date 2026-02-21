@@ -490,6 +490,8 @@
     "pendingPurchaseBannerTitle": "Openstaande abonnementsbetaling",
     "pendingPurchaseBannerBody": "Je hebt een onvoltooide abonnementsbetaling.",
     "pendingPurchaseBannerLink": "Ga door met betaling",
+    "verificationBannerTitle": "Betaling wacht op verificatie",
+    "verificationBannerBody": "Je abonnementsbetaling is bevestigd en wacht op verificatie door de beheerder.",
     "periodsLabel": "Aantal periodes",
     "decreasePeriods": "Verminder aantal periodes",
     "increasePeriods": "Verhoog aantal periodes",

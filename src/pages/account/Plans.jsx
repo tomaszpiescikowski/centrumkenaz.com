@@ -301,7 +301,7 @@ function Plans() {
             </span>
           )}
 
-          {pendingPurchase && (
+          {pendingPurchase && pendingPurchase.status === 'manual_payment_required' && (
             <div className="mt-3 rounded-xl border border-amber-500/30 bg-amber-100/70 p-3 text-sm text-amber-900 dark:border-amber-300/40 dark:bg-amber-900/30 dark:text-amber-100">
               <p className="font-semibold">{t('plans.pendingPurchaseBannerTitle')}</p>
               <p className="mt-1">
@@ -314,6 +314,13 @@ function Plans() {
                   {t('plans.pendingPurchaseBannerLink')}
                 </Link>
               </p>
+            </div>
+          )}
+
+          {pendingPurchase && pendingPurchase.status === 'manual_payment_verification' && (
+            <div className="mt-3 rounded-xl border border-sky-500/30 bg-sky-100/70 p-3 text-sm text-sky-900 dark:border-sky-300/40 dark:bg-sky-900/30 dark:text-sky-100">
+              <p className="font-semibold">{t('plans.verificationBannerTitle')}</p>
+              <p className="mt-1">{t('plans.verificationBannerBody')}</p>
             </div>
           )}
         </div>

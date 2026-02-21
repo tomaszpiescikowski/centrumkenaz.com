@@ -490,6 +490,8 @@
     "pendingPurchaseBannerTitle": "Pending subscription payment",
     "pendingPurchaseBannerBody": "You have an unfinished subscription payment.",
     "pendingPurchaseBannerLink": "Continue payment",
+    "verificationBannerTitle": "Payment awaiting verification",
+    "verificationBannerBody": "Your subscription payment has been confirmed and is awaiting admin verification.",
     "periodsLabel": "Number of periods",
     "decreasePeriods": "Decrease number of periods",
     "increasePeriods": "Increase number of periods",

@@ -490,6 +490,8 @@
     "pendingPurchaseBannerTitle": "Oczekująca płatność za subskrypcję",
     "pendingPurchaseBannerBody": "Masz niedokończoną płatność za subskrypcję.",
     "pendingPurchaseBannerLink": "Kontynuuj płatność",
+    "verificationBannerTitle": "Płatność oczekuje na weryfikację",
+    "verificationBannerBody": "Twoja płatność za subskrypcję została potwierdzona i oczekuje na weryfikację przez administratora.",
     "periodsLabel": "Liczba okresów",
     "decreasePeriods": "Zmniejsz liczbę okresów",
     "increasePeriods": "Zwiększ liczbę okresów",

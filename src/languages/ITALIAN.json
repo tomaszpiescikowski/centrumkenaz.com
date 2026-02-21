@@ -490,6 +490,8 @@
     "pendingPurchaseBannerTitle": "Pagamento abbonamento in sospeso",
     "pendingPurchaseBannerBody": "Hai un pagamento abbonamento non completato.",
     "pendingPurchaseBannerLink": "Continua il pagamento",
+    "verificationBannerTitle": "Pagamento in attesa di verifica",
+    "verificationBannerBody": "Il pagamento dell'abbonamento è stato confermato ed è in attesa di verifica da parte dell'amministratore.",
     "periodsLabel": "Numero di periodi",
     "decreasePeriods": "Diminuisci il numero di periodi",
     "increasePeriods": "Aumenta il numero di periodi",

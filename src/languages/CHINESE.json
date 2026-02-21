@@ -488,6 +488,8 @@
     "pendingPurchaseBannerTitle": "待处理的订阅付款",
     "pendingPurchaseBannerBody": "您有一笔未完成的订阅付款。",
     "pendingPurchaseBannerLink": "继续付款",
+    "verificationBannerTitle": "付款等待验证",
+    "verificationBannerBody": "您的订阅付款已确认，正在等待管理员验证。",
     "periodsLabel": "期数",
     "decreasePeriods": "减少期数",
     "increasePeriods": "增加期数",
