@@ -142,6 +142,13 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const currentResourceId = isGeneralTab ? 'global' : resourceId
   const reloadCurrent = isGeneralTab ? loadGeneralComments : loadComments
 
+  const handleDesktopEnter = (e, formEl) => {
+    if (e.key === 'Enter' && !e.shiftKey && window.matchMedia('(min-width: 640px)').matches) {
+      e.preventDefault()
+      formEl?.requestSubmit()
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!newContent.trim() || submitting) return
@@ -357,7 +364,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
 
           {isEditingThis ? (
             <form className="cmt-edit-form" onSubmit={(e) => handleEdit(e, item.id)}>
-              <textarea ref={editInputRef} className="cmt-input" value={editContent} onChange={(e) => setEditContent(e.target.value)} rows={2} maxLength={2000} />
+              <textarea ref={editInputRef} className="cmt-input" value={editContent} onChange={(e) => setEditContent(e.target.value)} rows={2} maxLength={2000} onKeyDown={(e) => handleDesktopEnter(e, e.target.closest('form'))} />
               <div className="cmt-edit-actions">
                 <button type="submit" className="cmt-btn cmt-btn-primary" disabled={submitting || !editContent.trim()}>{t('comments.save')}</button>
                 <button type="button" className="cmt-btn" onClick={() => { setEditingId(null); setEditContent(''); setEditVersion(null) }}>{t('comments.cancel')}</button>
@@ -427,7 +434,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           {/* Reply form */}
           {isReplying && (
             <form className="cmt-reply-form" onSubmit={(e) => handleReply(e, replyTargetId)}>
-              <textarea ref={replyInputRef} className="cmt-input cmt-input-sm" placeholder={t('comments.replyPlaceholder')} value={replyContent} onChange={(e) => setReplyContent(e.target.value)} rows={2} maxLength={2000} />
+              <textarea ref={replyInputRef} className="cmt-input cmt-input-sm" placeholder={t('comments.replyPlaceholder')} value={replyContent} onChange={(e) => setReplyContent(e.target.value)} rows={2} maxLength={2000} onKeyDown={(e) => handleDesktopEnter(e, e.target.closest('form'))} />
               <div className="cmt-edit-actions">
                 <button type="submit" className="cmt-btn cmt-btn-primary" disabled={submitting || !replyContent.trim()}>{t('comments.send')}</button>
                 <button type="button" className="cmt-btn" onClick={() => { setReplyingTo(null); setReplyContent('') }}>{t('comments.cancel')}</button>
@@ -467,6 +474,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           maxLength={2000}
           onFocus={(e) => { e.target.rows = 3 }}
           onBlur={(e) => { if (!e.target.value.trim()) e.target.rows = 1 }}
+          onKeyDown={(e) => handleDesktopEnter(e, e.target.closest('form'))}
         />
       </div>
       {newContent.trim() && (
