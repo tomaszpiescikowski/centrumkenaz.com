@@ -240,16 +240,6 @@ function Panel() {
                             )}
                           </div>
 
-                          {reg.can_confirm_manual_payment && (
-                            <div className="mt-2" onClick={(e) => e.stopPropagation()}>
-                              <Link
-                                to={`/manual-payment/${reg.registration_id}`}
-                                className="btn-primary inline-block px-3 py-1.5 text-xs"
-                              >
-                                {t('account.openManualPayment')}
-                              </Link>
-                            </div>
-                          )}
                         </div>
 
                         {/* Right 1/3 – actions */}
@@ -276,8 +266,16 @@ function Panel() {
                               )
                             )}
                           </div>
-                          {/* Bottom-right: Cancel */}
-                          <div>
+                          {/* Bottom-right: Manual payment + Cancel */}
+                          <div className="flex flex-col items-end gap-1.5">
+                            {reg.can_confirm_manual_payment && (
+                              <Link
+                                to={`/manual-payment/${reg.registration_id}`}
+                                className="btn-primary px-3 py-1.5 text-xs"
+                              >
+                                {t('account.openManualPayment')}
+                              </Link>
+                            )}
                             {!eventPassed && reg.status !== 'cancelled' && reg.status !== 'refunded' && (
                               reg.can_cancel ? (
                                 <button
