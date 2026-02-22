@@ -9,6 +9,8 @@ body,
 html {
   /* Prevent pull-to-refresh in standalone PWA */
   overscroll-behavior-y: contain;
+  /* Block horizontal scroll at the viewport level (safe on iOS Safari, unlike body) */
+  overflow-x: hidden;
   /* Background color visible behind overscroll / pull-to-refresh */
   background-color: #FFF5E1;
 }
@@ -32,6 +34,8 @@ body {
   -webkit-tap-highlight-color: transparent;
   /* Prevent overscroll bounce (iOS Safari) */
   overscroll-behavior: none;
+  /* Restrict touch panning to vertical only – blocks horizontal swipe-scroll */
+  touch-action: pan-y pinch-zoom;
   /* Respect notch / dynamic island safe areas */
   padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
 }
