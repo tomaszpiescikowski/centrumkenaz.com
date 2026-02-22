@@ -23,7 +23,7 @@ function DatePickerField({
   }
 
   return (
-    <div className="relative">
+    <div className="relative w-full min-w-0">
       <input
         ref={inputRef}
         type={type}
@@ -31,6 +31,7 @@ function DatePickerField({
         onChange={onChange}
         required={required}
         className={`ui-input ui-input-date ${inputClassName}`}
+        style={{ minWidth: 0 }}
         {...rest}
       />
       <button

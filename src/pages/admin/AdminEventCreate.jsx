@@ -340,7 +340,7 @@ function AdminEventCreate() {
         </label>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
+          <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream min-w-0">
             {t('admin.fields.startDate')}
             <DatePickerField
               type="datetime-local"
@@ -355,7 +355,7 @@ function AdminEventCreate() {
             )}
           </label>
 
-          <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
+          <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream min-w-0">
             {t('admin.fields.endDate')}
             <DatePickerField
               type="datetime-local"
@@ -554,7 +554,7 @@ function AdminEventCreate() {
           </label>
         </div>
 
-        <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream max-w-xs">
+        <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
           <span className="flex items-center gap-1.5">
             {t('admin.fields.manualPaymentDueHours')}
             <Tooltip text={t('admin.fields.manualPaymentDueHoursTooltip')}>
