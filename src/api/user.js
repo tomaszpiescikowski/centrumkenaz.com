@@ -155,3 +155,21 @@ export async function confirmSubscriptionManualPayment(authFetch, purchaseId) {
   }
   return data
 }
+
+
+/**
+ * Search users by name for @mention autocomplete.
+ * @param {string} query - search string (1+ chars)
+ * @param {Function} authFetch - authenticated fetch
+ */
+export async function searchUsers(query, authFetch) {
+  if (!query || !authFetch) return []
+  const url = `${API_URL}/users/search?q=${encodeURIComponent(query)}`
+  try {
+    const res = await authFetch(url)
+    if (!res.ok) return []
+    return res.json()
+  } catch {
+    return []
+  }
+}

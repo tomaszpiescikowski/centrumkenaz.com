@@ -3,7 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import List, Optional, Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Path
+from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
@@ -207,6 +207,33 @@ def _serialize_interest_tags(tags: list[str]) -> str:
         seen.add(value)
         normalized.append(value)
     return json.dumps(normalized)
+
+
+class UserSearchResult(BaseModel):
+    id: str
+    full_name: str
+    picture_url: Optional[str] = None
+
+
+@router.get("/search", response_model=list[UserSearchResult])
+async def search_users(
+    q: str = Query(..., min_length=1, max_length=100),
+    user: User = Depends(get_active_user_dependency),
+    db: AsyncSession = Depends(get_db),
+):
+    """Search active users by name (for @mention autocomplete)."""
+    stmt = (
+        select(User)
+        .where(User.full_name.ilike(f"%{q}%"), User.account_status == AccountStatus.ACTIVE)
+        .order_by(User.full_name)
+        .limit(10)
+    )
+    result = await db.execute(stmt)
+    users = result.scalars().all()
+    return [
+        UserSearchResult(id=u.id, full_name=u.full_name, picture_url=u.picture_url)
+        for u in users
+    ]
 
 
 @router.get("/me/profile", response_model=UserProfileResponse)

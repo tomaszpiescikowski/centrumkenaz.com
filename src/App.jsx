@@ -30,6 +30,7 @@ import ManualPaymentPage from './pages/account/ManualPaymentPage'
 import SubscriptionManualPaymentPage from './pages/account/SubscriptionManualPaymentPage'
 import Panel from './pages/account/Panel'
 import Login from './pages/auth/Login'
+import ChatPage from './pages/chat/ChatPage'
 
 function RequireAuth() {
   const { isAuthenticated, loading } = useAuth()
@@ -117,6 +118,7 @@ function App() {
                 <Routes location={location}>
                   <Route path="/" element={<Home />} />
                   <Route path="/calendar" element={<CalendarPage />} />
+                  <Route path="/chat" element={<ChatPage />} />
                   <Route path="/panel" element={<Panel />} />
                   <Route path="/about" element={<AboutSection />} />
                   <Route path="/shop" element={<Shop />} />

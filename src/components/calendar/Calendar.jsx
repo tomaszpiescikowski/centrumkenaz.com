@@ -355,7 +355,7 @@ function Calendar({ className = '' }) {
 
 
   return (
-    <div className={`w-full max-w-4xl mx-auto min-h-0 ${className}`}>
+    <div className={`w-full max-w-4xl mx-auto ${className}`}>
       <div className="mb-4 flex items-center justify-between gap-2">
         <button
           onClick={prevMonth}
@@ -394,8 +394,8 @@ function Calendar({ className = '' }) {
         </div>
       )}
 
-      <div className="grid h-full min-h-0 grid-cols-1 gap-3 lg:grid-cols-3 lg:items-stretch lg:gap-4">
-        <div className="flex h-full min-h-0 flex-col lg:col-span-2">
+      <div className="grid grid-cols-1 gap-3 sm:h-full sm:min-h-0 lg:grid-cols-3 lg:items-stretch lg:gap-4">
+        <div className="flex flex-col sm:h-full sm:min-h-0 lg:col-span-2">
           <div className="grid grid-cols-7 gap-1 rounded-2xl border border-navy/10 bg-cream/80 p-2 dark:border-cream/10 dark:bg-navy/80">
             {days.map((dayName) => (
               <div key={dayName} className="py-1 text-center text-[11px] font-black uppercase tracking-wide text-navy/70 dark:text-cream/70">
@@ -486,8 +486,8 @@ function Calendar({ className = '' }) {
           </div>
         </div>
 
-        <div className="flex min-h-0 flex-col lg:col-span-1 lg:h-full">
-          <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-navy/10 bg-cream/75 dark:border-cream/15 dark:bg-navy/75">
+        <div className="mt-3 sm:mt-0 sm:flex sm:min-h-0 sm:flex-col lg:col-span-1 lg:h-full">
+          <div className="flex flex-col overflow-hidden rounded-2xl border border-navy/10 bg-cream/75 dark:border-cream/15 dark:bg-navy/75 sm:flex-1 sm:min-h-0">
             <div className="border-b border-navy/10 px-4 py-3 dark:border-cream/15">
               <span className="block text-sm font-bold text-navy dark:text-cream">
                 {t('calendar.mobileSelectedDay')}
@@ -504,7 +504,7 @@ function Calendar({ className = '' }) {
             )}
 
             {selectedDayEvents.length > 0 && (
-              <div className="flex-1 divide-y divide-navy/10 overflow-y-auto dark:divide-cream/10">
+              <div className="max-h-[55svh] divide-y divide-navy/10 overflow-y-auto dark:divide-cream/10 sm:max-h-none sm:flex-1">
                 {selectedDayEvents.map((eventItem) => {
                   const isRegistered = registeredEventIds.has(eventItem.id)
                   const availability = availabilityByEventId[eventItem.id] || null

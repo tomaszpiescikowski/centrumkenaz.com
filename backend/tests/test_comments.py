@@ -398,7 +398,7 @@ async def test_toggle_reaction_off(comments_api_client, db_session):
 
 @pytest.mark.asyncio
 async def test_multiple_reaction_types(comments_api_client, db_session):
-    """User can react with different emoji types on the same comment."""
+    """Only one reaction per user is allowed — adding a new type replaces the old one."""
     user = _make_user()
     event = _make_event()
     db_session.add_all([user, event])
@@ -424,7 +424,8 @@ async def test_multiple_reaction_types(comments_api_client, db_session):
     list_resp = await comments_api_client.get(f"/comments/event/{event.id}", headers=headers)
     reactions = list_resp.json()[0]["reactions"]
     types = {r["reaction_type"] for r in reactions}
-    assert types == {"like", "heart", "fire"}
+    # Only the last reaction should remain
+    assert types == {"fire"}
 
 
 @pytest.mark.asyncio
@@ -1332,4 +1333,5 @@ async def test_all_reaction_types_work(comments_api_client, db_session):
 
     list_resp = await comments_api_client.get(f"/comments/event/{event.id}", headers=headers)
     reactions = list_resp.json()[0]["reactions"]
-    assert len(reactions) == len(ReactionType)
+    # Only one reaction per user — the last one applied should remain
+    assert len(reactions) == 1

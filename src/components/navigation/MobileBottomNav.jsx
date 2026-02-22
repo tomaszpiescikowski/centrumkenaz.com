@@ -74,7 +74,7 @@ function NavItem({ to, label, icon, active }) {
 function MobileBottomNav() {
   const { t } = useLanguage()
   const { user, isAuthenticated, login } = useAuth()
-  const { openChat } = useChat()
+  const { totalUnread } = useChat()
   const location = useLocation()
   const navigate = useNavigate()
   const [feedbackOpen, setFeedbackOpen] = useState(false)
@@ -168,15 +168,21 @@ function MobileBottomNav() {
         ))}
 
         {/* ── Central chat button ── */}
-        <button
-          type="button"
-          onClick={() => openChat()}
+        <Link
+          to="/chat"
           aria-label={t('comments.chatTitle')}
           className={ITEM_BASE}
         >
-          <span className="text-indigo-500 dark:text-indigo-400"><ChatIcon /></span>
-          <span className="truncate text-indigo-500 dark:text-indigo-400">{t('comments.chatTitle')}</span>
-        </button>
+          <span className={`relative ${location.pathname === '/chat' ? 'text-indigo-500 dark:text-indigo-400' : 'text-navy/35 dark:text-cream/35'}`}>
+            <ChatIcon />
+            {totalUnread > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-bold text-white">
+                {totalUnread > 9 ? '9+' : totalUnread}
+              </span>
+            )}
+          </span>
+          <span className={`truncate ${location.pathname === '/chat' ? 'text-indigo-500 dark:text-indigo-400' : 'text-navy/35 dark:text-cream/35'}`}>{t('comments.chatTitle')}</span>
+        </Link>
 
         {navItemsRight.map((item) => (
           <NavItem

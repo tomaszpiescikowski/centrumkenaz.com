@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
+import { searchUsers } from '../../api/user'
 import {
   fetchComments,
   createComment,
@@ -62,7 +63,7 @@ function countAll(comments) {
   return n
 }
 
-function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onTabChange, hideHeader, hideTabs, messengerLayout }) {
+function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onTabChange, hideHeader, hideTabs, messengerLayout, chatId, onLatestMessage }) {
   const { user, authFetch } = useAuth()
   const { t } = useLanguage()
   const isAdmin = user?.role === 'admin'
@@ -82,6 +83,12 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const [pickerPos, setPickerPos] = useState(null)
   const [longPressId, setLongPressId] = useState(null)
   const [internalTab, setInternalTab] = useState('event')
+
+  // @mention autocomplete
+  const [mentionQuery, setMentionQuery] = useState(null)   // null = inactive, '' = '@' just typed
+  const [mentionResults, setMentionResults] = useState([])
+  const [mentionCursorPos, setMentionCursorPos] = useState(0)
+  const newTextareaRef = useRef(null)
 
   const activeTab = externalTab ?? internalTab
   const setActiveTab = onTabChange ?? setInternalTab
@@ -106,21 +113,44 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     try {
       const data = await fetchComments(resourceType, resourceId, authFetch)
       setComments(data)
+      if (onLatestMessage && data.length > 0) {
+        // Find latest created_at across all comments and replies
+        let latest = null
+        const scanDates = (items) => {
+          for (const c of items) {
+            if (!latest || c.created_at > latest) latest = c.created_at
+            if (c.replies?.length) scanDates(c.replies)
+          }
+        }
+        scanDates(data)
+        if (latest) onLatestMessage(latest)
+      }
     } catch {
       setError(t('comments.loadError'))
     } finally {
       setLoading(false)
     }
-  }, [resourceType, resourceId, authFetch, t])
+  }, [resourceType, resourceId, authFetch, t, onLatestMessage])
 
   const loadGeneralComments = useCallback(async () => {
     try {
       const data = await fetchComments('general', 'global', authFetch)
       setGeneralComments(data)
+      if (onLatestMessage && chatId === 'general:global' && data.length > 0) {
+        let latest = null
+        const scanDates = (items) => {
+          for (const c of items) {
+            if (!latest || c.created_at > latest) latest = c.created_at
+            if (c.replies?.length) scanDates(c.replies)
+          }
+        }
+        scanDates(data)
+        if (latest) onLatestMessage(latest)
+      }
     } catch {
       /* silent */
     }
-  }, [authFetch])
+  }, [authFetch, onLatestMessage, chatId])
 
   // Scroll messenger list to bottom
   const scrollToBottom = useCallback(() => {
@@ -156,6 +186,80 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
       e.preventDefault()
       formEl?.requestSubmit()
     }
+  }
+
+  /* ?????? @mention autocomplete ????????????????????????????????????????????????????????????????????????????????? */
+  const handleNewContentChange = useCallback((e) => {
+    const value = e.target.value
+    setNewContent(value)
+    const cursorPos = e.target.selectionStart ?? value.length
+    const textUpToCursor = value.slice(0, cursorPos)
+    const mentionMatch = textUpToCursor.match(/@(\w*)$/)
+    if (mentionMatch && user) {
+      setMentionQuery(mentionMatch[1])
+      setMentionCursorPos(cursorPos - mentionMatch[0].length)
+    } else {
+      setMentionQuery(null)
+      setMentionResults([])
+    }
+  }, [user])
+
+  const insertMention = useCallback((mentionUser) => {
+    const before = newContent.slice(0, mentionCursorPos)
+    const after = newContent.slice(mentionCursorPos + 1 + (mentionQuery || '').length)
+    const token = `@[${mentionUser.full_name}|${mentionUser.id}]`
+    const next = `${before}${token} ${after}`
+    setNewContent(next)
+    setMentionQuery(null)
+    setMentionResults([])
+    setTimeout(() => newTextareaRef.current?.focus(), 0)
+  }, [newContent, mentionCursorPos, mentionQuery])
+
+  const handleNewKeyDown = useCallback((e, formEl) => {
+    if (mentionQuery !== null && mentionResults.length > 0) {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        setMentionQuery(null)
+        setMentionResults([])
+        return
+      }
+      if (e.key === 'Tab' || (e.key === 'Enter' && mentionResults.length > 0)) {
+        e.preventDefault()
+        insertMention(mentionResults[0])
+        return
+      }
+    }
+    handleDesktopEnter(e, formEl)
+  }, [mentionQuery, mentionResults, insertMention, handleDesktopEnter])
+
+  // Fetch mention suggestions when query changes
+  const _mentionFetchRef = useRef(null)
+  useEffect(() => {
+    if (mentionQuery === null) { setMentionResults([]); return }
+    if (mentionQuery.length < 1) { setMentionResults([]); return }
+    clearTimeout(_mentionFetchRef.current)
+    _mentionFetchRef.current = setTimeout(async () => {
+      const results = await searchUsers(mentionQuery, authFetch)
+      setMentionResults(results || [])
+    }, 180)
+  }, [mentionQuery, authFetch])
+
+  /* ?????? Helper: render comment content (parse @mentions) ?????? */
+  const renderContent = (text) => {
+    if (!text) return null
+    // eslint-disable-next-line no-useless-escape
+    const MENTION_RE = /@\[([^|\]]+)\|([^\]]+)\]/g
+    const parts = []
+    let last = 0; let match
+    while ((match = MENTION_RE.exec(text)) !== null) {
+      if (match.index > last) parts.push(text.slice(last, match.index))
+      parts.push(
+        <Link key={match.index} to={`/people/${match[2]}`} className="cmt-mention">@{match[1]}</Link>
+      )
+      last = match.index + match[0].length
+    }
+    if (last < text.length) parts.push(text.slice(last))
+    return parts.length ? <>{parts}</> : text
   }
 
   const handleSubmit = async (e) => {
@@ -283,6 +387,14 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   }
 
   /* ── Long-press handlers (mobile reaction picker) ── */
+  // Auto-resize messenger textarea on content change
+  useEffect(() => {
+    if (!messengerLayout || !newTextareaRef.current) return
+    const el = newTextareaRef.current
+    el.style.height = 'auto'
+    el.style.height = Math.min(el.scrollHeight, 96) + 'px'
+  }, [newContent, messengerLayout])
+
   const handleTouchStart = useCallback((commentId, e) => {
     touchMoved.current = false
     // Record start position for swipe detection
@@ -492,20 +604,23 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
               </div>
             </form>
           ) : (
-            <div className={`cmt-content ${item.is_deleted ? 'cmt-deleted' : ''}`}>{item.content}</div>
+            <div className={`cmt-content ${item.is_deleted ? 'cmt-deleted' : ''}`}>{renderContent(item.content)}</div>
           )}
 
           {/* Long-press reaction bar (mobile, Messenger-style) */}
           {longPressId === item.id && (
             <div className="cmt-longpress-bar" onTouchStart={(e) => e.stopPropagation()}>
-              {Object.entries(REACTION_EMOJIS).map(([type, emoji]) => (
-                <button
-                  key={type}
-                  className="cmt-longpress-emoji"
-                  onClick={() => { handleReaction(item.id, type); setLongPressId(null) }}
-                  title={type}
-                >{emoji}</button>
-              ))}
+              {Object.entries(REACTION_EMOJIS).map(([type, emoji]) => {
+                const myReaction = item.reactions?.find(r => r.reaction_type === type && r.reacted_by_me)
+                return (
+                  <button
+                    key={type}
+                    className={`cmt-longpress-emoji ${myReaction ? 'cmt-longpress-emoji-active' : ''}`}
+                    onClick={() => { handleReaction(item.id, type); setLongPressId(null) }}
+                    title={type}
+                  >{emoji}</button>
+                )
+              })}
             </div>
           )}
 
@@ -573,26 +688,66 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const commentForm = user ? (
     <form className="cmt-new-form" onSubmit={handleSubmit}>
       <div className="cmt-new-row">
-        <div className="cmt-av-wrap">
-          {user?.picture_url ? (
-            <img src={user.picture_url} alt={user.full_name} className="cmt-av cmt-av-img" />
-          ) : (
-            <div className="cmt-av">{initials(user?.full_name)}</div>
+        {!messengerLayout && (
+          <div className="cmt-av-wrap">
+            {user?.picture_url ? (
+              <img src={user.picture_url} alt={user.full_name} className="cmt-av cmt-av-img" />
+            ) : (
+              <div className="cmt-av">{initials(user?.full_name)}</div>
+            )}
+          </div>
+        )}
+        <div className={`cmt-input-wrap${messengerLayout ? ' cmt-input-wrap-messenger' : ''}`}>
+          {mentionQuery !== null && mentionResults.length > 0 && (
+            <div className="cmt-mention-dropdown">
+              {mentionResults.slice(0, 6).map((u) => (
+                <button
+                  key={u.id}
+                  type="button"
+                  className="cmt-mention-item"
+                  onMouseDown={(e) => { e.preventDefault(); insertMention(u) }}
+                  onTouchEnd={(e) => { e.preventDefault(); insertMention(u) }}
+                >
+                  <span className="cmt-mention-name">{u.full_name}</span>
+                </button>
+              ))}
+            </div>
           )}
+          <textarea
+            ref={newTextareaRef}
+            className={`cmt-input cmt-input-new ${messengerLayout ? 'cmt-input-messenger' : ''}`}
+            placeholder={isGeneralTab ? t('comments.placeholderGeneral') : t('comments.placeholder')}
+            value={newContent}
+            onChange={handleNewContentChange}
+            rows={1}
+            maxLength={2000}
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="sentences"
+            spellCheck="false"
+            onFocus={(e) => { if (!messengerLayout) e.target.rows = 3 }}
+            onBlur={(e) => {
+              if (!messengerLayout && !e.target.value.trim()) e.target.rows = 1
+              // Close mention dropdown with delay (allow click to register first)
+              setTimeout(() => setMentionQuery(null), 150)
+            }}
+            onKeyDown={(e) => handleNewKeyDown(e, e.target.closest('form'))}
+          />
         </div>
-        <textarea
-          className="cmt-input cmt-input-new"
-          placeholder={isGeneralTab ? t('comments.placeholderGeneral') : t('comments.placeholder')}
-          value={newContent}
-          onChange={(e) => setNewContent(e.target.value)}
-          rows={1}
-          maxLength={2000}
-          onFocus={(e) => { e.target.rows = 3 }}
-          onBlur={(e) => { if (!e.target.value.trim()) e.target.rows = 1 }}
-          onKeyDown={(e) => handleDesktopEnter(e, e.target.closest('form'))}
-        />
+        {messengerLayout && (
+          <button
+            type="submit"
+            className="cmt-send-icon-btn"
+            disabled={submitting || !newContent.trim()}
+            aria-label={t('comments.send')}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+            </svg>
+          </button>
+        )}
       </div>
-      {newContent.trim() && (
+      {!messengerLayout && newContent.trim() && (
         <div className="cmt-new-actions">
           <button type="submit" className="cmt-btn cmt-btn-primary" disabled={submitting}>
             {submitting ? t('comments.sending') : t('comments.send')}
@@ -633,6 +788,8 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
         <>
           {/* Scrollable messages – pinned at top (via backend sort), oldest first, newest bottom */}
           <div className="cmt-list cmt-list-messenger" ref={listRef}>
+            {/* Spacer pushes messages to bottom when list is short */}
+            <div className="cmt-list-spacer" aria-hidden="true" />
             {flatList.length === 0 ? (
               <div className="cmt-empty">
                 <p>{isGeneralTab ? t('comments.emptyGeneral') : t('comments.empty')}</p>

@@ -22,6 +22,7 @@ function ChatModal() {
   const {
     open, view, eventId, eventTitle,
     closeChat, navigateChat,
+    hasUnread, setLatestMessageTime,
   } = useChat()
   const navigate = useNavigate()
 
@@ -93,6 +94,9 @@ function ChatModal() {
 
   if (!open) return null
 
+  // On mobile, chat is a dedicated page (/chat) — don't render modal overlay
+  if (typeof window !== 'undefined' && window.innerWidth < 640) return null
+
   const handleEventClick = (ev) => {
     navigateChat('event', { eventId: ev.id, eventTitle: ev.title })
   }
@@ -116,7 +120,11 @@ function ChatModal() {
   return (
     <div
       className="chat-modal-backdrop"
-      onClick={(e) => { if (e.target === e.currentTarget) closeChat() }}
+      onClick={(e) => {
+        // On mobile (full-page mode) don't close on backdrop click
+        if (window.innerWidth < 640) return
+        if (e.target === e.currentTarget) closeChat()
+      }}
       role="dialog"
       aria-modal="true"
       aria-label={t('comments.chatTitle')}
@@ -196,6 +204,8 @@ function ChatModal() {
               hideHeader
               hideTabs
               messengerLayout
+              chatId="general:global"
+              onLatestMessage={(ts) => setLatestMessageTime('general:global', ts)}
             />
           </div>
         )}
@@ -216,27 +226,32 @@ function ChatModal() {
               </div>
             ) : (
               <ul className="chat-event-list">
-                {events.map((ev) => (
-                  <li key={ev.id}>
-                    <button
-                      className="chat-event-item"
-                      onClick={() => handleEventClick(ev)}
-                    >
-                      <span className="chat-event-icon">
-                        <EventIcon type={ev.type} size="sm" />
-                      </span>
-                      <span className="chat-event-info">
-                        <span className="chat-event-title">{ev.title}</span>
-                        <span className="chat-event-meta">
-                          {ev.city} · {formatDate(ev.startDateTime)}
+                {events.map((ev) => {
+                  const chatId = `event:${ev.id}`
+                  const unread = hasUnread(chatId)
+                  return (
+                    <li key={ev.id}>
+                      <button
+                        className="chat-event-item"
+                        onClick={() => handleEventClick(ev)}
+                      >
+                        <span className="chat-event-icon">
+                          <EventIcon type={ev.type} size="sm" />
                         </span>
-                      </span>
-                      <svg className="chat-event-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="9 18 15 12 9 6" />
-                      </svg>
-                    </button>
-                  </li>
-                ))}
+                        <span className="chat-event-info">
+                          <span className="chat-event-title">{ev.title}</span>
+                          <span className="chat-event-meta">
+                            {ev.city} · {formatDate(ev.startDateTime)}
+                          </span>
+                        </span>
+                        {unread && <span className="chat-unread-dot" aria-label="unread" />}
+                        <svg className="chat-event-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                      </button>
+                    </li>
+                  )
+                })}
               </ul>
             )}
           </div>
@@ -251,6 +266,8 @@ function ChatModal() {
               hideHeader
               hideTabs
               messengerLayout
+              chatId={`event:${eventId}`}
+              onLatestMessage={(ts) => setLatestMessageTime(`event:${eventId}`, ts)}
             />
           </div>
         )}

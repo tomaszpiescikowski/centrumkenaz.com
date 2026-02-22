@@ -7,10 +7,10 @@ function CalendarPage() {
   const isCalendarLocked = !isAuthenticated || isPendingApproval
 
   return (
-    <div className="flex h-full min-h-0 flex-col px-3 py-3 sm:px-4 sm:py-6">
-      <div className="relative min-h-0 flex-1">
+    <div className="h-full overflow-y-auto overscroll-contain px-3 py-3 sm:flex sm:flex-col sm:min-h-0 sm:overflow-hidden sm:px-4 sm:py-6">
+      <div className="relative sm:min-h-0 sm:flex-1">
         <div className={isCalendarLocked ? 'pointer-events-none select-none blur-[3px]' : ''}>
-          <Calendar className="h-full min-h-0" />
+          <Calendar className="sm:h-full sm:min-h-0" />
         </div>
       </div>
     </div>

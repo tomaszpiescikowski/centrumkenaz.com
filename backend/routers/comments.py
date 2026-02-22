@@ -300,14 +300,15 @@ async def toggle_reaction(
     user: ActiveUser = None,
     db: AsyncSession = Depends(get_db),
 ):
-    """Add or remove a reaction. If user already reacted with the same type, remove it."""
+    """Add or remove a reaction. If user already reacted with the same type, remove it.
+    Only one reaction per user per comment is allowed — adding a new type removes the old one."""
 
     comment = await _refetch_comment(db, comment_id)
 
     if not comment:
         raise HTTPException(status_code=404, detail="Comment not found")
 
-    # Check existing reaction
+    # Check existing reaction of the SAME type (toggle off)
     existing_stmt = select(CommentReaction).where(
         CommentReaction.comment_id == comment_id,
         CommentReaction.user_id == user.id,
@@ -317,8 +318,18 @@ async def toggle_reaction(
     existing = existing_result.scalar_one_or_none()
 
     if existing:
+        # Same reaction clicked again — toggle off
         await db.delete(existing)
     else:
+        # Remove any existing reaction of a DIFFERENT type first (only 1 allowed)
+        other_stmt = select(CommentReaction).where(
+            CommentReaction.comment_id == comment_id,
+            CommentReaction.user_id == user.id,
+        )
+        other_result = await db.execute(other_stmt)
+        for old_reaction in other_result.scalars().all():
+            await db.delete(old_reaction)
+
         reaction = CommentReaction(
             comment_id=comment_id,
             user_id=user.id,
