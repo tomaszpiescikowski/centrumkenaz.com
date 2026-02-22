@@ -1343,6 +1343,12 @@ img.cmt-av-img {
   .cmt-input-messenger {
     font-size: 1rem !important;
   }
+
+  /* Narrow the compose row slightly so it doesn't bleed to the screen edges */
+  .cmt-messenger .cmt-new-row {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
 }
 
 /* Fix overlapping messages and ensure proper spacing */
