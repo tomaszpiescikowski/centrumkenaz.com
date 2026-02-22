@@ -213,6 +213,10 @@
 
   .ui-table-wrap {
     @apply max-h-[32rem] overflow-auto rounded-2xl border border-navy/10 dark:border-cream/10;
+    background: rgba(255, 253, 245, 0.72);
+  }
+  .dark .ui-table-wrap {
+    background: rgba(15, 23, 74, 0.68);
   }
 
   .ui-table {
@@ -249,11 +253,19 @@
   }
 
   .ui-view-card-active {
-    @apply border-navy/45 bg-transparent dark:border-cream/45 dark:bg-transparent;
+    @apply border-navy/45 dark:border-cream/45;
+    background: rgba(255, 253, 245, 0.72);
+  }
+  .dark .ui-view-card-active {
+    background: rgba(15, 23, 74, 0.68);
   }
 
   .ui-view-card-idle {
-    @apply border-navy/10 bg-transparent dark:border-cream/15 dark:bg-transparent;
+    @apply border-navy/10 dark:border-cream/15;
+    background: rgba(255, 253, 245, 0.72);
+  }
+  .dark .ui-view-card-idle {
+    background: rgba(15, 23, 74, 0.68);
   }
 
   .ui-view-card-title {

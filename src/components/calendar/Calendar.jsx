@@ -444,7 +444,7 @@ function Calendar({ className = '' }) {
             })}
           </div>
 
-          <div className="mt-3 shrink-0 rounded-xl border border-navy/10 bg-transparent p-3 dark:border-cream/15 dark:bg-transparent">
+          <div className="mt-3 shrink-0 rounded-xl border border-navy/10 bg-[rgba(255,253,245,0.72)] p-3 dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)]">
             <button
               type="button"
               onClick={() => setLegendOpen(o => !o)}
