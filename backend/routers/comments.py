@@ -34,6 +34,7 @@ class CommentAuthorResponse(BaseModel):
     full_name: str = Field(description="Display name.")
     picture_url: Optional[str] = Field(None, description="Avatar URL.")
     is_member: bool = Field(False, description="Whether user has an active membership.")
+    is_admin: bool = Field(False, description="Whether user has admin role.")
 
 
 class ReactionSummary(BaseModel):
@@ -135,6 +136,7 @@ def _build_comment_response(
             full_name=comment.user.full_name,
             picture_url=comment.user.picture_url,
             is_member=comment.user.role == UserRole.MEMBER,
+            is_admin=comment.user.role == UserRole.ADMIN,
         ),
         reactions=list(reaction_map.values()),
         replies=replies_list,

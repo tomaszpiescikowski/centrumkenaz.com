@@ -490,8 +490,14 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
       swipeStart.current = null
       if (item) {
         const targetId = item._depth === 0 ? item.id : (item.parent_id || item.id)
-        setReplyingTo(targetId)
-        setReplyContent('')
+        if (messengerLayout) {
+          setMessengerReplyTo({ parentId: targetId, authorName: item.author?.full_name || '' })
+          setReplyHighlightId(targetId)
+          requestAnimationFrame(() => newTextareaRef.current?.focus())
+        } else {
+          setReplyingTo(targetId)
+          setReplyContent('')
+        }
       }
       return
     }
@@ -504,7 +510,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
       setSwipeX(0)
     }
     swipeStart.current = null
-  }, [swipeX, SWIPE_THRESHOLD, isGeneralTab, generalComments, comments])
+  }, [swipeX, SWIPE_THRESHOLD, isGeneralTab, generalComments, comments, messengerLayout])
 
   const handleTouchMove = useCallback((e) => {
     if (!swipeStart.current) return
@@ -693,7 +699,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
             </Link>
             <div className="cmt-meta">
               <Link to={`/people/${item.author.id}`} className="cmt-author">{item.author.full_name}</Link>
-              {item.author?.role === 'admin'
+              {item.author?.is_admin
                 ? <span className="cmt-member-badge cmt-admin-badge">ADMIN</span>
                 : item.author?.is_member && <span className="cmt-member-badge">KENAZ</span>
               }
