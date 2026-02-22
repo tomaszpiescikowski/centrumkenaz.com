@@ -787,19 +787,21 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
               className="cmt-replies-toggle"
               onClick={() => toggleReplies(comment.id)}
             >
-              <span className="cmt-reply-avatars">
-                {replyAvatars.map((a, i) => (
-                  <span key={a.id} className="cmt-reply-av" style={{ zIndex: replyAvatars.length - i }}>
-                    {a.picture_url
-                      ? <img src={a.picture_url} alt={a.full_name} />
-                      : <span>{initials(a.full_name)}</span>
-                    }
-                  </span>
-                ))}
-              </span>
+              {!isExpanded && (
+                <span className="cmt-reply-avatars">
+                  {replyAvatars.map((a, i) => (
+                    <span key={a.id} className="cmt-reply-av" style={{ zIndex: replyAvatars.length - i }}>
+                      {a.picture_url
+                        ? <img src={a.picture_url} alt={a.full_name} />
+                        : <span>{initials(a.full_name)}</span>
+                      }
+                    </span>
+                  ))}
+                </span>
+              )}
               <span>
                 {isExpanded
-                  ? 'Ukryj'
+                  ? 'Ukryj odpowiedzi'
                   : `${replyCount} ${replyCount === 1 ? 'odpowiedź' : 'odpowiedzi'}`}
               </span>
             </button>
