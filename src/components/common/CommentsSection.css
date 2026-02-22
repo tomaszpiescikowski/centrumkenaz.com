@@ -657,6 +657,10 @@ img.cmt-av-img {
   .cmt-swipe-wrap {
     overflow: hidden;
   }
+  /* L-connector ::before/::after have negative left offset — must NOT be clipped */
+  .cmt-messenger .cmt-replies-list > .cmt-swipe-wrap {
+    overflow: visible;
+  }
 }
 
 /* ── Swipe-to-reply indicator ──────────────────────── */
