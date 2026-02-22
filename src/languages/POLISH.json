@@ -1050,19 +1050,19 @@
     "loginToSeeEvents": "Zaloguj się, aby zobaczyć czaty wydarzeń",
     "noRegisteredEvents": "Nie masz jeszcze zapisanych wydarzeń",
     "replyingToLabel": "Odpowiadasz na",
-    "loginRequiredTitle": "Zaloguj si??, aby korzysta?? z czatu",
-    "loginRequiredBody": "Czat jest dost??pny tylko dla zalogowanych cz??onk??w.",
-    "loginRequiredButton": "Zaloguj si??",
-    "pendingRequiredTitle": "Konto czeka na akceptacj??",
+    "loginRequiredTitle": "Zaloguj się, aby korzystać z czatu",
+    "loginRequiredBody": "Czat jest dostępny tylko dla zalogowanych członków.",
+    "loginRequiredButton": "Zaloguj się",
+    "pendingRequiredTitle": "Konto czeka na akceptację",
     "pendingRequiredBody": "Do czasu akceptacji przez admina czat jest zablokowany.",
-    "pendingRequiredButton": "Sprawd?? status konta"
+    "pendingRequiredButton": "Sprawdź status konta"
   },
   "panel": {
-    "loginRequiredTitle": "Zaloguj si??, aby otworzy?? panel",
-    "loginRequiredBody": "Panel jest dost??pny tylko dla zalogowanych cz??onk??w.",
-    "loginRequiredButton": "Zaloguj si??",
-    "pendingRequiredTitle": "Konto czeka na akceptacj??",
+    "loginRequiredTitle": "Zaloguj się, aby otworzyć panel",
+    "loginRequiredBody": "Panel jest dostępny tylko dla zalogowanych członków.",
+    "loginRequiredButton": "Zaloguj się",
+    "pendingRequiredTitle": "Konto czeka na akceptację",
     "pendingRequiredBody": "Do czasu akceptacji przez admina panel jest zablokowany.",
-    "pendingRequiredButton": "Sprawd?? status konta"
+    "pendingRequiredButton": "Sprawdź status konta"
   }
 }

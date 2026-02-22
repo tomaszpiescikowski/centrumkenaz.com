@@ -1022,19 +1022,19 @@
     "openChat": "Ôtwōrz czat",
     "loading": "Ladowanie...",
     "replyingToLabel": "Odpowiadosz na",
-    "loginRequiredTitle": "Zaloguj sie, coby u??ywa?? czatu",
-    "loginRequiredBody": "Czat je dostympny ino dlo zalogowanych czynk??w.",
+    "loginRequiredTitle": "Zaloguj sie, coby używać czatu",
+    "loginRequiredBody": "Czat je dostympny ino dlo zalogowanych czōnków.",
     "loginRequiredButton": "Zaloguj sie",
-    "pendingRequiredTitle": "K??nto czeko na akceptacyjo",
-    "pendingRequiredBody": "A?? do akceptacyje bez admina czat je zablokowany.",
-    "pendingRequiredButton": "Sprawd?? status k??nta"
+    "pendingRequiredTitle": "Kōnto czeko na akceptacyjo",
+    "pendingRequiredBody": "Aż do akceptacyje bez admina czat je zablokowany.",
+    "pendingRequiredButton": "Sprawdź status kōnta"
   },
   "panel": {
-    "loginRequiredTitle": "Zaloguj sie, coby u??ywa?? panelu",
-    "loginRequiredBody": "Panel je dostympny ino dlo zalogowanych czynk??w.",
+    "loginRequiredTitle": "Zaloguj sie, coby używać panelu",
+    "loginRequiredBody": "Panel je dostympny ino dlo zalogowanych czōnków.",
     "loginRequiredButton": "Zaloguj sie",
-    "pendingRequiredTitle": "K??nto czeko na akceptacyjo",
-    "pendingRequiredBody": "A?? do akceptacyje bez admina panel je zablokowany.",
-    "pendingRequiredButton": "Sprawd?? status k??nta"
+    "pendingRequiredTitle": "Kōnto czeko na akceptacyjo",
+    "pendingRequiredBody": "Aż do akceptacyje bez admina panel je zablokowany.",
+    "pendingRequiredButton": "Sprawdź status kōnta"
   }
 }

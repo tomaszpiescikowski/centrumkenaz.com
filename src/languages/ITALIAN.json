@@ -1019,10 +1019,18 @@
     "loading": "Caricamento...",
     "replyingToLabel": "Stai rispondendo a",
     "loginRequiredTitle": "Accedi per utilizzare la chat",
-    "loginRequiredBody": "La chat ?? disponibile solo per i membri autenticati.",
+    "loginRequiredBody": "La chat è disponibile solo per i membri autenticati.",
     "loginRequiredButton": "Accedi",
     "pendingRequiredTitle": "Account in attesa di approvazione",
-    "pendingRequiredBody": "La chat ?? bloccata fino all'approvazione dell'account da parte dell'admin.",
+    "pendingRequiredBody": "La chat è bloccata fino all'approvazione dell'account da parte dell'amministratore.",
     "pendingRequiredButton": "Controlla stato account"
+  },
+  "panel": {
+    "loginRequiredTitle": "Accedi per accedere al pannello",
+    "loginRequiredBody": "Il pannello è disponibile solo per i membri autenticati.",
+    "loginRequiredButton": "Accedi",
+    "pendingRequiredTitle": "Account in attesa di approvazione",
+    "pendingRequiredBody": "Il pannello è bloccato fino all'approvazione dell'amministratore.",
+    "pendingRequiredButton": "Controlla lo stato dell'account"
   }
 }
