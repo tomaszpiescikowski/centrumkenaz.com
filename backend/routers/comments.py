@@ -17,7 +17,7 @@ from sqlalchemy.orm import selectinload
 
 from database import get_db
 from models.comment import Comment, CommentReaction, ReactionType
-from models.user import UserRole, AccountStatus
+from models.user import UserRole
 from security.guards import ActiveUser, AdminUser, OptionalActiveUser
 
 router = APIRouter(prefix="/comments", tags=["comments"])
@@ -134,7 +134,7 @@ def _build_comment_response(
             id=comment.user.id,
             full_name=comment.user.full_name,
             picture_url=comment.user.picture_url,
-            is_member=comment.user.account_status == AccountStatus.MEMBER,
+            is_member=comment.user.role == UserRole.MEMBER,
         ),
         reactions=list(reaction_map.values()),
         replies=replies_list,
