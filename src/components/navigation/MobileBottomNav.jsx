@@ -144,7 +144,7 @@ function MobileBottomNav() {
     <button
       type="button"
       onClick={() => setFeedbackOpen(true)}
-      className="fixed right-3 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-50 sm:hidden flex items-center gap-1.5 rounded-full bg-amber-500 text-white shadow-lg px-3 py-2 text-xs font-semibold transition hover:bg-amber-600 active:scale-95"
+      className="fixed right-3 top-[calc(env(safe-area-inset-top)+0.75rem)] z-50 sm:hidden flex items-center gap-1.5 rounded-full bg-amber-500 text-white shadow-lg px-3 py-2 text-xs font-semibold transition hover:bg-amber-600 active:scale-95"
       aria-label={t('feedback.button')}
     >
       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
