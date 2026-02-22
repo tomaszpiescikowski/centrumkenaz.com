@@ -93,8 +93,8 @@
   "pwa": {
     "installCta": "Zainstaluj aplikację na telefonie",
     "installBtn": "Zainstaluj",
-    "installHintIos": "1. Otwórz tę stronę w Safari\n2. Kliknij ikonę udostępniania ⤴\n   (pasek na dole ekranu)\n3. Przewiń opcje w dół\n4. Wybierz \u201eDodaj do ekranu głównego\u201d\n5. Kliknij \u201eDodaj\u201d w prawym górnym rogu",
-    "installHintAndroid": "W Chrome kliknij ⋮ (trzy kropki w prawym górnym rogu) i wybierz \u201eDodaj do ekranu głównego\u201d lub \u201eZainstaluj aplikację\u201d."
+    "installHintIos": "1. Otwórz tę stronę w Safari\n2. Kliknij ikonę udostępniania ⤴\n   (pasek na dole ekranu)\n3. Przewiń opcje w dół\n4. Wybierz „Dodaj do ekranu głównego”\n5. Kliknij „Dodaj” w prawym górnym rogu",
+    "installHintAndroid": "W Chrome kliknij ⋮ (trzy kropki w prawym górnym rogu) i wybierz „Dodaj do ekranu głównego” lub „Zainstaluj aplikację”."
   },
   "home": {
     "demoLabel": "demo",
@@ -299,11 +299,6 @@
   },
   "events": {
     "myEventsTitle": "Moje wydarzenia"
-  },
-  "announcements": {
-    "title": "Ogłoszenia",
-    "empty": "Brak ogłoszeń.",
-    "unknownAuthor": "Nieznany autor"
   },
   "event": {
     "notFound": "Wydarzenie nie znalezione",
@@ -729,10 +724,6 @@
         "title": "Opinie użytkowników",
         "description": "Przeczytaj opinie i sugestie od użytkowników."
       },
-      "announcements": {
-        "title": "Ogłoszenia",
-        "description": "Twórz i zarządzaj ogłoszeniami."
-      },
       "balance": {
         "title": "Bilans finansowy",
         "description": "Przychody, zwroty i bilans miesięczny/kwartalny."
@@ -744,20 +735,6 @@
       "empty": "Brak opinii.",
       "loadError": "Nie udało się załadować opinii.",
       "count": "{count} wpisów"
-    },
-    "announcements": {
-      "title": "Ogłoszenia",
-      "subtitle": "Zarządzaj ogłoszeniami widocznymi dla użytkowników.",
-      "empty": "Brak ogłoszeń.",
-      "loadError": "Nie udało się załadować ogłoszeń.",
-      "titleLabel": "Tytuł",
-      "contentLabel": "Treść",
-      "publishButton": "Opublikuj",
-      "deleteConfirm": "Czy na pewno chcesz usunąć to ogłoszenie?",
-      "createSuccess": "Ogłoszenie opublikowane.",
-      "createError": "Nie udało się opublikować ogłoszenia.",
-      "deleteSuccess": "Ogłoszenie usunięte.",
-      "deleteError": "Nie udało się usunąć ogłoszenia."
     },
     "notAuthorizedTitle": "Brak dostępu",
     "notAuthorized": "Nie masz uprawnień do tego obszaru.",

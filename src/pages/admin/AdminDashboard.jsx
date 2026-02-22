@@ -74,12 +74,6 @@ function AdminDashboard() {
           className="p-6"
         />
         <ViewCard
-          title={t('admin.cards.announcements.title')}
-          description={t('admin.cards.announcements.description')}
-          to="/admin/announcements"
-          className="p-6"
-        />
-        <ViewCard
           title={t('admin.cards.balance.title')}
           description={t('admin.cards.balance.description')}
           to="/admin/balance"

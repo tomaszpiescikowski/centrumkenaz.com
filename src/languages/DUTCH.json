@@ -300,11 +300,6 @@
   "events": {
     "myEventsTitle": "Mijn events"
   },
-  "announcements": {
-    "title": "Aankondigingen",
-    "empty": "Nog geen aankondigingen.",
-    "unknownAuthor": "Onbekende auteur"
-  },
   "event": {
     "notFound": "Event niet gevonden",
     "loadError": "Kon event niet laden",
@@ -722,10 +717,6 @@
         "title": "Gebruikersfeedback",
         "description": "Lees meningen en suggesties van gebruikers."
       },
-      "announcements": {
-        "title": "Aankondigingen",
-        "description": "Maak en beheer aankondigingen."
-      },
       "balance": {
         "title": "Financieel overzicht",
         "description": "Inkomsten, terugbetalingen en maandelijks/kwartaaloverzicht."
@@ -737,20 +728,6 @@
       "empty": "Nog geen feedback.",
       "loadError": "Kan feedback niet laden.",
       "count": "{count} items"
-    },
-    "announcements": {
-      "title": "Aankondigingen",
-      "subtitle": "Beheer aankondigingen zichtbaar voor gebruikers.",
-      "empty": "Nog geen aankondigingen.",
-      "loadError": "Kan aankondigingen niet laden.",
-      "titleLabel": "Titel",
-      "contentLabel": "Inhoud",
-      "publishButton": "Publiceren",
-      "deleteConfirm": "Weet je zeker dat je deze aankondiging wilt verwijderen?",
-      "createSuccess": "Aankondiging gepubliceerd.",
-      "createError": "Kan aankondiging niet publiceren.",
-      "deleteSuccess": "Aankondiging verwijderd.",
-      "deleteError": "Kan aankondiging niet verwijderen."
     },
     "notAuthorizedTitle": "Toegang geweigerd",
     "notAuthorized": "Je hebt geen toestemming om dit gebied te openen.",

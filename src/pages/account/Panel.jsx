@@ -4,7 +4,6 @@ import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
 import { fetchMyRegistrations, cancelRegistration } from '../../api/user'
-import AnnouncementsTile from '../../components/ui/AnnouncementsTile'
 import EventIcon from '../../components/common/EventIcon'
 
 
@@ -112,21 +111,7 @@ function Panel() {
                   ))}
                 </div>
               </div>
-              {/* Announcements mock tile */}
-              <div className="panel-tile flex-1">
-                <div className="panel-tile-header">
-                  <h2 className="text-sm font-bold text-navy dark:text-cream">{t('announcements.title')}</h2>
-                </div>
-                <div className="divide-y divide-navy/10 dark:divide-cream/10">
-                  {[1, 2].map((i) => (
-                    <div key={i} className="panel-row flex flex-col gap-2">
-                      <div className="h-4 w-3/4 rounded bg-navy/20 dark:bg-cream/20" />
-                      <div className="h-3 w-full rounded bg-navy/10 dark:bg-cream/10" />
-                      <div className="h-3 w-2/3 rounded bg-navy/10 dark:bg-cream/10" />
-                    </div>
-                  ))}
-                </div>
-              </div>
+
             </div>
           </div>
         </div>
@@ -260,17 +245,6 @@ function Panel() {
           </div>
         </section>
 
-        {/* Right tile – Announcements */}
-        <section className="panel-tile flex min-h-0 flex-1 flex-col">
-          <div className="panel-tile-header">
-            <h2 className="text-sm font-bold text-navy dark:text-cream">
-              {t('announcements.title')}
-            </h2>
-          </div>
-          <div className="min-h-0 flex-1 overflow-y-auto">
-            <AnnouncementsTile />
-          </div>
-        </section>
       </div>
     </div>
   )

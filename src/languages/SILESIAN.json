@@ -93,8 +93,8 @@
   "pwa": {
     "installCta": "Zainstaluj apka na telefonie",
     "installBtn": "Zainstaluj",
-    "installHintIos": "1. Ôtwōrz ta strōna w Safari\n2. Kliknij ikōna udostympnianio ⤴\n   (pasek na dole ekranu)\n3. Przewiń ôpcyje w dōł\n4. Wybiyrz \u201eDodŏj do ekranu głōwnego\u201d\n5. Kliknij \u201eDodŏj\u201d w prawym gōrnym rogu",
-    "installHintAndroid": "W Chrome kliknij ⋮ (trzi krōpki w prawym gōrnym rogu) i wybiyrz \u201eDodŏj do ekranu głōwnego\u201d abo \u201eZainstaluj apka\u201d."
+    "installHintIos": "1. Ôtwōrz ta strōna w Safari\n2. Kliknij ikōna udostympnianio ⤴\n   (pasek na dole ekranu)\n3. Przewiń ôpcyje w dōł\n4. Wybiyrz „Dodŏj do ekranu głōwnego”\n5. Kliknij „Dodŏj” w prawym gōrnym rogu",
+    "installHintAndroid": "W Chrome kliknij ⋮ (trzi krōpki w prawym gōrnym rogu) i wybiyrz „Dodŏj do ekranu głōwnego” abo „Zainstaluj apka”."
   },
   "home": {
     "demoLabel": "demo",
@@ -300,11 +300,6 @@
   "events": {
     "myEventsTitle": "Moje wydarzyńa"
   },
-  "announcements": {
-    "title": "Ogłoszynia",
-    "empty": "Żodnych ogłoszyń.",
-    "unknownAuthor": "Niyznany autor"
-  },
   "event": {
     "notFound": "Wydarzyńe niy znŏleziōne",
     "loadError": "Niy idzie wczytać wydarzyńa",
@@ -423,7 +418,9 @@
     "loginRequired": "Zaloguj sie, coby ôboczyć kōnto.",
     "loginButton": "Zaloguj sie",
     "logout": "Wyloguj",
-    "manageSubscription": "Plany człōnkostwa",    "preferences": "Preferencyje",    "profileTitle": "Profil",
+    "manageSubscription": "Plany człōnkostwa",
+    "preferences": "Preferencyje",
+    "profileTitle": "Profil",
     "aboutMe": "Ô mie",
     "aboutMePlaceholder": "Napisz krōtko ô sobie",
     "interests": "Zainteresowania",
@@ -720,10 +717,6 @@
         "title": "Ôpinie użytkownikōw",
         "description": "Przeczytej ôpinie i suggestie ôd użytkownikōw."
       },
-      "announcements": {
-        "title": "Ogłoszynia",
-        "description": "Tworz i zarządzej ogłoszyniami."
-      },
       "balance": {
         "title": "Bilans finansowy",
         "description": "Przychody, zwroty i bilans miesięczny/kwartalny."
@@ -735,20 +728,6 @@
       "empty": "Żodnych ôpinii.",
       "loadError": "Niy szło załadować ôpinii.",
       "count": "{count} wpisōw"
-    },
-    "announcements": {
-      "title": "Ogłoszynia",
-      "subtitle": "Zarządzej ogłoszyniami widocznymi do użytkownikōw.",
-      "empty": "Żodnych ogłoszyń.",
-      "loadError": "Niy szło załadować ogłoszyń.",
-      "titleLabel": "Tytuł",
-      "contentLabel": "Treść",
-      "publishButton": "Opublikuj",
-      "deleteConfirm": "Na zicher chcesz wyciepnąć te ogłoszynię?",
-      "createSuccess": "Ogłoszynię opublikowano.",
-      "createError": "Niy idzie opublikować ogłoszynia.",
-      "deleteSuccess": "Ogłoszynię wyciepnięto.",
-      "deleteError": "Niy idzie wyciepnąć ogłoszynia."
     },
     "notAuthorizedTitle": "Brak dostympu",
     "notAuthorized": "Niy mosz praw do tygo miyjsca.",

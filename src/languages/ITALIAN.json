@@ -300,11 +300,6 @@
   "events": {
     "myEventsTitle": "I miei eventi"
   },
-  "announcements": {
-    "title": "Annunci",
-    "empty": "Nessun annuncio ancora.",
-    "unknownAuthor": "Autore sconosciuto"
-  },
   "event": {
     "notFound": "Evento non trovato",
     "loadError": "Impossibile caricare l'evento",
@@ -722,10 +717,6 @@
         "title": "Feedback utenti",
         "description": "Leggi opinioni e suggerimenti dagli utenti."
       },
-      "announcements": {
-        "title": "Annunci",
-        "description": "Crea e gestisci annunci."
-      },
       "balance": {
         "title": "Bilancio finanziario",
         "description": "Ricavi, rimborsi e bilancio mensile/trimestrale."
@@ -737,20 +728,6 @@
       "empty": "Nessun feedback ancora.",
       "loadError": "Impossibile caricare i feedback.",
       "count": "{count} voci"
-    },
-    "announcements": {
-      "title": "Annunci",
-      "subtitle": "Gestisci gli annunci visibili agli utenti.",
-      "empty": "Nessun annuncio ancora.",
-      "loadError": "Impossibile caricare gli annunci.",
-      "titleLabel": "Titolo",
-      "contentLabel": "Contenuto",
-      "publishButton": "Pubblica",
-      "deleteConfirm": "Sei sicuro di voler eliminare questo annuncio?",
-      "createSuccess": "Annuncio pubblicato.",
-      "createError": "Impossibile pubblicare l'annuncio.",
-      "deleteSuccess": "Annuncio eliminato.",
-      "deleteError": "Impossibile eliminare l'annuncio."
     },
     "notAuthorizedTitle": "Accesso negato",
     "notAuthorized": "Non hai il permesso di accedere a questa area.",
@@ -924,7 +901,7 @@
       "colTxCount": "Transazioni",
       "colEventTitle": "Evento",
       "colDate": "Data",
-      "colCity": "Citt\u00e0",
+      "colCity": "Città",
       "colIncome": "Ricavo",
       "colPlan": "Piano",
       "colRefundCount": "Rimborsi (n.)"

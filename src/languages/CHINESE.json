@@ -93,8 +93,8 @@
   "pwa": {
     "installCta": "在手机上安装应用",
     "installBtn": "安装",
-    "installHintIos": "1. 在 Safari 中打开此页面\n2. 点击底部工具栏的分享图标 ⤴\n3. 向下滚动选项列表\n4. 选择\u201c添加到主屏幕\u201d\n5. 点击右上角的\u201c添加\u201d",
-    "installHintAndroid": "在 Chrome 中点击右上角 ⋮（三个点），然后选择\u201c添加到主屏幕\u201d或\u201c安装应用\u201d。"
+    "installHintIos": "1. 在 Safari 中打开此页面\n2. 点击底部工具栏的分享图标 ⤴\n3. 向下滚动选项列表\n4. 选择“添加到主屏幕”\n5. 点击右上角的“添加”",
+    "installHintAndroid": "在 Chrome 中点击右上角 ⋮（三个点），然后选择“添加到主屏幕”或“安装应用”。"
   },
   "home": {
     "demoLabel": "演示",
@@ -300,11 +300,6 @@
   "events": {
     "myEventsTitle": "我的活动"
   },
-  "announcements": {
-    "title": "公告",
-    "empty": "暂无公告。",
-    "unknownAuthor": "未知作者"
-  },
   "event": {
     "notFound": "未找到活动",
     "loadError": "加载活动失败",
@@ -423,7 +418,9 @@
     "loginRequired": "请登录查看账户。",
     "loginButton": "登录",
     "logout": "退出登录",
-    "manageSubscription": "会员计划",    "preferences": "首选项",    "profileTitle": "资料",
+    "manageSubscription": "会员计划",
+    "preferences": "首选项",
+    "profileTitle": "资料",
     "aboutMe": "关于我",
     "aboutMePlaceholder": "写一段简短的自我介绍",
     "interests": "兴趣标签",
@@ -720,10 +717,6 @@
         "title": "用户反馈",
         "description": "阅读用户的意见和建议。"
       },
-      "announcements": {
-        "title": "公告",
-        "description": "创建和管理公告。"
-      },
       "balance": {
         "title": "财务报表",
         "description": "收入、退款和月度/季度结算。"
@@ -735,20 +728,6 @@
       "empty": "暂无反馈。",
       "loadError": "无法加载反馈。",
       "count": "{count} 条"
-    },
-    "announcements": {
-      "title": "公告",
-      "subtitle": "管理对用户可见的公告。",
-      "empty": "暂无公告。",
-      "loadError": "无法加载公告。",
-      "titleLabel": "标题",
-      "contentLabel": "内容",
-      "publishButton": "发布",
-      "deleteConfirm": "确定要删除这条公告吗？",
-      "createSuccess": "公告已发布。",
-      "createError": "发布公告失败。",
-      "deleteSuccess": "公告已删除。",
-      "deleteError": "删除公告失败。"
     },
     "notAuthorizedTitle": "拒绝访问",
     "notAuthorized": "你无权限访问此区域。",
