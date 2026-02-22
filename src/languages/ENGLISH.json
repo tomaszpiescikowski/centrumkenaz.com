@@ -1056,5 +1056,13 @@
     "pendingRequiredTitle": "Account pending approval",
     "pendingRequiredBody": "Chat is blocked until an admin approves your account.",
     "pendingRequiredButton": "Check account status"
+  },
+  "panel": {
+    "loginRequiredTitle": "Log in to use the panel",
+    "loginRequiredBody": "The panel is available for authenticated members only.",
+    "loginRequiredButton": "Log in",
+    "pendingRequiredTitle": "Account pending approval",
+    "pendingRequiredBody": "The panel is locked until an admin approves your account.",
+    "pendingRequiredButton": "Check account status"
   }
 }

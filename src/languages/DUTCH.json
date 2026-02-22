@@ -1024,5 +1024,13 @@
     "pendingRequiredTitle": "Account wacht op goedkeuring",
     "pendingRequiredBody": "De chat is geblokkeerd totdat een beheerder je account goedkeurt.",
     "pendingRequiredButton": "Controleer accountstatus"
+  },
+  "panel": {
+    "loginRequiredTitle": "Log in om het dashboard te gebruiken",
+    "loginRequiredBody": "Het dashboard is alleen beschikbaar voor ingelogde leden.",
+    "loginRequiredButton": "Log in",
+    "pendingRequiredTitle": "Account wacht op goedkeuring",
+    "pendingRequiredBody": "Het dashboard is geblokkeerd totdat een beheerder je account goedkeurt.",
+    "pendingRequiredButton": "Controleer accountstatus"
   }
 }

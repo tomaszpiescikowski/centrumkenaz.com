@@ -1023,10 +1023,18 @@
     "loading": "Ladowanie...",
     "replyingToLabel": "Odpowiadosz na",
     "loginRequiredTitle": "Zaloguj sie, coby u??ywa?? czatu",
-    "loginRequiredBody": "Czat je dostympny ino dlo zalogowanych cz??nk??w.",
+    "loginRequiredBody": "Czat je dostympny ino dlo zalogowanych czynk??w.",
     "loginRequiredButton": "Zaloguj sie",
     "pendingRequiredTitle": "K??nto czeko na akceptacyjo",
     "pendingRequiredBody": "A?? do akceptacyje bez admina czat je zablokowany.",
+    "pendingRequiredButton": "Sprawd?? status k??nta"
+  },
+  "panel": {
+    "loginRequiredTitle": "Zaloguj sie, coby u??ywa?? panelu",
+    "loginRequiredBody": "Panel je dostympny ino dlo zalogowanych czynk??w.",
+    "loginRequiredButton": "Zaloguj sie",
+    "pendingRequiredTitle": "K??nto czeko na akceptacyjo",
+    "pendingRequiredBody": "A?? do akceptacyje bez admina panel je zablokowany.",
     "pendingRequiredButton": "Sprawd?? status k??nta"
   }
 }

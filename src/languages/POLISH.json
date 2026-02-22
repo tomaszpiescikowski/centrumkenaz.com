@@ -1056,5 +1056,13 @@
     "pendingRequiredTitle": "Konto czeka na akceptacj??",
     "pendingRequiredBody": "Do czasu akceptacji przez admina czat jest zablokowany.",
     "pendingRequiredButton": "Sprawd?? status konta"
+  },
+  "panel": {
+    "loginRequiredTitle": "Zaloguj si??, aby otworzy?? panel",
+    "loginRequiredBody": "Panel jest dost??pny tylko dla zalogowanych cz??onk??w.",
+    "loginRequiredButton": "Zaloguj si??",
+    "pendingRequiredTitle": "Konto czeka na akceptacj??",
+    "pendingRequiredBody": "Do czasu akceptacji przez admina panel jest zablokowany.",
+    "pendingRequiredButton": "Sprawd?? status konta"
   }
 }
