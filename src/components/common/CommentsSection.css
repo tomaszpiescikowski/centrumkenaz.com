@@ -634,6 +634,19 @@ img.cmt-av-img {
   }
 }
 
+/* ── Swipe wrapper ─────────────────────────────────── */
+
+.cmt-swipe-wrap {
+  position: relative;
+}
+
+/* overflow: hidden only on mobile (needed for swipe gesture) */
+@media (max-width: 639px) {
+  .cmt-swipe-wrap {
+    overflow: hidden;
+  }
+}
+
 /* ── Swipe-to-reply indicator ──────────────────────── */
 
 .cmt-swipe-indicator {

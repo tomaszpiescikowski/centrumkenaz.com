@@ -384,7 +384,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     const replyTargetId = item._depth === 0 ? item.id : (item.parent_id || item.id)
 
     return (
-      <div key={item.id} className={`cmt-swipe-wrap ${item._visualDepth > 0 ? 'cmt-wrap-threaded' : ''} ${item._hasChildren && item._visualDepth === 0 ? 'cmt-wrap-has-replies' : ''}`} style={{ position: 'relative', overflow: 'hidden' }}>
+      <div key={item.id} className={`cmt-swipe-wrap ${item._visualDepth > 0 ? 'cmt-wrap-threaded' : ''} ${item._hasChildren && item._visualDepth === 0 ? 'cmt-wrap-has-replies' : ''}`}>
         {/* Swipe reply indicator (stays in place behind the sliding item) */}
         {swipeId === item.id && swipeX > 10 && (
           <div className={`cmt-swipe-indicator ${swipeX >= SWIPE_THRESHOLD ? 'cmt-swipe-ready' : ''}`}
