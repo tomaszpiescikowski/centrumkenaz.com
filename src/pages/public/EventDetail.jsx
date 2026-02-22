@@ -802,6 +802,9 @@ function EventDetail() {
             {/* Cancellation deadline info */}
             {(() => {
               if (!occurrenceStart || isPast) return null
+              // Also hide if the event has already ended
+              const occurrenceEnd = event.endDateTime ? new Date(event.endDateTime) : null
+              if (occurrenceEnd && occurrenceEnd < new Date()) return null
               const cutoffHours = event.cancelCutoffHours || 24
               const deadlineMs = occurrenceStart.getTime() - cutoffHours * 3600000
               const deadline = new Date(deadlineMs)
