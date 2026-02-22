@@ -693,7 +693,10 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
             </Link>
             <div className="cmt-meta">
               <Link to={`/people/${item.author.id}`} className="cmt-author">{item.author.full_name}</Link>
-              {item.author?.is_member && <span className="cmt-member-badge">Członek</span>}
+              {item.author?.role === 'admin'
+                ? <span className="cmt-member-badge cmt-admin-badge">ADMIN</span>
+                : item.author?.is_member && <span className="cmt-member-badge">KENAZ</span>
+              }
               <span className="cmt-time">{formatTime(item.created_at)}</span>
               {item.updated_at && !item.is_deleted && <span className="cmt-edited">{t('comments.edited')}</span>}
             </div>
