@@ -10,12 +10,13 @@ function requestWithAuth(authFetch, url, options = {}) {
  * @param {string} resourceType - e.g. "event"
  * @param {string} resourceId - resource UUID
  * @param {Function} authFetch - authenticated fetch
- * @param {object} [params] - { offset, limit }
+ * @param {object} [params] - { offset, limit, order }
  */
 export async function fetchComments(resourceType, resourceId, authFetch, params = {}) {
   const query = new URLSearchParams()
   if (params.offset != null) query.set('offset', params.offset)
   if (params.limit != null) query.set('limit', params.limit)
+  if (params.order != null) query.set('order', params.order)
   const qs = query.toString() ? `?${query.toString()}` : ''
   const res = await requestWithAuth(authFetch, `${API_URL}/comments/${resourceType}/${resourceId}${qs}`)
   if (!res.ok) throw new Error('Failed to fetch comments')

@@ -9,6 +9,7 @@ from datetime import datetime
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
+from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select, update, func as sa_func, and_
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -16,7 +17,7 @@ from sqlalchemy.orm import selectinload
 
 from database import get_db
 from models.comment import Comment, CommentReaction, ReactionType
-from models.user import UserRole
+from models.user import UserRole, AccountStatus
 from security.guards import ActiveUser, AdminUser, OptionalActiveUser
 
 router = APIRouter(prefix="/comments", tags=["comments"])
@@ -32,6 +33,7 @@ class CommentAuthorResponse(BaseModel):
     id: str = Field(description="User ID.")
     full_name: str = Field(description="Display name.")
     picture_url: Optional[str] = Field(None, description="Avatar URL.")
+    is_member: bool = Field(False, description="Whether user has an active membership.")
 
 
 class ReactionSummary(BaseModel):
@@ -132,6 +134,7 @@ def _build_comment_response(
             id=comment.user.id,
             full_name=comment.user.full_name,
             picture_url=comment.user.picture_url,
+            is_member=comment.user.account_status == AccountStatus.MEMBER,
         ),
         reactions=list(reaction_map.values()),
         replies=replies_list,
@@ -358,8 +361,9 @@ async def list_comments(
     db: AsyncSession = Depends(get_db),
     offset: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
+    order: Literal['asc', 'desc'] = Query('asc', description="Sort order: asc=oldest-first, desc=newest-first."),
 ):
-    """Return top-level comments (with nested replies) for a resource, pinned first."""
+    """Return top-level comments (with nested replies) for a resource."""
 
     stmt = (
         select(Comment)
@@ -370,7 +374,13 @@ async def list_comments(
         )
         .options(*_comment_load_options())
         .execution_options(populate_existing=True)
-        .order_by(Comment.is_pinned.desc(), Comment.created_at.asc())
+        .order_by(
+            *(
+                [Comment.is_pinned.desc(), Comment.created_at.asc()]
+                if order == 'asc'
+                else [Comment.created_at.desc()]
+            )
+        )
         .offset(offset)
         .limit(limit)
     )

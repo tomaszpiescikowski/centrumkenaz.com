@@ -106,14 +106,25 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const swipeItemRef = useRef(null)
   const SWIPE_THRESHOLD = 60
 
+  // Collapsible reply threads
+  const [expandedReplies, setExpandedReplies] = useState(new Set())
+
+  // Pagination: load older messages
+  const [hasMoreOlder, setHasMoreOlder] = useState(false)
+  const [loadingOlder, setLoadingOlder] = useState(false)
+  const [olderOffset, setOlderOffset] = useState(50)
+
   const isGeneralTab = activeTab === 'general'
   const currentComments = isGeneralTab ? generalComments : comments
 
   const loadComments = useCallback(async () => {
     try {
-      const data = await fetchComments(resourceType, resourceId, authFetch)
-      setComments(data)
-      if (onLatestMessage && data.length > 0) {
+      const data = await fetchComments(resourceType, resourceId, authFetch, { limit: 50, order: 'desc' })
+      const ordered = [...data].reverse()
+      setComments(ordered)
+      setHasMoreOlder(data.length === 50)
+      setOlderOffset(50)
+      if (onLatestMessage && ordered.length > 0) {
         // Find latest created_at across all comments and replies
         let latest = null
         const scanDates = (items) => {
@@ -122,7 +133,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
             if (c.replies?.length) scanDates(c.replies)
           }
         }
-        scanDates(data)
+        scanDates(ordered)
         if (latest) onLatestMessage(latest)
       }
     } catch {
@@ -134,9 +145,10 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
 
   const loadGeneralComments = useCallback(async () => {
     try {
-      const data = await fetchComments('general', 'global', authFetch)
-      setGeneralComments(data)
-      if (onLatestMessage && chatId === 'general:global' && data.length > 0) {
+      const data = await fetchComments('general', 'global', authFetch, { limit: 50, order: 'desc' })
+      const orderedGeneral = [...data].reverse()
+      setGeneralComments(orderedGeneral)
+      if (onLatestMessage && chatId === 'general:global' && orderedGeneral.length > 0) {
         let latest = null
         const scanDates = (items) => {
           for (const c of items) {
@@ -144,7 +156,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
             if (c.replies?.length) scanDates(c.replies)
           }
         }
-        scanDates(data)
+        scanDates(orderedGeneral)
         if (latest) onLatestMessage(latest)
       }
     } catch {
@@ -529,6 +541,42 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     }
   }, [longPressId])
 
+  // Load older messages (prepend without losing scroll position)
+  const loadOlderMessages = useCallback(async () => {
+    if (loadingOlder || !hasMoreOlder || !listRef.current) return
+    setLoadingOlder(true)
+    try {
+      const prevScrollTop = listRef.current.scrollTop
+      const prevScrollHeight = listRef.current.scrollHeight
+      const rt = isGeneralTab ? 'general' : resourceType
+      const ri = isGeneralTab ? 'global' : resourceId
+      const older = await fetchComments(rt, ri, authFetch, { limit: 50, offset: olderOffset, order: 'desc' })
+      const olderOrdered = [...older].reverse()
+      if (isGeneralTab) {
+        setGeneralComments(prev => [...olderOrdered, ...prev])
+      } else {
+        setComments(prev => [...olderOrdered, ...prev])
+      }
+      setOlderOffset(o => o + 50)
+      setHasMoreOlder(older.length === 50)
+      requestAnimationFrame(() => {
+        if (listRef.current) {
+          listRef.current.scrollTop = prevScrollTop + (listRef.current.scrollHeight - prevScrollHeight)
+        }
+      })
+    } catch { /* silent */ }
+    finally { setLoadingOlder(false) }
+  }, [loadingOlder, hasMoreOlder, isGeneralTab, resourceType, resourceId, authFetch, olderOffset])
+
+  const toggleReplies = (id) => {
+    setExpandedReplies(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
   const renderFlatComment = (item) => {
     const isOwn = user?.id === item.author.id
     const isEditingThis = editingId === item.id
@@ -590,6 +638,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
             </Link>
             <div className="cmt-meta">
               <Link to={`/people/${item.author.id}`} className="cmt-author">{item.author.full_name}</Link>
+              {item.author?.is_member && <span className="cmt-member-badge">??? Cz??onek</span>}
               <span className="cmt-time">{formatTime(item.created_at)}</span>
               {item.updated_at && !item.is_deleted && <span className="cmt-edited">{t('comments.edited')}</span>}
             </div>
@@ -672,6 +721,46 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           )}
         </div>
       </div>
+      </div>
+    )
+  }
+
+  const renderCommentGroup = (comment) => {
+    const replyCount = comment.replies?.length ?? 0
+    const isExpanded = expandedReplies.has(comment.id)
+    const flatComment = {
+      ...comment,
+      _depth: 0,
+      _visualDepth: 0,
+      _replyToName: null,
+      _hasChildren: replyCount > 0,
+    }
+    return (
+      <div key={comment.id} className="cmt-group">
+        {renderFlatComment(flatComment)}
+        {replyCount > 0 && (
+          <>
+            <button
+              className="cmt-replies-toggle"
+              onClick={() => toggleReplies(comment.id)}
+            >
+              ??? {isExpanded
+                ? `Ukryj ${replyCount === 1 ? 'odpowied??' : 'odpowiedzi'}`
+                : `${replyCount} ${replyCount === 1 ? 'odpowied??' : 'odpowiedzi'}`}
+            </button>
+            {isExpanded && (
+              <div className="cmt-replies-list">
+                {comment.replies.map((reply) => renderFlatComment({
+                  ...reply,
+                  _depth: 1,
+                  _visualDepth: 1,
+                  _replyToName: null,
+                  _hasChildren: false,
+                }))}
+              </div>
+            )}
+          </>
+        )}
       </div>
     )
   }
@@ -788,14 +877,20 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
         <>
           {/* Scrollable messages – pinned at top (via backend sort), oldest first, newest bottom */}
           <div className="cmt-list cmt-list-messenger" ref={listRef}>
+            {/* Load older messages button */}
+            {hasMoreOlder && (
+              <button className="cmt-load-older" onClick={loadOlderMessages} disabled={loadingOlder}>
+                {loadingOlder ? '???' : '??? Za??aduj starsze wiadomo??ci'}
+              </button>
+            )}
             {/* Spacer pushes messages to bottom when list is short */}
             <div className="cmt-list-spacer" aria-hidden="true" />
-            {flatList.length === 0 ? (
+            {currentComments.length === 0 ? (
               <div className="cmt-empty">
                 <p>{isGeneralTab ? t('comments.emptyGeneral') : t('comments.empty')}</p>
               </div>
             ) : (
-              flatList.map((item) => renderFlatComment(item))
+              currentComments.map((c) => renderCommentGroup(c))
             )}
           </div>
 
@@ -808,12 +903,12 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           {commentForm}
 
           <div className="cmt-list" ref={listRef}>
-            {flatList.length === 0 ? (
+            {currentComments.length === 0 ? (
               <div className="cmt-empty">
                 <p>{isGeneralTab ? t('comments.emptyGeneral') : t('comments.empty')}</p>
               </div>
             ) : (
-              flatList.map((item) => renderFlatComment(item))
+              currentComments.map((c) => renderCommentGroup(c))
             )}
           </div>
         </>
