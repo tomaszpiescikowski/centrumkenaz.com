@@ -1017,6 +1017,12 @@
     "eventChat": "Evenement chat",
     "openChat": "Chat openen",
     "loading": "Laden...",
-    "replyingToLabel": "Antwoorden op"
+    "replyingToLabel": "Antwoorden op",
+    "loginRequiredTitle": "Log in om de chat te gebruiken",
+    "loginRequiredBody": "Chat is alleen beschikbaar voor ingelogde leden.",
+    "loginRequiredButton": "Log in",
+    "pendingRequiredTitle": "Account wacht op goedkeuring",
+    "pendingRequiredBody": "De chat is geblokkeerd totdat een beheerder je account goedkeurt.",
+    "pendingRequiredButton": "Controleer accountstatus"
   }
 }

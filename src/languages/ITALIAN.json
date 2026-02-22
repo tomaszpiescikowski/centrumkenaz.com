@@ -1017,6 +1017,12 @@
     "eventChat": "Chat evento",
     "openChat": "Apri chat",
     "loading": "Caricamento...",
-    "replyingToLabel": "Stai rispondendo a"
+    "replyingToLabel": "Stai rispondendo a",
+    "loginRequiredTitle": "Accedi per utilizzare la chat",
+    "loginRequiredBody": "La chat ?? disponibile solo per i membri autenticati.",
+    "loginRequiredButton": "Accedi",
+    "pendingRequiredTitle": "Account in attesa di approvazione",
+    "pendingRequiredBody": "La chat ?? bloccata fino all'approvazione dell'account da parte dell'admin.",
+    "pendingRequiredButton": "Controlla stato account"
   }
 }

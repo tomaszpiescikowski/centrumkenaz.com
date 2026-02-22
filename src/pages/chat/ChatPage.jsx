@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext'
 import { useAuth } from '../../context/AuthContext'
 import { useChat } from '../../context/ChatContext'
@@ -10,7 +10,9 @@ import '../../components/common/CommentsSection.css'
 
 function ChatPage() {
   const { t, currentLanguage } = useLanguage()
-  const { isAuthenticated, authFetch } = useAuth()
+  const { isAuthenticated, user, authFetch, login } = useAuth()
+
+  const isPendingApproval = isAuthenticated && user?.account_status !== 'active'
   const {
     view, eventId, eventTitle,
     navigateChat,
@@ -98,6 +100,50 @@ function ChatPage() {
   }
 
   const activeTab = view === 'general' ? 'general' : 'events'
+
+  // Guard: unauthenticated or pending-approval users see a message instead of chat
+  // (placed after all hooks to comply with React's Rules of Hooks)
+  if (!isAuthenticated || isPendingApproval) {
+    return (
+      <div className="cp-root" ref={cpRootRef}>
+        <div className="flex h-full items-center justify-center p-6">
+          <div className="mx-auto w-full max-w-md rounded-2xl border border-navy/20 bg-cream/85 p-6 text-center shadow-xl dark:border-cream/20 dark:bg-navy/85 backdrop-blur-sm">
+            {isPendingApproval ? (
+              <>
+                <p className="text-xl font-black text-navy dark:text-cream">
+                  {t('comments.pendingRequiredTitle')}
+                </p>
+                <p className="mt-2 text-navy/80 dark:text-cream/80">
+                  {t('comments.pendingRequiredBody')}
+                </p>
+                <Link
+                  to="/pending-approval"
+                  className="btn-primary mt-4 inline-block px-6 py-3 font-bold"
+                >
+                  {t('comments.pendingRequiredButton')}
+                </Link>
+              </>
+            ) : (
+              <>
+                <p className="text-xl font-black text-navy dark:text-cream">
+                  {t('comments.loginRequiredTitle')}
+                </p>
+                <p className="mt-2 text-navy/80 dark:text-cream/80">
+                  {t('comments.loginRequiredBody')}
+                </p>
+                <button
+                  onClick={() => login({ returnTo: '/chat' })}
+                  className="btn-primary mt-4 px-6 py-3 font-bold"
+                >
+                  {t('comments.loginRequiredButton')}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="cp-root" ref={cpRootRef}>

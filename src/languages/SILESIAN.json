@@ -1021,6 +1021,12 @@
     "eventChat": "Czat wydarzynio",
     "openChat": "Ôtwōrz czat",
     "loading": "Ladowanie...",
-    "replyingToLabel": "Odpowiadosz na"
+    "replyingToLabel": "Odpowiadosz na",
+    "loginRequiredTitle": "Zaloguj sie, coby u??ywa?? czatu",
+    "loginRequiredBody": "Czat je dostympny ino dlo zalogowanych cz??nk??w.",
+    "loginRequiredButton": "Zaloguj sie",
+    "pendingRequiredTitle": "K??nto czeko na akceptacyjo",
+    "pendingRequiredBody": "A?? do akceptacyje bez admina czat je zablokowany.",
+    "pendingRequiredButton": "Sprawd?? status k??nta"
   }
 }

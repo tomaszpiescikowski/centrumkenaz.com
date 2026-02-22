@@ -1049,6 +1049,12 @@
     "goToEvent": "Go to event",
     "loginToSeeEvents": "Log in to see your event chats",
     "replyingToLabel": "Replying to",
-    "noRegisteredEvents": "You have no registered events yet"
+    "noRegisteredEvents": "You have no registered events yet",
+    "loginRequiredTitle": "Log in to use the chat",
+    "loginRequiredBody": "Chat is available for authenticated members only.",
+    "loginRequiredButton": "Log in",
+    "pendingRequiredTitle": "Account pending approval",
+    "pendingRequiredBody": "Chat is blocked until an admin approves your account.",
+    "pendingRequiredButton": "Check account status"
   }
 }
