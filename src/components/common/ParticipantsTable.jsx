@@ -77,7 +77,7 @@ function ParticipantsTable({
 
   if (loading) {
     return (
-      <div className={`rounded-2xl border border-navy/10 bg-cream/75 dark:border-cream/15 dark:bg-navy/75 animate-pulse ${compact ? 'p-5' : 'p-8'} ${className}`}>
+      <div className={`rounded-2xl border border-navy/10 bg-[rgba(255,253,245,0.72)] dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)] animate-pulse ${compact ? 'p-5' : 'p-8'} ${className}`}>
         <div className="h-6 bg-navy/10 dark:bg-cream/20 rounded w-1/3 mb-4"></div>
         <div className="space-y-2">
           {[1, 2, 3].map((i) => (
@@ -89,7 +89,7 @@ function ParticipantsTable({
   }
 
   return (
-    <div className={`flex h-full min-h-0 flex-col rounded-2xl border border-navy/10 bg-cream/75 dark:border-cream/15 dark:bg-navy/75 ${compact ? 'p-5' : 'p-8'} ${className}`}>
+    <div className={`flex h-full min-h-0 flex-col rounded-2xl border border-navy/10 bg-[rgba(255,253,245,0.72)] dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)] ${compact ? 'p-5' : 'p-8'} ${className}`}>
       <div className={`flex items-center justify-between ${compact ? 'mb-4' : 'mb-6'}`}>
         <h2 className={`${compact ? 'text-xl' : 'text-2xl'} font-black text-navy dark:text-cream`}>
           {t('participants.title')}

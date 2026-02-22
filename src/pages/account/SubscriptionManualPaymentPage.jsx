@@ -135,7 +135,7 @@ function SubscriptionManualPaymentPage() {
       </div>
 
       <div className="space-y-4">
-        <section className="rounded-2xl border border-navy/10 bg-cream/70 p-5 dark:border-cream/10 dark:bg-navy/70">
+        <section className="rounded-2xl border border-navy/10 bg-[rgba(255,253,245,0.72)] p-5 dark:border-cream/10 dark:bg-[rgba(15,23,74,0.68)]">
           <p className="text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
             {t('subscriptionManualPayment.planLabel')}
           </p>
@@ -146,7 +146,7 @@ function SubscriptionManualPaymentPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-navy/10 bg-cream/70 p-5 dark:border-cream/10 dark:bg-navy/70">
+        <section className="rounded-2xl border border-navy/10 bg-[rgba(255,253,245,0.72)] p-5 dark:border-cream/10 dark:bg-[rgba(15,23,74,0.68)]">
           <p className="text-sm text-navy/80 dark:text-cream/80">{t('subscriptionManualPayment.stepsIntro')}</p>
           <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-navy dark:text-cream">
             <li>

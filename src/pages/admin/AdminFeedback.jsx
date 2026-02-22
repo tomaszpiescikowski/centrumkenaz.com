@@ -113,7 +113,7 @@ function AdminFeedback() {
           {items.map((fb) => (
             <div
               key={fb.id}
-              className="rounded-2xl border border-navy/10 dark:border-cream/10 bg-white/60 dark:bg-cream/5 p-4 sm:p-5"
+              className="rounded-2xl border border-navy/10 dark:border-cream/10 bg-[rgba(255,253,245,0.72)] dark:bg-[rgba(15,23,74,0.68)] p-4 sm:p-5"
             >
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-2">
                 <span className="text-sm font-semibold text-navy dark:text-cream">

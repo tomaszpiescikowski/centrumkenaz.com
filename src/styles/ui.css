@@ -4,20 +4,36 @@
   }
 
   .page-card {
-    @apply rounded-2xl border border-navy/10 bg-cream/75 p-5 dark:border-cream/15 dark:bg-navy/75;
+    @apply rounded-2xl border border-navy/10 p-5 dark:border-cream/15;
+    background: rgba(255, 253, 245, 0.72);
+  }
+  .dark .page-card {
+    background: rgba(15, 23, 74, 0.68);
   }
 
   .page-card-tight {
-    @apply rounded-2xl border border-navy/10 bg-cream/75 p-4 dark:border-cream/15 dark:bg-navy/75;
+    @apply rounded-2xl border border-navy/10 p-4 dark:border-cream/15;
+    background: rgba(255, 253, 245, 0.72);
+  }
+  .dark .page-card-tight {
+    background: rgba(15, 23, 74, 0.68);
   }
 
   .page-subcard {
-    @apply rounded-2xl border border-navy/10 bg-cream/60 p-4 dark:border-cream/10 dark:bg-navy/60;
+    @apply rounded-2xl border border-navy/10 p-4 dark:border-cream/10;
+    background: rgba(255, 253, 245, 0.55);
+  }
+  .dark .page-subcard {
+    background: rgba(15, 23, 74, 0.50);
   }
 
   /* Panel section tile — card with header bar, like calendar event cards */
   .panel-tile {
-    @apply rounded-2xl border border-navy/10 bg-cream/60 dark:border-cream/10 dark:bg-navy/60 overflow-hidden;
+    @apply rounded-2xl border border-navy/10 dark:border-cream/10 overflow-hidden;
+    background: rgba(255, 253, 245, 0.72);
+  }
+  .dark .panel-tile {
+    background: rgba(15, 23, 74, 0.68);
   }
   .panel-tile-header {
     @apply border-b border-navy/10 bg-navy/[0.04] px-5 py-3 dark:border-cream/10 dark:bg-cream/[0.04];
@@ -30,12 +46,12 @@
   .myev-card {
     border-radius: 0.75rem;
     border: 1px solid rgba(15, 23, 74, 0.08);
-    background: rgba(255, 253, 245, 0.4);
+    background: rgba(255, 253, 245, 0.52);
     padding: 1.25rem;
   }
   .dark .myev-card {
     border-color: rgba(255, 253, 245, 0.08);
-    background: rgba(15, 23, 74, 0.4);
+    background: rgba(15, 23, 74, 0.50);
   }
 
   /* Integrated row inside panel tiles — mirrors ev-row from event detail */

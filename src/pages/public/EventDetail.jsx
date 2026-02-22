@@ -513,7 +513,7 @@ function EventDetail() {
 
             {/* Admin editing form */}
             {isAdmin && isEditing && adminForm && (
-              <div className="space-y-4 rounded-2xl border border-navy/20 bg-cream/70 p-4 dark:border-cream/20 dark:bg-navy/70">
+              <div className="space-y-4 rounded-2xl border border-navy/20 bg-[rgba(255,253,245,0.72)] p-4 dark:border-cream/20 dark:bg-[rgba(15,23,74,0.68)]">
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
                     {t('admin.fields.title')}
