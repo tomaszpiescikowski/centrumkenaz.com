@@ -350,28 +350,17 @@
 }
 
 /* Pinned comment */
-@keyframes cmt-featured-shimmer {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
-  50%       { box-shadow: 0 0 10px 3px rgba(245, 158, 11, 0.22); }
-}
-@keyframes cmt-featured-shimmer-dark {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 190, 60, 0); }
-  50%       { box-shadow: 0 0 12px 4px rgba(255, 190, 60, 0.28); }
-}
-
 .cmt-featured {
-  background: rgba(245, 158, 11, 0.07);
+  background: rgba(245, 158, 11, 0.14);
   border-radius: 0.5rem;
   border: 1px solid rgba(245, 158, 11, 0.35);
   padding: 0.75rem 0.875rem;
   margin-bottom: 0.375rem;
-  animation: cmt-featured-shimmer 3.5s ease-in-out infinite;
 }
 
 .dark .cmt-featured {
-  background: rgba(245, 158, 11, 0.10);
+  background: rgba(245, 158, 11, 0.16);
   border-color: rgba(255, 190, 60, 0.38);
-  animation: cmt-featured-shimmer-dark 3.5s ease-in-out infinite;
 }
 
 .cmt-feature-badge {
