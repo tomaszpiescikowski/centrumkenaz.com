@@ -211,11 +211,11 @@ function Panel() {
                         {/* Right 1/3 – actions */}
                         <div className="flex-1 flex flex-col items-end justify-between" onClick={(e) => e.stopPropagation()}>
                           {/* Bottom-right: Manual payment + Cancel */}
-                          <div className="flex flex-col items-end gap-1.5">
+                          <div className="flex flex-col items-end gap-1.5 w-28">
                             {reg.can_confirm_manual_payment && (
                               <Link
                                 to={`/manual-payment/${reg.registration_id}`}
-                                className="btn-primary px-3 py-1.5 text-xs"
+                                className="btn-primary px-3 py-1.5 text-xs w-full text-center"
                               >
                                 {t('account.openManualPayment')}
                               </Link>
@@ -224,13 +224,13 @@ function Panel() {
                               reg.can_cancel ? (
                                 <button
                                   onClick={() => handleCancel(reg)}
-                                  className="btn-primary px-3 py-1.5 text-xs"
+                                  className="btn-primary px-3 py-1.5 text-xs w-full text-center"
                                 >
                                   {t('account.cancelStandard')}
                                 </button>
                               ) : (
                                 <span
-                                  className="panel-cancel-disabled text-xs"
+                                  className="panel-cancel-disabled text-xs w-full text-center"
                                   title={t('account.cancellationNotPossible')}
                                 >
                                   {t('account.cancelStandard')}
