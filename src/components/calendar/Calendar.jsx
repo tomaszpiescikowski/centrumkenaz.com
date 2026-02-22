@@ -63,6 +63,10 @@ function Calendar({ className = '' }) {
   const [availabilityByEventId, setAvailabilityByEventId] = useState({})
   const authFetchRef = useRef(authFetch)
 
+  const [legendOpen, setLegendOpen] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia('(min-width: 640px)').matches
+  )
+
   const [typeFilter, setTypeFilter] = useState(() => (
     EVENT_TYPES.reduce((acc, item) => {
       acc[item.type] = true
@@ -441,9 +445,13 @@ function Calendar({ className = '' }) {
           </div>
 
           <div className="mt-3 shrink-0 rounded-xl border border-navy/10 bg-transparent p-3 dark:border-cream/15 dark:bg-transparent">
-            <div className="mb-2 flex items-center gap-2">
-              <h3 className="text-xs font-bold uppercase tracking-wide text-navy dark:text-cream">{t('calendar.legend')}</h3>
-              <div className="group relative">
+            <button
+              type="button"
+              onClick={() => setLegendOpen(o => !o)}
+              className="flex w-full items-center gap-2"
+            >
+              <h3 className="flex-1 text-left text-xs font-bold uppercase tracking-wide text-navy dark:text-cream">{t('calendar.legend')}</h3>
+              <div className="group relative" onClick={e => e.stopPropagation()}>
                 <svg className="h-3.5 w-3.5 cursor-default text-navy/40 dark:text-cream/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 16v-4" />
@@ -453,8 +461,14 @@ function Calendar({ className = '' }) {
                   {t('calendar.legendTooltip')}
                 </div>
               </div>
-            </div>
-            <div className="flex flex-wrap gap-2">
+              <svg
+                className={`h-3.5 w-3.5 shrink-0 text-navy/40 transition-transform duration-200 dark:text-cream/40 ${legendOpen ? 'rotate-180' : ''}`}
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+            {legendOpen && <div className="mt-2 flex flex-wrap gap-2">
               {EVENT_TYPES.map(({ type, labelKey }) => {
                 const isActive = typeFilter[type] !== false
                 return (
@@ -482,7 +496,7 @@ function Calendar({ className = '' }) {
                   </button>
                 )
               })}
-            </div>
+            </div>}
           </div>
         </div>
 
