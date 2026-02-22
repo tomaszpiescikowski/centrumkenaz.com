@@ -18,6 +18,25 @@ function ChatPage() {
   } = useChat()
   const navigate = useNavigate()
 
+  // Hide bottom nav + tab switcher when the virtual keyboard is open (mobile PWA)
+  useEffect(() => {
+    const vv = window.visualViewport
+    if (!vv) return
+    const baseHeight = vv.height
+    const onResize = () => {
+      if (vv.height < baseHeight - 100) {
+        document.documentElement.classList.add('kb-open')
+      } else {
+        document.documentElement.classList.remove('kb-open')
+      }
+    }
+    vv.addEventListener('resize', onResize)
+    return () => {
+      vv.removeEventListener('resize', onResize)
+      document.documentElement.classList.remove('kb-open')
+    }
+  }, [])
+
   const [events, setEvents] = useState([])
   const [eventsLoading, setEventsLoading] = useState(false)
 

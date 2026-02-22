@@ -1037,6 +1037,7 @@
     "react": "Reagisci",
     "eventChat": "Chat evento",
     "openChat": "Apri chat",
-    "loading": "Caricamento..."
+    "loading": "Caricamento...",
+    "replyingToLabel": "Stai rispondendo a"
   }
 }

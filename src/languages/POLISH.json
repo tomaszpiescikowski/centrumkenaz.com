@@ -1069,6 +1069,7 @@
     "back": "Wróć",
     "goToEvent": "Przejdź do wydarzenia",
     "loginToSeeEvents": "Zaloguj się, aby zobaczyć czaty wydarzeń",
-    "noRegisteredEvents": "Nie masz jeszcze zapisanych wydarzeń"
+    "noRegisteredEvents": "Nie masz jeszcze zapisanych wydarzeń",
+    "replyingToLabel": "Odpowiadasz na"
   }
 }

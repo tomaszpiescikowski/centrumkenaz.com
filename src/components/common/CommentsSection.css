@@ -1397,6 +1397,9 @@ img.cmt-av-img {
 
 .cmt-input-wrap-messenger {
   flex: 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 /* ── @mention autocomplete dropdown ───────────────── */
@@ -2171,3 +2174,49 @@ img.cmt-av-img {
 .dark .cmt-input::placeholder {
   color: rgba(255, 245, 225, 0.35);
 }
+
+/* ── Scroll fix: make cmt-messenger fill cp-body (flex parent) ──────────── */
+.cp-body > .cmt-messenger {
+  flex: 1;
+  min-height: 0;
+  height: auto; /* override the height:100% – flex:1+min-height:0 is correct */
+}
+
+/* ── Keyboard-open: hide tab switcher + mobile bottom nav ───────────────── */
+.kb-open .cp-header      { display: none !important; }
+.kb-open [data-kb-hide]  { display: none !important; }
+
+/* ── Reply banner (messenger mode: replying to a comment) ───────────────── */
+.cmt-reply-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  margin-bottom: 0.25rem;
+  background: rgba(99, 102, 241, 0.09);
+  border-left: 3px solid rgb(99, 102, 241);
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-size: 0.8125rem;
+  color: var(--txt, rgba(26, 26, 78, 0.92));
+  line-height: 1.35;
+}
+.dark .cmt-reply-banner {
+  background: rgba(99, 102, 241, 0.13);
+}
+.cmt-reply-banner strong {
+  color: rgb(99, 102, 241);
+  font-weight: 600;
+}
+.cmt-reply-banner-close {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--muted, rgba(26, 26, 78, 0.50));
+  cursor: pointer;
+  padding: 0 0.125rem;
+  -webkit-tap-highlight-color: transparent;
+}
+.cmt-reply-banner-close:hover { color: var(--txt); }

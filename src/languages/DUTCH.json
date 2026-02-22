@@ -1037,6 +1037,7 @@
     "react": "Reageer",
     "eventChat": "Evenement chat",
     "openChat": "Chat openen",
-    "loading": "Laden..."
+    "loading": "Laden...",
+    "replyingToLabel": "Antwoorden op"
   }
 }

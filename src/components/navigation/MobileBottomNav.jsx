@@ -153,6 +153,7 @@ function MobileBottomNav() {
       {t('feedback.button')}
     </button>
     <nav
+      data-kb-hide
       className="fixed inset-x-0 bottom-0 z-50 border-t border-navy/10 bg-cream dark:border-cream/10 dark:bg-navy sm:hidden"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >

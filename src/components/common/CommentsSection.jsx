@@ -74,6 +74,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const [newContent, setNewContent] = useState('')
   const [replyingTo, setReplyingTo] = useState(null)
   const [replyContent, setReplyContent] = useState('')
+  const [messengerReplyTo, setMessengerReplyTo] = useState(null) // { parentId, authorName } — messenger-mode reply
   const [editingId, setEditingId] = useState(null)
   const [editContent, setEditContent] = useState('')
   const [editVersion, setEditVersion] = useState(null)
@@ -297,9 +298,12 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     setSubmitting(true)
     setError(null)
     try {
-      await createComment(currentResourceType, currentResourceId, authFetch, { content: convertMentions(newContent.trim()) })
+      const payload = { content: convertMentions(newContent.trim()) }
+      if (messengerReplyTo) payload.parentId = messengerReplyTo.parentId
+      await createComment(currentResourceType, currentResourceId, authFetch, payload)
       setNewContent('')
       mentionMapRef.current = {}
+      setMessengerReplyTo(null)
       await reloadCurrent()
       requestAnimationFrame(scrollToBottom)
     } catch (err) {
@@ -706,7 +710,19 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           {/* Actions */}
           {!item.is_deleted && !isEditingThis && user && (
             <div className="cmt-actions">
-              <button className="cmt-action-btn" onClick={() => { setReplyingTo(isReplying ? null : replyTargetId); setReplyContent('') }}>{t('comments.reply')}</button>
+              <button className="cmt-action-btn" onClick={() => {
+                if (messengerLayout) {
+                  if (messengerReplyTo?.parentId === replyTargetId) {
+                    setMessengerReplyTo(null)
+                  } else {
+                    setMessengerReplyTo({ parentId: replyTargetId, authorName: item.author?.full_name || '' })
+                    requestAnimationFrame(() => newTextareaRef.current?.focus())
+                  }
+                } else {
+                  setReplyingTo(isReplying ? null : replyTargetId)
+                  setReplyContent('')
+                }
+              }}>{t('comments.reply')}</button>
 
               <div className="cmt-reaction-trigger-wrap cmt-desktop-only">
                 <button className="cmt-action-btn" onClick={(e) => openReactionPicker(item.id, e)}>
@@ -727,8 +743,8 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
             </div>
           )}
 
-          {/* Reply form */}
-          {isReplying && (
+          {/* Reply form — desktop/non-messenger only */}
+          {isReplying && !messengerLayout && (
             <form className="cmt-reply-form" onSubmit={(e) => handleReply(e, replyTargetId)}>
               <textarea ref={replyInputRef} className="cmt-input cmt-input-sm" placeholder={t('comments.replyPlaceholder')} value={replyContent} onChange={(e) => setReplyContent(e.target.value)} rows={2} maxLength={2000} onKeyDown={(e) => handleDesktopEnter(e, e.target.closest('form'))} />
               <div className="cmt-edit-actions">
@@ -826,6 +842,13 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           </div>
         )}
         <div className={`cmt-input-wrap${messengerLayout ? ' cmt-input-wrap-messenger' : ''}`}>
+          {/* Messenger reply banner */}
+          {messengerLayout && messengerReplyTo && (
+            <div className="cmt-reply-banner">
+              <span>{t('comments.replyingToLabel')} <strong>@{messengerReplyTo.authorName}</strong></span>
+              <button type="button" className="cmt-reply-banner-close" onClick={() => setMessengerReplyTo(null)} aria-label="Anuluj odpowiedź">×</button>
+            </div>
+          )}
           {mentionQuery !== null && mentionResults.length > 0 && (
             <div className="cmt-mention-dropdown">
               {mentionResults.slice(0, 6).map((u) => (
@@ -850,7 +873,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           <textarea
             ref={newTextareaRef}
             className={`cmt-input cmt-input-new ${messengerLayout ? 'cmt-input-messenger' : ''}`}
-            placeholder={isGeneralTab ? t('comments.placeholderGeneral') : t('comments.placeholder')}
+            placeholder={messengerReplyTo ? t('comments.replyPlaceholder') : (isGeneralTab ? t('comments.placeholderGeneral') : t('comments.placeholder'))}
             value={newContent}
             onChange={handleNewContentChange}
             rows={1}

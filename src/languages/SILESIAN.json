@@ -1039,6 +1039,7 @@
     "react": "Zareaguj",
     "eventChat": "Czat wydarzynio",
     "openChat": "Ôtwōrz czat",
-    "loading": "Ladowanie..."
+    "loading": "Ladowanie...",
+    "replyingToLabel": "Odpowiadosz na"
   }
 }
