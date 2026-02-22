@@ -1017,7 +1017,10 @@ function EventDetail() {
 
             {/* Legend */}
             {hasMultipleStatuses && (
-              <details className="ev-legend-details">
+              <details
+                className="ev-legend-details"
+                open={maxParticipants == null || availableSpots > 0}
+              >
                 <summary className="ev-legend-summary">
                   {t('participants.legendTitle')}
                 </summary>

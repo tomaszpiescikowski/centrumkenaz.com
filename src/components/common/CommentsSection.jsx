@@ -112,6 +112,11 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   // Collapsible reply threads
   const [expandedReplies, setExpandedReplies] = useState(new Set())
 
+  // Reply highlight + flash feedback
+  const [replyHighlightId, setReplyHighlightId] = useState(null)
+  const [flashId, setFlashId] = useState(null)
+  const pendingReplyParentRef = useRef(null)
+
   // Pagination: load older messages
   const [hasMoreOlder, setHasMoreOlder] = useState(false)
   const [loadingOlder, setLoadingOlder] = useState(false)
@@ -179,9 +184,23 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     loadGeneralComments()
   }, [loadComments, loadGeneralComments])
 
-  // Auto-scroll to newest message when comments load / change
+  // Auto-scroll to newest message when comments load / change; flash newest reply
   useEffect(() => {
     scrollToBottom()
+    const parentId = pendingReplyParentRef.current
+    if (parentId) {
+      const parent = currentComments.find(c => c.id === parentId)
+      const replies = parent?.replies || []
+      if (replies.length) {
+        const newest = replies[replies.length - 1]
+        pendingReplyParentRef.current = null
+        setExpandedReplies(prev => new Set([...prev, parentId]))
+        setFlashId(newest.id)
+        const timer = setTimeout(() => setFlashId(id => id === newest.id ? null : id), 2200)
+        return () => clearTimeout(timer)
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentComments, scrollToBottom])
 
   useEffect(() => {
@@ -299,11 +318,14 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     setError(null)
     try {
       const payload = { content: convertMentions(newContent.trim()) }
-      if (messengerReplyTo) payload.parentId = messengerReplyTo.parentId
+      const replyParentId = messengerReplyTo?.parentId ?? null
+      if (replyParentId) payload.parentId = replyParentId
       await createComment(currentResourceType, currentResourceId, authFetch, payload)
       setNewContent('')
       mentionMapRef.current = {}
       setMessengerReplyTo(null)
+      setReplyHighlightId(null)
+      if (replyParentId) pendingReplyParentRef.current = replyParentId
       await reloadCurrent()
       requestAnimationFrame(scrollToBottom)
     } catch (err) {
@@ -380,11 +402,22 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     }
   }
 
+  const scrollCommentToTop = (commentId) => {
+    const list = listRef.current
+    if (!list) return
+    const el = list.querySelector(`[data-cmt-id="${commentId}"]`)
+    if (!el) return
+    list.scrollBy({ top: el.getBoundingClientRect().top - list.getBoundingClientRect().top - 8, behavior: 'smooth' })
+  }
+
   const handleReaction = async (commentId, reactionType) => {
     setError(null)
+    scrollCommentToTop(commentId)
     try {
       await toggleReaction(commentId, authFetch, reactionType)
       await reloadCurrent()
+      setFlashId(commentId)
+      setTimeout(() => setFlashId(id => id === commentId ? null : id), 2200)
     } catch (err) {
       setError(err.message)
     }
@@ -607,7 +640,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     const replyTargetId = item._depth === 0 ? item.id : (item.parent_id || item.id)
 
     return (
-      <div key={item.id} className={`cmt-swipe-wrap ${item._visualDepth > 0 ? 'cmt-wrap-threaded' : ''} ${item._hasChildren && item._visualDepth === 0 ? 'cmt-wrap-has-replies' : ''}`}>
+      <div key={item.id} data-cmt-id={item.id} className={`cmt-swipe-wrap ${item._visualDepth > 0 ? 'cmt-wrap-threaded' : ''} ${item._hasChildren && item._visualDepth === 0 ? 'cmt-wrap-has-replies' : ''} ${replyHighlightId === item.id ? 'cmt-reply-target' : ''} ${flashId === item.id ? 'cmt-flash' : ''}`}>
         {/* Swipe reply indicator (stays in place behind the sliding item) */}
         {swipeId === item.id && swipeX > 10 && (
           <div className={`cmt-swipe-indicator ${swipeX >= SWIPE_THRESHOLD ? 'cmt-swipe-ready' : ''}`}
@@ -710,19 +743,24 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           {/* Actions */}
           {!item.is_deleted && !isEditingThis && user && (
             <div className="cmt-actions">
-              <button className="cmt-action-btn" onClick={() => {
-                if (messengerLayout) {
-                  if (messengerReplyTo?.parentId === replyTargetId) {
-                    setMessengerReplyTo(null)
+              {(!messengerLayout || item._visualDepth === 0) && (
+                <button className="cmt-action-btn" onClick={() => {
+                  if (messengerLayout) {
+                    if (messengerReplyTo?.parentId === replyTargetId) {
+                      setMessengerReplyTo(null)
+                      setReplyHighlightId(null)
+                    } else {
+                      setMessengerReplyTo({ parentId: replyTargetId, authorName: item.author?.full_name || '' })
+                      setReplyHighlightId(replyTargetId)
+                      scrollCommentToTop(replyTargetId)
+                      requestAnimationFrame(() => newTextareaRef.current?.focus())
+                    }
                   } else {
-                    setMessengerReplyTo({ parentId: replyTargetId, authorName: item.author?.full_name || '' })
-                    requestAnimationFrame(() => newTextareaRef.current?.focus())
+                    setReplyingTo(isReplying ? null : replyTargetId)
+                    setReplyContent('')
                   }
-                } else {
-                  setReplyingTo(isReplying ? null : replyTargetId)
-                  setReplyContent('')
-                }
-              }}>{t('comments.reply')}</button>
+                }}>{t('comments.reply')}</button>
+              )}
 
               <div className="cmt-reaction-trigger-wrap cmt-desktop-only">
                 <button className="cmt-action-btn" onClick={(e) => openReactionPicker(item.id, e)}>
