@@ -2330,3 +2330,35 @@ img.cmt-av-img {
   -webkit-tap-highlight-color: transparent;
 }
 .cmt-reply-banner-close:hover { color: var(--txt); }
+
+/* ?????? Reply-target highlight + flash feedback ????????????????????????????????????????????????????????????????????????????????????????????? */
+
+/* Persistent subtle tint while user is composing a reply to this comment */
+.cmt-messenger .cmt-swipe-wrap.cmt-reply-target {
+  background: rgba(99, 102, 241, 0.07);
+  border-radius: 0.5rem;
+  transition: background 0.4s ease;
+}
+.dark .cmt-messenger .cmt-swipe-wrap.cmt-reply-target {
+  background: rgba(139, 143, 255, 0.10);
+}
+
+/* Flash animation for newly added replies and reacted-to comments */
+@keyframes cmt-flash-out {
+  0%   { background: rgba(99, 102, 241, 0.18); }
+  40%  { background: rgba(99, 102, 241, 0.12); }
+  100% { background: transparent; }
+}
+@keyframes cmt-flash-out-dark {
+  0%   { background: rgba(139, 143, 255, 0.22); }
+  40%  { background: rgba(139, 143, 255, 0.14); }
+  100% { background: transparent; }
+}
+
+.cmt-messenger .cmt-swipe-wrap.cmt-flash {
+  border-radius: 0.5rem;
+  animation: cmt-flash-out 2.2s ease-out forwards;
+}
+.dark .cmt-messenger .cmt-swipe-wrap.cmt-flash {
+  animation: cmt-flash-out-dark 2.2s ease-out forwards;
+}

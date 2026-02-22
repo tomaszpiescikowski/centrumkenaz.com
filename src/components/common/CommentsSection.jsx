@@ -848,7 +848,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           {messengerLayout && messengerReplyTo && (
             <div className="cmt-reply-banner">
               <span>{t('comments.replyingToLabel')} <strong>@{messengerReplyTo.authorName}</strong></span>
-              <button type="button" className="cmt-reply-banner-close" onClick={() => setMessengerReplyTo(null)} aria-label="Anuluj odpowiedź">×</button>
+              <button type="button" className="cmt-reply-banner-close" onClick={() => { setMessengerReplyTo(null); setReplyHighlightId(null) }} aria-label="Anuluj odpowiedź">×</button>
             </div>
           )}
           {mentionQuery !== null && mentionResults.length > 0 && (
