@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
@@ -78,6 +79,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
   const [showReactionPicker, setShowReactionPicker] = useState(null)
+  const [pickerPos, setPickerPos] = useState(null)
   const [longPressId, setLongPressId] = useState(null)
   const [internalTab, setInternalTab] = useState('event')
 
@@ -249,6 +251,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
       setError(err.message)
     }
     setShowReactionPicker(null)
+    setPickerPos(null)
   }
 
   const initials = (name) => {
@@ -363,6 +366,44 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
       }
     }
   }, [SWIPE_THRESHOLD])
+
+  /* ── Desktop reaction picker (opens as fixed-position portal) ── */
+  const openReactionPicker = useCallback((commentId, e) => {
+    if (showReactionPicker === commentId) {
+      setShowReactionPicker(null)
+      setPickerPos(null)
+      return
+    }
+    const rect = e.currentTarget.getBoundingClientRect()
+    setShowReactionPicker(commentId)
+    setPickerPos({
+      bottom: window.innerHeight - rect.top + 4,
+      left: rect.left,
+    })
+  }, [showReactionPicker])
+
+  // Close desktop picker on outside click, scroll, or Escape
+  useEffect(() => {
+    if (!showReactionPicker) return
+    const close = () => { setShowReactionPicker(null); setPickerPos(null) }
+    const handleMouseDown = (e) => {
+      if (!e.target.closest('.cmt-reaction-picker') && !e.target.closest('.cmt-reaction-trigger-wrap')) {
+        close()
+      }
+    }
+    const handleKey = (e) => { if (e.key === 'Escape') close() }
+    const el = listRef.current
+    if (el) el.addEventListener('scroll', close, { passive: true })
+    document.addEventListener('scroll', close, { passive: true, capture: true })
+    document.addEventListener('mousedown', handleMouseDown)
+    document.addEventListener('keydown', handleKey)
+    return () => {
+      if (el) el.removeEventListener('scroll', close)
+      document.removeEventListener('scroll', close, true)
+      document.removeEventListener('mousedown', handleMouseDown)
+      document.removeEventListener('keydown', handleKey)
+    }
+  }, [showReactionPicker])
 
   // Close long-press picker on outside tap / scroll
   useEffect(() => {
@@ -486,17 +527,10 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
               <button className="cmt-action-btn" onClick={() => { setReplyingTo(isReplying ? null : replyTargetId); setReplyContent('') }}>{t('comments.reply')}</button>
 
               <div className="cmt-reaction-trigger-wrap cmt-desktop-only">
-                <button className="cmt-action-btn" onClick={() => setShowReactionPicker(showReactionPicker === item.id ? null : item.id)}>
+                <button className="cmt-action-btn" onClick={(e) => openReactionPicker(item.id, e)}>
                   <span className="cmt-react-emoji">😀</span>
                   <span className="cmt-react-text">{t('comments.react')}</span>
                 </button>
-                {showReactionPicker === item.id && (
-                  <div className="cmt-reaction-picker">
-                    {Object.entries(REACTION_EMOJIS).map(([type, emoji]) => (
-                      <button key={type} className="cmt-reaction-pick" onClick={() => handleReaction(item.id, type)} title={type}>{emoji}</button>
-                    ))}
-                  </div>
-                )}
               </div>
 
               {isOwn && (
@@ -626,6 +660,19 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
             )}
           </div>
         </>
+      )}
+
+      {/* Reaction picker rendered via portal to escape overflow containers */}
+      {showReactionPicker && pickerPos && createPortal(
+        <div
+          className="cmt-reaction-picker"
+          style={{ bottom: `${pickerPos.bottom}px`, left: `${pickerPos.left}px` }}
+        >
+          {Object.entries(REACTION_EMOJIS).map(([type, emoji]) => (
+            <button key={type} className="cmt-reaction-pick" onClick={() => handleReaction(showReactionPicker, type)} title={type}>{emoji}</button>
+          ))}
+        </div>,
+        document.body
       )}
     </div>
   )

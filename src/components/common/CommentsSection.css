@@ -587,9 +587,7 @@ img.cmt-av-img {
 }
 
 .cmt-reaction-picker {
-  position: absolute;
-  bottom: 100%;
-  left: 0;
+  position: fixed;
   display: flex;
   gap: 0.125rem;
   padding: 0.25rem;
@@ -597,7 +595,7 @@ img.cmt-av-img {
   background: rgba(255, 253, 245, 0.97);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
   border: 1px solid rgba(15, 23, 74, 0.08);
-  z-index: 20;
+  z-index: 200;
 }
 
 .dark .cmt-reaction-picker {
