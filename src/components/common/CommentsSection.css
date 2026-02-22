@@ -2347,22 +2347,20 @@ img.cmt-av-img {
   background: rgba(139, 143, 255, 0.10);
 }
 
-/* Flash animation for newly added replies and reacted-to comments */
+/* Flash animation — hold 2 s at full, then fade over 1 s */
 @keyframes cmt-flash-out {
-  0%   { background: rgba(99, 102, 241, 0.18); }
-  40%  { background: rgba(99, 102, 241, 0.12); }
-  100% { background: transparent; }
+  0%, 66% { background: rgba(99, 102, 241, 0.18); }
+  100%    { background: transparent; }
 }
 @keyframes cmt-flash-out-dark {
-  0%   { background: rgba(139, 143, 255, 0.22); }
-  40%  { background: rgba(139, 143, 255, 0.14); }
-  100% { background: transparent; }
+  0%, 66% { background: rgba(139, 143, 255, 0.22); }
+  100%    { background: transparent; }
 }
 
 .cmt-messenger .cmt-swipe-wrap.cmt-flash {
   border-radius: 0.5rem;
-  animation: cmt-flash-out 2.2s ease-out forwards;
+  animation: cmt-flash-out 3s ease-out forwards;
 }
 .dark .cmt-messenger .cmt-swipe-wrap.cmt-flash {
-  animation: cmt-flash-out-dark 2.2s ease-out forwards;
+  animation: cmt-flash-out-dark 3s ease-out forwards;
 }

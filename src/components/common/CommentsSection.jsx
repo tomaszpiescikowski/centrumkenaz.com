@@ -196,7 +196,8 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
         pendingReplyParentRef.current = null
         setExpandedReplies(prev => new Set([...prev, parentId]))
         setFlashId(newest.id)
-        const timer = setTimeout(() => setFlashId(id => id === newest.id ? null : id), 2200)
+        scrollCommentToTop(parentId)
+        const timer = setTimeout(() => setFlashId(id => id === newest.id ? null : id), 3000)
         return () => clearTimeout(timer)
       }
     }
@@ -412,12 +413,11 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
 
   const handleReaction = async (commentId, reactionType) => {
     setError(null)
-    scrollCommentToTop(commentId)
     try {
       await toggleReaction(commentId, authFetch, reactionType)
       await reloadCurrent()
       setFlashId(commentId)
-      setTimeout(() => setFlashId(id => id === commentId ? null : id), 2200)
+      setTimeout(() => setFlashId(id => id === commentId ? null : id), 3000)
     } catch (err) {
       setError(err.message)
     }
