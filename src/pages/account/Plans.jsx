@@ -206,6 +206,18 @@ function Plans() {
           </button>
         )
       }
+      // Block switching to free while any paid subscription is active
+      if (hasActiveSubscription) {
+        return (
+          <button
+            type="button"
+            disabled
+            className="inline-flex h-11 w-full cursor-not-allowed items-center justify-center rounded-2xl border border-navy/20 bg-navy/5 px-4 text-sm font-semibold text-navy/65 dark:border-cream/25 dark:bg-cream/10 dark:text-cream/65"
+          >
+            {t('plans.plan.free.ctaSwitch')}
+          </button>
+        )
+      }
       return (
         <button
           type="button"
@@ -234,6 +246,19 @@ function Plans() {
       )
     }
 
+    // Block buying any other paid plan while a subscription is active
+    if (hasActiveSubscription) {
+      return (
+        <button
+          type="button"
+          disabled
+          className="inline-flex h-11 w-full cursor-not-allowed items-center justify-center rounded-2xl border border-navy/20 bg-navy/5 px-4 text-sm font-semibold text-navy/65 dark:border-cream/25 dark:bg-cream/10 dark:text-cream/65"
+        >
+          {t(ctaKey)}
+        </button>
+      )
+    }
+
     if (!isPurchasable && code !== 'free') {
       return (
         <button
@@ -245,6 +270,7 @@ function Plans() {
         </button>
       )
     }
+
 
     const isBlocked = !!pendingPurchase
 
