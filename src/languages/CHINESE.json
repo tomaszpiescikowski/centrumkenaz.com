@@ -1034,6 +1034,7 @@
     "chatBubble": "聊天",
     "react": "回应",
     "eventChat": "活动聊天",
+    "openChat": "打开聊天",
     "loading": "加载中..."
   }
 }

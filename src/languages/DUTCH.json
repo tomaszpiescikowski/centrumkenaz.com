@@ -1036,6 +1036,7 @@
     "chatBubble": "Chat",
     "react": "Reageer",
     "eventChat": "Evenement chat",
+    "openChat": "Chat openen",
     "loading": "Laden..."
   }
 }

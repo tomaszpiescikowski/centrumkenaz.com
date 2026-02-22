@@ -897,6 +897,24 @@ function EventDetail() {
               </>
             )}
 
+            {/* Mobile event chat button – inside the card */}
+            <hr className="ev-separator sm:hidden" />
+            <button
+              type="button"
+              onClick={() => openChat({ eventId: event.id, eventTitle: event.title })}
+              className="ev-chat-open-btn sm:hidden"
+            >
+              <div className="ev-chat-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                </svg>
+              </div>
+              <div>
+                <span className="ev-chat-label">{t('comments.eventChat')}</span>
+                <span className="ev-chat-sub">{t('comments.openChat')}</span>
+              </div>
+            </button>
+
             {/* Filler to push CTA to bottom */}
             <div className="ev-filler" />
           </div>
@@ -923,17 +941,7 @@ function EventDetail() {
             <CommentsSection resourceType="event" resourceId={event.id} hideTabs messengerLayout />
           </div>
 
-          {/* Mobile full-width event chat button */}
-          <button
-            type="button"
-            onClick={() => openChat({ eventId: event.id, eventTitle: event.title })}
-            className="ev-chat-open-btn sm:hidden"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-            </svg>
-            {t('comments.eventChat')}
-          </button>
+
         </div>
 
         {/* ────── RIGHT COLUMN ────── */}
