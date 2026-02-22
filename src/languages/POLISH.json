@@ -298,7 +298,8 @@
     "mobileNoEvents": "Brak wydarzeń w wybranym dniu."
   },
   "events": {
-    "myEventsTitle": "Moje wydarzenia"
+    "myEventsTitle": "Moje wydarzenia",
+    "panelSubtitle": "Twoje zapisy, punkty i aktywność w społeczności."
   },
   "event": {
     "notFound": "Wydarzenie nie znalezione",

@@ -298,7 +298,8 @@
     "mobileNoEvents": "Nessun evento nel giorno selezionato."
   },
   "events": {
-    "myEventsTitle": "I miei eventi"
+    "myEventsTitle": "I miei eventi",
+    "panelSubtitle": "Le tue iscrizioni, punti e attività nella community."
   },
   "event": {
     "notFound": "Evento non trovato",

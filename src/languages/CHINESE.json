@@ -298,7 +298,8 @@
     "mobileNoEvents": "所选日期暂无活动。"
   },
   "events": {
-    "myEventsTitle": "我的活动"
+    "myEventsTitle": "我的活动",
+    "panelSubtitle": "您的报名、积分与社区动态。"
   },
   "event": {
     "notFound": "未找到活动",

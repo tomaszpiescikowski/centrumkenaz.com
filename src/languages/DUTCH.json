@@ -298,7 +298,8 @@
     "mobileNoEvents": "Geen events op de geselecteerde dag."
   },
   "events": {
-    "myEventsTitle": "Mijn events"
+    "myEventsTitle": "Mijn events",
+    "panelSubtitle": "Jouw inschrijvingen, punten en activiteit in de community."
   },
   "event": {
     "notFound": "Event niet gevonden",

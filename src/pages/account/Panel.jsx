@@ -90,7 +90,7 @@ function Panel() {
     return (
       <div className="flex h-full min-h-0 flex-col px-3 py-3 sm:px-4 sm:py-6">
         <div className="pointer-events-none select-none blur-[3px]">
-          <div className="mx-auto w-full max-w-6xl">
+          <div className="mx-auto w-full max-w-4xl">
             <h1 className="text-3xl font-black text-navy dark:text-cream md:text-4xl">
               {t('nav.panel')}
             </h1>
@@ -120,11 +120,14 @@ function Panel() {
   }
 
   return (
-    <div className="page-shell flex h-full min-h-0 flex-col gap-4 sm:gap-6" style={{ maxWidth: '72rem' }}>
+    <div className="page-shell flex h-full min-h-0 flex-col gap-4 sm:gap-6">
       <div className="shrink-0">
-        <h1 className="text-3xl font-black text-navy dark:text-cream md:text-4xl">
+        <h1 className="text-2xl sm:text-3xl font-black text-navy dark:text-cream">
           {t('nav.panel')}
         </h1>
+        <p className="text-navy/60 dark:text-cream/60">
+          {t('events.panelSubtitle')}
+        </p>
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col gap-6 lg:flex-row">

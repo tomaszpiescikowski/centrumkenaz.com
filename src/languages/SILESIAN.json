@@ -298,7 +298,8 @@
     "mobileNoEvents": "Brak wydarzyń we wybranym dniu."
   },
   "events": {
-    "myEventsTitle": "Moje wydarzyńa"
+    "myEventsTitle": "Moje wydarzyńa",
+    "panelSubtitle": "Twoje zapisy, punkty i aktywność we wspólnocie."
   },
   "event": {
     "notFound": "Wydarzyńe niy znŏleziōne",

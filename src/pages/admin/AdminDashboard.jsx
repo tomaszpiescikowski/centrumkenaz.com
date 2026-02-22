@@ -32,7 +32,7 @@ function AdminDashboard() {
   }
 
   return (
-    <div className="page-shell max-w-5xl">
+    <div className="page-shell">
       <div className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-black text-navy dark:text-cream">
           {t('admin.dashboardTitle')}
