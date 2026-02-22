@@ -299,6 +299,7 @@
   },
   "events": {
     "myEventsTitle": "我的活动",
+    "myEventsTotal": "共 {count} 个活动",
     "panelSubtitle": "您的报名、积分与社区动态。"
   },
   "event": {

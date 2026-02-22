@@ -299,6 +299,7 @@
   },
   "events": {
     "myEventsTitle": "Moje wydarzenia",
+    "myEventsTotal": "{count} wydarzeń w historii",
     "panelSubtitle": "Twoje zapisy, punkty i aktywność w społeczności."
   },
   "event": {

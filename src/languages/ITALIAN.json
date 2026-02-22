@@ -299,6 +299,7 @@
   },
   "events": {
     "myEventsTitle": "I miei eventi",
+    "myEventsTotal": "{count} eventi in totale",
     "panelSubtitle": "Le tue iscrizioni, punti e attività nella community."
   },
   "event": {

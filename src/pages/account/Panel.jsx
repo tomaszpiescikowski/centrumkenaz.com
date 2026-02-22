@@ -133,10 +133,13 @@ function Panel() {
       <div className="flex min-h-0 flex-1 flex-col gap-6 lg:flex-row">
         {/* Left tile – My Events */}
         <section className="panel-tile flex min-h-0 flex-1 flex-col">
-          <div className="panel-tile-header">
-            <h2 className="text-sm font-bold text-navy dark:text-cream">
+          <div className="border-b border-navy/10 px-4 py-3 dark:border-cream/15">
+            <span className="block text-sm font-bold text-navy dark:text-cream">
               {t('events.myEventsTitle')}
-            </h2>
+            </span>
+            <span className="mt-1 block text-left text-sm font-bold text-navy/80 dark:text-cream/80">
+              {loading ? '…' : t('events.myEventsTotal', { count: registrations.length })}
+            </span>
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto">
             {loading ? (

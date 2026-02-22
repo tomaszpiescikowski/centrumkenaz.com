@@ -299,6 +299,7 @@
   },
   "events": {
     "myEventsTitle": "Moje wydarzyńa",
+    "myEventsTotal": "{count} wydarzyń w historyi",
     "panelSubtitle": "Twoje zapisy, punkty i aktywność we wspólnocie."
   },
   "event": {
