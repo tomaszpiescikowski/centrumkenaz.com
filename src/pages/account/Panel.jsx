@@ -132,12 +132,12 @@ function Panel() {
             {t('nav.panel')}
           </h1>
           {isAdmin && (
-            <span className="inline-flex items-center rounded-md bg-red-500/15 px-2 py-0.5 text-xs font-black tracking-widest text-red-600 dark:bg-red-400/15 dark:text-red-400 uppercase">
+            <span className="inline-flex items-center rounded-md bg-red-500/10 px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-red-500 dark:bg-red-400/10 dark:text-red-400 uppercase">
               ADMIN
             </span>
           )}
           {!isAdmin && hasActiveSub && (
-            <span className="inline-flex items-center rounded-md bg-indigo-500/15 px-2 py-0.5 text-xs font-black tracking-widest text-indigo-600 dark:bg-indigo-400/15 dark:text-indigo-400 uppercase">
+            <span className="inline-flex items-center rounded-md bg-indigo-500/10 px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-indigo-500 dark:bg-indigo-400/10 dark:text-indigo-400 uppercase">
               KENAZ
             </span>
           )}

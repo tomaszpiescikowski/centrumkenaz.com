@@ -52,7 +52,7 @@ function Shop() {
             {products.map((product) => (
               <div
                 key={product.id}
-                className="flex flex-col rounded-2xl border border-navy/10 bg-[rgba(255,253,245,0.72)] p-4 text-navy dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)] dark:text-cream"
+                className="flex flex-col rounded-2xl border border-navy/10 bg-[rgba(255,251,235,0.82)] p-4 text-navy dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)] dark:text-cream"
               >
                 <div className="rounded-xl bg-cream/70 p-3 dark:bg-navy/50">
                   {product.image_url ? (

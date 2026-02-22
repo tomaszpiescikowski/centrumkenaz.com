@@ -400,7 +400,7 @@ function Calendar({ className = '' }) {
 
       <div className="grid grid-cols-1 gap-3 sm:h-full sm:min-h-0 lg:grid-cols-3 lg:items-stretch lg:gap-4">
         <div className="flex flex-col sm:h-full sm:min-h-0 lg:col-span-2">
-          <div className="grid grid-cols-7 gap-1 rounded-2xl border border-navy/10 bg-[rgba(255,253,245,0.72)] p-2 dark:border-cream/10 dark:bg-[rgba(15,23,74,0.68)]">
+          <div className="grid grid-cols-7 gap-1 rounded-2xl border border-navy/10 bg-[rgba(255,251,235,0.82)] p-2 dark:border-cream/10 dark:bg-[rgba(15,23,74,0.68)]">
             {days.map((dayName) => (
               <div key={dayName} className="py-1 text-center text-[11px] font-black uppercase tracking-wide text-navy/70 dark:text-cream/70">
                 {dayName}
@@ -444,7 +444,7 @@ function Calendar({ className = '' }) {
             })}
           </div>
 
-          <div className="mt-3 shrink-0 rounded-xl border border-navy/10 bg-[rgba(255,253,245,0.72)] p-3 dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)]">
+          <div className="mt-3 shrink-0 rounded-xl border border-navy/10 bg-[rgba(255,251,235,0.82)] p-3 dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)]">
             <button
               type="button"
               onClick={() => setLegendOpen(o => !o)}
@@ -501,7 +501,7 @@ function Calendar({ className = '' }) {
         </div>
 
         <div className="mt-3 sm:mt-0 sm:flex sm:min-h-0 sm:flex-col lg:col-span-1 lg:h-full">
-          <div className="flex flex-col overflow-hidden rounded-2xl border border-navy/10 bg-[rgba(255,253,245,0.72)] dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)] sm:flex-1 sm:min-h-0">
+          <div className="flex flex-col overflow-hidden rounded-2xl border border-navy/10 bg-[rgba(255,251,235,0.82)] dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)] sm:flex-1 sm:min-h-0">
             <div className="border-b border-navy/10 px-4 py-3 dark:border-cream/15">
               <span className="block text-sm font-bold text-navy dark:text-cream">
                 {t('calendar.mobileSelectedDay')}

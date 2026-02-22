@@ -3,7 +3,7 @@
 /* Design tokens — light */
 .ev {
   --b:    rgba(15, 23, 74, 0.09);
-  --surf: rgba(255, 253, 245, 0.72);
+  --surf: rgba(255, 251, 235, 0.82);
   --muted: rgba(15, 23, 74, 0.50);
   --txt:  rgba(15, 23, 74, 0.92);
   --sub:  rgba(15, 23, 74, 0.05);

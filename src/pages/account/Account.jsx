@@ -162,7 +162,7 @@ function Account({ darkMode, setDarkMode }) {
 
       <section className="shrink-0">
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
-          <div className="xl:col-span-2 rounded-2xl border border-navy/10 bg-[rgba(255,253,245,0.72)] p-4 dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)]">
+          <div className="xl:col-span-2 rounded-2xl border border-navy/10 bg-[rgba(255,251,235,0.82)] p-4 dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)]">
             <h2 className="mb-4 text-xl font-black text-navy dark:text-cream">
               {t('account.profileTitle')}
             </h2>
@@ -317,7 +317,7 @@ function Account({ darkMode, setDarkMode }) {
             </div>
           </div>
 
-          <aside className="flex flex-col rounded-2xl border border-navy/10 bg-[rgba(255,253,245,0.72)] p-4 dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)]">
+          <aside className="flex flex-col rounded-2xl border border-navy/10 bg-[rgba(255,251,235,0.82)] p-4 dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)]">
             <h3 className="text-lg font-black text-navy dark:text-cream">
               {t('account.manageSubscription')}
             </h3>

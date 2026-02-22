@@ -38,7 +38,7 @@ function WelcomeModal({ t, onChoosePlan, onBackToAccount }) {
     >
       <div
         className={
-          'flex w-[calc(100%-2rem)] max-w-[420px] flex-col rounded-2xl border border-navy/10 bg-[rgba(255,253,245,0.72)] p-8 text-center dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)] ' +
+          'flex w-[calc(100%-2rem)] max-w-[420px] flex-col rounded-2xl border border-navy/10 bg-[rgba(255,251,235,0.82)] p-8 text-center dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)] ' +
           'max-sm:h-[100dvh] max-sm:max-w-full max-sm:justify-between max-sm:rounded-none'
         }
       >

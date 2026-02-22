@@ -855,7 +855,7 @@ img.cmt-av-img {
 .chat-modal-panel {
   /* Provide design-token vars so CommentsSection works outside .ev */
   --b:    rgba(15, 23, 74, 0.09);
-  --surf: rgba(255, 253, 245, 0.72);
+  --surf: rgba(255, 251, 235, 0.82);
   --muted: rgba(15, 23, 74, 0.50);
   --txt:  rgba(15, 23, 74, 0.92);
 }
@@ -1910,15 +1910,15 @@ img.cmt-av-img {
   display: inline-flex;
   align-items: center;
   gap: 0.125rem;
-  font-size: 0.625rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
-  color: rgb(99, 102, 241);
-  background: rgba(99, 102, 241, 0.10);
-  border: 1px solid rgba(99, 102, 241, 0.22);
+  color: rgba(99, 102, 241, 0.8);
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.18);
   border-radius: 0.25rem;
-  padding: 0.0625rem 0.3125rem;
+  padding: 0.0625rem 0.25rem;
   vertical-align: middle;
   margin-left: 0.3125rem;
   line-height: 1.4;
