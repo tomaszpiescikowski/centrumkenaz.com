@@ -2054,6 +2054,8 @@ img.cmt-av-img {
   font-size: 0.8125rem;
   font-weight: 700;
   color: rgba(26, 26, 78, 0.50);
+  position: relative;   /* needed for ::before rod segment */
+  overflow: visible;
   background: none;
   border: none;
   cursor: pointer;
@@ -2062,6 +2064,35 @@ img.cmt-av-img {
 .cmt-replies-toggle:hover { color: rgba(26, 26, 78, 0.80); }
 .dark .cmt-replies-toggle       { color: rgba(255, 245, 225, 0.44); }
 .dark .cmt-replies-toggle:hover { color: rgba(255, 245, 225, 0.80); }
+/*
+  Rod ??? second segment: runs from gap above toggle (margin-top 0.125rem) down to
+  the toggle avatar centre.  We need position:relative on the toggle for this.
+  left   = avatar-centre(2rem from page) ??? toggle margin-left(3.5rem) = ???1.5rem
+  bottom = 50%  ??? bottom edge at toggle vertical centre = small-avatar centre
+
+  When replies are expanded (.cmt-group-expanded), this segment extends through
+  the full toggle height and bridges the 0.125rem gap to .cmt-replies-list, so
+  .cmt-replies-list::before can start at top:0 with zero overlap.
+*/
+.cmt-replies-toggle::before {
+  content: '';
+  position: absolute;
+  left: -1.5rem;
+  margin-left: -1px;
+  width: 2px;
+  top: -0.125rem;   /* stitch bottom of parent swipe-wrap (covers margin-top gap) */
+  bottom: 50%;      /* ends at toggle centre = small avatar's vertical centre */
+  background: rgba(26, 26, 78, 0.20);
+  border-radius: 0;
+  pointer-events: none;
+}
+.dark .cmt-replies-toggle::before {
+  background: rgba(255, 245, 225, 0.20);
+}
+/* When expanded: pass through completely so replies-list::before can start at 0 */
+.cmt-group-expanded .cmt-replies-toggle::before {
+  bottom: -0.125rem; /* covers toggle margin-bottom, meets replies-list top edge */
+}
 
 /* ?????? Stacked avatar thumbnails next to reply count ??????????????????????????????????????????????????????????????????????????? */
 .cmt-reply-avatars {
@@ -2114,8 +2145,8 @@ img.cmt-av-img {
   content: '';
   position: absolute;
   left: 0;
-  top: -2.5rem;
-  bottom: 1.375rem;
+  top: 0;           /* starts at replies-list top ??? zero overlap with toggle::before */
+  bottom: 1.375rem; /* stops at last reply's avatar centre */
   width: 2px;
   margin-left: -1px;
   background: rgba(26, 26, 78, 0.20);

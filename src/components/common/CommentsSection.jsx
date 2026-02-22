@@ -779,7 +779,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
       _hasChildren: replyCount > 0,
     }
     return (
-      <div key={comment.id} className="cmt-group">
+      <div key={comment.id} className={`cmt-group${isExpanded ? ' cmt-group-expanded' : ''}`}>
         {renderFlatComment(flatComment)}
         {replyCount > 0 && (
           <>
