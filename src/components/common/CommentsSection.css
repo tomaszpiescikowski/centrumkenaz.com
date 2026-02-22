@@ -2080,24 +2080,38 @@ img.cmt-av-img {
   the full toggle height and bridges the 0.125rem gap to .cmt-replies-list, so
   .cmt-replies-list::before can start at top:0 with zero overlap.
 */
+/* COLLAPSED: L-connector do avatara toggle (pionowy + poziomy border-bottom) */
 .cmt-replies-toggle::before {
   content: '';
   position: absolute;
-  /* left = rod_x(1.625rem-1px) - toggle_margin_left(3.5rem) = -1.875rem - 1px */
-  left: calc(-1.875rem - 3px);  /* FIX 3: -2px to align x with reply rods */
-  width: 2px;
-  top: -0.125rem;   /* stitch bottom of parent swipe-wrap (covers margin-top gap) */
-  bottom: 50%;      /* ends at toggle centre = small avatar's vertical centre */
-  background: rgba(26, 26, 78, 0.20);
-  border-radius: 0;
+  left: calc(-3px - 1.875rem);        /* -33px od toggle.left ??? x=587 */
+  top: -0.125rem;                      /* si??ga do swWrap.bottom */
+  bottom: 50%;                         /* do centrum Y avatara toggle */
+  width: calc(14px + 1.875rem);       /* 44px: do centrum X avatara toggle */
+  background: none;
+  border-left: 2px solid rgba(26, 26, 78, 0.2);
+  border-bottom: 2px solid rgba(26, 26, 78, 0.2);
+  border-bottom-left-radius: 0.5rem;
   pointer-events: none;
 }
 .dark .cmt-replies-toggle::before {
-  background: rgba(255, 245, 225, 0.20);
+  background: none;
+  border-left-color: rgba(255, 245, 225, 0.2);
+  border-bottom-color: rgba(255, 245, 225, 0.2);
 }
-/* When expanded: pass through completely so replies-list::before can start at 0 */
+/* EXPANDED: prosta pionowa linia przez toggle, bez poziomej kreski */
 .cmt-group-expanded .cmt-replies-toggle::before {
-  bottom: -0.125rem; /* covers toggle margin-bottom, meets replies-list top edge */
+  width: 2px;
+  background: rgba(26, 26, 78, 0.2);
+  border-left: none;
+  border-bottom: none;
+  border-bottom-left-radius: 0;
+  bottom: -0.125rem;
+}
+.dark .cmt-group-expanded .cmt-replies-toggle::before {
+  background: rgba(255, 245, 225, 0.2);
+  border-left: none;
+  border-bottom: none;
 }
 
 /* ?????? Stacked avatar thumbnails next to reply count ??????????????????????????????????????????????????????????????????????????? */
@@ -2204,6 +2218,14 @@ img.cmt-av-img {
 }
 .dark .cmt-replies-list > .cmt-swipe-wrap:not(:last-child)::after {
   background: rgba(255, 245, 225, 0.2);
+}
+
+/* FIX 2: Last reply needs border-left on ::before (no ::after on last-child) */
+.cmt-replies-list > .cmt-swipe-wrap:last-child::before {
+  border-left: 2px solid rgba(26, 26, 78, 0.2);
+}
+.dark .cmt-replies-list > .cmt-swipe-wrap:last-child::before {
+  border-left-color: rgba(255, 245, 225, 0.2);
 }
 
 /* Reply items flat (no background / border) */
