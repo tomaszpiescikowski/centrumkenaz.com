@@ -119,12 +119,29 @@ function Panel() {
     )
   }
 
+  const isAdmin = user?.role === 'admin'
+  const hasActiveSub = user?.subscription_end_date
+    ? new Date(user.subscription_end_date) >= new Date()
+    : false
+
   return (
     <div className="page-shell flex h-full min-h-0 flex-col gap-4 sm:gap-6">
       <div className="shrink-0">
-        <h1 className="text-2xl sm:text-3xl font-black text-navy dark:text-cream">
-          {t('nav.panel')}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl sm:text-3xl font-black text-navy dark:text-cream">
+            {t('nav.panel')}
+          </h1>
+          {isAdmin && (
+            <span className="inline-flex items-center rounded-md bg-red-500/15 px-2 py-0.5 text-xs font-black tracking-widest text-red-600 dark:bg-red-400/15 dark:text-red-400 uppercase">
+              ADMIN
+            </span>
+          )}
+          {!isAdmin && hasActiveSub && (
+            <span className="inline-flex items-center rounded-md bg-indigo-500/15 px-2 py-0.5 text-xs font-black tracking-widest text-indigo-600 dark:bg-indigo-400/15 dark:text-indigo-400 uppercase">
+              KENAZ
+            </span>
+          )}
+        </div>
         <p className="text-navy/60 dark:text-cream/60">
           {t('events.panelSubtitle')}
         </p>
