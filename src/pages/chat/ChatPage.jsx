@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext'
 import { useAuth } from '../../context/AuthContext'
@@ -18,22 +18,41 @@ function ChatPage() {
   } = useChat()
   const navigate = useNavigate()
 
-  // Hide bottom nav + tab switcher when the virtual keyboard is open (mobile PWA)
+  const cpRootRef = useRef(null)
+
+  // On mobile PWA: make the root fill the visual viewport at all times so that:
+  //   - keyboard open → root shrinks to visible area, compose box stays above keyboard
+  //   - keyboard closed → root sits between notch and bottom nav
+  //   - header always at top, scrollable list in middle, compose always at bottom
   useEffect(() => {
     const vv = window.visualViewport
     if (!vv) return
-    const baseHeight = vv.height
-    const onResize = () => {
-      if (vv.height < baseHeight - 100) {
-        document.documentElement.classList.add('kb-open')
+    const el = cpRootRef.current
+    if (!el) return
+
+    const apply = () => {
+      const kbOpen = vv.height < window.innerHeight - 100
+      document.documentElement.classList.toggle('kb-open', kbOpen)
+      if (kbOpen) {
+        // Keyboard visible — fit exactly to visual viewport so compose stays above keys
+        el.style.top = vv.offsetTop + 'px'
+        el.style.height = vv.height + 'px'
+        el.style.bottom = 'auto'
       } else {
-        document.documentElement.classList.remove('kb-open')
+        // Keyboard hidden — let CSS drive the size (position:fixed, bottom = nav height)
+        el.style.top = ''
+        el.style.height = ''
+        el.style.bottom = ''
       }
     }
-    vv.addEventListener('resize', onResize)
+
+    vv.addEventListener('resize', apply)
+    vv.addEventListener('scroll', apply)
     return () => {
-      vv.removeEventListener('resize', onResize)
+      vv.removeEventListener('resize', apply)
+      vv.removeEventListener('scroll', apply)
       document.documentElement.classList.remove('kb-open')
+      el.style.top = ''; el.style.height = ''; el.style.bottom = ''
     }
   }, [])
 
@@ -81,7 +100,7 @@ function ChatPage() {
   const activeTab = view === 'general' ? 'general' : 'events'
 
   return (
-    <div className="cp-root">
+    <div className="cp-root" ref={cpRootRef}>
       {/* ?????? Fixed header below notch ?????? */}
       <div className="cp-header">
         {view === 'event' ? (
