@@ -676,6 +676,7 @@
 .ev-scroll {
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   min-height: 0;
   scrollbar-width: thin;
   scrollbar-color: rgba(15, 23, 74, 0.12) transparent;

@@ -22,7 +22,9 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  /* NOTE: do NOT set overflow-x: hidden on body – on iOS Safari this propagates
+     to the viewport and can silently break touch-scroll on inner containers.
+     Horizontal clipping is handled by .app-shell { overflow-x: clip } instead. */
   /* Disable text selection on UI elements (not content) */
   -webkit-user-select: none;
   user-select: none;

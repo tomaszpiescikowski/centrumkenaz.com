@@ -113,7 +113,7 @@ function App() {
               <ScrollToTop />
               <div
                 key={location.pathname}
-                className="route-transition"
+                className="route-transition h-full"
               >
                 <Routes location={location}>
                   <Route path="/" element={<Home />} />
