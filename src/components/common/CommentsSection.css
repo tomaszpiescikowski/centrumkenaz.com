@@ -1425,6 +1425,7 @@ img.cmt-av-img {
 .cmt-mention-item {
   display: flex;
   align-items: center;
+  gap: 0.625rem;
   width: 100%;
   padding: 0.5rem 0.75rem;
   background: none;
@@ -1434,6 +1435,35 @@ img.cmt-av-img {
   text-align: left;
   -webkit-tap-highlight-color: transparent;
   transition: background 0.1s;
+}
+
+/* Avatar in mention dropdown */
+.cmt-mention-av {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(26, 26, 78, 0.12);
+  color: rgba(26, 26, 78, 0.70);
+}
+.dark .cmt-mention-av {
+  background: rgba(255, 245, 225, 0.12);
+  color: rgba(255, 245, 225, 0.70);
+}
+.cmt-mention-av img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cmt-mention-av-fallback {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  line-height: 1;
+  color: inherit;
 }
 
 .cmt-mention-item:last-child {

@@ -89,6 +89,8 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const [mentionResults, setMentionResults] = useState([])
   const [mentionCursorPos, setMentionCursorPos] = useState(0)
   const newTextareaRef = useRef(null)
+  // Maps displayed @Name → userId for converting back to tokens on submit
+  const mentionMapRef = useRef({})
 
   const activeTab = externalTab ?? internalTab
   const setActiveTab = onTabChange ?? setInternalTab
@@ -216,11 +218,26 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     }
   }, [user])
 
+  // Convert display text (@Name) back to storage tokens (@[Name|id]) before sending
+  const convertMentions = useCallback((text) => {
+    const map = mentionMapRef.current
+    if (!text || Object.keys(map).length === 0) return text
+    // Longest name first to avoid partial collisions
+    const names = Object.keys(map).sort((a, b) => b.length - a.length)
+    let result = text
+    for (const name of names) {
+      const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      result = result.replace(new RegExp(`@${escaped}`, 'g'), `@[${name}|${map[name]}]`)
+    }
+    return result
+  }, [])
+
   const insertMention = useCallback((mentionUser) => {
     const before = newContent.slice(0, mentionCursorPos)
     const after = newContent.slice(mentionCursorPos + 1 + (mentionQuery || '').length)
-    const token = `@[${mentionUser.full_name}|${mentionUser.id}]`
-    const next = `${before}${token} ${after}`
+    // Store the display-friendly @Name (not raw token) in the textarea
+    mentionMapRef.current[mentionUser.full_name] = mentionUser.id
+    const next = `${before}@${mentionUser.full_name} ${after}`
     setNewContent(next)
     setMentionQuery(null)
     setMentionResults([])
@@ -280,8 +297,9 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     setSubmitting(true)
     setError(null)
     try {
-      await createComment(currentResourceType, currentResourceId, authFetch, { content: newContent.trim() })
+      await createComment(currentResourceType, currentResourceId, authFetch, { content: convertMentions(newContent.trim()) })
       setNewContent('')
+      mentionMapRef.current = {}
       await reloadCurrent()
       requestAnimationFrame(scrollToBottom)
     } catch (err) {
@@ -818,6 +836,12 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
                   onMouseDown={(e) => { e.preventDefault(); insertMention(u) }}
                   onTouchEnd={(e) => { e.preventDefault(); insertMention(u) }}
                 >
+                  <span className="cmt-mention-av">
+                    {u.picture_url
+                      ? <img src={u.picture_url} alt={u.full_name} />
+                      : <span className="cmt-mention-av-fallback">{initials(u.full_name)}</span>
+                    }
+                  </span>
                   <span className="cmt-mention-name">{u.full_name}</span>
                 </button>
               ))}
