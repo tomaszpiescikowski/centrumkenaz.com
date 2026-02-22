@@ -638,7 +638,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
             </Link>
             <div className="cmt-meta">
               <Link to={`/people/${item.author.id}`} className="cmt-author">{item.author.full_name}</Link>
-              {item.author?.is_member && <span className="cmt-member-badge">??? Cz??onek</span>}
+              {item.author?.is_member && <span className="cmt-member-badge">Członek</span>}
               <span className="cmt-time">{formatTime(item.created_at)}</span>
               {item.updated_at && !item.is_deleted && <span className="cmt-edited">{t('comments.edited')}</span>}
             </div>
@@ -728,6 +728,15 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const renderCommentGroup = (comment) => {
     const replyCount = comment.replies?.length ?? 0
     const isExpanded = expandedReplies.has(comment.id)
+    // Collect up to 3 unique reply authors for avatar stack
+    const replyAvatars = []
+    const seenIds = new Set()
+    for (const r of (comment.replies || [])) {
+      if (!seenIds.has(r.author?.id) && replyAvatars.length < 3) {
+        seenIds.add(r.author?.id)
+        if (r.author) replyAvatars.push(r.author)
+      }
+    }
     const flatComment = {
       ...comment,
       _depth: 0,
@@ -744,9 +753,21 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
               className="cmt-replies-toggle"
               onClick={() => toggleReplies(comment.id)}
             >
-              ??? {isExpanded
-                ? `Ukryj ${replyCount === 1 ? 'odpowied??' : 'odpowiedzi'}`
-                : `${replyCount} ${replyCount === 1 ? 'odpowied??' : 'odpowiedzi'}`}
+              <span className="cmt-reply-avatars">
+                {replyAvatars.map((a, i) => (
+                  <span key={a.id} className="cmt-reply-av" style={{ zIndex: replyAvatars.length - i }}>
+                    {a.picture_url
+                      ? <img src={a.picture_url} alt={a.full_name} />
+                      : <span>{initials(a.full_name)}</span>
+                    }
+                  </span>
+                ))}
+              </span>
+              <span>
+                {isExpanded
+                  ? 'Ukryj'
+                  : `${replyCount} ${replyCount === 1 ? 'odpowiedź' : 'odpowiedzi'}`}
+              </span>
             </button>
             {isExpanded && (
               <div className="cmt-replies-list">
@@ -880,7 +901,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
             {/* Load older messages button */}
             {hasMoreOlder && (
               <button className="cmt-load-older" onClick={loadOlderMessages} disabled={loadingOlder}>
-                {loadingOlder ? '???' : '??? Za??aduj starsze wiadomo??ci'}
+                {loadingOlder ? '...' : 'Starsze wiadomości'}
               </button>
             )}
             {/* Spacer pushes messages to bottom when list is short */}
