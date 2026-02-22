@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 
-const GATED_PATHS = new Set(['/calendar', '/panel'])
+const GATED_PATHS = new Set(['/calendar', '/panel', '/chat'])
 
 function PendingApprovalOverlay() {
   const { isAuthenticated, user, login } = useAuth()

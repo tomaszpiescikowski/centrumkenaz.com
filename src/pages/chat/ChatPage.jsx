@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext'
 import { useAuth } from '../../context/AuthContext'
 import { useChat } from '../../context/ChatContext'
@@ -10,7 +10,7 @@ import '../../components/common/CommentsSection.css'
 
 function ChatPage() {
   const { t, currentLanguage } = useLanguage()
-  const { isAuthenticated, user, authFetch, login } = useAuth()
+  const { isAuthenticated, user, authFetch } = useAuth()
 
   const isPendingApproval = isAuthenticated && user?.account_status !== 'active'
   const {
@@ -101,44 +101,72 @@ function ChatPage() {
 
   const activeTab = view === 'general' ? 'general' : 'events'
 
-  // Guard: unauthenticated or pending-approval users see a message instead of chat
-  // (placed after all hooks to comply with React's Rules of Hooks)
+  // Blurred mock for unauthenticated / pending-approval users.
+  // PendingApprovalOverlay (Layout) renders the login / pending card on top.
   if (!isAuthenticated || isPendingApproval) {
+    const mockMsgs = [
+      { initials: 'KN', name: 'Kasia Nowak',      time: '08:12', text: 'Hej, czy sala A będzie dostępna jutro rano? 🏋️' },
+      { initials: 'TM', name: 'Tomek Malinowski', time: '08:15', text: 'Tak, od 7:00 do 9:30 – sprawdziłem w grafiku 👍' },
+      { initials: 'AL', name: 'Ana Lima',          time: '08:45', text: 'Świetne zajęcia wczoraj 🔥 Zobaczymy się w środę!' },
+      { initials: 'MW', name: 'Marek Wiśniewski', time: '09:02', text: 'Pamiętajcie o warsztacie Wim Hof w niedzielę – miejsca się kończą!' },
+      { initials: 'KN', name: 'Kasia Nowak',      time: '09:05', text: 'Już zapisana! Do zobaczenia 🙌' },
+    ]
     return (
       <div className="cp-root" ref={cpRootRef}>
-        <div className="flex h-full items-center justify-center p-6">
-          <div className="mx-auto w-full max-w-md rounded-2xl border border-navy/20 bg-cream/85 p-6 text-center shadow-xl dark:border-cream/20 dark:bg-navy/85 backdrop-blur-sm">
-            {isPendingApproval ? (
-              <>
-                <p className="text-xl font-black text-navy dark:text-cream">
-                  {t('comments.pendingRequiredTitle')}
-                </p>
-                <p className="mt-2 text-navy/80 dark:text-cream/80">
-                  {t('comments.pendingRequiredBody')}
-                </p>
-                <Link
-                  to="/pending-approval"
-                  className="btn-primary mt-4 inline-block px-6 py-3 font-bold"
-                >
-                  {t('comments.pendingRequiredButton')}
-                </Link>
-              </>
-            ) : (
-              <>
-                <p className="text-xl font-black text-navy dark:text-cream">
-                  {t('comments.loginRequiredTitle')}
-                </p>
-                <p className="mt-2 text-navy/80 dark:text-cream/80">
-                  {t('comments.loginRequiredBody')}
-                </p>
-                <button
-                  onClick={() => login({ returnTo: '/chat' })}
-                  className="btn-primary mt-4 px-6 py-3 font-bold"
-                >
-                  {t('comments.loginRequiredButton')}
-                </button>
-              </>
-            )}
+        <div className="pointer-events-none select-none blur-[3px] flex h-full flex-col overflow-hidden">
+          {/* Header */}
+          <div className="cp-header">
+            <div className="cp-tabs">
+              <button className="cp-tab cp-tab-active">{t('comments.tabGeneral')}</button>
+              <button className="cp-tab">{t('comments.tabEvents')}</button>
+            </div>
+          </div>
+
+          {/* Body – messenger mock */}
+          <div className="cp-body">
+            <div className="cmt-section cmt-messenger">
+              <div className="cmt-list cmt-list-messenger">
+                <div className="cmt-list-spacer" />
+                {mockMsgs.map((m, i) => (
+                  <div key={i} className="cmt-item">
+                    <div className="cmt-item-body">
+                      <div className="cmt-header">
+                        <div className="cmt-avatar-link">
+                          <div className="cmt-av-wrap">
+                            <div className="cmt-av">{m.initials}</div>
+                          </div>
+                        </div>
+                        <div className="cmt-meta">
+                          <span className="cmt-author">{m.name}</span>
+                          <span className="cmt-time">{m.time}</span>
+                        </div>
+                      </div>
+                      <div className="cmt-content">{m.text}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Mock compose bar */}
+              <div className="cmt-new-form">
+                <div className="cmt-new-row">
+                  <div className="cmt-input-wrap cmt-input-wrap-messenger">
+                    <textarea
+                      className="cmt-input cmt-input-new cmt-input-messenger"
+                      rows={1}
+                      readOnly
+                      placeholder={t('comments.placeholder')}
+                    />
+                  </div>
+                  <button type="button" className="cmt-btn cmt-btn-primary" disabled>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="22" y1="2" x2="11" y2="13" />
+                      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
