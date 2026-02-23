@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { useAuth } from '../../context/AuthContext'
 import { useChat } from '../../context/ChatContext'
@@ -78,6 +78,35 @@ function MobileBottomNav() {
   const location = useLocation()
   const navigate = useNavigate()
   const [feedbackOpen, setFeedbackOpen] = useState(false)
+  const navRef = useRef(null)
+
+  // Belt-and-suspenders fix for iOS Safari: when overflow-x is `hidden` on
+  // <html> (Safari < 16 fallback), iOS treats <html> as a scroll container
+  // and anchors position:fixed elements to it. Keyboard open/close can leave
+  // the html.scrollTop at a non-zero value, making the nav appear shifted up.
+  // We listen to visualViewport changes and correct style.bottom so the nav
+  // always sits at the true visual viewport bottom.
+  useEffect(() => {
+    const vv = window.visualViewport
+    const el = navRef.current
+    if (!vv || !el) return
+
+    const correct = () => {
+      // How many px the visual viewport bottom is above the layout viewport bottom.
+      // Normally 0; becomes positive when html has been internally scrolled by
+      // the browser (keyboard focus, etc.).
+      const surplus = window.innerHeight - vv.offsetTop - vv.height
+      el.style.bottom = surplus > 0 ? `${surplus}px` : ''
+    }
+
+    vv.addEventListener('resize', correct)
+    vv.addEventListener('scroll', correct)
+    return () => {
+      vv.removeEventListener('resize', correct)
+      vv.removeEventListener('scroll', correct)
+      if (el) el.style.bottom = ''
+    }
+  }, [])
 
   if (location.pathname.startsWith('/auth/')) return null
 
@@ -152,6 +181,7 @@ function MobileBottomNav() {
       </svg>
     </button>
     <nav
+      ref={navRef}
       data-kb-hide
       className="fixed inset-x-0 bottom-0 z-50 border-t border-navy/10 bg-cream dark:border-cream/10 dark:bg-navy sm:hidden"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}

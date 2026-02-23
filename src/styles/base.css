@@ -9,8 +9,16 @@ body,
 html {
   /* Prevent pull-to-refresh in standalone PWA */
   overscroll-behavior-y: contain;
-  /* Block horizontal scroll at the viewport level (safe on iOS Safari, unlike body) */
-  overflow-x: hidden;
+  /* Block horizontal scroll at the viewport level.
+     IMPORTANT: use `clip`, not `hidden`.
+     overflow-x:hidden turns <html> into a scroll container on iOS Safari,
+     which causes position:fixed children to anchor to the scrolled <html>
+     element instead of the viewport — the bottom nav then drifts up whenever
+     the keyboard opens/closes. `clip` stops overflow without creating a
+     scrollable container, fixing the drift.  Falls back to `hidden` on
+     Safari < 16 (same behaviour as before, but those versions are rare). */
+  overflow-x: hidden;  /* Safari < 16 fallback */
+  overflow-x: clip;    /* preferred — does NOT create a scroll container */
   /* Background color visible behind overscroll / pull-to-refresh */
   background-color: #FFF5E1;
 }
