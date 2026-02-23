@@ -16,7 +16,6 @@ const MOBILE_APP_SHELL_PATHS = new Set([
   '/me',
   '/plans',
   '/pending-approval',
-  '/login',
 ])
 
 function Layout({ children, darkMode, setDarkMode }) {
