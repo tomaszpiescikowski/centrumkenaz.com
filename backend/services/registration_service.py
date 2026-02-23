@@ -265,16 +265,22 @@ class RegistrationService:
         event = await self.get_event_with_registrations(event_id)
         if not event:
             raise EventNotFoundError(f"Event {event_id} not found")
-        resolved_occurrence_date = self._resolve_occurrence_date(event, occurrence_date)
+
+        # When occurrence_date is explicitly provided, scope to that date.
+        # Otherwise skip the date filter so reschedules/timezone shifts never
+        # hide already-enrolled participants.
+        where_clauses_bp = [
+            legacy_id_eq(Registration.event_id, event_id),
+            Registration.status == status,
+        ]
+        if occurrence_date is not None:
+            resolved_occurrence_date = self._resolve_occurrence_date(event, occurrence_date)
+            where_clauses_bp.append(Registration.occurrence_date == resolved_occurrence_date)
 
         stmt = (
             select(Registration)
             .options(joinedload(Registration.user).joinedload(User.subscription))
-            .where(
-                legacy_id_eq(Registration.event_id, event_id),
-                Registration.occurrence_date == resolved_occurrence_date,
-                Registration.status == status,
-            )
+            .where(*where_clauses_bp)
             .order_by(Registration.created_at)
         )
         result = await self.db.execute(stmt)
@@ -329,7 +335,6 @@ class RegistrationService:
         event = await self.get_event_with_registrations(event_id)
         if not event:
             raise EventNotFoundError(f"Event {event_id} not found")
-        resolved_occurrence_date = self._resolve_occurrence_date(event, occurrence_date)
 
         spot_statuses = [
             RegistrationStatus.CONFIRMED.value,
@@ -337,14 +342,24 @@ class RegistrationService:
             RegistrationStatus.MANUAL_PAYMENT_REQUIRED.value,
             RegistrationStatus.MANUAL_PAYMENT_VERIFICATION.value,
         ]
+
+        # When occurrence_date is explicitly provided, scope to that date.
+        # When it is None (the common case for single-occurrence events on the
+        # event-detail page), skip the date filter entirely so that registrations
+        # whose occurrence_date was written before a start_date reschedule are
+        # still returned correctly.
+        where_clauses = [
+            legacy_id_eq(Registration.event_id, event_id),
+            Registration.status.in_(spot_statuses),
+        ]
+        if occurrence_date is not None:
+            resolved_occurrence_date = self._resolve_occurrence_date(event, occurrence_date)
+            where_clauses.append(Registration.occurrence_date == resolved_occurrence_date)
+
         stmt = (
             select(Registration)
             .options(joinedload(Registration.user).joinedload(User.subscription))
-            .where(
-                legacy_id_eq(Registration.event_id, event_id),
-                Registration.occurrence_date == resolved_occurrence_date,
-                Registration.status.in_(spot_statuses),
-            )
+            .where(*where_clauses)
             .order_by(Registration.created_at)
         )
         result = await self.db.execute(stmt)
@@ -426,17 +441,24 @@ class RegistrationService:
 
         resolved_occurrence_date = self._resolve_occurrence_date(event, occurrence_date)
 
+        # When occurrence_date is explicitly requested, scope counts to that
+        # date. Otherwise (the common single-occurrence event-page case) count
+        # ALL registrations for the event so that reschedules or timezone edge-
+        # cases don't silently drop participants from the availability badge.
+        def _matches(r: Registration) -> bool:
+            return occurrence_date is None or r.occurrence_date == resolved_occurrence_date
+
         confirmed_count = len([
             r for r in event.registrations
-            if r.status == RegistrationStatus.CONFIRMED.value and r.occurrence_date == resolved_occurrence_date
+            if r.status == RegistrationStatus.CONFIRMED.value and _matches(r)
         ])
         occupied_count = len([
             r for r in event.registrations
-            if self._occupies_spot(r.status) and r.occurrence_date == resolved_occurrence_date
+            if self._occupies_spot(r.status) and _matches(r)
         ])
         waitlist_count = len([
             r for r in event.registrations
-            if r.status == RegistrationStatus.WAITLIST.value and r.occurrence_date == resolved_occurrence_date
+            if r.status == RegistrationStatus.WAITLIST.value and _matches(r)
         ])
 
         return {
