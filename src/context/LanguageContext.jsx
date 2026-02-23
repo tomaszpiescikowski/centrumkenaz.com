@@ -4,10 +4,33 @@ import { languages, defaultLanguage, getTranslation } from '../languages'
 const LanguageContext = createContext()
 const LANGUAGE_STORAGE_KEY = 'kenaz.language'
 
+/**
+ * Maps app language codes to BCP47 locale tags that use 24-hour clock format.
+ * This is critical for <input type="datetime-local"> — browsers use the <html lang>
+ * attribute to decide whether to render a 12h (AM/PM) or 24h time picker.
+ * Notably, "en" alone may be interpreted as en-US (12h) by some browsers,
+ * so we explicitly map it to "en-GB" (24h).
+ */
+const LANG_TO_HTML_LOCALE = {
+  pl: 'pl-PL',
+  en: 'en-GB',
+  zh: 'zh-CN',
+  nl: 'nl-NL',
+  it: 'it-IT',
+  szl: 'pl-PL', // Silesian — no standard BCP47 region; fall back to Polish locale
+}
+
+function applyHtmlLang(langCode) {
+  const htmlLocale = LANG_TO_HTML_LOCALE[langCode] || 'pl-PL'
+  document.documentElement.lang = htmlLocale
+}
+
 export function LanguageProvider({ children }) {
   const [currentLanguage, setCurrentLanguage] = useState(() => {
     const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY)
-    return stored && languages[stored] ? stored : defaultLanguage
+    const resolved = stored && languages[stored] ? stored : defaultLanguage
+    applyHtmlLang(resolved)
+    return resolved
   })
 
   const t = useCallback((path, params = null) => {
@@ -23,6 +46,7 @@ export function LanguageProvider({ children }) {
     if (languages[langCode]) {
       setCurrentLanguage(langCode)
       localStorage.setItem(LANGUAGE_STORAGE_KEY, langCode)
+      applyHtmlLang(langCode)
     }
   }, [])
 

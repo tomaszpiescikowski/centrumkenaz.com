@@ -110,16 +110,22 @@ function EventDetail() {
     refreshRegisteredIds()
   }, [refreshRegisteredIds])
 
-  // Fetch participants, waitlist, and availability
+  // Fetch participants, waitlist, and availability.
+  // Depends on event?.id (not the whole event object) so that editing event
+  // metadata (e.g. max_participants) does not re-trigger this effect and
+  // accidentally clear the participant list while re-fetching.
+  // Availability is fetched separately so that its failure never wipes the
+  // participants/waitlist state.
   useEffect(() => {
-    if (!event || !isAuthenticated || userAccountStatus !== 'active') return
+    if (!event?.id || !isAuthenticated || userAccountStatus !== 'active') return
     let cancelled = false
+    const eventId = event.id
     const loadSidebar = async () => {
+      // Participants and waitlist — fetched together; failure clears both
       try {
-        const [pRes, wRes, aData] = await Promise.all([
-          authFetch(`${API_URL}/events/${event.id}/participants`),
-          authFetch(`${API_URL}/events/${event.id}/waitlist`),
-          fetchEventAvailability(event.id, authFetch),
+        const [pRes, wRes] = await Promise.all([
+          authFetch(`${API_URL}/events/${eventId}/participants`),
+          authFetch(`${API_URL}/events/${eventId}/waitlist`),
         ])
         const pData = pRes.ok ? await pRes.json() : []
         const wData = wRes.ok ? await wRes.json() : []
@@ -127,19 +133,27 @@ function EventDetail() {
           setParticipants(pData)
           setParticipantCount(pData.length)
           setWaitlist(wData)
-          setAvailability(aData)
         }
       } catch (_err) {
         if (!cancelled) {
           setParticipants([])
           setWaitlist([])
-          setAvailability(null)
         }
+      }
+
+      // Availability — fetched independently so its failure never affects the
+      // participants/waitlist state above.
+      try {
+        const aData = await fetchEventAvailability(eventId, authFetch)
+        if (!cancelled) setAvailability(aData)
+      } catch (_err) {
+        if (!cancelled) setAvailability(null)
       }
     }
     loadSidebar()
     return () => { cancelled = true }
-  }, [event, participantsRefreshKey, isAuthenticated, userAccountStatus, authFetch])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [event?.id, participantsRefreshKey, isAuthenticated, userAccountStatus, authFetch])
 
   useEffect(() => {
     if (!event) return
