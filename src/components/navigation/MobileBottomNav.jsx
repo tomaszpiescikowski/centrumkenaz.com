@@ -92,11 +92,21 @@ function MobileBottomNav() {
     if (!vv || !el) return
 
     const correct = () => {
-      // How many px the visual viewport bottom is above the layout viewport bottom.
-      // Normally 0; becomes positive when html has been internally scrolled by
-      // the browser (keyboard focus, etc.).
-      const surplus = window.innerHeight - vv.offsetTop - vv.height
-      el.style.bottom = surplus > 0 ? `${surplus}px` : ''
+      const kbOpen = vv.height < window.innerHeight - 100
+
+      // Toggle global kb-open class so CSS reacts on every page, not just ChatPage.
+      document.documentElement.classList.toggle('kb-open', kbOpen)
+
+      if (kbOpen) {
+        // Keyboard is open — CSS will slide the nav out via transform.
+        // Clear any bottom correction so they don't fight each other.
+        el.style.bottom = ''
+      } else {
+        // Keyboard closed — apply bottom correction for older Safari where
+        // html.scrollTop can be left at a non-zero value after keyboard dismiss.
+        const surplus = window.innerHeight - vv.offsetTop - vv.height
+        el.style.bottom = surplus > 0 ? `${surplus}px` : ''
+      }
     }
 
     vv.addEventListener('resize', correct)
@@ -104,6 +114,7 @@ function MobileBottomNav() {
     return () => {
       vv.removeEventListener('resize', correct)
       vv.removeEventListener('scroll', correct)
+      document.documentElement.classList.remove('kb-open')
       if (el) el.style.bottom = ''
     }
   }, [])
@@ -184,7 +195,7 @@ function MobileBottomNav() {
       ref={navRef}
       data-kb-hide
       className="fixed inset-x-0 bottom-0 z-50 border-t border-navy/10 bg-cream dark:border-cream/10 dark:bg-navy sm:hidden"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)', transition: 'transform 0.25s ease, bottom 0.25s ease' }}
     >
       <div className="flex items-end">
         {navItems.map((item) => (

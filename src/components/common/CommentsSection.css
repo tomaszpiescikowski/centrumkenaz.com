@@ -2320,8 +2320,10 @@ img.cmt-av-img {
 }
 
 /* ── Keyboard-open: hide tab switcher + mobile bottom nav ───────────────── */
+/* cp-header hides instantly (it's inside the chat flex layout, no animation needed) */
 .kb-open .cp-header      { display: none !important; }
-.kb-open [data-kb-hide]  { display: none !important; }
+/* Bottom nav slides down smoothly (transition defined on the element itself) */
+.kb-open [data-kb-hide]  { transform: translateY(110%); }
 
 /* ── Reply banner (messenger mode: replying to a comment) ───────────────── */
 .cmt-reply-banner {
