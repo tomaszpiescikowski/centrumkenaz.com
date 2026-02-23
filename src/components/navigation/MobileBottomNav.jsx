@@ -82,36 +82,47 @@ function MobileBottomNav() {
 
   // Single owner of keyboard-state for the whole PWA:
   // - Toggles html.kb-open so ChatPage can react (cp-root layout).
-  // - Animates the nav slide-out/in via JS style.transform so there is one
-  //   authoritative source of truth and no CSS-class race conditions.
+  // - Animates the nav slide-out/in via JS style.transform.
+  //
+  // Key implementation notes:
+  // - Only `resize` is used for keyboard detection (not `scroll`).
+  //   The scroll event fires during keyboard animation and interrupts the
+  //   transition before it completes — removing it lets the animation run.
+  // - State is tracked (prevKbOpen) so the transform is only updated when
+  //   it actually changes, preventing mid-animation flickers.
+  // - requestAnimationFrame defers the transform change by one paint tick,
+  //   which is required on iOS Safari for CSS transitions to fire: the browser
+  //   needs to see the "from" state rendered before the "to" state is set.
   useEffect(() => {
     const vv = window.visualViewport
     const el = navRef.current
     if (!vv || !el) return
 
-    // Drive the nav transform in JS so there's a single, authoritative
-    // source of truth — no CSS-class race conditions between ChatPage and
-    // MobileBottomNav listeners, no surplus-correction fighting the transform.
-    el.style.transition = 'transform 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+    el.style.transition = 'transform 0.3s ease'
+
+    let prevKbOpen = false
+    let rafId = null
 
     const apply = () => {
-      // Keyboard is open when the visual viewport shrinks by more than 100px
-      // below the layout viewport height (works on iOS and Android).
-      const kbOpen = vv.height < window.innerHeight - 100
+      const kbOpen = vv.height < window.innerHeight - 120
 
-      // MobileBottomNav is the single owner of kb-open — ChatPage reads it
-      // for its own layout adjustments but never writes it.
+      if (kbOpen === prevKbOpen) return  // nothing changed, don't interrupt ongoing animation
+      prevKbOpen = kbOpen
+
       document.documentElement.classList.toggle('kb-open', kbOpen)
 
-      // Slide the nav off-screen when keyboard is open, back in when closed.
-      el.style.transform = kbOpen ? 'translateY(110%)' : ''
+      // Cancel any pending frame from a previous rapid event
+      if (rafId !== null) cancelAnimationFrame(rafId)
+      rafId = requestAnimationFrame(() => {
+        rafId = null
+        el.style.transform = kbOpen ? 'translateY(110%)' : ''
+      })
     }
 
     vv.addEventListener('resize', apply)
-    vv.addEventListener('scroll', apply)
     return () => {
       vv.removeEventListener('resize', apply)
-      vv.removeEventListener('scroll', apply)
+      if (rafId !== null) cancelAnimationFrame(rafId)
       document.documentElement.classList.remove('kb-open')
       el.style.transition = ''
       el.style.transform = ''
