@@ -80,42 +80,41 @@ function MobileBottomNav() {
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const navRef = useRef(null)
 
-  // Belt-and-suspenders fix for iOS Safari: when overflow-x is `hidden` on
-  // <html> (Safari < 16 fallback), iOS treats <html> as a scroll container
-  // and anchors position:fixed elements to it. Keyboard open/close can leave
-  // the html.scrollTop at a non-zero value, making the nav appear shifted up.
-  // We listen to visualViewport changes and correct style.bottom so the nav
-  // always sits at the true visual viewport bottom.
+  // Single owner of keyboard-state for the whole PWA:
+  // - Toggles html.kb-open so ChatPage can react (cp-root layout).
+  // - Animates the nav slide-out/in via JS style.transform so there is one
+  //   authoritative source of truth and no CSS-class race conditions.
   useEffect(() => {
     const vv = window.visualViewport
     const el = navRef.current
     if (!vv || !el) return
 
-    const correct = () => {
+    // Drive the nav transform in JS so there's a single, authoritative
+    // source of truth — no CSS-class race conditions between ChatPage and
+    // MobileBottomNav listeners, no surplus-correction fighting the transform.
+    el.style.transition = 'transform 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+
+    const apply = () => {
+      // Keyboard is open when the visual viewport shrinks by more than 100px
+      // below the layout viewport height (works on iOS and Android).
       const kbOpen = vv.height < window.innerHeight - 100
 
-      // Toggle global kb-open class so CSS reacts on every page, not just ChatPage.
+      // MobileBottomNav is the single owner of kb-open — ChatPage reads it
+      // for its own layout adjustments but never writes it.
       document.documentElement.classList.toggle('kb-open', kbOpen)
 
-      if (kbOpen) {
-        // Keyboard is open — CSS will slide the nav out via transform.
-        // Clear any bottom correction so they don't fight each other.
-        el.style.bottom = ''
-      } else {
-        // Keyboard closed — apply bottom correction for older Safari where
-        // html.scrollTop can be left at a non-zero value after keyboard dismiss.
-        const surplus = window.innerHeight - vv.offsetTop - vv.height
-        el.style.bottom = surplus > 0 ? `${surplus}px` : ''
-      }
+      // Slide the nav off-screen when keyboard is open, back in when closed.
+      el.style.transform = kbOpen ? 'translateY(110%)' : ''
     }
 
-    vv.addEventListener('resize', correct)
-    vv.addEventListener('scroll', correct)
+    vv.addEventListener('resize', apply)
+    vv.addEventListener('scroll', apply)
     return () => {
-      vv.removeEventListener('resize', correct)
-      vv.removeEventListener('scroll', correct)
+      vv.removeEventListener('resize', apply)
+      vv.removeEventListener('scroll', apply)
       document.documentElement.classList.remove('kb-open')
-      if (el) el.style.bottom = ''
+      el.style.transition = ''
+      el.style.transform = ''
     }
   }, [])
 
@@ -195,7 +194,7 @@ function MobileBottomNav() {
       ref={navRef}
       data-kb-hide
       className="fixed inset-x-0 bottom-0 z-50 border-t border-navy/10 bg-cream dark:border-cream/10 dark:bg-navy sm:hidden"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom)', transition: 'transform 0.25s ease, bottom 0.25s ease' }}
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       <div className="flex items-end">
         {navItems.map((item) => (

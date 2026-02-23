@@ -33,8 +33,11 @@ function ChatPage() {
     if (!el) return
 
     const apply = () => {
+      // MobileBottomNav owns the kb-open class globally — do NOT toggle it here
+      // (duplicate toggling caused a race condition: ChatPage cleanup removed the
+      // class on unmount just as MobileBottomNav's listener re-added it, leaving
+      // the nav transform permanently stuck in the slid-out position).
       const kbOpen = vv.height < window.innerHeight - 100
-      document.documentElement.classList.toggle('kb-open', kbOpen)
       if (kbOpen) {
         // Keyboard visible — fit exactly to visual viewport so compose stays above keys
         el.style.top = vv.offsetTop + 'px'
@@ -53,7 +56,7 @@ function ChatPage() {
     return () => {
       vv.removeEventListener('resize', apply)
       vv.removeEventListener('scroll', apply)
-      document.documentElement.classList.remove('kb-open')
+      // Do NOT touch kb-open here — MobileBottomNav will clear it when vv.resize fires
       el.style.top = ''; el.style.height = ''; el.style.bottom = ''
     }
   }, [])

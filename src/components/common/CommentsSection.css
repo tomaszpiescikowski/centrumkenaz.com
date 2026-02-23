@@ -2319,11 +2319,10 @@ img.cmt-av-img {
   height: auto; /* override the height:100% – flex:1+min-height:0 is correct */
 }
 
-/* ── Keyboard-open: hide tab switcher + mobile bottom nav ───────────────── */
-/* cp-header hides instantly (it's inside the chat flex layout, no animation needed) */
+/* ── Keyboard-open: hide chat tab switcher ──────────────────────────────── */
+/* cp-header hides instantly (inside the flex layout, no animation needed) */
 .kb-open .cp-header      { display: none !important; }
-/* Bottom nav slides down smoothly (transition defined on the element itself) */
-.kb-open [data-kb-hide]  { transform: translateY(110%); }
+/* [data-kb-hide] (MobileBottomNav) is animated via JS style.transform — no CSS rule needed */
 
 /* ── Reply banner (messenger mode: replying to a comment) ───────────────── */
 .cmt-reply-banner {
