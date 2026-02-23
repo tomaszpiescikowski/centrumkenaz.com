@@ -84,15 +84,13 @@ function MobileBottomNav() {
   // - Toggles html.kb-open so ChatPage can react (cp-root layout).
   // - Animates the nav slide-out/in via JS style.transform.
   //
-  // Key implementation notes:
-  // - Only `resize` is used for keyboard detection (not `scroll`).
-  //   The scroll event fires during keyboard animation and interrupts the
-  //   transition before it completes — removing it lets the animation run.
-  // - State is tracked (prevKbOpen) so the transform is only updated when
-  //   it actually changes, preventing mid-animation flickers.
-  // - requestAnimationFrame defers the transform change by one paint tick,
-  //   which is required on iOS Safari for CSS transitions to fire: the browser
-  //   needs to see the "from" state rendered before the "to" state is set.
+  // Platform difference:
+  // - iOS Safari: window.innerHeight stays fixed when keyboard opens;
+  //   only visualViewport.height shrinks. So vv.height < window.innerHeight works.
+  // - Android Chrome: BOTH window.innerHeight AND vv.height shrink together
+  //   when the keyboard opens. Their difference stays near 0, so comparing
+  //   the two is useless. Fix: capture the full height at mount time (before
+  //   any keyboard can appear) and always compare vv.height against that.
   useEffect(() => {
     const vv = window.visualViewport
     const el = navRef.current
@@ -100,11 +98,19 @@ function MobileBottomNav() {
 
     el.style.transition = 'transform 0.3s ease'
 
+    // Capture the full-screen height before any keyboard opens.
+    // Math.max handles the case where this fires slightly after a soft
+    // keyboard is already up (e.g. hot-reload during development).
+    const fullHeight = Math.max(vv.height, window.innerHeight)
+
     let prevKbOpen = false
     let rafId = null
 
     const apply = () => {
-      const kbOpen = vv.height < window.innerHeight - 120
+      // Keyboard is open when the visual viewport is significantly shorter
+      // than the original full-screen height. 120px threshold avoids false
+      // positives from browser chrome resize (address bar hide/show).
+      const kbOpen = vv.height < fullHeight - 120
 
       if (kbOpen === prevKbOpen) return  // nothing changed, don't interrupt ongoing animation
       prevKbOpen = kbOpen

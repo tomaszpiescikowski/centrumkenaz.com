@@ -32,12 +32,14 @@ function ChatPage() {
     const el = cpRootRef.current
     if (!el) return
 
+    // Capture full height at mount (before keyboard). Needed for Android Chrome
+    // where window.innerHeight also shrinks when keyboard opens, making a
+    // live comparison of vv.height vs window.innerHeight always near 0.
+    const fullHeight = Math.max(vv.height, window.innerHeight)
+
     const apply = () => {
-      // MobileBottomNav owns the kb-open class globally — do NOT toggle it here
-      // (duplicate toggling caused a race condition: ChatPage cleanup removed the
-      // class on unmount just as MobileBottomNav's listener re-added it, leaving
-      // the nav transform permanently stuck in the slid-out position).
-      const kbOpen = vv.height < window.innerHeight - 100
+      // MobileBottomNav owns the kb-open class globally — do NOT toggle it here.
+      const kbOpen = vv.height < fullHeight - 120
       if (kbOpen) {
         // Keyboard visible — fit exactly to visual viewport so compose stays above keys
         el.style.top = vv.offsetTop + 'px'
