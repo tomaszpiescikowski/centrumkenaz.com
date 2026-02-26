@@ -681,6 +681,7 @@ function AdminManualPayments() {
       user_sort: `${row.user_name || ''} ${row.user_email || ''}`,
       amount_value: parseAmount(row.total_amount),
       status_label: t(`account.statuses.${row.status}`) || row.status,
+      plan_label: t(`plans.plan.${row.plan_code}.title`) || row.plan_label || row.plan_code,
     })),
     [subscriptionPurchases, t]
   )
