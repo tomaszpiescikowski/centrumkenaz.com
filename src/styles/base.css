@@ -36,6 +36,9 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Native-app feel: disable text selection everywhere … */
+  user-select: none;
+  -webkit-user-select: none;
   /* NOTE: do NOT set overflow-x: hidden on body – on iOS Safari this propagates
      to the viewport and can silently break touch-scroll on inner containers.
      Horizontal clipping is handled by .app-shell { overflow-x: clip } instead. */
@@ -52,10 +55,10 @@ body {
   padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
 }
 
-/* Allow text selection inside actual content areas */
-p, span, h1, h2, h3, h4, h5, h6,
-article, section, blockquote, pre, code,
-.selectable {
+/* … but re-enable inside editable form fields so users can still
+   type, copy/paste and interact normally with text inputs */
+input, textarea, [contenteditable="true"],
+input:focus, textarea:focus {
   -webkit-user-select: text;
   user-select: text;
 }
