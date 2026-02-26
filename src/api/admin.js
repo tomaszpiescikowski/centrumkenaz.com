@@ -156,3 +156,16 @@ export async function fetchAdminBalance(authFetch, period) {
   }
   return safeJson(response)
 }
+
+export async function promoteUserToAdmin(authFetch, email) {
+  const response = await authFetch(`${API_URL}/admin/promote-admin`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  })
+  const data = await response.json().catch(() => ({}))
+  if (!response.ok) {
+    throw new Error(data.detail || 'Failed to promote user')
+  }
+  return data
+}

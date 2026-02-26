@@ -19,6 +19,7 @@ import AdminUsersApproval from './pages/admin/AdminUsersApproval'
 import AdminBalance from './pages/admin/AdminBalance'
 import AdminIconManager from './pages/admin/AdminIconManager'
 import AdminDonations from './pages/admin/AdminDonations'
+import AdminPromote from './pages/admin/AdminPromote'
 import SupportUs from './pages/public/SupportUs'
 import Account from './pages/account/Account'
 import Plans from './pages/account/Plans'
@@ -143,6 +144,7 @@ function App() {
                     <Route path="/admin/balance" element={<AdminBalance />} />
                     <Route path="/admin/icons" element={<AdminIconManager />} />
                     <Route path="/admin/donations" element={<AdminDonations />} />
+                    <Route path="/admin/promote" element={<AdminPromote />} />
                   </Route>
                   <Route element={<RequireAuth />}>
                     <Route path="/me" element={<Account darkMode={darkMode} setDarkMode={setDarkMode} />} />

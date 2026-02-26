@@ -742,6 +742,10 @@
       "donations": {
         "title": "Wesprzyj nas",
         "description": "Zarządzaj wpłatami wsparcia i punktami dla memberów."
+      },
+      "promote": {
+        "title": "Nowi admini",
+        "description": "Nadaj uprawnienia administratora innemu użytkownikowi."
       }
     },
     "feedback": {
@@ -981,7 +985,25 @@
     "tooltipPayment": "Uczestnik nie potwierdził płatności.",
     "noLimit": "Brak limitu",
     "openInMaps": "Otwórz w Mapach Google",
-    "subscribersOnly": "Subskrybenci"
+    "subscribersOnly": "Subskrybenci",
+    "promote": {
+      "title": "Dodaj admina",
+      "subtitle": "Nadaj uprawnienia administratora istniejącemu użytkownikowi.",
+      "emailLabel": "Adres email użytkownika",
+      "emailPlaceholder": "jan@example.com",
+      "submitButton": "Nadaj uprawnienia admina",
+      "confirmTitle": "Potwierdzenie nadania uprawnień",
+      "warning1": "Uwaga! Ta operacja może być nieodwracalna.",
+      "warning2": "Administrator ma pełny dostęp do panelu admina, danych użytkowników, płatności i wydarzeń. Przypadkowe nadanie uprawnień może prowadzić do poważnych i trudnych do cofnięcia szkód.",
+      "warning3": "Upewnij się, że naprawdę chcesz nadać tej osobie pełne uprawnienia administratora.",
+      "confirmInstruction": "Aby potwierdzić, przepisz poniższy kod:",
+      "targetEmail": "Email użytkownika",
+      "typePlaceholder": "Wpisz kod",
+      "confirmButton": "Potwierdzam — nadaj admina",
+      "promoting": "Nadaję...",
+      "success": "Uprawnienia administratora zostały nadane.",
+      "error": "Nie udało się nadać uprawnień."
+    }
   },
   "profile": {
     "notFound": "Nie znaleziono profilu użytkownika.",

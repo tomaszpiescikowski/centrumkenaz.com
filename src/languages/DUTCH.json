@@ -735,6 +735,10 @@
       "donations": {
         "title": "Steun ons",
         "description": "Beheer donaties en ledenpunten."
+      },
+      "promote": {
+        "title": "Nieuwe admins",
+        "description": "Ken adminrechten toe aan een andere gebruiker."
       }
     },
     "feedback": {
@@ -945,7 +949,25 @@
     "name": "Naam",
     "legendTitle": "Statuslegenda",
     "free": "gratis",
-    "enrolled": "ingeschreven"
+    "enrolled": "ingeschreven",
+    "promote": {
+      "title": "Admin toevoegen",
+      "subtitle": "Ken adminrechten toe aan een bestaande gebruiker.",
+      "emailLabel": "E-mailadres van gebruiker",
+      "emailPlaceholder": "jan@example.com",
+      "submitButton": "Adminrechten toekennen",
+      "confirmTitle": "Bevestig adminpromotie",
+      "warning1": "Waarschuwing! Deze actie kan onomkeerbaar zijn.",
+      "warning2": "Een administrator heeft volledige toegang tot het adminpaneel, gebruikersgegevens, betalingen en evenementen. Per ongeluk bevorderen kan leiden tot ernstige en moeilijk ongedaan te maken schade.",
+      "warning3": "Weet je zeker dat je deze persoon volledige adminrechten wilt geven?",
+      "confirmInstruction": "Typ de onderstaande code om te bevestigen:",
+      "targetEmail": "Gebruikers-e-mail",
+      "typePlaceholder": "Typ de code",
+      "confirmButton": "Bevestigen — admin toekennen",
+      "promoting": "Bevorderen...",
+      "success": "Adminrechten zijn toegekend.",
+      "error": "Kon adminrechten niet toekennen."
+    }
   },
   "profile": {
     "notFound": "Gebruikersprofiel niet gevonden.",

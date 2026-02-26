@@ -735,6 +735,10 @@
       "donations": {
         "title": "Support Us",
         "description": "Manage support donations and member points."
+      },
+      "promote": {
+        "title": "New admins",
+        "description": "Grant admin privileges to another user."
       }
     },
     "feedback": {
@@ -972,7 +976,25 @@
     "tooltipPayment": "Participant has not yet made the transfer.",
     "noLimit": "No limit",
     "openInMaps": "Open in Google Maps",
-    "subscribersOnly": "Subscribers"
+    "subscribersOnly": "Subscribers",
+    "promote": {
+      "title": "Add admin",
+      "subtitle": "Grant admin privileges to an existing user.",
+      "emailLabel": "User email address",
+      "emailPlaceholder": "john@example.com",
+      "submitButton": "Grant admin privileges",
+      "confirmTitle": "Confirm admin promotion",
+      "warning1": "Warning! This action may be irreversible.",
+      "warning2": "An administrator has full access to the admin panel, user data, payments, and events. Accidental promotion can lead to serious and hard-to-undo damage.",
+      "warning3": "Make sure you really want to grant this person full admin privileges.",
+      "confirmInstruction": "To confirm, type the code below:",
+      "targetEmail": "User email",
+      "typePlaceholder": "Type the code",
+      "confirmButton": "Confirm — grant admin",
+      "promoting": "Promoting...",
+      "success": "Admin privileges have been granted.",
+      "error": "Failed to grant admin privileges."
+    }
   },
   "profile": {
     "notFound": "User profile not found.",

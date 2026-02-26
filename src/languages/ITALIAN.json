@@ -735,6 +735,10 @@
       "donations": {
         "title": "Sostienici",
         "description": "Gestisci donazioni e punti per i membri."
+      },
+      "promote": {
+        "title": "Nuovi admin",
+        "description": "Concedi i privilegi di amministratore a un altro utente."
       }
     },
     "feedback": {
@@ -945,7 +949,25 @@
     "name": "Nome",
     "legendTitle": "Legenda stati",
     "free": "gratuito",
-    "enrolled": "iscritto"
+    "enrolled": "iscritto",
+    "promote": {
+      "title": "Aggiungi admin",
+      "subtitle": "Concedi i privilegi di amministratore a un utente esistente.",
+      "emailLabel": "Indirizzo email dell'utente",
+      "emailPlaceholder": "mario@example.com",
+      "submitButton": "Concedi privilegi admin",
+      "confirmTitle": "Conferma promozione admin",
+      "warning1": "Attenzione! Questa azione potrebbe essere irreversibile.",
+      "warning2": "Un amministratore ha accesso completo al pannello admin, ai dati utente, ai pagamenti e agli eventi. Una promozione accidentale può causare danni gravi e difficili da annullare.",
+      "warning3": "Assicurati di voler davvero concedere a questa persona i pieni privilegi di amministratore.",
+      "confirmInstruction": "Per confermare, digita il codice qui sotto:",
+      "targetEmail": "Email utente",
+      "typePlaceholder": "Digita il codice",
+      "confirmButton": "Confermo — concedi admin",
+      "promoting": "Promuovendo...",
+      "success": "I privilegi di amministratore sono stati concessi.",
+      "error": "Impossibile concedere i privilegi."
+    }
   },
   "profile": {
     "notFound": "Profilo utente non trovato.",

@@ -735,6 +735,10 @@
       "donations": {
         "title": "Wspōmaganiy",
         "description": "Zarzōndź wpłatami i punktami."
+      },
+      "promote": {
+        "title": "Nowi adminy",
+        "description": "Dej uprawniynio admina inkszemu użytkownikowi."
       }
     },
     "feedback": {
@@ -949,7 +953,25 @@
     "name": "Miano",
     "legendTitle": "Legynda status??w",
     "free": "bezp??atne",
-    "enrolled": "zapisany"
+    "enrolled": "zapisany",
+    "promote": {
+      "title": "Dodej admina",
+      "subtitle": "Dej uprawniynio admina istniejōncymu użytkownikowi.",
+      "emailLabel": "Email użytkownika",
+      "emailPlaceholder": "jan@example.com",
+      "submitButton": "Dej uprawniynio admina",
+      "confirmTitle": "Potwiyrdzynie nadanio uprawiyń",
+      "warning1": "Pozōr! Ta ôperacyjo może być nieôdwracalno.",
+      "warning2": "Admin mo pełny dostymp do panelu, danych użytkownikōw, płatności i wydarzyń. Przypadkowe nadaniy uprawiyń może prowadzić do poważnych szkōd.",
+      "warning3": "Upewnij sie, że noprowda chcesz dać tyj ôsobie pełne uprawniynio admina.",
+      "confirmInstruction": "Coby potwierdzić, wpisz tyn kod:",
+      "targetEmail": "Email użytkownika",
+      "typePlaceholder": "Wpisz kod",
+      "confirmButton": "Potwiyrdzōm — dej admina",
+      "promoting": "Nadowōm...",
+      "success": "Uprawniynio admina zostały nadane.",
+      "error": "Niy szło nadać uprawiyń."
+    }
   },
   "profile": {
     "notFound": "Niy idzie znojś profilu użytkownika.",

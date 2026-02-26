@@ -16,7 +16,7 @@ from models.payment import Payment, PaymentStatus as DBPaymentStatus, Currency
 from models.registration import Registration, RegistrationStatus
 from models.registration_refund_task import RegistrationRefundTask
 from models.subscription_purchase import SubscriptionPurchase, SubscriptionPurchaseStatus
-from models.user import AccountStatus, User
+from models.user import AccountStatus, User, UserRole
 from models.subscription import Subscription
 from models.approval_request import ApprovalRequest
 from security.guards import get_admin_user_dependency
@@ -1758,4 +1758,77 @@ async def get_balance(
         events=events,
         subscriptions=subscriptions,
         pending=pending,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Admin promotion
+# ---------------------------------------------------------------------------
+
+class PromoteToAdminRequest(BaseModel):
+    email: str = Field(..., description="Email of the user to promote to admin.")
+
+
+class PromoteToAdminResponse(BaseModel):
+    id: str
+    email: str
+    full_name: str | None
+    role: str
+    message: str
+
+
+@router.post(
+    "/promote-admin",
+    response_model=PromoteToAdminResponse,
+    summary="Promote an existing user to admin role",
+)
+async def promote_user_to_admin(
+    body: PromoteToAdminRequest,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(get_admin_user_dependency),
+):
+    """
+    Promote an existing active user to admin by email.
+
+    Only authenticated admins can call this endpoint. The target user must
+    already exist and have an active account. Users who are already admins
+    are rejected to prevent confusion.
+    """
+    normalized_email = body.email.strip().lower()
+    if not normalized_email:
+        raise HTTPException(status_code=400, detail="Email is required.")
+
+    result = await db.execute(
+        select(User).where(func.lower(User.email) == normalized_email)
+    )
+    target_user = result.scalars().first()
+
+    if not target_user:
+        raise HTTPException(
+            status_code=404,
+            detail="Nie znaleziono użytkownika o podanym adresie email.",
+        )
+
+    if target_user.account_status != AccountStatus.ACTIVE:
+        raise HTTPException(
+            status_code=400,
+            detail="Użytkownik musi mieć aktywne konto, aby zostać adminem.",
+        )
+
+    if target_user.role == UserRole.ADMIN:
+        raise HTTPException(
+            status_code=400,
+            detail="Ten użytkownik jest już adminem.",
+        )
+
+    target_user.role = UserRole.ADMIN
+    await db.commit()
+    await db.refresh(target_user)
+
+    return PromoteToAdminResponse(
+        id=target_user.id,
+        email=target_user.email,
+        full_name=target_user.full_name,
+        role=target_user.role.value,
+        message=f"Użytkownik {target_user.email} został adminem.",
     )

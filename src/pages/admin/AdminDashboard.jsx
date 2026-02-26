@@ -91,6 +91,12 @@ function AdminDashboard() {
           to="/admin/donations"
           className="p-6"
         />
+        <ViewCard
+          title={t('admin.cards.promote.title')}
+          description={t('admin.cards.promote.description')}
+          to="/admin/promote"
+          className="p-6"
+        />
       </div>
     </div>
   )

@@ -735,6 +735,10 @@
       "donations": {
         "title": "支持管理",
         "description": "管理捐款和会员积分。"
+      },
+      "promote": {
+        "title": "新管理员",
+        "description": "授予其他用户管理员权限。"
       }
     },
     "feedback": {
@@ -945,7 +949,25 @@
     "name": "??????",
     "legendTitle": "????????????",
     "free": "??????",
-    "enrolled": "?????????"
+    "enrolled": "?????????",
+    "promote": {
+      "title": "添加管理员",
+      "subtitle": "授予现有用户管理员权限。",
+      "emailLabel": "用户邮箱地址",
+      "emailPlaceholder": "user@example.com",
+      "submitButton": "授予管理员权限",
+      "confirmTitle": "确认管理员提升",
+      "warning1": "警告！此操作可能无法撤销。",
+      "warning2": "管理员拥有对管理面板、用户数据、支付和活动的完全访问权限。意外提升可能导致严重且难以撤销的损害。",
+      "warning3": "请确认您确实要授予此人完全管理员权限。",
+      "confirmInstruction": "请输入以下确认码：",
+      "targetEmail": "用户邮箱",
+      "typePlaceholder": "输入确认码",
+      "confirmButton": "确认 — 授予管理员",
+      "promoting": "正在授权...",
+      "success": "管理员权限已授予。",
+      "error": "授权失败。"
+    }
   },
   "profile": {
     "notFound": "未找到该用户资料。",
