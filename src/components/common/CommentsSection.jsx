@@ -612,7 +612,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
       setSwipeX(0)
       setTimeout(() => setSwipeId(null), 200)
       swipeStart.current = null
-      if (item) {
+      if (item && (!isGeneralTab || isAdmin)) {
         const targetId = item._depth === 0 ? item.id : (item.parent_id || item.id)
         if (messengerLayout) {
           setMessengerReplyTo({ parentId: targetId, authorName: item.author?.full_name || '' })
@@ -858,7 +858,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           )}
 
           {/* Long-press reaction bar (mobile, Messenger-style) */}
-          {longPressId === item.id && (
+          {longPressId === item.id && user && (
             <div className="cmt-longpress-bar" onTouchStart={(e) => e.stopPropagation()}>
               {Object.entries(REACTION_EMOJIS).map(([type, emoji]) => {
                 const myReaction = item.reactions?.find(r => r.reaction_type === type && r.reacted_by_me)
@@ -889,7 +889,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           {/* Actions */}
           {!item.is_deleted && !isEditingThis && user && (
             <div className="cmt-actions">
-              {(!messengerLayout || item._visualDepth === 0) && (
+              {(!messengerLayout || item._visualDepth === 0) && (!isGeneralTab || isAdmin) && (
                 <button className="cmt-action-btn" onClick={() => {
                   if (messengerLayout) {
                     if (messengerReplyTo?.parentId === replyTargetId) {
