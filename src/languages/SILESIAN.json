@@ -739,6 +739,10 @@
       "promote": {
         "title": "Nowi adminy",
         "description": "Dej uprawniynio admina inkszemu użytkownikowi."
+      },
+      "usersList": {
+        "title": "Użytkownicy",
+        "description": "Przejrzyj wszyjstkich użytkownikōw i zarzōndź dostympym."
       }
     },
     "feedback": {
@@ -975,6 +979,32 @@
       "promoting": "Nadowōm...",
       "success": "Uprawniynio admina zostały nadane.",
       "error": "Niy szło nadać uprawiyń."
+    },
+    "usersList": {
+      "title": "Użytkownicy",
+      "subtitle": "Wszyscy zapisani użytkownicy platformy.",
+      "searchPlaceholder": "Szukej po mianie abo emailu...",
+      "filterAll": "Wszystkie statusy",
+      "status": {
+        "active": "Aktywny",
+        "pending": "Ôczekujōncy",
+        "banned": "Zablokowany"
+      },
+      "role": {
+        "admin": "Admin",
+        "member": "Czōnek",
+        "guest": "Gość"
+      },
+      "blockButton": "Zablokuj",
+      "unblockButton": "Ôdblokuj",
+      "blockSuccess": "Konto zostało zablokowane.",
+      "blockError": "Niy szło zablokować konta.",
+      "unblockSuccess": "Konto zostało ôdblokowane i ôczekuje na ponowno akceptacyjo.",
+      "unblockError": "Niy szło ôdblokować konta.",
+      "loadError": "Niy szło wczytać listy użytkownikōw.",
+      "empty": "Brak użytkownikōw spełniajōncych kryteria.",
+      "noName": "(brak miana)",
+      "count": "{count} użytkownikōw"
     }
   },
   "profile": {

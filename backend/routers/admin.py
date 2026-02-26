@@ -5,7 +5,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Path
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
@@ -1893,4 +1893,100 @@ async def promote_user_to_admin(
         full_name=target_user.full_name,
         role=target_user.role.value,
         message=f"Użytkownik {target_user.email} został adminem.",
+    )
+
+
+# ── User list + block/unblock ─────────────────────────────────────
+
+class UserListItem(BaseModel):
+    """Compact user record for the admin user-list view."""
+
+    model_config = ConfigDict(from_attributes=True, coerce_numbers_to_str=True)
+
+    id: str
+    full_name: str | None = None
+    email: str | None = None
+    picture_url: str | None = None
+    role: str
+    account_status: str
+    created_at: str | None = None
+
+
+@router.get("/users/all", response_model=list[UserListItem])
+async def list_all_users(
+    db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(get_admin_user_dependency),
+) -> list[UserListItem]:
+    """Return every user account ordered by creation date (newest first)."""
+    result = await db.execute(
+        select(User).order_by(User.created_at.desc())
+    )
+    users = result.scalars().all()
+    return [
+        UserListItem(
+            id=str(u.id),
+            full_name=u.full_name,
+            email=u.email,
+            picture_url=u.picture_url,
+            role=u.role.value if u.role else "guest",
+            account_status=u.account_status.value if u.account_status else "pending",
+            created_at=u.created_at.isoformat() if u.created_at else None,
+        )
+        for u in users
+    ]
+
+
+@router.post("/users/{user_id}/block", response_model=UserListItem)
+async def block_user(
+    user_id: str = Path(..., min_length=1),
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(get_admin_user_dependency),
+) -> UserListItem:
+    """Block a user — sets account_status to BANNED (pending re-approval)."""
+    result = await db.execute(select(User).where(legacy_id_eq(User.id, user_id)))
+    target = result.scalar_one_or_none()
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+    if target.id == admin.id:
+        raise HTTPException(status_code=400, detail="Cannot block yourself")
+    if target.role == UserRole.ADMIN:
+        raise HTTPException(status_code=400, detail="Cannot block another admin")
+
+    target.account_status = AccountStatus.BANNED
+    await db.commit()
+    await db.refresh(target)
+    return UserListItem(
+        id=str(target.id),
+        full_name=target.full_name,
+        email=target.email,
+        picture_url=target.picture_url,
+        role=target.role.value,
+        account_status=target.account_status.value,
+        created_at=target.created_at.isoformat() if target.created_at else None,
+    )
+
+
+@router.post("/users/{user_id}/unblock", response_model=UserListItem)
+async def unblock_user(
+    user_id: str = Path(..., min_length=1),
+    db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(get_admin_user_dependency),
+) -> UserListItem:
+    """Unblock a user — resets account_status back to PENDING so they need re-approval."""
+    result = await db.execute(select(User).where(legacy_id_eq(User.id, user_id)))
+    target = result.scalar_one_or_none()
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    target.account_status = AccountStatus.PENDING
+    await db.commit()
+    await db.refresh(target)
+    return UserListItem(
+        id=str(target.id),
+        full_name=target.full_name,
+        email=target.email,
+        picture_url=target.picture_url,
+        role=target.role.value,
+        account_status=target.account_status.value,
+        created_at=target.created_at.isoformat() if target.created_at else None,
     )

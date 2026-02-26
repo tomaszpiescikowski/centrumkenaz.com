@@ -16,6 +16,7 @@ import AdminPayments from './pages/admin/AdminPayments'
 import AdminManualPayments from './pages/admin/AdminManualPayments'
 import AdminFeedback from './pages/admin/AdminFeedback'
 import AdminUsersApproval from './pages/admin/AdminUsersApproval'
+import AdminUsersList from './pages/admin/AdminUsersList'
 import AdminBalance from './pages/admin/AdminBalance'
 import AdminIconManager from './pages/admin/AdminIconManager'
 import AdminDonations from './pages/admin/AdminDonations'
@@ -138,6 +139,7 @@ function App() {
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/admin/events/new" element={<AdminEventCreate />} />
                     <Route path="/admin/users" element={<AdminUsersApproval />} />
+                    <Route path="/admin/all-users" element={<AdminUsersList />} />
                     <Route path="/admin/payments" element={<AdminPayments />} />
                     <Route path="/admin/manual-payments" element={<AdminManualPayments />} />
                     <Route path="/admin/feedback" element={<AdminFeedback />} />

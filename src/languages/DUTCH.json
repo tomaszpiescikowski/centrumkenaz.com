@@ -739,6 +739,10 @@
       "promote": {
         "title": "Nieuwe admins",
         "description": "Ken adminrechten toe aan een andere gebruiker."
+      },
+      "usersList": {
+        "title": "Gebruikers",
+        "description": "Bekijk alle gebruikers en beheer toegang."
       }
     },
     "feedback": {
@@ -971,6 +975,32 @@
       "promoting": "Bevorderen...",
       "success": "Adminrechten zijn toegekend.",
       "error": "Kon adminrechten niet toekennen."
+    },
+    "usersList": {
+      "title": "Gebruikers",
+      "subtitle": "Alle geregistreerde gebruikers op het platform.",
+      "searchPlaceholder": "Zoeken op naam of e-mail...",
+      "filterAll": "Alle statussen",
+      "status": {
+        "active": "Actief",
+        "pending": "In behandeling",
+        "banned": "Geblokkeerd"
+      },
+      "role": {
+        "admin": "Admin",
+        "member": "Lid",
+        "guest": "Gast"
+      },
+      "blockButton": "Blokkeren",
+      "unblockButton": "Deblokkeren",
+      "blockSuccess": "Account is geblokkeerd.",
+      "blockError": "Account blokkeren mislukt.",
+      "unblockSuccess": "Account is gedeblokkeerd en wacht op hergoedkeuring.",
+      "unblockError": "Account deblokkeren mislukt.",
+      "loadError": "Gebruikerslijst laden mislukt.",
+      "empty": "Geen gebruikers voldoen aan de criteria.",
+      "noName": "(geen naam)",
+      "count": "{count} gebruikers"
     }
   },
   "profile": {

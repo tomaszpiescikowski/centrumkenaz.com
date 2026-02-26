@@ -739,6 +739,10 @@
       "promote": {
         "title": "新管理员",
         "description": "授予其他用户管理员权限。"
+      },
+      "usersList": {
+        "title": "用户",
+        "description": "浏览所有用户并管理账号访问权限。"
       }
     },
     "feedback": {
@@ -971,6 +975,32 @@
       "promoting": "正在授权...",
       "success": "管理员权限已授予。",
       "error": "授权失败。"
+    },
+    "usersList": {
+      "title": "用户",
+      "subtitle": "平台上所有注册用户。",
+      "searchPlaceholder": "按姓名或邮箱搜索...",
+      "filterAll": "所有状态",
+      "status": {
+        "active": "活跃",
+        "pending": "待审核",
+        "banned": "已封禁"
+      },
+      "role": {
+        "admin": "管理员",
+        "member": "成员",
+        "guest": "访客"
+      },
+      "blockButton": "封禁",
+      "unblockButton": "解封",
+      "blockSuccess": "账户已被封禁。",
+      "blockError": "封禁账户失败。",
+      "unblockSuccess": "账户已解封，等待重新审核。",
+      "unblockError": "解封账户失败。",
+      "loadError": "加载用户列表失败。",
+      "empty": "没有符合条件的用户。",
+      "noName": "（无名称）",
+      "count": "{count} 名用户"
     }
   },
   "profile": {

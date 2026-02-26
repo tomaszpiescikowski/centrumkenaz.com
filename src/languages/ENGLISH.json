@@ -739,6 +739,10 @@
       "promote": {
         "title": "New admins",
         "description": "Grant admin privileges to another user."
+      },
+      "usersList": {
+        "title": "Users",
+        "description": "Browse all users and manage account access."
       }
     },
     "feedback": {
@@ -998,6 +1002,32 @@
       "promoting": "Promoting...",
       "success": "Admin privileges have been granted.",
       "error": "Failed to grant admin privileges."
+    },
+    "usersList": {
+      "title": "Users",
+      "subtitle": "All registered users on the platform.",
+      "searchPlaceholder": "Search by name or email...",
+      "filterAll": "All statuses",
+      "status": {
+        "active": "Active",
+        "pending": "Pending",
+        "banned": "Blocked"
+      },
+      "role": {
+        "admin": "Admin",
+        "member": "Member",
+        "guest": "Guest"
+      },
+      "blockButton": "Block",
+      "unblockButton": "Unblock",
+      "blockSuccess": "Account has been blocked.",
+      "blockError": "Failed to block account.",
+      "unblockSuccess": "Account has been unblocked and is awaiting re-approval.",
+      "unblockError": "Failed to unblock account.",
+      "loadError": "Failed to load user list.",
+      "empty": "No users match the criteria.",
+      "noName": "(no name)",
+      "count": "{count} users"
     }
   },
   "profile": {

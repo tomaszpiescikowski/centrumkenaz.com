@@ -746,6 +746,10 @@
       "promote": {
         "title": "Nowi admini",
         "description": "Nadaj uprawnienia administratora innemu użytkownikowi."
+      },
+      "usersList": {
+        "title": "Użytkownicy",
+        "description": "Przeglądaj wszystkich użytkowników i zarządzaj dostępem."
       }
     },
     "feedback": {
@@ -1007,6 +1011,32 @@
       "promoting": "Nadaję...",
       "success": "Uprawnienia administratora zostały nadane.",
       "error": "Nie udało się nadać uprawnień."
+    },
+    "usersList": {
+      "title": "Użytkownicy",
+      "subtitle": "Wszyscy zarejestrowani użytkownicy platformy.",
+      "searchPlaceholder": "Szukaj po nazwie lub emailu...",
+      "filterAll": "Wszystkie statusy",
+      "status": {
+        "active": "Aktywny",
+        "pending": "Oczekujący",
+        "banned": "Zablokowany"
+      },
+      "role": {
+        "admin": "Admin",
+        "member": "Członek",
+        "guest": "Gość"
+      },
+      "blockButton": "Zablokuj",
+      "unblockButton": "Odblokuj",
+      "blockSuccess": "Konto zostało zablokowane.",
+      "blockError": "Nie udało się zablokować konta.",
+      "unblockSuccess": "Konto zostało odblokowane i oczekuje na ponowną akceptację.",
+      "unblockError": "Nie udało się odblokować konta.",
+      "loadError": "Nie udało się wczytać listy użytkowników.",
+      "empty": "Brak użytkowników spełniających kryteria.",
+      "noName": "(brak nazwy)",
+      "count": "{count} użytkowników"
     }
   },
   "profile": {

@@ -739,6 +739,10 @@
       "promote": {
         "title": "Nuovi admin",
         "description": "Concedi i privilegi di amministratore a un altro utente."
+      },
+      "usersList": {
+        "title": "Utenti",
+        "description": "Sfoglia tutti gli utenti e gestisci l'accesso."
       }
     },
     "feedback": {
@@ -971,6 +975,32 @@
       "promoting": "Promuovendo...",
       "success": "I privilegi di amministratore sono stati concessi.",
       "error": "Impossibile concedere i privilegi."
+    },
+    "usersList": {
+      "title": "Utenti",
+      "subtitle": "Tutti gli utenti registrati sulla piattaforma.",
+      "searchPlaceholder": "Cerca per nome o email...",
+      "filterAll": "Tutti gli stati",
+      "status": {
+        "active": "Attivo",
+        "pending": "In attesa",
+        "banned": "Bloccato"
+      },
+      "role": {
+        "admin": "Admin",
+        "member": "Membro",
+        "guest": "Ospite"
+      },
+      "blockButton": "Blocca",
+      "unblockButton": "Sblocca",
+      "blockSuccess": "Account bloccato con successo.",
+      "blockError": "Impossibile bloccare l'account.",
+      "unblockSuccess": "Account sbloccato e in attesa di riapprovazione.",
+      "unblockError": "Impossibile sbloccare l'account.",
+      "loadError": "Impossibile caricare la lista utenti.",
+      "empty": "Nessun utente corrisponde ai criteri.",
+      "noName": "(nessun nome)",
+      "count": "{count} utenti"
     }
   },
   "profile": {

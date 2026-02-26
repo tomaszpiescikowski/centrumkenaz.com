@@ -187,3 +187,30 @@ export async function promoteUserToAdmin(authFetch, email) {
   }
   return data
 }
+
+export async function fetchAllUsers(authFetch) {
+  const response = await authFetch(`${API_URL}/admin/users/all`)
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.detail || 'Failed to fetch users')
+  }
+  return safeJson(response)
+}
+
+export async function blockUser(authFetch, userId) {
+  const response = await authFetch(`${API_URL}/admin/users/${userId}/block`, { method: 'POST' })
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.detail || 'Failed to block user')
+  }
+  return safeJson(response)
+}
+
+export async function unblockUser(authFetch, userId) {
+  const response = await authFetch(`${API_URL}/admin/users/${userId}/unblock`, { method: 'POST' })
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.detail || 'Failed to unblock user')
+  }
+  return safeJson(response)
+}
