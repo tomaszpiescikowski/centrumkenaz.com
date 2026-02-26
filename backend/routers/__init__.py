@@ -10,6 +10,7 @@ from routers.cities import router as cities_router
 from routers.feedback import router as feedback_router
 from routers.announcements import router as announcements_router
 from routers.comments import router as comments_router
+from routers.donations import router as donations_router
 
 __all__ = [
     "auth_router",
@@ -24,4 +25,5 @@ __all__ = [
     "feedback_router",
     "announcements_router",
     "comments_router",
+    "donations_router",
 ]

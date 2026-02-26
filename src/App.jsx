@@ -18,6 +18,8 @@ import AdminFeedback from './pages/admin/AdminFeedback'
 import AdminUsersApproval from './pages/admin/AdminUsersApproval'
 import AdminBalance from './pages/admin/AdminBalance'
 import AdminIconManager from './pages/admin/AdminIconManager'
+import AdminDonations from './pages/admin/AdminDonations'
+import SupportUs from './pages/public/SupportUs'
 import Account from './pages/account/Account'
 import Plans from './pages/account/Plans'
 import AboutSection from './pages/public/AboutSection'
@@ -124,6 +126,7 @@ function App() {
                   <Route path="/chat" element={<ChatPage />} />
                   <Route path="/panel" element={<Panel />} />
                   <Route path="/about" element={<AboutSection />} />
+                  <Route path="/support" element={<SupportUs />} />
                   <Route path="/shop" element={<Shop />} />
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/terms" element={<Terms />} />
@@ -139,6 +142,7 @@ function App() {
                     <Route path="/admin/feedback" element={<AdminFeedback />} />
                     <Route path="/admin/balance" element={<AdminBalance />} />
                     <Route path="/admin/icons" element={<AdminIconManager />} />
+                    <Route path="/admin/donations" element={<AdminDonations />} />
                   </Route>
                   <Route element={<RequireAuth />}>
                     <Route path="/me" element={<Account darkMode={darkMode} setDarkMode={setDarkMode} />} />

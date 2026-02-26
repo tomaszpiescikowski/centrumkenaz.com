@@ -13,6 +13,7 @@ from models.payment_method import PaymentMethod
 from models.feedback import Feedback
 from models.announcement import Announcement
 from models.comment import Comment, CommentReaction, ReactionType
+from models.donation import Donation, DonationSetting, DonationStatus
 
 __all__ = [
 	"User",
@@ -33,4 +34,7 @@ __all__ = [
 	"Comment",
 	"CommentReaction",
 	"ReactionType",
+	"Donation",
+	"DonationSetting",
+	"DonationStatus",
 ]

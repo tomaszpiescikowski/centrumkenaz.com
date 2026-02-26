@@ -16,7 +16,8 @@
     "language": "Language",
     "days": "d",
     "hours": "h",
-    "minutes": "min"
+    "minutes": "min",
+    "backToHome": "Back to home"
   },
   "shop": {
     "label": "Kenaz shop",
@@ -64,7 +65,8 @@
     "myAccount": "My account",
     "admin": "Admin",
     "city": "City",
-    "addEvent": "Add"
+    "addEvent": "Add",
+    "support": "Support"
   },
   "feedback": {
     "button": "Feedback",
@@ -729,6 +731,10 @@
       "balance": {
         "title": "Financial balance",
         "description": "Revenue, refunds, and monthly/quarterly balance."
+      },
+      "donations": {
+        "title": "Support Us",
+        "description": "Manage support donations and member points."
       }
     },
     "feedback": {
@@ -1062,5 +1068,98 @@
     "pendingRequiredTitle": "Account pending approval",
     "pendingRequiredBody": "The panel is locked until an admin approves your account.",
     "pendingRequiredButton": "Check account status"
+  },
+  "support": {
+    "label": "Support us",
+    "title": "Support Kenaz",
+    "subtitle": "Your support helps us organise more events, maintain the space and grow the community.",
+    "loadError": "Failed to load settings",
+    "disabled": "Donations are temporarily unavailable.",
+    "memberPointsInfo": "As an active Kenaz subscriber you earn {rate} point per zloty donated!",
+    "chooseAmount": "Choose amount",
+    "customAmount": "Custom amount (min. {min} zl)",
+    "pointsLabel": "points for this donation",
+    "pointsInfo": "After confirmation you will receive {points} points on your account!",
+    "optionalInfo": "Optional details",
+    "donorName": "Your name or nickname (optional)",
+    "donorEmail": "Email address (optional)",
+    "loggedInHint": "You are logged in — your donation will be linked to your account.",
+    "submitButton": "Generate transfer",
+    "manualNote": "After submitting you will receive a unique transfer reference.",
+    "minAmountError": "Minimum donation is {min} zl",
+    "submitError": "Submission error — please try again",
+    "bankDetails": "Bank transfer details",
+    "recipient": "Recipient",
+    "accountNumber": "Account number",
+    "paymentTitle": "Transfer title",
+    "bankAddress": "Recipient address",
+    "transferDetails": "Transfer details",
+    "transferReference": "Transfer reference",
+    "amount": "Amount",
+    "referenceHint": "Remember to include the exact transfer reference — it is the only way we can identify your donation.",
+    "successTitle": "Thank you!",
+    "successBody": "Your donation has been registered. Please make a bank transfer using the details below."
+  },
+  "adminDonations": {
+    "title": "Support Us — Admin",
+    "subtitle": "Manage donations, points and support settings.",
+    "anonymous": "anonymous",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "confirmed": "Donation confirmed.",
+    "cancelled": "Donation cancelled.",
+    "confirmedWithPoints": "Donation confirmed — {points} pts awarded.",
+    "noPending": "No pending donations.",
+    "noAll": "No donations found.",
+    "tabs": {
+      "pending": "Pending",
+      "all": "All",
+      "settings": "Settings",
+      "stats": "Stats"
+    },
+    "status": {
+      "pending_verification": "Pending",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled"
+    },
+    "modal": {
+      "confirmTitle": "Confirm donation",
+      "confirmBody": "Confirm donation of {amount}? (Ref: {ref})",
+      "cancelTitle": "Cancel donation",
+      "cancelBody": "Cancel donation? (Ref: {ref})",
+      "notePlaceholder": "Optional note (admin only)"
+    },
+    "settings": {
+      "loadError": "Error loading settings",
+      "saveError": "Error saving settings",
+      "saved": "Settings saved.",
+      "save": "Save settings",
+      "rewardsSection": "Points & amounts",
+      "bankSection": "Bank details",
+      "messageSection": "Public message",
+      "isEnabled": "Donations active",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "pointsPerZloty": "Points per zloty",
+      "pointsPerZlotyHint": "Loyalty points awarded per zloty donated by active members.",
+      "minAmount": "Minimum amount (zl)",
+      "minAmountHint": "Lowest accepted donation amount.",
+      "suggestedAmounts": "Suggested amounts",
+      "suggestedAmountsHint": "Separate with commas, e.g. 10, 20, 50, 100",
+      "accountNumber": "Bank account number",
+      "paymentTitle": "Default transfer title",
+      "bankOwnerName": "Account owner",
+      "bankOwnerAddress": "Owner address",
+      "messagePlaceholder": "Write a message for donors...",
+      "messageHint": "This message is shown on the \"Support us\" page."
+    },
+    "stats": {
+      "pendingCount": "Pending",
+      "totalCount": "Confirmed",
+      "totalAmount": "Total amount",
+      "totalPoints": "Points awarded",
+      "monthCount": "This month",
+      "monthAmount": "Amount (month)"
+    }
   }
 }

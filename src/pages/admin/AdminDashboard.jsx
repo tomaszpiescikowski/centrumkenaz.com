@@ -85,6 +85,12 @@ function AdminDashboard() {
           to="/admin/icons"
           className="p-6"
         />
+        <ViewCard
+          title={t('admin.cards.donations.title')}
+          description={t('admin.cards.donations.description')}
+          to="/admin/donations"
+          className="p-6"
+        />
       </div>
     </div>
   )

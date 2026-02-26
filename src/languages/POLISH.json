@@ -16,7 +16,8 @@
     "language": "Język",
     "days": "d",
     "hours": "h",
-    "minutes": "min"
+    "minutes": "min",
+    "backToHome": "Wróć na stronę główną"
   },
   "shop": {
     "label": "Kenaz sklep",
@@ -67,7 +68,8 @@
     "myAccount": "Moje konto",
     "admin": "Admin",
     "city": "Miasto",
-    "addEvent": "Dodaj"
+    "addEvent": "Dodaj",
+    "support": "Wesprzyj"
   },
   "feedback": {
     "button": "Feedback",
@@ -736,6 +738,10 @@
       "icons": {
         "title": "Ikony aktywności",
         "description": "Przeglądaj wbudowane ikony i dodawaj własne typy aktywności."
+      },
+      "donations": {
+        "title": "Wesprzyj nas",
+        "description": "Zarządzaj wpłatami wsparcia i punktami dla memberów."
       }
     },
     "feedback": {
@@ -1086,5 +1092,98 @@
     "pendingRequiredTitle": "Konto czeka na akceptację",
     "pendingRequiredBody": "Do czasu akceptacji przez admina panel jest zablokowany.",
     "pendingRequiredButton": "Sprawdź status konta"
+  },
+  "support": {
+    "label": "Wesprzyj nas",
+    "title": "Wesprzyj Kenaz",
+    "subtitle": "Twoje wsparcie pomaga nam organizować więcej wydarzeń, utrzymywać przestrzeń i rozwijać społeczność.",
+    "loadError": "Nie udało się załadować ustawień",
+    "disabled": "Zbieranie wsparcia jest chwilowo niedostępne.",
+    "memberPointsInfo": "Jako aktywny subskrybent Kenaz otrzymujesz {rate} punkt za każdą wpłaconą złotówkę!",
+    "chooseAmount": "Wybierz kwotę",
+    "customAmount": "Inna kwota (min. {min} zł)",
+    "pointsLabel": "punktów za to wsparcie",
+    "pointsInfo": "Po potwierdzeniu wpłaty otrzymasz {points} punktów na swoim koncie!",
+    "optionalInfo": "Dane opcjonalne",
+    "donorName": "Twoje imię lub pseudonim (opcjonalnie)",
+    "donorEmail": "Adres e-mail (opcjonalnie)",
+    "loggedInHint": "Jesteś zalogowany — Twoje wsparcie zostanie powiązane z Twoim kontem.",
+    "submitButton": "Wygeneruj przelew",
+    "manualNote": "Po wypełnieniu formularza otrzymasz unikalny tytuł przelewu.",
+    "minAmountError": "Minimalna kwota wsparcia to {min} zł",
+    "submitError": "Błąd przy zgłoszeniu — spróbuj ponownie",
+    "bankDetails": "Dane do przelewu",
+    "recipient": "Odbiorca",
+    "accountNumber": "Numer konta",
+    "paymentTitle": "Tytuł przelewu",
+    "bankAddress": "Adres odbiorcy",
+    "transferDetails": "Dane do przelewu",
+    "transferReference": "Tytuł przelewu",
+    "amount": "Kwota",
+    "referenceHint": "Pamiętaj, aby podać dokładny tytuł przelewu — to jedyny sposób, w jaki możemy Cię zidentyfikować.",
+    "successTitle": "Dziękujemy!",
+    "successBody": "Twoje zgłoszenie wsparcia zostało przyjęte. Wykonaj przelew z podanymi danymi, a my potwierdzimy wpłatę."
+  },
+  "adminDonations": {
+    "title": "Wesprzyj nas — panel",
+    "subtitle": "Zarządzaj wpłatami, punktami i ustawieniami zbiórki wsparcia.",
+    "anonymous": "anonimowy",
+    "confirm": "Potwierdź",
+    "cancel": "Anuluj",
+    "confirmed": "Wpłata potwierdzona.",
+    "cancelled": "Wpłata anulowana.",
+    "confirmedWithPoints": "Wpłata potwierdzona — przyznano {points} pkt.",
+    "noPending": "Brak oczekujących wpłat.",
+    "noAll": "Brak wpłat w bazie.",
+    "tabs": {
+      "pending": "Oczekujące",
+      "all": "Wszystkie",
+      "settings": "Ustawienia",
+      "stats": "Statystyki"
+    },
+    "status": {
+      "pending_verification": "Oczekuje",
+      "confirmed": "Potwierdzona",
+      "cancelled": "Anulowana"
+    },
+    "modal": {
+      "confirmTitle": "Potwierdź wpłatę",
+      "confirmBody": "Czy na pewno chcesz potwierdzić wpłatę {amount}? (Ref: {ref})",
+      "cancelTitle": "Anuluj wpłatę",
+      "cancelBody": "Czy na pewno chcesz anulować wpłatę? (Ref: {ref})",
+      "notePlaceholder": "Opcjonalna notatka (widoczna tylko dla admina)"
+    },
+    "settings": {
+      "loadError": "Błąd ładowania ustawień",
+      "saveError": "Błąd zapisu ustawień",
+      "saved": "Ustawienia zapisane.",
+      "save": "Zapisz ustawienia",
+      "rewardsSection": "Punkty i kwoty",
+      "bankSection": "Dane bankowe",
+      "messageSection": "Wiadomość publiczna",
+      "isEnabled": "Aktywna zbiórka",
+      "enabled": "Włączona",
+      "disabled": "Wyłączona",
+      "pointsPerZloty": "Punkty za złotówkę",
+      "pointsPerZlotyHint": "Ile punktów lojalnościowych memberzy dostają za każdą wpłaconą złotówkę.",
+      "minAmount": "Minimalna kwota (zł)",
+      "minAmountHint": "Najniższa akceptowana kwota wsparcia.",
+      "suggestedAmounts": "Sugerowane kwoty",
+      "suggestedAmountsHint": "Oddziel wartości przecinkami, np. 10, 20, 50, 100",
+      "accountNumber": "Numer konta bankowego",
+      "paymentTitle": "Domyślny tytuł przelewu",
+      "bankOwnerName": "Właściciel konta",
+      "bankOwnerAddress": "Adres właściciela konta",
+      "messagePlaceholder": "Napisz wiadomość dla darczyńców...",
+      "messageHint": "Ta wiadomość wyświetla się na stronie \"Wesprzyj nas\"."
+    },
+    "stats": {
+      "pendingCount": "Oczekujące",
+      "totalCount": "Potwierdzonych",
+      "totalAmount": "Łączna kwota",
+      "totalPoints": "Przyzn. punktów",
+      "monthCount": "W tym miesiącu",
+      "monthAmount": "Kwota (miesiąc)"
+    }
   }
 }
