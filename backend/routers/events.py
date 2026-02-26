@@ -382,6 +382,12 @@ async def list_events(
     stmt = select(Event)
 
     if event_type:
+        # Validate event_type exists in the database
+        type_check = await db.execute(
+            select(Event.event_type).where(Event.event_type == event_type).limit(1)
+        )
+        if type_check.scalar_one_or_none() is None:
+            raise HTTPException(status_code=422, detail=f"Unknown event type: {event_type}")
         stmt = stmt.where(Event.event_type == event_type)
     if city:
         stmt = stmt.where(Event.city == city)

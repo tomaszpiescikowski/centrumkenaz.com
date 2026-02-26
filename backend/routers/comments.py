@@ -55,6 +55,7 @@ class CommentResponse(BaseModel):
     resource_id: str
     content: str
     parent_id: Optional[str] = None
+    is_pinned: bool = False
     is_deleted: bool
     version: int
     created_at: datetime
@@ -125,6 +126,7 @@ def _build_comment_response(
         resource_id=comment.resource_id,
         content=display_content,
         parent_id=comment.parent_id,
+        is_pinned=comment.is_pinned,
         is_deleted=comment.is_deleted,
         version=comment.version,
         created_at=comment.created_at,
@@ -306,6 +308,34 @@ async def toggle_reaction(
     return _build_comment_response(comment, user.id)
 
 
+# ── Pin / unpin endpoint ──────────────────────────────────────────
+
+@router.post(
+    "/{comment_id}/pin",
+    response_model=CommentResponse,
+    summary="Toggle pin on a comment (admin only)",
+)
+async def toggle_pin(
+    comment_id: str = Path(..., min_length=1),
+    user: ActiveUser = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """Toggle the pinned state of a comment. Only admins can pin/unpin."""
+
+    if user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Only admins can pin comments")
+
+    comment = await _refetch_comment(db, comment_id)
+    if not comment:
+        raise HTTPException(status_code=404, detail="Comment not found")
+
+    comment.is_pinned = not comment.is_pinned
+    await db.commit()
+
+    comment = await _refetch_comment(db, comment_id)
+    return _build_comment_response(comment, user.id)
+
+
 # ── Polling check endpoint ────────────────────────────────────────
 
 class CheckRequest(BaseModel):
@@ -402,18 +432,14 @@ async def list_comments(
             after_ts = after_ts.replace(tzinfo=timezone.utc)
         conditions.append(Comment.created_at > after_ts)
 
+    time_order = Comment.created_at.asc() if order == 'asc' else Comment.created_at.desc()
+
     stmt = (
         select(Comment)
         .where(*conditions)
         .options(*_comment_load_options())
         .execution_options(populate_existing=True)
-        .order_by(
-            *(
-                [Comment.created_at.asc()]
-                if order == 'asc'
-                else [Comment.created_at.desc()]
-            )
-        )
+        .order_by(Comment.is_pinned.desc(), time_order)
         .offset(offset)
         .limit(limit)
     )
