@@ -19,7 +19,14 @@ async def get_optional_active_user_dependency(
     request: Request,
     db: AsyncSession = Depends(get_db),
 ) -> User | None:
-    """Return the active user if a valid token is present, otherwise None."""
+    """
+    Return the active user when a valid Bearer token is present, otherwise None.
+
+    Extracts the Authorization header, verifies the access token, and loads
+    the corresponding user. Returns None on any failure — missing header,
+    invalid token, unknown user, or non-active account — so endpoints can
+    treat unauthenticated callers uniformly without raising exceptions.
+    """
     auth_header = request.headers.get("Authorization")
     if not auth_header or not auth_header.startswith("Bearer "):
         return None

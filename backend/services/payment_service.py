@@ -352,7 +352,7 @@ class PaymentService:
         The method updates the payment status, records completion timestamps,
         and applies subscription benefits when a subscription is completed.
         """
-        verification = await self.gateway.process_webhook(payload, signature)
+        verification = await self.gateway.process_webhook(payload=payload, signature=signature)
 
         if not verification.payment_id:
             return None
@@ -522,7 +522,6 @@ class PaymentService:
         if periods < 1 or periods > max_p:
             raise ValueError(f"periods must be between 1 and {max_p}")
 
-        # Prevent duplicate pending purchase
         pending_result = await self.db.execute(
             select(SubscriptionPurchase).where(
                 legacy_id_eq(SubscriptionPurchase.user_id, user.id),
@@ -694,8 +693,6 @@ class PaymentService:
             raise ValueError("Plan not found")
         total_days = plan.duration_days * purchase.periods
 
-        # Apply subscription directly (don't use apply_subscription_for_payment
-        # because that reads duration from extra_data which may not match periods)
         user_result = await self.db.execute(
             select(User).where(legacy_id_eq(User.id, purchase.user_id))
         )

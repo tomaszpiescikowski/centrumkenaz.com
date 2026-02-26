@@ -4,7 +4,12 @@ from sqlalchemy import String, cast
 
 
 def normalize_legacy_id(value: object) -> str:
-    """Return a normalized string representation of an identifier value."""
+    """
+    Return a normalised string representation of an identifier value.
+
+    Strips surrounding whitespace from the string conversion so comparisons
+    are not skewed by padding that may exist in legacy data.
+    """
     return str(value).strip()
 
 
@@ -18,7 +23,12 @@ def legacy_id_eq(column, value: object):
 
 
 def optional_str_id(value: object | None) -> str | None:
-    """Convert identifier to string, preserving None."""
+    """
+    Convert an identifier value to a string, preserving None.
+
+    Returns None unchanged so optional foreign key fields handled by
+    this helper remain None rather than the string literal 'None'.
+    """
     if value is None:
         return None
     return str(value)

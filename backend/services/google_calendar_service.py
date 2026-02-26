@@ -102,7 +102,7 @@ class GoogleCalendarService:
         start_base = event.start_date
         end_base = event.end_date
         if occurrence_date and occurrence_date != event.start_date.date():
-            start_base = datetime.combine(occurrence_date, event.start_date.time())
+            start_base = datetime.combine(date=occurrence_date, time=event.start_date.time())
             if event.start_date.tzinfo:
                 start_base = start_base.replace(tzinfo=event.start_date.tzinfo)
             if event.end_date:
@@ -111,7 +111,11 @@ class GoogleCalendarService:
             else:
                 end_base = None
 
-        start_dt, end_dt = self._apply_time_info(start_base, end_base, event.time_info)
+        start_dt, end_dt = self._apply_time_info(
+            start_date=start_base,
+            end_date=end_base,
+            time_info=event.time_info,
+        )
         description_parts = []
         if event.description:
             description_parts.append(event.description)

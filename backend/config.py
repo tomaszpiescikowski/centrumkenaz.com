@@ -1,13 +1,24 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Literal
 
 _DIR = Path(__file__).resolve().parent
 
 
 class Settings(BaseSettings):
-    # App
+    """
+    Application settings loaded from environment variables and a .env file.
+
+    All fields can be overridden via environment variables using the same name
+    in upper-case. The .env file is loaded from the backend directory.
+    payment_gateway_type controls which payment adapter is active: "fake" uses
+    the in-memory test adapter; "tpay" enables the production Tpay integration.
+    Set email_enabled to True and supply smtp_* values to send real emails;
+    when False all outgoing mail is logged to the console instead.
+    google_redirect_uri and frontend_url are derived from app_scheme / app_host
+    when not explicitly provided via environment variables.
+    """
     app_name: str = "Kenaz API"
     debug: bool = True
     app_scheme: str = "http"
@@ -15,39 +26,27 @@ class Settings(BaseSettings):
     frontend_port: int = 5173
     backend_port: int = 8000
 
-    # Database
     database_url: str = "postgresql://postgres:postgres@localhost:5432/kenaz"
 
-    # Google OAuth
     google_client_id: str = ""
     google_client_secret: str = ""
-    # Can be overridden by env var GOOGLE_REDIRECT_URI (recommended in devcontainer)
     google_redirect_uri: str | None = None
 
-    # JWT
     jwt_secret_key: str = "dev-secret-key-change-in-production"
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 7
 
-    # Frontend
-    # Can be overridden by env var FRONTEND_URL
     frontend_url: str | None = None
 
-    # Payment Gateway
-    payment_gateway_type: str = "fake"  # "fake" or "tpay"
+    payment_gateway_type: Literal["fake", "tpay"] = "fake"
     tpay_client_id: str = ""
     tpay_client_secret: str = ""
 
-    # Admin
     root_admin_email: str = ""
 
-    # Defaults
     default_payment_url: str = ""
 
-    # Email / SMTP
-    # Set email_enabled=True and fill smtp_* to activate real mail sending.
-    # When email_enabled=False (default) all emails are logged to console instead.
     email_enabled: bool = False
     smtp_host: str = "smtp.gmail.com"
     smtp_port: int = 587
@@ -56,18 +55,14 @@ class Settings(BaseSettings):
     smtp_from_email: str = ""
     smtp_from_name: str = "Kenaz Centrum"
 
-    # Password reset token TTL (minutes)
     password_reset_token_expire_minutes: int = 60
 
-    # Security / Rate limiting
     rate_limit_enabled: bool = True
     rate_limit_public_per_minute: int = 600
     rate_limit_authenticated_per_minute: int = 1800
     rate_limit_admin_per_minute: int = 600
     rate_limit_webhook_per_minute: int = 3000
 
-    # Load env regardless of current working directory.
-    # Prefer backend/.env; do not load .env.example to avoid placeholder values.
     model_config = SettingsConfigDict(
         env_file=str(_DIR / ".env"),
         env_file_encoding="utf-8",

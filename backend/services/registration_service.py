@@ -96,9 +96,8 @@ class RegistrationService:
         """
         Build the transfer reference string for a manual payment.
 
-        The business requirement uses the event UUID as the transfer reference.
+        Uses the event UUID as the canonical transfer reference per business rules.
         """
-        # Business requirement: transfer "message" should contain the event UUID.
         return str(event.id)
 
     def _manual_payment_due_at(self, event: Event, now: datetime) -> datetime:
@@ -182,7 +181,10 @@ class RegistrationService:
         """
         resolved_date = occurrence_date or event.start_date.date()
         base_start = event.start_date
-        start_dt = datetime.combine(resolved_date, base_start.timetz() if base_start.tzinfo else base_start.time())
+        start_dt = datetime.combine(
+            date=resolved_date,
+            time=base_start.timetz() if base_start.tzinfo else base_start.time(),
+        )
         if base_start.tzinfo:
             start_dt = start_dt.replace(tzinfo=base_start.tzinfo)
 
@@ -266,9 +268,6 @@ class RegistrationService:
         if not event:
             raise EventNotFoundError(f"Event {event_id} not found")
 
-        # When occurrence_date is explicitly provided, scope to that date.
-        # Otherwise skip the date filter so reschedules/timezone shifts never
-        # hide already-enrolled participants.
         where_clauses_bp = [
             legacy_id_eq(Registration.event_id, event_id),
             Registration.status == status,
@@ -343,11 +342,6 @@ class RegistrationService:
             RegistrationStatus.MANUAL_PAYMENT_VERIFICATION.value,
         ]
 
-        # When occurrence_date is explicitly provided, scope to that date.
-        # When it is None (the common case for single-occurrence events on the
-        # event-detail page), skip the date filter entirely so that registrations
-        # whose occurrence_date was written before a start_date reschedule are
-        # still returned correctly.
         where_clauses = [
             legacy_id_eq(Registration.event_id, event_id),
             Registration.status.in_(spot_statuses),
@@ -441,24 +435,20 @@ class RegistrationService:
 
         resolved_occurrence_date = self._resolve_occurrence_date(event, occurrence_date)
 
-        # When occurrence_date is explicitly requested, scope counts to that
-        # date. Otherwise (the common single-occurrence event-page case) count
-        # ALL registrations for the event so that reschedules or timezone edge-
-        # cases don't silently drop participants from the availability badge.
-        def _matches(r: Registration) -> bool:
-            return occurrence_date is None or r.occurrence_date == resolved_occurrence_date
+        def matches_occurrence(registration: Registration) -> bool:
+            return occurrence_date is None or registration.occurrence_date == resolved_occurrence_date
 
         confirmed_count = len([
             r for r in event.registrations
-            if r.status == RegistrationStatus.CONFIRMED.value and _matches(r)
+            if r.status == RegistrationStatus.CONFIRMED.value and matches_occurrence(r)
         ])
         occupied_count = len([
             r for r in event.registrations
-            if self._occupies_spot(r.status) and _matches(r)
+            if self._occupies_spot(r.status) and matches_occurrence(r)
         ])
         waitlist_count = len([
             r for r in event.registrations
-            if r.status == RegistrationStatus.WAITLIST.value and _matches(r)
+            if r.status == RegistrationStatus.WAITLIST.value and matches_occurrence(r)
         ])
 
         return {
@@ -708,7 +698,6 @@ class RegistrationService:
                 "occurrence_date": resolved_occurrence_date.isoformat(),
             }
 
-        # Manual payment flow requires explicit user confirmation before admin verification.
         if manual_payment_mode:
             await self.db.commit()
             await self.db.refresh(registration)
@@ -833,8 +822,8 @@ class RegistrationService:
             await self.db.commit()
             return
 
-        # Paid waitlist promotions without manual verification require explicit checkout flow and are not auto-promoted.
-        if price > 0:
+        paid_waitlist_without_gateway = price > 0 and not self._requires_manual_payment_for_registration(event, price)
+        if paid_waitlist_without_gateway:
             return
 
         next_waitlisted.status = RegistrationStatus.CONFIRMED.value
@@ -1138,7 +1127,6 @@ class RegistrationService:
         if not registration or registration.calendar_event_id:
             return
 
-        # Eagerly reload with relationships to avoid async lazy-loading issues
         stmt = (
             select(Registration)
             .options(joinedload(Registration.user), joinedload(Registration.event))
@@ -1232,8 +1220,8 @@ class RegistrationService:
         )
         if should_attempt_gateway_refund:
             refund_result = await self.payment_service.refund_payment(
-                registration.payment_id,
-                reason="User cancelled registration"
+                payment_id=registration.payment_id,
+                reason="User cancelled registration",
             )
             if refund_result.success:
                 registration.status = RegistrationStatus.REFUNDED.value

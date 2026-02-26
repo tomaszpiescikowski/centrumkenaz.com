@@ -20,8 +20,8 @@ class TpayAdapter(PaymentGatewayPort):
     """
     Tpay payment gateway adapter.
 
-    This is a placeholder implementation - needs to be filled in
-    with actual Tpay API integration when moving to production.
+    Placeholder implementation pending production integration with the Tpay API.
+    All methods raise NotImplementedError until the integration is completed.
     """
 
     TPAY_API_URL = "https://api.tpay.com"
@@ -35,14 +35,11 @@ class TpayAdapter(PaymentGatewayPort):
         sandbox: bool = True,
     ):
         """
-        Initialize Tpay adapter.
+        Initialize the Tpay adapter with credentials and environment settings.
 
-        Args:
-            client_id: Tpay OAuth client ID
-            client_secret: Tpay OAuth client secret
-            merchant_id: Tpay merchant ID
-            security_code: Tpay security code for webhook verification
-            sandbox: Use sandbox environment
+        When sandbox is True the adapter points at the Tpay sandbox base URL
+        instead of the production endpoint. The access token state is held
+        in instance variables and refreshed on demand.
         """
         self._client_id = client_id
         self._client_secret = client_secret
@@ -56,13 +53,21 @@ class TpayAdapter(PaymentGatewayPort):
             self.TPAY_API_URL = "https://openapi.sandbox.tpay.com"
 
     async def _get_access_token(self) -> str:
-        """Get or refresh OAuth access token."""
-        # TODO: Implement OAuth token retrieval
-        # For now, return placeholder
+        """
+        Retrieve or refresh the OAuth access token for authenticating API requests.
+
+        Not yet implemented; will call the Tpay token endpoint and cache the
+        result until expiry.
+        """
         raise NotImplementedError("Tpay integration not yet implemented")
 
     async def _make_request(self, method: str, endpoint: str, data: dict | None = None) -> dict:
-        """Make authenticated request to Tpay API."""
+        """
+        Execute an authenticated HTTP request against the Tpay API.
+
+        Obtains a fresh access token, sends the request with JSON body, and
+        raises for non-2xx responses before returning the parsed JSON payload.
+        """
         token = await self._get_access_token()
 
         async with httpx.AsyncClient() as client:
@@ -79,32 +84,55 @@ class TpayAdapter(PaymentGatewayPort):
             return response.json()
 
     async def create_payment(self, request: PaymentRequest) -> PaymentResult:
-        """Create a payment through Tpay."""
-        # TODO: Implement actual Tpay payment creation
+        """
+        Create a new payment transaction via the Tpay API.
+
+        Not yet implemented; will map request data to the Tpay transaction
+        creation endpoint and return a redirect URL for user checkout.
+        """
         raise NotImplementedError("Tpay integration not yet implemented")
 
     async def verify_payment(self, payment_id: str) -> PaymentVerificationResult:
-        """Verify payment status through Tpay."""
-        # TODO: Implement actual Tpay payment verification
+        """
+        Verify the current status of a payment with the Tpay API.
+
+        Not yet implemented; will query the transaction status endpoint
+        and return a normalised verification result.
+        """
         raise NotImplementedError("Tpay integration not yet implemented")
 
     async def process_webhook(self, payload: dict, signature: str | None = None) -> PaymentVerificationResult:
-        """Process Tpay webhook notification."""
-        # TODO: Implement webhook processing with signature verification
+        """
+        Process an incoming Tpay webhook notification.
+
+        Not yet implemented; will verify the notification signature and
+        return a payment verification result reflecting the new status.
+        """
         raise NotImplementedError("Tpay integration not yet implemented")
 
     async def refund(self, request: RefundRequest) -> RefundResult:
-        """Request a refund through Tpay."""
-        # TODO: Implement actual Tpay refund
+        """
+        Request a refund for a completed payment via the Tpay API.
+
+        Not yet implemented; will call the Tpay refund endpoint and return
+        a result indicating success or failure.
+        """
         raise NotImplementedError("Tpay integration not yet implemented")
 
     async def get_payment_status(self, payment_id: str) -> PaymentStatus:
-        """Get current payment status from Tpay."""
-        # TODO: Implement actual status check
+        """
+        Retrieve the current status of a payment from the Tpay API.
+
+        Not yet implemented; will map the Tpay status response to the
+        internal PaymentStatus enum.
+        """
         raise NotImplementedError("Tpay integration not yet implemented")
 
     def _verify_webhook_signature(self, payload: dict, signature: str) -> bool:
-        """Verify Tpay webhook signature."""
-        # TODO: Implement signature verification
-        # Tpay uses MD5 hash of specific fields + security code
+        """
+        Verify the HMAC signature on an incoming Tpay webhook payload.
+
+        Not yet implemented; will compute the expected signature from specific
+        payload fields plus the security code and compare against the provided value.
+        """
         raise NotImplementedError("Tpay integration not yet implemented")

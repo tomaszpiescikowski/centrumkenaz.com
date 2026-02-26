@@ -81,65 +81,52 @@ class PaymentGatewayPort(ABC):
     @abstractmethod
     async def create_payment(self, request: PaymentRequest) -> PaymentResult:
         """
-        Create a new payment and return redirect URL for user.
+        Create a new payment and return a redirect URL for user checkout.
 
-        Args:
-            request: Payment details including amount, user info, and callbacks
-
-        Returns:
-            PaymentResult with payment_id and redirect_url if successful
+        Accepts a PaymentRequest with amount, user identifiers, and callback
+        URLs. Returns a PaymentResult whose redirect_url points the user to
+        the gateway checkout page when success is True.
         """
         pass
 
     @abstractmethod
     async def verify_payment(self, payment_id: str) -> PaymentVerificationResult:
         """
-        Verify payment status.
+        Verify the current status of a payment from the gateway.
 
-        Args:
-            payment_id: External payment ID from gateway
-
-        Returns:
-            PaymentVerificationResult with current status
+        Accepts the external payment ID assigned by the gateway and returns
+        a PaymentVerificationResult reflecting the authoritative current state.
         """
         pass
 
     @abstractmethod
     async def process_webhook(self, payload: dict, signature: str | None = None) -> PaymentVerificationResult:
         """
-        Process webhook notification from payment gateway.
+        Process an incoming webhook notification from the payment gateway.
 
-        Args:
-            payload: Raw webhook payload
-            signature: Optional signature for verification
-
-        Returns:
-            PaymentVerificationResult with payment status
+        Accepts the raw webhook payload and an optional signature string for
+        HMAC verification. Returns a PaymentVerificationResult so callers can
+        update internal payment state based on the gateway notification.
         """
         pass
 
     @abstractmethod
     async def refund(self, request: RefundRequest) -> RefundResult:
         """
-        Request a refund for a payment.
+        Request a refund for a previously completed payment.
 
-        Args:
-            request: Refund details including payment_id and optional partial amount
-
-        Returns:
-            RefundResult with refund status
+        Accepts a RefundRequest identifying the payment and an optional partial
+        amount; omitting amount triggers a full refund. Returns a RefundResult
+        indicating success or failure.
         """
         pass
 
     @abstractmethod
     async def get_payment_status(self, payment_id: str) -> PaymentStatus:
         """
-        Get current payment status.
+        Retrieve the current PaymentStatus for the given payment ID.
 
-        Args:
-            payment_id: External payment ID
-
-        Returns:
-            Current PaymentStatus
+        Returns the authoritative status from the gateway so callers can
+        synchronise internal state without triggering a full verification.
         """
         pass

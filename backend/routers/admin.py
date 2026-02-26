@@ -887,7 +887,6 @@ async def approve_user(
         target.account_status = AccountStatus.ACTIVE
         db.add(target)
         await db.commit()
-        # Re-fetch with eager loads – refresh alone won't restore relationships.
         result = await db.execute(
             select(User)
             .options(joinedload(User.profile), joinedload(User.approval_request))
@@ -1263,8 +1262,6 @@ async def update_waitlist_promotion_status(
     return _serialize_waitlist_promotion_row(registration, user, event)
 
 
-# ── Admin subscription purchase management ────────────────────────────
-
 def _serialize_subscription_purchase_pending_row(
     purchase: SubscriptionPurchase,
     user: User,
@@ -1397,11 +1394,6 @@ async def approve_subscription_purchase(
     if not result:
         raise HTTPException(status_code=404, detail="Purchase not found")
     return _serialize_subscription_purchase_pending_row(*result)
-
-
-# ---------------------------------------------------------------------------
-# Balance / Financial Statement
-# ---------------------------------------------------------------------------
 
 
 class BalanceMonthRow(BaseModel):
@@ -1558,7 +1550,6 @@ async def get_balance(
 
     time_filter = (Payment.created_at >= date_from, Payment.created_at <= date_to)
 
-    # ---- Aggregate totals ----
     totals_q = await db.execute(
         select(
             Payment.payment_type,
@@ -1595,7 +1586,6 @@ async def get_balance(
     total_refunds = refund_event + refund_sub
     total_net = total_income - total_refunds
 
-    # ---- Monthly breakdown ----
     month_q = await db.execute(
         select(
             func.to_char(Payment.created_at, "YYYY-MM").label("month"),
@@ -1647,7 +1637,6 @@ async def get_balance(
             )
         )
 
-    # ---- Per-event breakdown ----
     event_q = await db.execute(
         select(
             Registration.event_id,
@@ -1713,7 +1702,6 @@ async def get_balance(
         reverse=True,
     )
 
-    # ---- Per-subscription-plan breakdown ----
     sub_q = await db.execute(
         select(
             Payment.description,
@@ -1767,7 +1755,6 @@ async def get_balance(
         for pc, d in sorted(sub_data.items())
     ]
 
-    # ---- Pending payments ----
     pending_q = await db.execute(
         select(
             Payment.payment_type,
@@ -1822,10 +1809,6 @@ async def get_balance(
         pending=pending,
     )
 
-
-# ---------------------------------------------------------------------------
-# Admin promotion
-# ---------------------------------------------------------------------------
 
 class PromoteToAdminRequest(BaseModel):
     email: str = Field(..., description="Email of the user to promote to admin.")
@@ -1895,8 +1878,6 @@ async def promote_user_to_admin(
         message=f"Użytkownik {target_user.email} został adminem.",
     )
 
-
-# ── User list + block/unblock ─────────────────────────────────────
 
 class UserListItem(BaseModel):
     """Compact user record for the admin user-list view."""

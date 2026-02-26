@@ -91,15 +91,12 @@ class AuthService:
         _2, _3) if the base candidate is already taken.
         """
         local = (email.split("@")[0] if "@" in email else email).lower()
-        # Keep only allowed characters; replace anything else with a dot
-        cleaned = re.sub(r"[^A-Za-z0-9._-]", ".", local)
-        # Collapse consecutive dots/dashes and strip leading/trailing punctuation
-        cleaned = re.sub(r"[._-]{2,}", ".", cleaned).strip("._-")
+        cleaned = re.sub(pattern=r"[^A-Za-z0-9._-]", repl=".", string=local)
+        cleaned = re.sub(pattern=r"[._-]{2,}", repl=".", string=cleaned).strip("._-")
         candidate = cleaned[:28] or "user"
         if len(candidate) < 3:
             candidate = candidate + "user"
 
-        # Find a unique username by walking numeric suffixes
         result = await self.get_user_by_username(candidate)
         if result is None:
             return candidate
@@ -108,7 +105,8 @@ class AuthService:
             if await self.get_user_by_username(attempt) is None:
                 return attempt
         # Extreme fallback: add a random hex fragment
-        return f"{candidate[:20]}_{secrets.token_hex(4)}"
+        random_suffix = secrets.token_hex(4)
+        return f"{candidate[:20]}_{random_suffix}"
 
     @staticmethod
     def _resolve_role_and_status(email: str) -> tuple[UserRole, AccountStatus]:
@@ -206,8 +204,6 @@ class AuthService:
         picture_url = google_user_info.get("picture")
         role, status = self._resolve_role_and_status(email)
 
-        # Prefer matching by Google identity, but allow linking by email
-        # so an account can use both Google OAuth and password login.
         user = await self.get_user_by_google_id(google_id)
         if not user:
             user = await self.get_user_by_email(email)
@@ -516,7 +512,7 @@ class AuthService:
             "exp": expire,
             "type": "access",
         }
-        return jwt.encode(payload, settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
+        return jwt.encode(claims=payload, key=settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
 
     def create_refresh_token(self, user: User) -> str:
         """
@@ -530,7 +526,7 @@ class AuthService:
             "exp": expire,
             "type": "refresh",
         }
-        return jwt.encode(payload, settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
+        return jwt.encode(claims=payload, key=settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
 
     def verify_token(self, token: str) -> dict | None:
         """
@@ -539,7 +535,7 @@ class AuthService:
         The method returns the payload on success or None when verification fails.
         """
         try:
-            payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
+            payload = jwt.decode(token=token, key=settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
             return payload
         except JWTError:
             return None

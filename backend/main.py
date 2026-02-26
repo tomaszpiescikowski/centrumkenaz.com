@@ -31,8 +31,14 @@ settings = get_settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Application lifespan - startup and shutdown."""
-    await ensure_db_schema()  # verifies DB connectivity; migrations run in deploy
+    """
+    Manage application startup and shutdown lifecycle events.
+
+    Verifies database connectivity on startup by running ensure_db_schema.
+    Migrations are intentionally not run here — they are applied exclusively
+    by the deployment pipeline before the process starts.
+    """
+    await ensure_db_schema()
     logger.info("Application startup complete")
     yield
 
@@ -73,7 +79,12 @@ app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
 @app.get("/")
 async def root():
-    """Health check endpoint."""
+    """
+    Return basic application metadata for the root endpoint.
+
+    Useful as a lightweight availability check that also exposes the app
+    name and documentation URL for discovery.
+    """
     return {
         "name": settings.app_name,
         "status": "running",
@@ -83,5 +94,10 @@ async def root():
 
 @app.get("/health")
 async def health():
-    """Health check for load balancers."""
+    """
+    Return a minimal health status response for load balancer probes.
+
+    The endpoint intentionally performs no I/O so it remains fast and
+    returns 200 as long as the process is alive.
+    """
     return {"status": "healthy"}

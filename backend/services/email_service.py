@@ -41,19 +41,13 @@ settings = get_settings()
 logger = logging.getLogger(__name__)
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# Token helpers (used by password-reset; kept here so email_service is self-contained)
-# ──────────────────────────────────────────────────────────────────────────────
-
 def generate_reset_token() -> tuple[str, str]:
     """
-    Generate a password-reset token pair.
+    Generate a cryptographically secure password-reset token pair.
 
-    Returns
-    -------
-    (raw_token, hashed_token)
-        ``raw_token``    — URL-safe string to embed in the reset link.
-        ``hashed_token`` — SHA-256 hex digest to store in the database.
+    Returns a two-tuple of (raw_token, hashed_token) where raw_token is a
+    URL-safe string suitable for embedding in reset links, and hashed_token
+    is a SHA-256 hex digest intended for secure database storage and comparison.
     """
     raw = secrets.token_urlsafe(32)
     hashed = hashlib.sha256(raw.encode()).hexdigest()
@@ -61,13 +55,14 @@ def generate_reset_token() -> tuple[str, str]:
 
 
 def hash_reset_token(raw_token: str) -> str:
-    """Hash a raw token for DB comparison."""
+    """
+    Hash a raw password-reset token for secure database comparison.
+
+    Applies SHA-256 to the encoded token bytes and returns the hex digest,
+    matching the format stored during token generation via generate_reset_token.
+    """
     return hashlib.sha256(raw_token.encode()).hexdigest()
 
-
-# ──────────────────────────────────────────────────────────────────────────────
-# Template enum
-# ──────────────────────────────────────────────────────────────────────────────
 
 class EmailTemplate(str, Enum):
     PASSWORD_RESET = "password_reset"
@@ -75,16 +70,18 @@ class EmailTemplate(str, Enum):
     NEWSLETTER = "newsletter"
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# Shared HTML layout
-# ──────────────────────────────────────────────────────────────────────────────
-
 _BRAND_RED = "#e53935"
 _BRAND_NAVY = "#0f174a"
 _BRAND_CREAM = "#fffdf5"
 
 def _wrap_layout(title: str, body_html: str) -> str:
-    """Wrap rendered body in the universal Kenaz email shell."""
+    """
+    Wrap rendered body HTML in the universal Kenaz email shell.
+
+    Produces a complete HTML document with a branded navy header, a padded
+    content area, and a legal footer. The result is suitable for use as a
+    standalone email message body.
+    """
     return f"""<!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -133,7 +130,12 @@ def _wrap_layout(title: str, body_html: str) -> str:
 
 
 def _btn(url: str, label: str) -> str:
-    """Render a branded call-to-action button."""
+    """
+    Render a branded call-to-action button as an inline HTML anchor.
+
+    Returns an anchor element styled with the Kenaz red brand color and a pill
+    shape, suitable for embedding directly in the email body HTML.
+    """
     return (
         f'<a href="{url}" style="display:inline-block;margin:24px 0;padding:14px 32px;'
         f'background:{_BRAND_RED};color:#ffffff;font-size:15px;font-weight:700;'
@@ -189,14 +191,11 @@ def _render_welcome(to_name: str, ctx: dict[str, Any]) -> tuple[str, str]:
 
 def _render_newsletter(to_name: str, ctx: dict[str, Any]) -> tuple[str, str]:
     """
-    Generic newsletter template.
+    Render the generic newsletter email template.
 
-    Expected context keys:
-      - subject (str)           — email subject line
-      - headline (str)          — large heading inside the email
-      - content_html (str)      — pre-rendered HTML body paragraphs
-      - cta_url (str, optional) — call-to-action URL
-      - cta_label (str, optional)
+    Reads subject, headline, content_html, cta_url, cta_label, and
+    unsubscribe_url from the context dictionary; all keys are optional
+    and fall back to sensible defaults when absent.
     """
     subject = ctx.get("subject", "Nowości z Kenaz Centrum")
     headline = ctx.get("headline", subject)
@@ -229,7 +228,12 @@ def _render_template(
     to_name: str,
     ctx: dict[str, Any],
 ) -> tuple[str, str]:
-    """Dispatch template and return ``(subject, html_body)``."""
+    """
+    Dispatch a template name to its renderer and return subject and HTML body.
+
+    Maps each EmailTemplate variant to its dedicated renderer function and
+    raises ValueError for any unrecognised template value.
+    """
     if template == EmailTemplate.PASSWORD_RESET:
         return _render_password_reset(to_name, ctx)
     if template == EmailTemplate.WELCOME:
@@ -238,10 +242,6 @@ def _render_template(
         return _render_newsletter(to_name, ctx)
     raise ValueError(f"Unknown email template: {template}")
 
-
-# ──────────────────────────────────────────────────────────────────────────────
-# Send
-# ──────────────────────────────────────────────────────────────────────────────
 
 async def send_email(
     template: EmailTemplate,
@@ -252,22 +252,10 @@ async def send_email(
     """
     Render and send a single transactional email.
 
-    Parameters
-    ----------
-    template : EmailTemplate
-        Which template to render.
-    to_email : str
-        Recipient email address.
-    to_name : str
-        Recipient display name (used inside the email body).
-    ctx : dict, optional
-        Template-specific context variables.
-
-    Returns
-    -------
-    bool
-        ``True`` if the message was accepted by the SMTP server (or logged in
-        dev mode), ``False`` on delivery failure.
+    Renders the given template with the provided context, then delivers it via
+    SMTP when email is enabled. In development mode (email_enabled=False) the
+    rendered message is logged instead of sent. Returns True on successful
+    delivery or dev-mode logging, False on any delivery failure.
     """
     ctx = ctx or {}
     subject, html_body = _render_template(template, to_name, ctx)
@@ -300,7 +288,6 @@ async def send_email(
     msg["From"] = from_address
     msg["To"] = f"{to_name} <{to_email}>" if to_name else to_email
 
-    # Plain-text fallback (stripped)
     plain = f"{subject}\n\nOtwórz ten email w kliencie obsługującym HTML."
     msg.attach(MIMEText(plain, "plain", "utf-8"))
     msg.attach(MIMEText(html_body, "html", "utf-8"))
@@ -328,34 +315,25 @@ async def send_bulk(
     per_recipient_ctx: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, bool]:
     """
-    Send the same template to multiple recipients.
+    Send the same template to multiple recipients in parallel.
 
-    Suitable for newsletters. Each send is independent; failures are collected
-    and returned without raising.
-
-    Parameters
-    ----------
-    template : EmailTemplate
-        Template to render.
-    recipients : list of (email, name)
-        Target addresses.
-    ctx : dict, optional
-        Shared context merged for every recipient.
-    per_recipient_ctx : dict of {email: ctx_override}, optional
-        Per-recipient context overrides (e.g. personalised unsubscribe links).
-
-    Returns
-    -------
-    dict mapping email → bool (True = success)
+    Each delivery is independent; failures accumulate without stopping the
+    batch. Returns a mapping of recipient email address to delivery success
+    flag. Accepts shared and per-recipient context overrides for personalisation.
     """
-    import asyncio  # local import to keep module top-level clean
+    import asyncio
 
     base_ctx = dict(ctx or {})
     results: dict[str, bool] = {}
 
     async def _one(email: str, name: str) -> None:
         merged = {**base_ctx, **(per_recipient_ctx or {}).get(email, {})}
-        results[email] = await send_email(template, email, name, merged)
+        results[email] = await send_email(
+            template=template,
+            to_email=email,
+            to_name=name,
+            ctx=merged,
+        )
 
-    await asyncio.gather(*[_one(e, n) for e, n in recipients])
+    await asyncio.gather(*[_one(email=e, name=n) for e, n in recipients])
     return results
