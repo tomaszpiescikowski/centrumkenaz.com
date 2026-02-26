@@ -119,7 +119,7 @@ function Navbar({ darkMode, setDarkMode }) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
                   </svg>
                   {totalUnread > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-bold text-white">
+                    <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[#EB4731] px-0.5 text-[9px] font-bold text-white">
                       {totalUnread > 9 ? '9+' : totalUnread}
                     </span>
                   )}

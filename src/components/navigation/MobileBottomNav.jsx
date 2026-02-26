@@ -259,7 +259,7 @@ function MobileBottomNav() {
           <span className={`relative ${location.pathname === '/chat' ? 'text-indigo-500 dark:text-indigo-400' : 'text-navy/35 dark:text-cream/35'}`}>
             <ChatIcon />
             {totalUnread > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-bold text-white">
+              <span className="absolute -top-1 -right-1 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[#EB4731] px-0.5 text-[9px] font-bold text-white">
                 {totalUnread > 9 ? '9+' : totalUnread}
               </span>
             )}

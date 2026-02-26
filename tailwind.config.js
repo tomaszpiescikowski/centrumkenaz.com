@@ -10,7 +10,7 @@ export default {
       colors: {
         cream: '#FFF5E1',
         navy: '#1a1a4e',
-        'accent-red': '#e53935',
+        'accent-red': '#EB4731',
       },
       keyframes: {
         'kenaz-float': {

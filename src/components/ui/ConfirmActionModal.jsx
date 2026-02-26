@@ -44,14 +44,14 @@ function ConfirmActionModal({
   if (!open) return null
 
   const accentClasses = {
-    danger: 'border-red-500/40 dark:border-red-400/40',
+    danger: 'border-[#EB4731]/40 dark:border-[#EB4731]/40',
     warning: 'border-amber-500/40 dark:border-amber-400/40',
     default: 'border-navy/20 dark:border-cream/20',
   }
 
   const confirmBtnClasses = {
     danger:
-      'bg-red-600 text-white hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600',
+      'bg-[#EB4731] text-white hover:bg-[#C83C2A] dark:bg-[#EB4731] dark:hover:bg-[#C83C2A]',
     warning:
       'bg-amber-600 text-white hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600',
     default: 'btn-accent',

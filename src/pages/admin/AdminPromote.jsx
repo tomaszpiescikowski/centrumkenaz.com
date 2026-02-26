@@ -76,7 +76,7 @@ function ConfirmPromoteDialog({ email, challenge, onConfirm, onCancel, submittin
             type="button"
             onClick={onConfirm}
             disabled={!isMatch || submitting}
-            className="flex-1 h-10 rounded-xl bg-red-600 px-4 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex-1 h-10 rounded-xl bg-[#EB4731] px-4 text-sm font-semibold text-white transition hover:bg-[#C83C2A] disabled:cursor-not-allowed disabled:opacity-40"
           >
             {submitting ? t('admin.promote.promoting') : t('admin.promote.confirmButton')}
           </button>
@@ -155,7 +155,7 @@ function AdminPromote() {
         <button
           type="submit"
           disabled={!email.trim()}
-          className="btn-nav h-10 px-6 text-sm font-semibold bg-red-600 text-white border-red-600 hover:bg-red-700 disabled:opacity-40"
+          className="btn-nav h-10 px-6 text-sm font-semibold bg-[#EB4731] text-white border-[#EB4731] hover:bg-[#C83C2A] disabled:opacity-40"
         >
           {t('admin.promote.submitButton')}
         </button>
