@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
+import { useChat } from '../../context/ChatContext'
+import { playSendSound, playReceiveSound } from '../../utils/sounds'
 import { searchUsers } from '../../api/user'
 import {
   fetchComments,
@@ -63,10 +65,24 @@ function countAll(comments) {
   return n
 }
 
-function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onTabChange, hideHeader, hideTabs, messengerLayout, chatId, onLatestMessage }) {
+/** Collect all comment IDs (top-level + all nested replies) into a Set. */
+function collectCommentIds(comments) {
+  const ids = new Set()
+  const visit = (items) => {
+    for (const c of items) {
+      ids.add(c.id)
+      if (c.replies?.length) visit(c.replies)
+    }
+  }
+  visit(comments)
+  return ids
+}
+
+function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onTabChange, hideHeader, hideTabs, messengerLayout, chatId, onLatestMessage, onMarkRead }) {
   const { user, authFetch } = useAuth()
   const { t } = useLanguage()
   const isAdmin = user?.role === 'admin'
+  const { pendingRefresh, clearPendingRefresh } = useChat()
 
   const [comments, setComments] = useState([])
   const [generalComments, setGeneralComments] = useState([])
@@ -117,60 +133,166 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const [flashId, setFlashId] = useState(null)
   const pendingReplyParentRef = useRef(null)
 
-  // Pagination: load older messages
-  const [hasMoreOlder, setHasMoreOlder] = useState(false)
+  // Pagination: cursor-based, per-tab
   const [loadingOlder, setLoadingOlder] = useState(false)
-  const [olderOffset, setOlderOffset] = useState(50)
+  // { oldestTs: ISO string | null, hasMore: boolean }
+  const [eventPage, setEventPage] = useState({ oldestTs: null, hasMore: false })
+  const [generalPage, setGeneralPage] = useState({ oldestTs: null, hasMore: false })
+  // Newest known ts per tab - used for incremental poll-append (keeps scroll history intact)
+  const eventNewestTsRef = useRef(null)
+  const generalNewestTsRef = useRef(null)
+
+  // Polling: new incoming message highlight
+  const [newMessageIds, setNewMessageIds] = useState(new Set())
+  const knownEventIdsRef = useRef(new Set())     // known IDs for the event chat
+  const knownGeneralIdsRef = useRef(new Set())   // known IDs for the general/announcements channel
+  const isPollRefreshRef = useRef(false)         // set true before poll-triggered reload
+
+  // Stable ref to loadOlderMessages for the scroll listener (avoids stale closure + infinite recreate)
+  const loadOlderRef = useRef(null)
+  // Prevents scrollToBottom from firing when we prepend older messages (would fight scroll-anchor)
+  const skipScrollToBotRef = useRef(false)
 
   const isGeneralTab = activeTab === 'general'
   const currentComments = isGeneralTab ? generalComments : comments
+  const currentPage = isGeneralTab ? generalPage : eventPage
+  const hasMoreOlder = currentPage.hasMore
+
+  const PAGE_SIZE = 20
 
   const loadComments = useCallback(async () => {
+    const wasPollRefresh = isPollRefreshRef.current
+    isPollRefreshRef.current = false
     try {
-      const data = await fetchComments(resourceType, resourceId, authFetch, { limit: 50, order: 'desc' })
+      if (wasPollRefresh && eventNewestTsRef.current) {
+        // ── Incremental poll-append ──────────────────────────────────────
+        // Only fetch messages newer than the newest we already have.
+        // Nothing in the existing list is replaced — history stays intact.
+        const newData = await fetchComments(resourceType, resourceId, authFetch, {
+          after_ts: eventNewestTsRef.current, limit: 50, order: 'asc',
+        })
+        if (newData.length > 0) {
+          const genuinelyNew = newData.filter(c => !knownEventIdsRef.current.has(c.id))
+          if (genuinelyNew.length > 0) {
+            genuinelyNew.forEach(c => knownEventIdsRef.current.add(c.id))
+            eventNewestTsRef.current = genuinelyNew[genuinelyNew.length - 1].created_at
+            setComments(prev => [...prev, ...genuinelyNew])
+            // Sound + highlight only for messages from other users
+            const foreignNew = genuinelyNew.filter(c => c.author?.id !== user?.id)
+            if (foreignNew.length > 0) {
+              setNewMessageIds(new Set(foreignNew.map(c => c.id)))
+              playReceiveSound()
+              setTimeout(() => setNewMessageIds(prev => {
+                const n = new Set(prev)
+                foreignNew.forEach(c => n.delete(c.id))
+                return n
+              }), 3000)
+            }
+            if (onLatestMessage) {
+              const latest = genuinelyNew[genuinelyNew.length - 1]
+              onLatestMessage({ ts: latest.created_at, text: latest.content, author: latest.author?.full_name ?? null })
+            }
+          }
+        }
+        return
+      }
+
+      // ── Full initial / forced reload ─────────────────────────────────
+      // Fetches the PAGE_SIZE most recent messages, replaces the list.
+      const data = await fetchComments(resourceType, resourceId, authFetch, { limit: PAGE_SIZE, order: 'desc' })
       const ordered = [...data].reverse()
+      knownEventIdsRef.current = collectCommentIds(ordered)
+      eventNewestTsRef.current = ordered.length > 0 ? ordered[ordered.length - 1].created_at : null
       setComments(ordered)
-      setHasMoreOlder(data.length === 50)
-      setOlderOffset(50)
+      setEventPage({
+        oldestTs: ordered.length > 0 ? ordered[0].created_at : null,
+        hasMore: data.length === PAGE_SIZE,
+      })
       if (onLatestMessage && ordered.length > 0) {
-        // Find latest created_at across all comments and replies
-        let latest = null
+        let latestTs = null
+        let latestMsg = null
         const scanDates = (items) => {
           for (const c of items) {
-            if (!latest || c.created_at > latest) latest = c.created_at
+            if (!latestTs || c.created_at > latestTs) {
+              latestTs = c.created_at
+              latestMsg = { ts: c.created_at, text: c.content, author: c.author?.full_name ?? null }
+            }
             if (c.replies?.length) scanDates(c.replies)
           }
         }
         scanDates(ordered)
-        if (latest) onLatestMessage(latest)
+        if (latestMsg) onLatestMessage(latestMsg)
       }
     } catch {
       setError(t('comments.loadError'))
     } finally {
       setLoading(false)
     }
-  }, [resourceType, resourceId, authFetch, t, onLatestMessage])
+  }, [resourceType, resourceId, authFetch, t, onLatestMessage, user])
 
   const loadGeneralComments = useCallback(async () => {
+    const wasPollRefresh = isPollRefreshRef.current
+    isPollRefreshRef.current = false
     try {
-      const data = await fetchComments('general', 'global', authFetch, { limit: 50, order: 'desc' })
+      if (wasPollRefresh && generalNewestTsRef.current) {
+        // ── Incremental poll-append for general/announcements ──────────
+        const newData = await fetchComments('general', 'global', authFetch, {
+          after_ts: generalNewestTsRef.current, limit: 50, order: 'asc',
+        })
+        if (newData.length > 0) {
+          const genuinelyNew = newData.filter(c => !knownGeneralIdsRef.current.has(c.id))
+          if (genuinelyNew.length > 0) {
+            genuinelyNew.forEach(c => knownGeneralIdsRef.current.add(c.id))
+            generalNewestTsRef.current = genuinelyNew[genuinelyNew.length - 1].created_at
+            setGeneralComments(prev => [...prev, ...genuinelyNew])
+            const foreignNew = genuinelyNew.filter(c => c.author?.id !== user?.id)
+            if (foreignNew.length > 0) {
+              setNewMessageIds(new Set(foreignNew.map(c => c.id)))
+              playReceiveSound()
+              setTimeout(() => setNewMessageIds(prev => {
+                const n = new Set(prev)
+                foreignNew.forEach(c => n.delete(c.id))
+                return n
+              }), 3000)
+            }
+            if (onLatestMessage && chatId === 'general:global') {
+              const latest = genuinelyNew[genuinelyNew.length - 1]
+              onLatestMessage({ ts: latest.created_at, text: latest.content, author: latest.author?.full_name ?? null })
+            }
+          }
+        }
+        return
+      }
+
+      // ── Full initial load ───────────────────────────────────────────
+      const data = await fetchComments('general', 'global', authFetch, { limit: PAGE_SIZE, order: 'desc' })
       const orderedGeneral = [...data].reverse()
+      knownGeneralIdsRef.current = collectCommentIds(orderedGeneral)
+      generalNewestTsRef.current = orderedGeneral.length > 0 ? orderedGeneral[orderedGeneral.length - 1].created_at : null
       setGeneralComments(orderedGeneral)
+      setGeneralPage({
+        oldestTs: orderedGeneral.length > 0 ? orderedGeneral[0].created_at : null,
+        hasMore: data.length === PAGE_SIZE,
+      })
       if (onLatestMessage && chatId === 'general:global' && orderedGeneral.length > 0) {
-        let latest = null
+        let latestTs = null
+        let latestMsg = null
         const scanDates = (items) => {
           for (const c of items) {
-            if (!latest || c.created_at > latest) latest = c.created_at
+            if (!latestTs || c.created_at > latestTs) {
+              latestTs = c.created_at
+              latestMsg = { ts: c.created_at, text: c.content, author: c.author?.full_name ?? null }
+            }
             if (c.replies?.length) scanDates(c.replies)
           }
         }
         scanDates(orderedGeneral)
-        if (latest) onLatestMessage(latest)
+        if (latestMsg) onLatestMessage(latestMsg)
       }
     } catch {
       /* silent */
     }
-  }, [authFetch, onLatestMessage, chatId])
+  }, [authFetch, onLatestMessage, chatId, user])
 
   // Scroll messenger list to bottom
   const scrollToBottom = useCallback(() => {
@@ -184,9 +306,24 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     loadGeneralComments()
   }, [loadComments, loadGeneralComments])
 
+  // Poll-refresh: when ChatPoller detects new messages for this chat, reload and highlight them
+  useEffect(() => {
+    const currentChatId = isGeneralTab ? 'general:global' : chatId
+    if (!currentChatId || !pendingRefresh[currentChatId]) return
+    clearPendingRefresh(currentChatId)
+    isPollRefreshRef.current = true
+    if (isGeneralTab) {
+      loadGeneralComments()
+    } else {
+      loadComments()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingRefresh])
+
   // Auto-scroll to newest message when comments load / change; flash newest reply
   useEffect(() => {
-    scrollToBottom()
+    // Skip scroll-to-bottom when we're prepending older messages (scroll-anchor handles it instead)
+    if (!skipScrollToBotRef.current) scrollToBottom()
     const parentId = pendingReplyParentRef.current
     if (parentId) {
       const parent = currentComments.find(c => c.id === parentId)
@@ -327,6 +464,8 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
       setMessengerReplyTo(null)
       setReplyHighlightId(null)
       if (replyParentId) pendingReplyParentRef.current = replyParentId
+      // Play send chime — own messages are filtered in poll-refresh by author check, no suppress needed
+      playSendSound()
       await reloadCurrent()
       requestAnimationFrame(scrollToBottom)
     } catch (err) {
@@ -602,32 +741,64 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     }
   }, [longPressId])
 
-  // Load older messages (prepend without losing scroll position)
+  // Load older messages (cursor-based) — prepends without losing scroll position
   const loadOlderMessages = useCallback(async () => {
-    if (loadingOlder || !hasMoreOlder || !listRef.current) return
+    const page = isGeneralTab ? generalPage : eventPage
+    if (loadingOlder || !page.hasMore || !listRef.current || !page.oldestTs) return
     setLoadingOlder(true)
+    skipScrollToBotRef.current = true   // prevent scrollToBottom from fighting the anchor
     try {
       const prevScrollTop = listRef.current.scrollTop
       const prevScrollHeight = listRef.current.scrollHeight
       const rt = isGeneralTab ? 'general' : resourceType
       const ri = isGeneralTab ? 'global' : resourceId
-      const older = await fetchComments(rt, ri, authFetch, { limit: 50, offset: olderOffset, order: 'desc' })
-      const olderOrdered = [...older].reverse()
-      if (isGeneralTab) {
-        setGeneralComments(prev => [...olderOrdered, ...prev])
-      } else {
-        setComments(prev => [...olderOrdered, ...prev])
-      }
-      setOlderOffset(o => o + 50)
-      setHasMoreOlder(older.length === 50)
-      requestAnimationFrame(() => {
-        if (listRef.current) {
-          listRef.current.scrollTop = prevScrollTop + (listRef.current.scrollHeight - prevScrollHeight)
-        }
+      const older = await fetchComments(rt, ri, authFetch, {
+        limit: PAGE_SIZE, before_ts: page.oldestTs, order: 'desc',
       })
-    } catch { /* silent */ }
+      const olderOrdered = [...older].reverse()
+      if (olderOrdered.length > 0) {
+        if (isGeneralTab) {
+          olderOrdered.forEach(c => knownGeneralIdsRef.current.add(c.id))
+          setGeneralComments(prev => [...olderOrdered, ...prev])
+          setGeneralPage({ oldestTs: olderOrdered[0].created_at, hasMore: older.length === PAGE_SIZE })
+        } else {
+          olderOrdered.forEach(c => knownEventIdsRef.current.add(c.id))
+          setComments(prev => [...olderOrdered, ...prev])
+          setEventPage({ oldestTs: olderOrdered[0].created_at, hasMore: older.length === PAGE_SIZE })
+        }
+        // Restore scroll position so the viewport doesn't jump
+        requestAnimationFrame(() => {
+          if (listRef.current) {
+            listRef.current.scrollTop = prevScrollTop + (listRef.current.scrollHeight - prevScrollHeight)
+          }
+          skipScrollToBotRef.current = false
+        })
+      } else {
+        // Nothing more to load
+        if (isGeneralTab) setGeneralPage(p => ({ ...p, hasMore: false }))
+        else setEventPage(p => ({ ...p, hasMore: false }))
+        skipScrollToBotRef.current = false
+      }
+    } catch {
+      skipScrollToBotRef.current = false
+    }
     finally { setLoadingOlder(false) }
-  }, [loadingOlder, hasMoreOlder, isGeneralTab, resourceType, resourceId, authFetch, olderOffset])
+  }, [loadingOlder, isGeneralTab, eventPage, generalPage, resourceType, resourceId, authFetch])
+
+  // Keep loadOlderRef up-to-date; the scroll listener reads it instead of depending on the
+  // callback directly — this avoids recreating the listener on every eventPage/generalPage change.
+  useEffect(() => { loadOlderRef.current = loadOlderMessages }, [loadOlderMessages])
+
+  // Auto-trigger when user scrolls near the top of the messenger list
+  useEffect(() => {
+    const list = listRef.current
+    if (!list || !messengerLayout) return
+    const onScroll = () => {
+      if (list.scrollTop < 120) loadOlderRef.current?.()
+    }
+    list.addEventListener('scroll', onScroll, { passive: true })
+    return () => list.removeEventListener('scroll', onScroll)
+  }, [messengerLayout])
 
   const toggleReplies = (id) => {
     setExpandedReplies(prev => {
@@ -644,9 +815,10 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     const isReplying = replyingTo === item.id
     // Always reply to the nearest top-level or depth-1 ancestor
     const replyTargetId = item._depth === 0 ? item.id : (item.parent_id || item.id)
+    const isNewIncoming = newMessageIds.has(item.id)
 
     return (
-      <div key={item.id} data-cmt-id={item.id} className={`cmt-swipe-wrap ${item._visualDepth > 0 ? 'cmt-wrap-threaded' : ''} ${item._hasChildren && item._visualDepth === 0 ? 'cmt-wrap-has-replies' : ''} ${replyHighlightId === item.id ? 'cmt-reply-target' : ''} ${flashId === item.id ? 'cmt-flash' : ''}`}>
+      <div key={item.id} data-cmt-id={item.id} className={`cmt-swipe-wrap ${item._visualDepth > 0 ? 'cmt-wrap-threaded' : ''} ${item._hasChildren && item._visualDepth === 0 ? 'cmt-wrap-has-replies' : ''} ${replyHighlightId === item.id ? 'cmt-reply-target' : ''} ${flashId === item.id ? 'cmt-flash' : ''} ${isNewIncoming ? 'cmt-new-incoming' : ''}`}>
         {/* Swipe reply indicator (stays in place behind the sliding item) */}
         {swipeId === item.id && swipeX > 10 && (
           <div className={`cmt-swipe-indicator ${swipeX >= SWIPE_THRESHOLD ? 'cmt-swipe-ready' : ''}`}
@@ -878,7 +1050,14 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
 
   // No separate pinned section – pinned items stay inline (backend sorts pinned first)
 
-  const commentForm = user ? (
+  // General tab = announcements: only admins may post
+  const canPost = !isGeneralTab || isAdmin
+
+  const commentForm = (user && !canPost) ? (
+    <div className="cmt-new-form">
+      <p className="cmt-readonly-notice">{t('comments.announcementsReadOnly')}</p>
+    </div>
+  ) : user ? (
     <form className="cmt-new-form" onSubmit={handleSubmit}>
       <div className="cmt-new-row">
         {!messengerLayout && (
@@ -931,7 +1110,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
             autoCorrect="off"
             autoCapitalize="sentences"
             spellCheck="false"
-            onFocus={(e) => { if (!messengerLayout) e.target.rows = 3 }}
+            onFocus={(e) => { onMarkRead?.(); if (!messengerLayout) e.target.rows = 3 }}
             onBlur={(e) => {
               if (!messengerLayout && !e.target.value.trim()) e.target.rows = 1
               // Close mention dropdown with delay (allow click to register first)
@@ -994,11 +1173,14 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
         <>
           {/* Scrollable messages – pinned at top (via backend sort), oldest first, newest bottom */}
           <div className="cmt-list cmt-list-messenger" ref={listRef}>
-            {/* Load older messages button */}
-            {hasMoreOlder && (
-              <button className="cmt-load-older" onClick={loadOlderMessages} disabled={loadingOlder}>
-                {loadingOlder ? '...' : 'Starsze wiadomości'}
-              </button>
+            {/* Older-messages indicator — auto-loads on scroll, no manual button needed */}
+            {(hasMoreOlder || loadingOlder) && (
+              <div className="cmt-load-older-indicator" aria-live="polite">
+                {loadingOlder
+                  ? <span className="cmt-load-older-spinner" />
+                  : <span className="cmt-load-older-hint">↑</span>
+                }
+              </div>
             )}
             {/* Spacer pushes messages to bottom when list is short */}
             <div className="cmt-list-spacer" aria-hidden="true" />

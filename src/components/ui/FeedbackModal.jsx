@@ -19,6 +19,7 @@ function FeedbackModal({ open, onClose }) {
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState(false)
+  const [shaHover, setShaHover] = useState(false)
   const textareaRef = useRef(null)
 
   // Focus textarea when modal opens
@@ -166,23 +167,51 @@ function FeedbackModal({ open, onClose }) {
                 </p>
               )}
 
-              {/* Actions */}
-              <div className="flex items-center justify-end gap-3 pt-1">
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  disabled={sending}
-                  className="btn-secondary text-xs"
-                >
-                  {t('feedback.cancel')}
-                </button>
-                <button
-                  type="submit"
-                  disabled={sending || !comment.trim()}
-                  className="rounded-full bg-amber-500 hover:bg-amber-600 dark:bg-amber-500 dark:hover:bg-amber-400 text-white dark:text-navy px-5 py-2.5 text-xs font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {sending ? '...' : t('feedback.send')}
-                </button>
+              {/* Actions row: version badge left, buttons right */}
+              <div className="flex items-center justify-between gap-3 pt-1">
+                {/* Version badge */}
+                {__COMMIT_SHA__ ? (
+                  <div className="relative">
+                    <p
+                      className="cursor-default text-[10px] font-light tracking-wider text-navy/30 dark:text-cream/30 select-none"
+                      onMouseEnter={() => setShaHover(true)}
+                      onMouseLeave={() => setShaHover(false)}
+                    >
+                      wersja: {__COMMIT_SHA__}
+                    </p>
+                    {shaHover && (__COMMIT_SUBJECT__ || __COMMIT_BODY__) && (
+                      <div className="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-72 rounded-xl bg-navy px-4 py-3 text-left shadow-xl dark:bg-cream">
+                        {__COMMIT_SUBJECT__ && (
+                          <p className="text-xs font-semibold leading-snug text-cream dark:text-navy">{__COMMIT_SUBJECT__}</p>
+                        )}
+                        {__COMMIT_BODY__ && (
+                          <p className="mt-1.5 text-[10px] leading-relaxed text-cream/70 dark:text-navy/70">{__COMMIT_BODY__.trim()}</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <span />
+                )}
+
+                {/* Buttons */}
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleClose}
+                    disabled={sending}
+                    className="btn-secondary text-xs"
+                  >
+                    {t('feedback.cancel')}
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={sending || !comment.trim()}
+                    className="rounded-full bg-amber-500 hover:bg-amber-600 dark:bg-amber-500 dark:hover:bg-amber-400 text-white dark:text-navy px-5 py-2.5 text-xs font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {sending ? '...' : t('feedback.send')}
+                  </button>
+                </div>
               </div>
             </form>
           </>

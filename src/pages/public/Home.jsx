@@ -1,10 +1,8 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext'
 
 function Home() {
   const { t } = useLanguage()
-  const [shaHover, setShaHover] = useState(false)
 
   return (
     <div className="page-shell flex h-full min-h-0 flex-col items-center pb-[calc(env(safe-area-inset-bottom)+5.25rem)] sm:min-h-[calc(100vh-4rem)] sm:pb-12">
@@ -39,29 +37,6 @@ function Home() {
           </svg>
         </Link>
       </div>
-
-      {/* Version badge */}
-      {__COMMIT_SHA__ && (
-        <div className="relative mt-4 inline-block">
-          <p
-            className="cursor-default text-[10px] font-light tracking-wider text-navy/30 dark:text-cream/30"
-            onMouseEnter={() => setShaHover(true)}
-            onMouseLeave={() => setShaHover(false)}
-          >
-            wersja: {__COMMIT_SHA__}
-          </p>
-          {shaHover && (__COMMIT_SUBJECT__ || __COMMIT_BODY__) && (
-            <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-72 -translate-x-1/2 rounded-xl bg-navy px-4 py-3 text-left shadow-xl dark:bg-cream">
-              {__COMMIT_SUBJECT__ && (
-                <p className="text-xs font-semibold leading-snug text-cream dark:text-navy">{__COMMIT_SUBJECT__}</p>
-              )}
-              {__COMMIT_BODY__ && (
-                <p className="mt-1.5 text-[10px] leading-relaxed text-cream/70 dark:text-navy/70">{__COMMIT_BODY__.trim()}</p>
-              )}
-            </div>
-          )}
-        </div>
-      )}
     </div>
   )
 }

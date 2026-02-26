@@ -29,7 +29,9 @@ function ChatProvider({ children }) {
   })
 
   const [lastReadTimestamps, setLastReadTimestamps] = useState(loadLastRead)
-  const [latestMessageTimes, setLatestMessageTimes] = useState({})
+  const [latestMessages, setLatestMessages] = useState({})
+  // pendingRefresh tracks chatIds that have new messages detected by polling
+  const [pendingRefresh, setPendingRefresh] = useState({})
 
   const openChat = useCallback((opts = {}) => {
     if (opts.eventId) {
@@ -63,26 +65,44 @@ function ChatProvider({ children }) {
     })
   }, [])
 
-  const setLatestMessageTime = useCallback((chatId, timestamp) => {
-    if (!timestamp) return
-    setLatestMessageTimes((prev) => {
-      const ts = typeof timestamp === 'string' ? timestamp : new Date(timestamp).toISOString()
-      if (prev[chatId] === ts) return prev
-      return { ...prev, [chatId]: ts }
+  const setLatestMessageTime = useCallback((chatId, timestampOrObj) => {
+    if (!timestampOrObj) return
+    setLatestMessages((prev) => {
+      const incoming = typeof timestampOrObj === 'string'
+        ? { ts: timestampOrObj, text: null, author: null }
+        : { ts: timestampOrObj.ts, text: timestampOrObj.text ?? null, author: timestampOrObj.author ?? null }
+      const current = prev[chatId]
+      if (current && current.ts >= incoming.ts) return prev
+      return { ...prev, [chatId]: incoming }
     })
   }, [])
 
   const hasUnread = useCallback((chatId) => {
-    const latest = latestMessageTimes[chatId]
-    if (!latest) return false
+    const msg = latestMessages[chatId]
+    if (!msg) return false
+    const ts = typeof msg === 'string' ? msg : msg.ts
+    if (!ts) return false
     const lastRead = lastReadTimestamps[chatId]
     if (!lastRead) return true  // never read
-    return new Date(latest) > new Date(lastRead)
-  }, [latestMessageTimes, lastReadTimestamps])
+    return new Date(ts) > new Date(lastRead)
+  }, [latestMessages, lastReadTimestamps])
+
+  const addPendingRefresh = useCallback((chatId) => {
+    setPendingRefresh((prev) => prev[chatId] ? prev : { ...prev, [chatId]: true })
+  }, [])
+
+  const clearPendingRefresh = useCallback((chatId) => {
+    setPendingRefresh((prev) => {
+      if (!prev[chatId]) return prev
+      const next = { ...prev }
+      delete next[chatId]
+      return next
+    })
+  }, [])
 
   const totalUnread = useMemo(() => {
-    return Object.keys(latestMessageTimes).filter((chatId) => hasUnread(chatId)).length
-  }, [latestMessageTimes, hasUnread])
+    return Object.keys(latestMessages).filter((chatId) => hasUnread(chatId)).length
+  }, [latestMessages, hasUnread])
 
   const value = useMemo(
     () => ({
@@ -90,9 +110,10 @@ function ChatProvider({ children }) {
       openChat, closeChat, navigateChat,
       markAsRead, setLatestMessageTime,
       hasUnread, totalUnread,
-      lastReadTimestamps, latestMessageTimes,
+      lastReadTimestamps, latestMessages,
+      pendingRefresh, addPendingRefresh, clearPendingRefresh,
     }),
-    [chatState, openChat, closeChat, navigateChat, markAsRead, setLatestMessageTime, hasUnread, totalUnread, lastReadTimestamps, latestMessageTimes],
+    [chatState, openChat, closeChat, navigateChat, markAsRead, setLatestMessageTime, hasUnread, totalUnread, lastReadTimestamps, latestMessages, pendingRefresh, addPendingRefresh, clearPendingRefresh],
   )
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>

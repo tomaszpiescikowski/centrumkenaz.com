@@ -1,10 +1,6 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import declarative_base
 from config import get_settings
-from pathlib import Path
-import asyncio
-import subprocess
-import sys
 
 settings = get_settings()
 
@@ -36,56 +32,14 @@ async def get_db():
             await session.close()
 
 
-async def init_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
-
-def _alembic_ini_path() -> Path:
-    # backend/alembic.ini
-    return Path(__file__).resolve().parent / "alembic.ini"
-
-
-def migrations_configured() -> bool:
-    return _alembic_ini_path().exists()
-
-
-def _run_alembic_upgrade_head_sync() -> None:
-    """Run `alembic upgrade head` using the current Python interpreter.
-
-    We use a subprocess because the Alembic env uses async engines and
-    calls asyncio.run(), which cannot be executed inside an already-running
-    event loop (FastAPI lifespan).
-    """
-    ini_path = _alembic_ini_path()
-    if not ini_path.exists():
-        raise FileNotFoundError(f"Missing alembic.ini at {ini_path}")
-
-    cmd = [
-        sys.executable,
-        "-m",
-        "alembic",
-        "-c",
-        str(ini_path),
-        "upgrade",
-        "head",
-    ]
-
-    repo_root = Path(__file__).resolve().parents[1]
-    subprocess.run(cmd, check=True, cwd=str(repo_root))
-
-
-async def run_migrations() -> None:
-    await asyncio.to_thread(_run_alembic_upgrade_head_sync)
-
-
 async def ensure_db_schema() -> None:
-    """Ensure DB schema exists.
+    """Verify the database is reachable on startup.
 
-    Prefer Alembic migrations when configured; fall back to create_all for
-    lightweight/dev-only usage.
+    Migrations are intentionally NOT run here — they are applied exclusively
+    by the deployment pipeline (alembic upgrade heads) before the process
+    starts.  Running migrations inside the app process caused race conditions
+    and made startup fail whenever code and DB were transiently out of sync.
     """
-    if migrations_configured():
-        await run_migrations()
-        return
-    await init_db()
+    from sqlalchemy import text
+    async with engine.connect() as conn:
+        await conn.execute(text("SELECT 1"))

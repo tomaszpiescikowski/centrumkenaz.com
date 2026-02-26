@@ -5,7 +5,7 @@ Reusable across resource types via `resource_type` path parameter.
 Currently used for events; extensible to announcements, products, etc.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
@@ -349,6 +349,59 @@ async def toggle_reaction(
     return _build_comment_response(comment, user.id)
 
 
+# ── Polling check endpoint ────────────────────────────────────────
+
+class CheckRequest(BaseModel):
+    """Mapping of chatId → ISO since-timestamp to check for new activity."""
+    chats: dict[str, datetime]
+
+
+@router.post(
+    "/check",
+    summary="Lightweight check for new messages across multiple chats",
+)
+async def check_new_messages(
+    body: CheckRequest,
+    user: OptionalActiveUser = None,
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, str]:
+    """Return a map of chatId → latestTimestamp for each chat that has messages
+    newer than the requested since-timestamp. Chats with no new activity are
+    omitted from the response so the client can detect silence quickly."""
+
+    result: dict[str, str] = {}
+
+    for chat_id, since in body.chats.items():
+        # chatId format: "resource_type:resource_id" e.g. "event:uuid", "general:global"
+        parts = chat_id.split(":", 1)
+        if len(parts) != 2:
+            continue
+        resource_type, resource_id = parts
+
+        # Ensure since is timezone-aware for comparison
+        if since.tzinfo is None:
+            since = since.replace(tzinfo=timezone.utc)
+
+        stmt = (
+            select(sa_func.max(Comment.created_at))
+            .where(
+                Comment.resource_type == resource_type,
+                Comment.resource_id == resource_id,
+                Comment.created_at > since,
+                Comment.is_deleted.is_(False),
+            )
+        )
+        max_res = await db.execute(stmt)
+        latest = max_res.scalar_one_or_none()
+        if latest is not None:
+            # Ensure tz-aware
+            if latest.tzinfo is None:
+                latest = latest.replace(tzinfo=timezone.utc)
+            result[chat_id] = latest.isoformat()
+
+    return result
+
+
 # ── Generic resource routes (MUST come last) ──────────────────────
 
 @router.get(
@@ -364,16 +417,34 @@ async def list_comments(
     offset: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
     order: Literal['asc', 'desc'] = Query('asc', description="Sort order: asc=oldest-first, desc=newest-first."),
+    before_ts: Optional[datetime] = Query(None, description="Cursor: return comments with created_at strictly before this timestamp (for loading older messages)."),
+    after_ts: Optional[datetime] = Query(None, description="Cursor: return comments with created_at strictly after this timestamp (for polling new messages)."),
 ):
-    """Return top-level comments (with nested replies) for a resource."""
+    """Return top-level comments (with nested replies) for a resource.
+
+    Cursor-based pagination via before_ts / after_ts is preferred over offset
+    because it remains stable as new messages arrive.
+    """
+
+    conditions = [
+        Comment.resource_type == resource_type,
+        Comment.resource_id == resource_id,
+        Comment.parent_id.is_(None),
+    ]
+
+    if before_ts is not None:
+        if before_ts.tzinfo is None:
+            before_ts = before_ts.replace(tzinfo=timezone.utc)
+        conditions.append(Comment.created_at < before_ts)
+
+    if after_ts is not None:
+        if after_ts.tzinfo is None:
+            after_ts = after_ts.replace(tzinfo=timezone.utc)
+        conditions.append(Comment.created_at > after_ts)
 
     stmt = (
         select(Comment)
-        .where(
-            Comment.resource_type == resource_type,
-            Comment.resource_id == resource_id,
-            Comment.parent_id.is_(None),
-        )
+        .where(*conditions)
         .options(*_comment_load_options())
         .execution_options(populate_existing=True)
         .order_by(
@@ -407,6 +478,10 @@ async def create_comment(
     db: AsyncSession = Depends(get_db),
 ):
     """Create a new comment or reply on a resource."""
+
+    # Announcements channel is admin-only for writing
+    if resource_type == 'general' and user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Only admins can post to announcements")
 
     # Validate parent exists and belongs to same resource
     if body.parent_id:

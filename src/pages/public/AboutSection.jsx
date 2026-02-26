@@ -6,26 +6,26 @@ function AboutSection() {
   const { t } = useLanguage()
   const { login } = useAuth()
   const storyImages = [
-    'https://placehold.co/800x400/e2e8f0/64748b?text=%20',
-    'https://placehold.co/800x400/e2e8f0/64748b?text=%20',
-    'https://placehold.co/800x400/e2e8f0/64748b?text=%20',
-    'https://placehold.co/800x400/e2e8f0/64748b?text=%20',
+    '/static/DSC03468-2.jpg',
+    '/static/DSC03257-2.jpg',
+    '/static/DSC03721-2.jpg',
+    '/static/DSC03635-2.jpg',
     '/static/about1.jpg',
     '/static/about7.jpg',
   ]
   const storyImageAlts = [
-    'Grupa ludzi ćwicząca razem na świeżym powietrzu',
-    'Dwóch mężczyzn siedzących razem na trawie',
-    'Kobiety śmiejące się podczas wspólnego wyjścia',
-    'Osoby tworzące krąg z dłońmi – gest jedności',
+    'Uczestnicy Kenaz podczas wspólnego wydarzenia na świeżym powietrzu',
+    'Trening i ruch – aktywność fizyczna w Kenaz',
+    'Społeczność Kenaz – ludzie i relacje',
+    'Wspólna energia i motywacja w Kenaz',
     'Ekipa Kenaz podczas wspólnego wyjazdu – zdjęcie grupowe',
     'Duża grupa członków Kenaz w czarnych koszulkach',
   ]
   const storyImagePositions = [
     'object-[center_30%]',
     'object-center',
-    'object-left',
     'object-top',
+    'object-center',
     'object-center',
     'object-center',
   ]

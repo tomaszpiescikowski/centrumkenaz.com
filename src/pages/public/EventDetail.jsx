@@ -49,7 +49,7 @@ function EventDetail() {
   const [fieldHints, setFieldHints] = useState({})
   const [savingAdmin, setSavingAdmin] = useState(false)
   const [deletingAdmin, setDeletingAdmin] = useState(false)
-  const { openChat, setLatestMessageTime } = useChat()
+  const { openChat, setLatestMessageTime, markAsRead } = useChat()
   const isAdmin = user?.role === 'admin'
 
   const userAccountStatus = user?.account_status
@@ -952,7 +952,7 @@ function EventDetail() {
             className="ev-card ev-chat-card hidden sm:block"
             style={{ marginTop: '0.75rem', padding: '1rem 1.25rem' }}
           >
-            <CommentsSection resourceType="event" resourceId={event.id} chatId={event.id} onLatestMessage={(ts) => setLatestMessageTime(event.id, ts)} hideTabs messengerLayout />
+            <CommentsSection resourceType="event" resourceId={event.id} chatId={`event:${event.id}`} onLatestMessage={(msg) => setLatestMessageTime(`event:${event.id}`, msg)} onMarkRead={() => markAsRead(`event:${event.id}`)} hideTabs messengerLayout />
           </div>
 
 

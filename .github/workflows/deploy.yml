@@ -147,9 +147,27 @@ jobs:
       - name: Validate Alembic migration files
         run: |
           cd backend
-          echo "Checking migration chain consistency..."
-          python -m alembic heads | grep -q ' (head)' && echo "✅ Single migration head found" || { echo "❌ Multiple or missing migration heads"; exit 1; }
-          python -m alembic branches | grep -q 'No branches' && echo "✅ No divergent branches" || echo "⚠️  Warning: Divergent migration branches detected"
+          echo "Checking for duplicate revision IDs..."
+          python -W error::UserWarning -c "
+          from alembic.config import Config
+          from alembic.script import ScriptDirectory
+          cfg = Config('alembic.ini')
+          sd = ScriptDirectory.from_config(cfg)
+          revs = [s.revision for s in sd.walk_revisions()]
+          dupes = [r for r in set(revs) if revs.count(r) > 1]
+          if dupes:
+              raise SystemExit(f'❌ Duplicate revision IDs found: {dupes}')
+          print('✅ No duplicate revision IDs')
+          "
+
+          echo "Checking migration head count..."
+          HEAD_COUNT=$(python -m alembic heads 2>&1 | grep -c '(head)' || true)
+          if [ "$HEAD_COUNT" -ne 1 ]; then
+            echo "❌ Expected exactly 1 migration head, found $HEAD_COUNT"
+            python -m alembic heads
+            exit 1
+          fi
+          echo "✅ Exactly 1 migration head found"
 
   deploy:
     name: Deploy to Lightsail
@@ -365,20 +383,8 @@ jobs:
           cd ${{ env.BACKEND_DIR }}
           
           echo "Running database migrations..."
-          CURRENT=$(venv/bin/alembic current 2>&1 || true)
-          HEAD=$(venv/bin/alembic heads 2>&1 | awk '{print $1}')
-          if echo "$CURRENT" | grep -q "Can't locate revision"; then
-            echo "⚠️  Database points to unknown revision — fixing alembic_version table directly"
-            # Source DB URL from .env and update alembic_version via psql
-            DB_URL=$(grep -E '^DATABASE_URL=' .env | cut -d'=' -f2- | tr -d '"' | tr -d "'")
-            if [ -z "$DB_URL" ]; then
-              DB_URL=$(grep -E '^SQLALCHEMY_DATABASE_URL=' .env | cut -d'=' -f2- | tr -d '"' | tr -d "'")
-            fi
-            echo "Updating alembic_version to $HEAD..."
-            psql "$DB_URL" -c "UPDATE alembic_version SET version_num = '$HEAD';"
-            echo "✅ alembic_version stamped to $HEAD"
-          fi
-          venv/bin/alembic upgrade head
+          echo "Running database migrations..."
+          venv/bin/python -W error::UserWarning -m alembic upgrade heads
           echo "✅ Migrations completed"
           ENDSSH
 

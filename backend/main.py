@@ -4,9 +4,12 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+import logging
 
 from config import get_settings
 from database import ensure_db_schema
+
+logger = logging.getLogger(__name__)
 from routers import (
     auth_router,
     events_router,
@@ -28,7 +31,8 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan - startup and shutdown."""
-    await ensure_db_schema()
+    await ensure_db_schema()  # verifies DB connectivity; migrations run in deploy
+    logger.info("Application startup complete")
     yield
 
 

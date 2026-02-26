@@ -226,9 +226,8 @@ set -euo pipefail
 
 cd "${BACKEND_DIR}"
 
-# Run migrations
 echo "Applying migrations..."
-venv/bin/alembic upgrade head
+venv/bin/python -W error::UserWarning -m alembic upgrade heads
 
 echo "Migrations completed"
 ENDSSH

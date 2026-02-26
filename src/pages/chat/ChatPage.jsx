@@ -16,7 +16,7 @@ function ChatPage() {
   const {
     view, eventId, eventTitle,
     navigateChat,
-    markAsRead, hasUnread, setLatestMessageTime,
+    markAsRead, hasUnread, setLatestMessageTime, latestMessages,
   } = useChat()
   const navigate = useNavigate()
 
@@ -63,7 +63,8 @@ function ChatPage() {
     }
   }, [])
 
-  const [events, setEvents] = useState([])
+  // null = never fetched; [] = fetched and empty; [...] = fetched with data
+  const [events, setEvents] = useState(null)
   const [eventsLoading, setEventsLoading] = useState(false)
 
   const loadEvents = useCallback(async () => {
@@ -82,6 +83,15 @@ function ChatPage() {
   useEffect(() => {
     if (view === 'events') loadEvents()
   }, [view, loadEvents])
+
+  // Auto-switch to General tab when the user is on the Events tab but has
+  // no registered events. Uses null as sentinel (null = not yet fetched)
+  // to avoid redirecting before the first fetch completes.
+  useEffect(() => {
+    if (view === 'events' && events !== null && !eventsLoading && events.length === 0) {
+      navigateChat('general')
+    }
+  }, [view, eventsLoading, events, navigateChat])
 
   useEffect(() => {
     if (view === 'general') markAsRead('general:global')
@@ -235,7 +245,7 @@ function ChatPage() {
             hideTabs
             messengerLayout
             chatId="general:global"
-            onLatestMessage={(ts) => setLatestMessageTime('general:global', ts)}
+            onLatestMessage={(msg) => setLatestMessageTime('general:global', msg)}
           />
         )}
 
@@ -243,7 +253,7 @@ function ChatPage() {
           <div className="cp-event-list-wrap">
             {!isAuthenticated ? (
               <div className="cp-empty"><p>{t('comments.loginToSeeEvents')}</p></div>
-            ) : eventsLoading ? (
+            ) : eventsLoading || events === null ? (
               <div className="cp-empty"><p>{t('comments.loading')}</p></div>
             ) : events.length === 0 ? (
               <div className="cp-empty"><p>{t('comments.noRegisteredEvents')}</p></div>
@@ -252,6 +262,7 @@ function ChatPage() {
                 {events.map((ev) => {
                   const chatId = `event:${ev.id}`
                   const unread = hasUnread(chatId)
+                  const previewMsg = latestMessages[chatId]
                   return (
                     <li key={ev.id}>
                       <button className="cp-event-item" onClick={() => handleEventClick(ev)}>
@@ -259,8 +270,14 @@ function ChatPage() {
                           <EventIcon type={ev.type} size="sm" />
                         </span>
                         <span className="cp-event-info">
-                          <span className="cp-event-title-text">{ev.title}</span>
-                          <span className="cp-event-meta">{ev.city} &middot; {formatDate(ev.startDateTime)}</span>
+                          <span className={`cp-event-title-text${unread ? ' cp-event-title-unread' : ''}`}>{ev.title}</span>
+                          {previewMsg?.text ? (
+                            <span className={`cp-event-preview${unread ? ' cp-event-preview-unread' : ''}`}>
+                              {previewMsg.author ? `${previewMsg.author}: ` : ''}{previewMsg.text.length > 45 ? previewMsg.text.slice(0, 45) + '\u2026' : previewMsg.text}
+                            </span>
+                          ) : (
+                            <span className="cp-event-meta">{ev.city} &middot; {formatDate(ev.startDateTime)}</span>
+                          )}
                         </span>
                         {unread && <span className="chat-unread-dot" aria-label="unread" />}
                         <svg className="cp-event-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -283,7 +300,7 @@ function ChatPage() {
             hideTabs
             messengerLayout
             chatId={`event:${eventId}`}
-            onLatestMessage={(ts) => setLatestMessageTime(`event:${eventId}`, ts)}
+            onLatestMessage={(msg) => setLatestMessageTime(`event:${eventId}`, msg)}
           />
         )}
       </div>
