@@ -14,6 +14,7 @@ from models.feedback import Feedback
 from models.announcement import Announcement
 from models.comment import Comment, CommentReaction, ReactionType
 from models.donation import Donation, DonationSetting, DonationStatus
+from models.event_type import EventType
 
 __all__ = [
 	"User",
@@ -37,4 +38,5 @@ __all__ = [
 	"Donation",
 	"DonationSetting",
 	"DonationStatus",
+	"EventType",
 ]

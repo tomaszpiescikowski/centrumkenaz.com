@@ -2,8 +2,9 @@
  * Built-in event type icon definitions.
  * Each entry has: key, label (Polish), color (Tailwind text class), and paths (SVG content as string).
  *
- * Custom icons (added by admin) are stored in localStorage via useCustomEventTypes hook.
- * Custom icons reference an entry from EXTRA_ICONS by key (iconKey field).
+ * Custom icons (added by admin) are stored in the database via the /event-types API
+ * and fetched via the useCustomEventTypes hook. Custom icons reference an entry from
+ * EXTRA_ICONS by key (icon_key field).
  */
 
 export const BUILT_IN_EVENT_ICONS = [

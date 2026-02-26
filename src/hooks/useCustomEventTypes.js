@@ -1,7 +1,6 @@
-import { useState, useCallback } from 'react'
-import { BUILT_IN_KEYS, EXTRA_ICON_MAP } from '../constants/eventIcons'
-
-const STORAGE_KEY = 'kenaz.customEventTypes'
+import { useState, useEffect, useCallback } from 'react'
+import { EXTRA_ICON_MAP } from '../constants/eventIcons'
+import { fetchEventTypes, createEventType, deleteEventType } from '../api/eventTypes'
 
 export const DEFAULT_COLORS = [
   'text-red-500', 'text-orange-500', 'text-amber-500', 'text-yellow-500',
@@ -11,89 +10,60 @@ export const DEFAULT_COLORS = [
 ]
 
 /**
- * Converts a display label into a safe slug key.
- * Handles Polish diacritics and special characters.
- */
-function slugify(label) {
-  return label
-    .trim()
-    .toLowerCase()
-    .replace(/ą/g, 'a').replace(/ć/g, 'c').replace(/ę/g, 'e')
-    .replace(/ł/g, 'l').replace(/ń/g, 'n').replace(/ó/g, 'o')
-    .replace(/ś/g, 's').replace(/ź/g, 'z').replace(/ż/g, 'z')
-    .replace(/\s+/g, '_')
-    .replace(/[^a-z0-9_]/g, '')
-    .replace(/^_+|_+$/g, '')
-}
-
-function load() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return []
-    // Only keep entries with the new schema (iconKey, not emoji)
-    return JSON.parse(raw).filter(
-      (t) => t && t.key && t.label && t.iconKey && !BUILT_IN_KEYS.includes(t.key)
-    )
-  } catch {
-    return []
-  }
-}
-
-function save(items) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
-}
-
-/**
  * Hook for managing admin-defined custom event types.
- * Persisted in localStorage.
+ * Data is persisted in the database and shared across all admin browsers.
  *
- * Each custom type: { key: string, label: string, iconKey: string, color: string }
- * - key is auto-generated as a slug from the label
- * - iconKey references an entry in EXTRA_ICONS
+ * @param {{ authFetch?: Function }} options
+ *   Pass `authFetch` from AuthContext when you need to add/remove types (admin only).
+ *   For read-only consumers (EventDetail, pickers) you can call the hook with no args.
+ *
+ * Each custom type: { key: string, label: string, icon_key: string, color: string }
  */
-export function useCustomEventTypes() {
-  const [customTypes, setCustomTypes] = useState(load)
+export function useCustomEventTypes({ authFetch } = {}) {
+  const [customTypes, setCustomTypes] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  const addCustomType = useCallback(({ label, iconKey, color }) => {
+  const reload = useCallback(async () => {
+    try {
+      const data = await fetchEventTypes()
+      // Normalise: the backend uses icon_key; keep both so legacy consumers work
+      setCustomTypes(data.map((t) => ({ ...t, iconKey: t.icon_key })))
+    } catch {
+      // Non-critical — fall back to empty list
+      setCustomTypes([])
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    reload()
+  }, [reload])
+
+  const addCustomType = useCallback(async ({ label, iconKey, color }) => {
+    if (!authFetch) return { error: 'Nie zalogowano.' }
     if (!label?.trim()) return { error: 'Podaj nazwę aktywności.' }
     if (!iconKey) return { error: 'Wybierz ikonę.' }
     if (!EXTRA_ICON_MAP[iconKey]) return { error: 'Nieprawidłowa ikona.' }
+    try {
+      const result = await createEventType(authFetch, {
+        label: label.trim(),
+        icon_key: iconKey,
+        color: color || DEFAULT_COLORS[0],
+      })
+      await reload()
+      return { ok: true, key: result.key }
+    } catch (err) {
+      return { error: err.message || 'Nie udało się dodać typu.' }
+    }
+  }, [authFetch, reload])
 
-    const generatedKey = slugify(label)
-    if (!generatedKey) return { error: 'Nazwa jest nieprawidłowa (nie można wygenerować klucza).' }
-    if (BUILT_IN_KEYS.includes(generatedKey)) return { error: 'Taka aktywność istnieje już wśród wbudowanych typów.' }
+  const removeCustomType = useCallback(async (key) => {
+    if (!authFetch) return
+    await deleteEventType(authFetch, key)
+    await reload()
+  }, [authFetch, reload])
 
-    let finalKey = generatedKey
-    setCustomTypes((prev) => {
-      // Ensure uniqueness by appending a counter if needed
-      let candidate = generatedKey
-      let counter = 2
-      while (prev.find((t) => t.key === candidate)) {
-        candidate = `${generatedKey}_${counter++}`
-      }
-      finalKey = candidate
-      const next = [...prev, { key: candidate, label: label.trim(), iconKey, color: color || DEFAULT_COLORS[0] }]
-      save(next)
-      return next
-    })
-    return { ok: true, key: finalKey }
-  }, [])
-
-  const removeCustomType = useCallback((key) => {
-    setCustomTypes((prev) => {
-      const next = prev.filter((t) => t.key !== key)
-      save(next)
-      return next
-    })
-  }, [])
-
-  const updateCustomType = useCallback((key, patch) => {
-    setCustomTypes((prev) => {
-      const next = prev.map((t) => t.key === key ? { ...t, ...patch } : t)
-      save(next)
-      return next
-    })
-  }, [])
-
-  return { customTypes, addCustomType, removeCustomType, updateCustomType, DEFAULT_COLORS }
+  return { customTypes, loading, addCustomType, removeCustomType, DEFAULT_COLORS }
 }
+

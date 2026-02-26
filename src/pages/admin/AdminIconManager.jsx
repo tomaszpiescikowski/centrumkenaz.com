@@ -80,13 +80,14 @@ function ExtraIconPicker({ value, onChange }) {
 }
 
 function AdminIconManager() {
-  const { user, isAuthenticated, login } = useAuth()
+  const { user, isAuthenticated, login, authFetch } = useAuth()
   const { t } = useLanguage()
   const { showSuccess, showError, showConfirm } = useNotification()
-  const { customTypes, addCustomType, removeCustomType, DEFAULT_COLORS } = useCustomEventTypes()
+  const { customTypes, loading, addCustomType, removeCustomType, DEFAULT_COLORS } = useCustomEventTypes({ authFetch })
 
   const [form, setForm] = useState({ label: '', iconKey: '', color: DEFAULT_COLORS[0] })
   const [formError, setFormError] = useState('')
+  const [adding, setAdding] = useState(false)
 
   const isAdmin = user?.role === 'admin'
 
@@ -112,28 +113,37 @@ function AdminIconManager() {
     )
   }
 
-  const handleAdd = (e) => {
+  const handleAdd = async (e) => {
     e.preventDefault()
     setFormError('')
-    const result = addCustomType({ label: form.label, iconKey: form.iconKey, color: form.color })
-    if (result?.error) {
-      setFormError(result.error)
-      return
+    setAdding(true)
+    try {
+      const result = await addCustomType({ label: form.label, iconKey: form.iconKey, color: form.color })
+      if (result?.error) {
+        setFormError(result.error)
+        return
+      }
+      showSuccess('Nowy typ aktywności dodany.')
+      setForm({ label: '', iconKey: '', color: DEFAULT_COLORS[0] })
+    } finally {
+      setAdding(false)
     }
-    showSuccess('Nowy typ aktywności dodany.')
-    setForm({ label: '', iconKey: '', color: DEFAULT_COLORS[0] })
   }
 
   const handleRemove = (key, label) => {
-    showConfirm(`Usunąć typ „${label}"? Nie wpłynie to na istniejące wydarzenia.`, {
+    showConfirm(`Usunąć typ „${label}"? Istniejące wydarzenia zmienią typ na „inne".`, {
       actions: [
         { label: t('common.close'), variant: 'neutral' },
         {
           label: 'Usuń',
           variant: 'danger',
-          onClick: () => {
-            removeCustomType(key)
-            showSuccess('Typ usunięty.')
+          onClick: async () => {
+            try {
+              await removeCustomType(key)
+              showSuccess('Typ usunięty.')
+            } catch (err) {
+              showError(err.message || 'Nie udało się usunąć typu.')
+            }
           },
         },
       ],
@@ -165,8 +175,8 @@ function AdminIconManager() {
           </svg>
           <p className="leading-relaxed">
             <span className="font-semibold text-navy dark:text-cream">Wbudowane typy</span> są zawsze dostępne i nie można ich usunąć.{' '}
-            <span className="font-semibold text-navy dark:text-cream">Własne typy</span> tworzysz poniżej — nadaj nazwę, wybierz ikonę i kolor.{' '}
-            <span className="font-medium text-amber-600 dark:text-amber-400">Uwaga:</span> własne typy są zapisane w pamięci tej przeglądarki (localStorage) — pamiętaj, aby dodawać je z urządzenia, na którym korzystasz z panelu admina. Nie będą widoczne na innych urządzeniach ani po wyczyszczeniu danych przeglądarki.
+            <span className="font-semibold text-navy dark:text-cream">Własne typy</span> tworzysz poniżej — są zapisane w bazie danych i widoczne dla wszystkich adminów na wszystkich urządzeniach.{' '}
+            Usunięcie własnego typu zmienia typ wszystkich powiązanych wydarzeń na „inne".
           </p>
         </div>
       </div>
@@ -197,13 +207,17 @@ function AdminIconManager() {
       {/* ── Custom icons ── */}
       <section className="mb-10">
         <h2 className="text-base font-bold text-navy dark:text-cream mb-1">
-          Twoje ikony ({customTypes.length})
+          Własne ikony ({customTypes.length})
         </h2>
         <p className="text-xs text-navy/50 dark:text-cream/50 mb-4">
-          Własne typy zapisywane lokalnie w przeglądarce. Ikona SVG wybrana z puli 128 wzorów.
+          Zapisane w bazie danych — widoczne dla wszystkich adminów. Ikona SVG wybrana z puli 128 wzorów.
         </p>
 
-        {customTypes.length === 0 ? (
+        {loading ? (
+          <div className="rounded-2xl border border-dashed border-navy/20 dark:border-cream/20 p-6 text-center text-sm text-navy/50 dark:text-cream/50">
+            Ładowanie…
+          </div>
+        ) : customTypes.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-navy/20 dark:border-cream/20 p-6 text-center text-sm text-navy/50 dark:text-cream/50">
             Brak własnych ikon. Dodaj pierwszą poniżej.
           </div>
@@ -315,10 +329,10 @@ function AdminIconManager() {
 
           <button
             type="submit"
-            disabled={!form.iconKey}
+            disabled={!form.iconKey || adding}
             className="btn-primary px-6 py-2.5 rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Dodaj typ aktywności
+            {adding ? 'Dodawanie…' : 'Dodaj typ aktywności'}
           </button>
         </form>
       </section>
