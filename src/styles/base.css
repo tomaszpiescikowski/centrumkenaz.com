@@ -71,6 +71,7 @@ img, a, button {
 [class*="overflow-scroll"] {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  touch-action: pan-y;
 }
 
 .app-shell,
