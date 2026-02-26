@@ -6,7 +6,6 @@ Create Date: 2026-02-26 12:00:00.000000
 
 """
 from alembic import op
-import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
@@ -17,15 +16,8 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column(
-        'comments',
-        sa.Column(
-            'is_pinned',
-            sa.Boolean(),
-            nullable=False,
-            server_default=sa.text('false'),
-            comment='Whether this comment is pinned by an admin.',
-        ),
+    op.execute(
+        "ALTER TABLE comments ADD COLUMN IF NOT EXISTS is_pinned BOOLEAN NOT NULL DEFAULT false"
     )
 
 
