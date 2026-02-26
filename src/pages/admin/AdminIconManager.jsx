@@ -268,7 +268,7 @@ function AdminIconManager() {
       {/* ── Add new custom type ── */}
       <section>
         <h2 className="text-base font-bold text-navy dark:text-cream mb-4">Dodaj nowy typ aktywności</h2>
-        <form onSubmit={handleAdd} className="page-card space-y-4 max-w-lg">
+        <form onSubmit={handleAdd} className="page-card space-y-4">
           {/* Label */}
           <label className="flex flex-col gap-1.5 text-sm text-navy dark:text-cream">
             Nazwa wyświetlana
