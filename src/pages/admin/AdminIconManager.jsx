@@ -82,7 +82,7 @@ function ExtraIconPicker({ value, onChange }) {
 function AdminIconManager() {
   const { user, isAuthenticated, login } = useAuth()
   const { t } = useLanguage()
-  const { showSuccess, showError } = useNotification()
+  const { showSuccess, showError, showConfirm } = useNotification()
   const { customTypes, addCustomType, removeCustomType, DEFAULT_COLORS } = useCustomEventTypes()
 
   const [form, setForm] = useState({ label: '', iconKey: '', color: DEFAULT_COLORS[0] })
@@ -125,9 +125,19 @@ function AdminIconManager() {
   }
 
   const handleRemove = (key, label) => {
-    if (!window.confirm(`Usunąć typ „${label}"? Nie wpłynie to na istniejące wydarzenia.`)) return
-    removeCustomType(key)
-    showSuccess('Typ usunięty.')
+    showConfirm(`Usunąć typ „${label}"? Nie wpłynie to na istniejące wydarzenia.`, {
+      actions: [
+        { label: t('common.close'), variant: 'neutral' },
+        {
+          label: 'Usuń',
+          variant: 'danger',
+          onClick: () => {
+            removeCustomType(key)
+            showSuccess('Typ usunięty.')
+          },
+        },
+      ],
+    })
   }
 
   // Preview auto-generated key based on current label
