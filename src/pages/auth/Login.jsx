@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
+import { requestPasswordReset } from '../../api/auth'
 
 const MODE_LOGIN = 'login'
 const MODE_REGISTER = 'register'
@@ -22,6 +23,9 @@ function Login() {
   const [mode, setMode] = useState(MODE_LOGIN)
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [forgotState, setForgotState] = useState(null) // null | 'form' | 'sent'
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotSubmitting, setForgotSubmitting] = useState(false)
   const [form, setForm] = useState({
     login: '',
     password: '',
@@ -64,6 +68,19 @@ function Login() {
 
   const handleGoogleLogin = () => {
     loginWithGoogle()
+  }
+
+  const handleForgotPassword = async () => {
+    if (forgotSubmitting || !forgotEmail) return
+    setForgotSubmitting(true)
+    try {
+      await requestPasswordReset(forgotEmail.trim())
+    } catch {
+      // Always show success to prevent email enumeration
+    } finally {
+      setForgotSubmitting(false)
+      setForgotState('sent')
+    }
   }
 
   const handleChange = (field) => (event) => {
@@ -240,15 +257,63 @@ function Login() {
           </label>
 
           {mode === MODE_LOGIN && (
-            <div className="text-right -mt-2">
-              <button
-                type="button"
-                className="text-xs text-navy/50 dark:text-cream/50 hover:text-navy dark:hover:text-cream underline underline-offset-2 transition"
-                onClick={() => setErrorMessage(t('auth.forgotPasswordHint') || 'Napisz na centrumkenaz.it@gmail.com')}
-              >
-                {t('auth.forgotPassword')}
-              </button>
-            </div>
+            <>
+              {forgotState === null && (
+                <div className="text-right -mt-2">
+                  <button
+                    type="button"
+                    className="text-xs text-navy/50 dark:text-cream/50 hover:text-navy dark:hover:text-cream underline underline-offset-2 transition"
+                    onClick={() => { setForgotState('form'); setErrorMessage('') }}
+                  >
+                    {t('auth.forgotPassword')}
+                  </button>
+                </div>
+              )}
+
+              {forgotState === 'form' && (
+                <div className="rounded-xl border border-navy/10 bg-navy/5 dark:border-cream/10 dark:bg-cream/5 p-3 space-y-2">
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-navy/65 dark:text-cream/65">
+                      {t('auth.forgotPasswordEmailLabel')}
+                    </span>
+                    <input
+                      type="email"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      className={authInputClass}
+                      placeholder={t('auth.forgotPasswordEmailPlaceholder')}
+                      autoComplete="email"
+                      maxLength={255}
+                    />
+                  </label>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={handleForgotPassword}
+                      disabled={forgotSubmitting || !forgotEmail}
+                      className="flex-1 rounded-xl bg-accent-red px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-red/90 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {forgotSubmitting ? t('auth.forgotPasswordSendingLabel') : t('auth.forgotPasswordSend')}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setForgotState(null); setForgotEmail('') }}
+                      className="rounded-xl border border-navy/20 px-3 py-2 text-sm text-navy/60 hover:text-navy dark:border-cream/20 dark:text-cream/60 dark:hover:text-cream transition"
+                      aria-label="Zamknij"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {forgotState === 'sent' && (
+                <div className="rounded-xl border border-green-500/30 bg-green-500/10 px-3 py-2 text-sm text-green-700 dark:text-green-300">
+                  <p className="font-semibold">{t('auth.forgotPasswordSentTitle')}</p>
+                  <p>{t('auth.forgotPasswordSentBody')}</p>
+                </div>
+              )}
+            </>
           )}
 
           {mode === MODE_REGISTER && (

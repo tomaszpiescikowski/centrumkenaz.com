@@ -45,6 +45,20 @@ class Settings(BaseSettings):
     # Defaults
     default_payment_url: str = ""
 
+    # Email / SMTP
+    # Set email_enabled=True and fill smtp_* to activate real mail sending.
+    # When email_enabled=False (default) all emails are logged to console instead.
+    email_enabled: bool = False
+    smtp_host: str = "smtp.gmail.com"
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_from_email: str = ""
+    smtp_from_name: str = "Kenaz Centrum"
+
+    # Password reset token TTL (minutes)
+    password_reset_token_expire_minutes: int = 60
+
     # Security / Rate limiting
     rate_limit_enabled: bool = True
     rate_limit_public_per_minute: int = 600

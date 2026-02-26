@@ -28,5 +28,8 @@ httpx==0.26.0
 factory-boy==3.3.0
 faker==22.0.0
 
+# Email
+aiosmtplib==3.0.1
+
 # Utils
 python-dotenv==1.0.0

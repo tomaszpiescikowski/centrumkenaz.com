@@ -30,6 +30,7 @@ import ManualPaymentPage from './pages/account/ManualPaymentPage'
 import SubscriptionManualPaymentPage from './pages/account/SubscriptionManualPaymentPage'
 import Panel from './pages/account/Panel'
 import Login from './pages/auth/Login'
+import ResetPassword from './pages/auth/ResetPassword'
 import ChatPage from './pages/chat/ChatPage'
 
 function RequireAuth() {
@@ -126,6 +127,7 @@ function App() {
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/event/:id" element={<EventDetail />} />
                   <Route path="/login" element={<Login />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
                   <Route element={<RequireAdmin />}>
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/admin/events/new" element={<AdminEventCreate />} />

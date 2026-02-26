@@ -70,6 +70,16 @@ class User(Base):
         nullable=True,
         comment="Hashed password for local auth (nullable for OAuth-only).",
     )
+    password_reset_token = Column(
+        String(255),
+        nullable=True,
+        comment="Hashed SHA-256 password-reset token (one-time use).",
+    )
+    password_reset_token_expires_at = Column(
+        DateTime(timezone=True),
+        nullable=True,
+        comment="Expiry of the current password-reset token.",
+    )
 
     role = Column(
         SQLEnum(

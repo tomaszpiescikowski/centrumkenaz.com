@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, Query
 from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select as sa_select
 from pydantic import BaseModel, EmailStr, Field
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import json
 import logging
 
@@ -13,6 +14,12 @@ from services.auth_service import (
     AuthPolicyError,
     AuthService,
     AuthValidationError,
+)
+from services.email_service import (
+    EmailTemplate,
+    generate_reset_token,
+    hash_reset_token,
+    send_email,
 )
 from security.rate_limit import (
     build_public_rate_limit_dependency,
@@ -48,6 +55,11 @@ auth_password_login_rate_limit = build_public_rate_limit_dependency(
 auth_password_register_rate_limit = build_public_rate_limit_dependency(
     scope="auth:password-register",
     per_minute_resolver=lambda: settings.rate_limit_public_per_minute,
+)
+auth_forgot_password_rate_limit = build_public_rate_limit_dependency(
+    scope="auth:forgot-password",
+    # Low limit: prevents email enumeration / spam
+    per_minute_resolver=lambda: 5,
 )
 
 class TokenResponse(BaseModel):
@@ -107,6 +119,23 @@ class PasswordLoginRequest(BaseModel):
         min_length=8,
         max_length=128,
         description="Plain password to verify against stored hash.",
+    )
+
+
+class ForgotPasswordRequest(BaseModel):
+    """Request a password-reset email."""
+
+    email: EmailStr = Field(description="Email address of the account to reset.")
+
+
+class ResetPasswordRequest(BaseModel):
+    """Complete a password reset using the emailed token."""
+
+    token: str = Field(min_length=10, max_length=200, description="Raw reset token from the email link.")
+    new_password: str = Field(
+        min_length=8,
+        max_length=128,
+        description="New password to set.",
     )
 
 
@@ -508,3 +537,102 @@ async def get_current_user_dependency(
         raise HTTPException(status_code=404, detail="User not found")
 
     return user
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Password reset
+# ──────────────────────────────────────────────────────────────────────────────
+
+_RESET_SAFE_RESPONSE = {"message": "Jeśli konto istnieje, wyślemy email z instrukcją."}
+
+
+@router.post(
+    "/forgot-password",
+    dependencies=[Depends(auth_forgot_password_rate_limit)],
+)
+async def forgot_password(
+    payload: ForgotPasswordRequest,
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    """
+    Initiate the password-reset flow.
+
+    Always returns the same generic response regardless of whether the email
+    exists to prevent account enumeration.  The reset link is valid for the
+    duration configured in ``password_reset_token_expire_minutes``.
+    """
+    email = AuthService._normalize_email(str(payload.email))
+
+    result = await db.execute(sa_select(User).where(User.email == email))
+    user: User | None = result.scalar_one_or_none()
+
+    if user is None or user.password_hash is None:
+        # No local-auth account — silently do nothing (safe response below)
+        return _RESET_SAFE_RESPONSE
+
+    raw_token, hashed_token = generate_reset_token()
+    expires = datetime.now(timezone.utc) + timedelta(
+        minutes=settings.password_reset_token_expire_minutes
+    )
+
+    user.password_reset_token = hashed_token
+    user.password_reset_token_expires_at = expires
+    await db.commit()
+
+    reset_url = (
+        f"{settings.frontend_url}/reset-password?token={raw_token}"
+    )
+
+    await send_email(
+        template=EmailTemplate.PASSWORD_RESET,
+        to_email=email,
+        to_name=user.full_name or "Użytkownik",
+        ctx={
+            "reset_url": reset_url,
+            "expires_minutes": settings.password_reset_token_expire_minutes,
+        },
+    )
+
+    return _RESET_SAFE_RESPONSE
+
+
+@router.post("/reset-password")
+async def reset_password(
+    payload: ResetPasswordRequest,
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    """
+    Complete the password-reset using the token from the email link.
+
+    The token is verified by hashing the submitted value and comparing it to
+    the stored digest.  Expired or already-used tokens are rejected.
+    """
+    INVALID = HTTPException(status_code=400, detail="Token nieprawidłowy lub wygasł.")
+
+    hashed = hash_reset_token(payload.token)
+    result = await db.execute(
+        sa_select(User).where(User.password_reset_token == hashed)
+    )
+    user: User | None = result.scalar_one_or_none()
+
+    if user is None:
+        raise INVALID
+
+    if user.password_reset_token_expires_at is None:
+        raise INVALID
+
+    now = datetime.now(timezone.utc)
+    expires = user.password_reset_token_expires_at
+    if expires.tzinfo is None:
+        expires = expires.replace(tzinfo=timezone.utc)
+    if now > expires:
+        raise INVALID
+
+    from passlib.context import CryptContext
+    pwd_ctx = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+    user.password_hash = pwd_ctx.hash(payload.new_password)
+    user.password_reset_token = None
+    user.password_reset_token_expires_at = None
+    await db.commit()
+
+    return {"message": "Hasło zostało zmienione. Możesz się teraz zalogować."}
