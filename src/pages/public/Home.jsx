@@ -23,13 +23,13 @@ function Home() {
       <div className="w-full max-w-xs space-y-4 px-8 sm:max-w-sm">
         <Link
           to="/login"
-          className="block w-full rounded-full bg-cream px-8 py-4 text-center text-base font-black text-navy shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl dark:bg-navy dark:text-cream sm:text-lg"
+          className="block w-full rounded-full bg-navy px-8 py-4 text-center text-base font-black text-cream shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl dark:bg-cream dark:text-navy sm:text-lg"
         >
           {t('auth.openLogin')}
         </Link>
         <Link
           to="/about"
-          className="group flex w-full items-center justify-center gap-2 rounded-full bg-cream px-8 py-4 text-base font-black text-navy shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl dark:bg-navy dark:text-cream sm:text-lg"
+          className="group flex w-full items-center justify-center gap-2 rounded-full bg-navy px-8 py-4 text-base font-black text-cream shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl dark:bg-cream dark:text-navy sm:text-lg"
         >
           <span>{t('home.aboutCta')}</span>
           <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
