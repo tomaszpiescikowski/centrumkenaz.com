@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
@@ -18,7 +19,7 @@ function ConfirmPromoteDialog({ email, challenge, onConfirm, onCancel, submittin
   const [input, setInput] = useState('')
   const isMatch = input.toUpperCase() === challenge
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="w-full max-w-md rounded-2xl border border-red-300 bg-cream p-6 shadow-2xl dark:border-red-700 dark:bg-navy">
         <div className="mb-4 flex items-center gap-3">
@@ -83,7 +84,7 @@ function ConfirmPromoteDialog({ email, challenge, onConfirm, onCancel, submittin
         </div>
       </div>
     </div>
-  )
+  , document.body)
 }
 
 function AdminPromote() {
