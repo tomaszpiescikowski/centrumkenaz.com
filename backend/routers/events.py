@@ -297,6 +297,49 @@ async def _ensure_daily_event_limit(
             )
 
 
+@router.get("/categories", response_model=list[str])
+async def list_event_categories(
+    month: str = Query(..., description="Month in YYYY-MM format"),
+    city: str | None = Query(None),
+    _user: User = Depends(get_active_user_dependency),
+    db: AsyncSession = Depends(get_db),
+) -> list[str]:
+    """
+    Return distinct event types present in events for the given month.
+
+    Returns a sorted list of event_type strings so the calendar legend
+    can show only categories that actually appear in the current month view.
+    """
+    try:
+        year_str, month_str = month.split("-", 1)
+        year = int(year_str)
+        month_num = int(month_str)
+        if month_num < 1 or month_num > 12:
+            raise ValueError
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid month format, expected YYYY-MM")
+
+    month_start = datetime(year, month_num, 1)
+    if month_num == 12:
+        next_month_start = datetime(year + 1, 1, 1)
+    else:
+        next_month_start = datetime(year, month_num + 1, 1)
+    end_dt = next_month_start - timedelta(microseconds=1)
+
+    stmt = (
+        select(Event.event_type)
+        .distinct()
+        .where(Event.start_date >= month_start)
+        .where(Event.start_date <= end_dt)
+    )
+    if city:
+        stmt = stmt.where(Event.city == city)
+
+    result = await db.execute(stmt)
+    categories = sorted(row[0] for row in result.all())
+    return categories
+
+
 @router.get("/", response_model=list[EventResponse])
 async def list_events(
     skip: int = Query(0, ge=0),

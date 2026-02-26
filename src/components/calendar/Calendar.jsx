@@ -207,6 +207,15 @@ function Calendar({ className = '' }) {
     }
   }, [events, isActiveUser])
 
+  // Categories present in events for the current month view.
+  // Used to show only relevant legend entries.
+  const availableTypes = useMemo(() => {
+    if (loading) return null
+    return new Set(events.map((e) => {
+      return EVENT_TYPES.some((row) => row.type === e.type) ? e.type : 'inne'
+    }))
+  }, [loading, events])
+
   const visibleEvents = useMemo(() => {
     return events.filter((eventItem) => {
       const typeKey = EVENT_TYPES.some((row) => row.type === eventItem.type) ? eventItem.type : 'inne'
@@ -348,9 +357,10 @@ function Calendar({ className = '' }) {
   }
 
   const toggleAllFilters = (nextValue) => {
+    const typesToToggle = availableTypes ? EVENT_TYPES.filter(({ type }) => availableTypes.has(type)) : EVENT_TYPES
     setTypeFilter((prev) => {
       const updated = { ...prev }
-      EVENT_TYPES.forEach(({ type }) => {
+      typesToToggle.forEach(({ type }) => {
         updated[type] = nextValue
       })
       return updated
@@ -469,7 +479,7 @@ function Calendar({ className = '' }) {
               </svg>
             </button>
             {legendOpen && <div className="mt-2 flex flex-wrap gap-2">
-              {EVENT_TYPES.map(({ type, labelKey }) => {
+              {(availableTypes === null ? EVENT_TYPES : EVENT_TYPES.filter(({ type }) => availableTypes.has(type))).map(({ type, labelKey }) => {
                 const isActive = typeFilter[type] !== false
                 return (
                   <button
@@ -477,7 +487,8 @@ function Calendar({ className = '' }) {
                     type="button"
                     onClick={() => setTypeFilter((prev) => ({ ...prev, [type]: !isActive }))}
                     onDoubleClick={() => {
-                      const allActive = EVENT_TYPES.every(({ type: itemType }) => typeFilter[itemType] !== false)
+                      const activeLegendTypes = availableTypes ? EVENT_TYPES.filter(({ type }) => availableTypes.has(type)) : EVENT_TYPES
+                      const allActive = activeLegendTypes.every(({ type: itemType }) => typeFilter[itemType] !== false)
                       toggleAllFilters(!allActive)
                     }}
                     className={

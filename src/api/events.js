@@ -85,6 +85,19 @@ export async function fetchEventsForMonth({ year, month, limit = 500, city = nul
   return normalized
 }
 
+export async function fetchEventCategories({ year, month, city = null, authFetch = null }) {
+  const mm = String(month).padStart(2, '0')
+  const params = new URLSearchParams()
+  params.set('month', `${year}-${mm}`)
+  if (city) params.set('city', city)
+
+  const response = await requestWithAuth(authFetch, `${API_URL}/events/categories?${params.toString()}`)
+  if (!response.ok) {
+    throw new Error('Failed to fetch event categories')
+  }
+  return response.json()
+}
+
 export async function fetchEventById(id, authFetch = null) {
   const response = await requestWithAuth(authFetch, `${API_URL}/events/${id}`)
   if (!response.ok) {
