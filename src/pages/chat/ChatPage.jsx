@@ -87,15 +87,6 @@ function ChatPage() {
     if (view === 'events') loadEvents()
   }, [view, loadEvents])
 
-  // Auto-switch to General tab when the user is on the Events tab but has
-  // no registered events. Uses null as sentinel (null = not yet fetched)
-  // to avoid redirecting before the first fetch completes.
-  useEffect(() => {
-    if (view === 'events' && events !== null && !eventsLoading && events.length === 0) {
-      navigateChat('general')
-    }
-  }, [view, eventsLoading, events, navigateChat])
-
   useEffect(() => {
     if (view === 'general') markAsRead('general:global')
     if (view === 'event' && eventId) markAsRead(`event:${eventId}`)

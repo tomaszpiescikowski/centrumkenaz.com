@@ -915,7 +915,10 @@ function EventDetail() {
             <hr className="ev-separator sm:hidden" />
             <button
               type="button"
-              onClick={() => openChat({ eventId: event.id, eventTitle: event.title })}
+              onClick={() => {
+                openChat({ eventId: event.id, eventTitle: event.title })
+                if (window.innerWidth < 640) navigate('/chat')
+              }}
               className="ev-chat-open-btn sm:hidden"
             >
               <div className="ev-chat-icon">

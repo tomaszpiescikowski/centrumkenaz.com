@@ -78,6 +78,29 @@ function MobileBottomNav() {
   const navigate = useNavigate()
   const navRef = useRef(null)
 
+  // Shared ref so both effects can read/write prevKbOpen state.
+  // Using a ref instead of a closure variable lets the route-change
+  // effect reset it without recreating the vv.resize listener.
+  const prevKbOpenRef = useRef(false)
+
+  // On every route change, force-clear any lingering keyboard state.
+  //
+  // Problem this solves: when the user submits the login form and React
+  // navigates to a new page, the soft keyboard is dismissed by the OS
+  // before the SPA's vv.resize listener can fire. prevKbOpen stays `true`
+  // in the old closure, so the nav remains stuck with translateY(110%)
+  // (hidden off-screen) until the next keyboard open/close cycle.
+  //
+  // Fix: on every pathname change we know the keyboard is gone — reset
+  // the shared ref and immediately undo any lingering transform/class.
+  useEffect(() => {
+    const el = navRef.current
+    if (!el) return
+    prevKbOpenRef.current = false
+    document.documentElement.classList.remove('kb-open')
+    el.style.transform = ''
+  }, [location.pathname])
+
   // Single owner of keyboard-state for the whole PWA:
   // - Toggles html.kb-open so ChatPage can react (cp-root layout).
   // - Animates the nav slide-out/in via JS style.transform.
@@ -101,7 +124,6 @@ function MobileBottomNav() {
     // keyboard is already up (e.g. hot-reload during development).
     const fullHeight = Math.max(vv.height, window.innerHeight)
 
-    let prevKbOpen = false
     let rafId = null
 
     const apply = () => {
@@ -110,8 +132,8 @@ function MobileBottomNav() {
       // positives from browser chrome resize (address bar hide/show).
       const kbOpen = vv.height < fullHeight - 120
 
-      if (kbOpen === prevKbOpen) return  // nothing changed, don't interrupt ongoing animation
-      prevKbOpen = kbOpen
+      if (kbOpen === prevKbOpenRef.current) return  // nothing changed, don't interrupt ongoing animation
+      prevKbOpenRef.current = kbOpen
 
       document.documentElement.classList.toggle('kb-open', kbOpen)
 
