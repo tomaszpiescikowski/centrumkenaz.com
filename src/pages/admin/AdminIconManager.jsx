@@ -1,25 +1,81 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
 import { useCustomEventTypes } from '../../hooks/useCustomEventTypes'
-import { BUILT_IN_EVENT_ICONS, ICON_MAP } from '../../constants/eventIcons'
+import { BUILT_IN_EVENT_ICONS, ICON_MAP, EXTRA_ICONS, EXTRA_ICON_MAP } from '../../constants/eventIcons'
 import AuthGateCard from '../../components/ui/AuthGateCard'
 
-const EMOJI_SUGGESTIONS = ['🏃', '⚽', '🏐', '🏀', '🎾', '🏊', '🚵', '🧗', '🤸', '🥋', '🎭', '🎸', '🎨', '🍳', '☕', '🌿', '🏕', '🎯', '🎲', '🧘', '💃', '🥊', '🏋️', '⛷️', '🚣', '🤼', '🏇', '🤾', '🎿', '🧩']
-
-function IconPreviewSvg({ iconKey, className = '' }) {
-  const icon = ICON_MAP[iconKey]
-  if (!icon) return null
+function IconPreviewSvg({ iconKey, color = '', paths = '', className = '' }) {
+  const resolvedPaths = paths || ICON_MAP[iconKey]?.paths || EXTRA_ICON_MAP[iconKey]?.paths || ''
+  const resolvedColor = color || ICON_MAP[iconKey]?.color || ''
+  if (!resolvedPaths) return null
   return (
     <svg
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      className={`h-6 w-6 ${icon.color} ${className}`}
-      dangerouslySetInnerHTML={{ __html: icon.paths }}
+      className={`h-6 w-6 ${resolvedColor} ${className}`}
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{ __html: resolvedPaths }}
     />
+  )
+}
+
+/** Searchable grid for picking one of the 128 EXTRA_ICONS */
+function ExtraIconPicker({ value, onChange }) {
+  const [search, setSearch] = useState('')
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    if (!q) return EXTRA_ICONS
+    return EXTRA_ICONS.filter(
+      (i) => i.label.toLowerCase().includes(q) || i.key.includes(q)
+    )
+  }, [search])
+
+  return (
+    <div className="space-y-2">
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Szukaj ikony..."
+        className="ui-input text-sm"
+      />
+      <div className="grid grid-cols-5 sm:grid-cols-8 gap-1.5 max-h-56 overflow-y-auto pr-1">
+        {filtered.map((icon) => {
+          const isSelected = value === icon.key
+          return (
+            <button
+              key={icon.key}
+              type="button"
+              title={icon.label}
+              onClick={() => onChange(icon.key)}
+              className={`flex flex-col items-center gap-1 rounded-xl border-2 p-2 transition-all
+                ${isSelected
+                  ? 'border-navy bg-navy/10 dark:border-cream dark:bg-cream/10'
+                  : 'border-transparent hover:border-navy/30 dark:hover:border-cream/30 hover:bg-navy/5 dark:hover:bg-cream/5'
+                }`}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                className="h-6 w-6"
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: icon.paths }}
+              />
+              <span className="text-[8px] leading-tight text-navy/60 dark:text-cream/60 break-words w-full text-center">{icon.label}</span>
+            </button>
+          )
+        })}
+        {filtered.length === 0 && (
+          <p className="col-span-full text-sm text-navy/50 dark:text-cream/50 py-4 text-center">Brak wyników</p>
+        )}
+      </div>
+    </div>
   )
 }
 
@@ -29,7 +85,7 @@ function AdminIconManager() {
   const { showSuccess, showError } = useNotification()
   const { customTypes, addCustomType, removeCustomType, DEFAULT_COLORS } = useCustomEventTypes()
 
-  const [form, setForm] = useState({ key: '', label: '', emoji: '', color: DEFAULT_COLORS[0] })
+  const [form, setForm] = useState({ label: '', iconKey: '', color: DEFAULT_COLORS[0] })
   const [formError, setFormError] = useState('')
 
   const isAdmin = user?.role === 'admin'
@@ -59,13 +115,13 @@ function AdminIconManager() {
   const handleAdd = (e) => {
     e.preventDefault()
     setFormError('')
-    const result = addCustomType(form)
+    const result = addCustomType({ label: form.label, iconKey: form.iconKey, color: form.color })
     if (result?.error) {
       setFormError(result.error)
       return
     }
     showSuccess('Nowy typ aktywności dodany.')
-    setForm({ key: '', label: '', emoji: '', color: DEFAULT_COLORS[0] })
+    setForm({ label: '', iconKey: '', color: DEFAULT_COLORS[0] })
   }
 
   const handleRemove = (key, label) => {
@@ -73,6 +129,14 @@ function AdminIconManager() {
     removeCustomType(key)
     showSuccess('Typ usunięty.')
   }
+
+  // Preview auto-generated key based on current label
+  const previewKey = form.label
+    .trim().toLowerCase()
+    .replace(/ą/g,'a').replace(/ć/g,'c').replace(/ę/g,'e')
+    .replace(/ł/g,'l').replace(/ń/g,'n').replace(/ó/g,'o')
+    .replace(/ś/g,'s').replace(/ź/g,'z').replace(/ż/g,'z')
+    .replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'').replace(/^_+|_+$/g,'')
 
   return (
     <div className="page-shell">
@@ -116,7 +180,7 @@ function AdminIconManager() {
           Twoje ikony ({customTypes.length})
         </h2>
         <p className="text-xs text-navy/50 dark:text-cream/50 mb-4">
-          Własne typy zapisywane lokalnie w przeglądarce. Emoji wyświetla się zamiast ikony SVG.
+          Własne typy zapisywane lokalnie w przeglądarce. Ikona SVG wybrana z puli 128 wzorów.
         </p>
 
         {customTypes.length === 0 ? (
@@ -125,26 +189,44 @@ function AdminIconManager() {
           </div>
         ) : (
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
-            {customTypes.map((ct) => (
-              <div
-                key={ct.key}
-                className="relative flex flex-col items-center gap-2 rounded-2xl border border-navy/10 dark:border-cream/10 bg-navy/5 dark:bg-cream/5 p-3 text-center group"
-              >
-                <span className="text-2xl leading-none">{ct.emoji}</span>
-                <span className="text-[10px] font-medium text-navy/70 dark:text-cream/70 leading-tight break-words w-full">
-                  {ct.label}
-                </span>
-                <code className="text-[8px] text-navy/30 dark:text-cream/30 break-all">{ct.key}</code>
-                <button
-                  type="button"
-                  onClick={() => handleRemove(ct.key, ct.label)}
-                  className="absolute -top-1.5 -right-1.5 hidden group-hover:flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] shadow"
-                  aria-label={`Usuń ${ct.label}`}
+            {customTypes.map((ct) => {
+              const extraIcon = EXTRA_ICON_MAP[ct.iconKey]
+              return (
+                <div
+                  key={ct.key}
+                  className="relative flex flex-col items-center gap-2 rounded-2xl border border-navy/10 dark:border-cream/10 bg-navy/5 dark:bg-cream/5 p-3 text-center group"
                 >
-                  ×
-                </button>
-              </div>
-            ))}
+                  <span className={ct.color}>
+                    {extraIcon ? (
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        className="h-6 w-6"
+                        // eslint-disable-next-line react/no-danger
+                        dangerouslySetInnerHTML={{ __html: extraIcon.paths }}
+                      />
+                    ) : (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-6 w-6">
+                        <circle cx="12" cy="12" r="9" strokeWidth="1.8"/>
+                      </svg>
+                    )}
+                  </span>
+                  <span className="text-[10px] font-medium text-navy/70 dark:text-cream/70 leading-tight break-words w-full">
+                    {ct.label}
+                  </span>
+                  <code className="text-[8px] text-navy/30 dark:text-cream/30 break-all">{ct.key}</code>
+                  <button
+                    type="button"
+                    onClick={() => handleRemove(ct.key, ct.label)}
+                    className="absolute -top-1.5 -right-1.5 hidden group-hover:flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] shadow"
+                    aria-label={`Usuń ${ct.label}`}
+                  >
+                    ×
+                  </button>
+                </div>
+              )
+            })}
           </div>
         )}
       </section>
@@ -153,59 +235,41 @@ function AdminIconManager() {
       <section>
         <h2 className="text-base font-bold text-navy dark:text-cream mb-4">Dodaj nowy typ aktywności</h2>
         <form onSubmit={handleAdd} className="page-card space-y-4 max-w-lg">
-          <div className="grid grid-cols-2 gap-4">
-            <label className="flex flex-col gap-1.5 text-sm text-navy dark:text-cream">
-              Nazwa wyświetlana
-              <input
-                type="text"
-                className="ui-input"
-                value={form.label}
-                onChange={(e) => setForm((p) => ({ ...p, label: e.target.value }))}
-                placeholder="np. Piłka ręczna"
-                required
-                maxLength={40}
-              />
-            </label>
-            <label className="flex flex-col gap-1.5 text-sm text-navy dark:text-cream">
-              Klucz (ID)
-              <input
-                type="text"
-                className="ui-input"
-                value={form.key}
-                onChange={(e) => setForm((p) => ({ ...p, key: e.target.value }))}
-                placeholder="np. pilka_reczna"
-                required
-                maxLength={30}
-                pattern="[a-zA-Z0-9_ ]+"
-              />
-              <p className="text-[10px] text-navy/40 dark:text-cream/40">Małe litery, bez polskich znaków. Spacje → _</p>
-            </label>
-          </div>
-
-          {/* Emoji picker */}
-          <div className="flex flex-col gap-1.5 text-sm text-navy dark:text-cream">
-            <span>Emoji (ikona)</span>
-            <div className="flex flex-wrap gap-2">
-              {EMOJI_SUGGESTIONS.map((em) => (
-                <button
-                  key={em}
-                  type="button"
-                  onClick={() => setForm((p) => ({ ...p, emoji: em }))}
-                  className={`text-xl p-1.5 rounded-lg border-2 transition-all ${form.emoji === em ? 'border-navy dark:border-cream bg-navy/10' : 'border-transparent hover:bg-navy/10 dark:hover:bg-cream/10'}`}
-                >
-                  {em}
-                </button>
-              ))}
-            </div>
+          {/* Label */}
+          <label className="flex flex-col gap-1.5 text-sm text-navy dark:text-cream">
+            Nazwa wyświetlana
             <input
               type="text"
-              className="ui-input mt-1 w-20 text-center text-xl"
-              value={form.emoji}
-              onChange={(e) => setForm((p) => ({ ...p, emoji: e.target.value }))}
-              placeholder="🏆"
+              className="ui-input"
+              value={form.label}
+              onChange={(e) => setForm((p) => ({ ...p, label: e.target.value }))}
+              placeholder="np. Piłka ręczna"
               required
-              maxLength={4}
+              maxLength={40}
             />
+          </label>
+
+          {/* Auto-generated key preview */}
+          {previewKey && (
+            <p className="text-xs text-navy/50 dark:text-cream/50 -mt-2">
+              Klucz (ID): <code className="font-mono">{previewKey}</code>
+            </p>
+          )}
+
+          {/* SVG icon picker */}
+          <div className="flex flex-col gap-1.5 text-sm text-navy dark:text-cream">
+            <span>Ikona {form.iconKey && (
+              <span className="text-xs text-green-600 dark:text-green-400 ml-1">
+                — {EXTRA_ICON_MAP[form.iconKey]?.label}
+              </span>
+            )}</span>
+            <ExtraIconPicker
+              value={form.iconKey}
+              onChange={(key) => setForm((p) => ({ ...p, iconKey: key }))}
+            />
+            {!form.iconKey && (
+              <p className="text-[11px] text-navy/40 dark:text-cream/40">Kliknij ikonę, żeby ją wybrać</p>
+            )}
           </div>
 
           {/* Color picker */}
@@ -231,7 +295,8 @@ function AdminIconManager() {
 
           <button
             type="submit"
-            className="btn-primary px-6 py-2.5 rounded-full font-semibold"
+            disabled={!form.iconKey}
+            className="btn-primary px-6 py-2.5 rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Dodaj typ aktywności
           </button>

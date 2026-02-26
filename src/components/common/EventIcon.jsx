@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import styles from '../../styles/modules/components/EventIcon.module.css'
-import { ICON_MAP } from '../../constants/eventIcons'
+import { ICON_MAP, EXTRA_ICON_MAP } from '../../constants/eventIcons'
 
 const SIZE_CLASSES = {
   xs: styles.sizeXs,
@@ -37,19 +37,22 @@ function EventIcon({ type, size = 'md', customTypes = [] }) {
     )
   }
 
-  // Custom emoji icon
+  // Custom type SVG icon (via EXTRA_ICONS pool)
   const custom = customTypes.find((c) => c.key === type)
-  if (custom?.emoji) {
-    const emojiSizeMap = { xs: 'text-xs', sm: 'text-base', md: 'text-xl', lg: 'text-3xl' }
-    return (
-      <span
-        role="img"
-        aria-label={custom.label}
-        className={`inline-flex items-center justify-center leading-none ${emojiSizeMap[size] || 'text-xl'}`}
-      >
-        {custom.emoji}
-      </span>
-    )
+  if (custom?.iconKey) {
+    const extraIcon = EXTRA_ICON_MAP[custom.iconKey]
+    if (extraIcon) {
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          className={iconClassName}
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: extraIcon.paths }}
+        />
+      )
+    }
   }
 
   // Fallback generic icon

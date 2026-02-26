@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BUILT_IN_EVENT_ICONS, ICON_MAP } from '../../constants/eventIcons'
+import { BUILT_IN_EVENT_ICONS, ICON_MAP, EXTRA_ICON_MAP } from '../../constants/eventIcons'
 
 /**
  * Visual grid picker for selecting an event type icon.
@@ -14,7 +14,7 @@ function EventIconPicker({ value, onChange, customTypes = [] }) {
 
   const allOptions = [
     ...BUILT_IN_EVENT_ICONS,
-    ...customTypes.map((c) => ({ key: c.key, label: c.label, color: c.color, emoji: c.emoji })),
+    ...customTypes.map((c) => ({ key: c.key, label: c.label, color: c.color, iconKey: c.iconKey })),
   ]
 
   const filtered = search.trim()
@@ -45,15 +45,20 @@ function EventIconPicker({ value, onChange, customTypes = [] }) {
                   : 'border-transparent hover:border-navy/30 dark:hover:border-cream/30 hover:bg-navy/5 dark:hover:bg-cream/5'
                 }`}
             >
-              {opt.emoji ? (
-                <span className="text-2xl leading-none">{opt.emoji}</span>
-              ) : (
-                <span className={`${opt.color}`}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-7 w-7"
-                    dangerouslySetInnerHTML={{ __html: ICON_MAP[opt.key]?.paths || '' }}
-                  />
-                </span>
-              )}
+              <span className={`${opt.color}`}>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  className="h-7 w-7"
+                  // eslint-disable-next-line react/no-danger
+                  dangerouslySetInnerHTML={{
+                    __html: opt.iconKey
+                      ? (EXTRA_ICON_MAP[opt.iconKey]?.paths || '')
+                      : (ICON_MAP[opt.key]?.paths || '')
+                  }}
+                />
+              </span>
               <span className="text-[9px] leading-tight text-navy/60 dark:text-cream/60 break-words w-full">{opt.label}</span>
             </button>
           )
