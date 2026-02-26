@@ -369,7 +369,7 @@ function Calendar({ className = '' }) {
 
 
   return (
-    <div className={`w-full max-w-4xl mx-auto ${className}`}>
+    <div className={`w-full max-w-4xl mx-auto overflow-x-hidden ${className}`}>
       <div className="mb-4 flex items-center justify-between gap-2">
         <button
           onClick={prevMonth}
