@@ -17,7 +17,10 @@
     "days": "d",
     "hours": "h",
     "minutes": "min",
-    "backToHome": "Back to home"
+    "backToHome": "Back to home",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "save": "Save"
   },
   "shop": {
     "label": "Kenaz shop",
@@ -43,9 +46,14 @@
       "about": "About Kenaz",
       "shop": "Shop",
       "privacy": "Privacy policy",
-      "terms": "Terms"
+      "terms": "Terms",
+      "membership": "Kenaz Membership"
     },
-    "copyright": "© {year} Fundacja Centrum Kenaz"
+    "copyright": "© {year} Fundacja Centrum Kenaz",
+    "emailTechLabel": "Technical matters",
+    "emailTech": "tech@centrumkenaz.pl",
+    "emailGeneralLabel": "General enquiries",
+    "emailGeneral": "kontakt@centrumkenaz.pl"
   },
   "privacy": {
     "title": "Privacy policy",
@@ -743,6 +751,10 @@
       "usersList": {
         "title": "Users",
         "description": "Browse all users and manage account access."
+      },
+      "icons": {
+        "title": "Event types",
+        "description": "Browse built-in icons and add your own activity types."
       }
     },
     "feedback": {
@@ -936,6 +948,50 @@
       "colIncome": "Income",
       "colPlan": "Plan",
       "colRefundCount": "Refunds (qty)"
+    },
+    "promote": {
+      "title": "Add admin",
+      "subtitle": "Grant admin privileges to an existing user.",
+      "emailLabel": "User email address",
+      "emailPlaceholder": "john@example.com",
+      "submitButton": "Grant admin privileges",
+      "confirmTitle": "Confirm admin promotion",
+      "warning1": "Warning! This action may be irreversible.",
+      "warning2": "An administrator has full access to the admin panel, user data, payments, and events. Accidental promotion can lead to serious and hard-to-undo damage.",
+      "warning3": "Make sure you really want to grant this person full admin privileges.",
+      "confirmInstruction": "To confirm, type the code below:",
+      "targetEmail": "User email",
+      "typePlaceholder": "Type the code",
+      "confirmButton": "Confirm — grant admin",
+      "promoting": "Promoting...",
+      "success": "Admin privileges have been granted.",
+      "error": "Failed to grant admin privileges."
+    },
+    "usersList": {
+      "title": "Users",
+      "subtitle": "All registered users on the platform.",
+      "searchPlaceholder": "Search by name or email...",
+      "filterAll": "All statuses",
+      "status": {
+        "active": "Active",
+        "pending": "Pending",
+        "banned": "Blocked"
+      },
+      "role": {
+        "admin": "Admin",
+        "member": "Member",
+        "guest": "Guest"
+      },
+      "blockButton": "Block",
+      "unblockButton": "Unblock",
+      "blockSuccess": "Account has been blocked.",
+      "blockError": "Failed to block account.",
+      "unblockSuccess": "Account has been unblocked and is awaiting re-approval.",
+      "unblockError": "Failed to unblock account.",
+      "loadError": "Failed to load user list.",
+      "empty": "No users match the criteria.",
+      "noName": "(no name)",
+      "count": "{count} users"
     }
   },
   "approval": {
@@ -1076,7 +1132,22 @@
     "submitting": "Signing in...",
     "passwordMismatch": "Passwords do not match.",
     "genericError": "Unable to sign in.",
-    "openLogin": "Log in"
+    "openLogin": "Log in",
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordEmailLabel": "Your email address",
+    "forgotPasswordEmailPlaceholder": "e.g. john@example.com",
+    "forgotPasswordSend": "Send link",
+    "forgotPasswordSendingLabel": "Sending...",
+    "forgotPasswordSentTitle": "Email sent!",
+    "forgotPasswordSentBody": "If the account exists, we will send instructions to that address.",
+    "resetPasswordTitle": "New password",
+    "resetPasswordLabel": "New password",
+    "resetPasswordConfirmLabel": "Confirm new password",
+    "resetPasswordSubmit": "Save new password",
+    "resetPasswordSuccess": "Password changed. You can now log in.",
+    "resetPasswordInvalidToken": "The link is invalid or has expired. Please try again.",
+    "termsCheckbox": "I accept the Kenaz Centre terms of service",
+    "termsRequired": "You must accept the terms to create an account."
   },
   "comments": {
     "title": "Comments",

@@ -17,7 +17,10 @@
     "days": "d",
     "hours": "h",
     "minutes": "min",
-    "backToHome": "Wróć na stronę główną"
+    "backToHome": "Wróć na stronę główną",
+    "cancel": "Anuluj",
+    "edit": "Edytuj",
+    "save": "Zapisz"
   },
   "shop": {
     "label": "Kenaz sklep",
@@ -862,11 +865,9 @@
       "period": "okres",
       "periods": "okresy",
       "createdColumn": "Utworzono",
-      "paymentDateColumn": "Data wpłaty składki",
-      "eventPaymentDateColumn": "Data wpłaty",
-      "resolvedAtColumn": "Rozwiązano",
-      "eventPaymentDateColumn": "Potwierdzone dnia",
       "paymentDateColumn": "Zatwierdzone dnia",
+      "eventPaymentDateColumn": "Potwierdzone dnia",
+      "resolvedAtColumn": "Rozwiązano",
       "approvedAtColumn": "Zatwierdzone dnia",
       "notifiedAtColumn": "Powiadomiono dnia",
       "markNotifiedButton": "Oznacz powiadomionego",
@@ -945,6 +946,50 @@
       "colIncome": "Przychód",
       "colPlan": "Plan",
       "colRefundCount": "Zwroty (szt.)"
+    },
+    "promote": {
+      "title": "Dodaj admina",
+      "subtitle": "Nadaj uprawnienia administratora istniejącemu użytkownikowi.",
+      "emailLabel": "Adres email użytkownika",
+      "emailPlaceholder": "jan@example.com",
+      "submitButton": "Nadaj uprawnienia admina",
+      "confirmTitle": "Potwierdzenie nadania uprawnień",
+      "warning1": "Uwaga! Ta operacja może być nieodwracalna.",
+      "warning2": "Administrator ma pełny dostęp do panelu admina, danych użytkowników, płatności i wydarzeń. Przypadkowe nadanie uprawnień może prowadzić do poważnych i trudnych do cofnięcia szkód.",
+      "warning3": "Upewnij się, że naprawdę chcesz nadać tej osobie pełne uprawnienia administratora.",
+      "confirmInstruction": "Aby potwierdzić, przepisz poniższy kod:",
+      "targetEmail": "Email użytkownika",
+      "typePlaceholder": "Wpisz kod",
+      "confirmButton": "Potwierdzam — nadaj admina",
+      "promoting": "Nadaję...",
+      "success": "Uprawnienia administratora zostały nadane.",
+      "error": "Nie udało się nadać uprawnień."
+    },
+    "usersList": {
+      "title": "Użytkownicy",
+      "subtitle": "Wszyscy zarejestrowani użytkownicy platformy.",
+      "searchPlaceholder": "Szukaj po nazwie lub emailu...",
+      "filterAll": "Wszystkie statusy",
+      "status": {
+        "active": "Aktywny",
+        "pending": "Oczekujący",
+        "banned": "Zablokowany"
+      },
+      "role": {
+        "admin": "Admin",
+        "member": "Członek",
+        "guest": "Gość"
+      },
+      "blockButton": "Zablokuj",
+      "unblockButton": "Odblokuj",
+      "blockSuccess": "Konto zostało zablokowane.",
+      "blockError": "Nie udało się zablokować konta.",
+      "unblockSuccess": "Konto zostało odblokowane i oczekuje na ponowną akceptację.",
+      "unblockError": "Nie udało się odblokować konta.",
+      "loadError": "Nie udało się wczytać listy użytkowników.",
+      "empty": "Brak użytkowników spełniających kryteria.",
+      "noName": "(brak nazwy)",
+      "count": "{count} użytkowników"
     }
   },
   "approval": {

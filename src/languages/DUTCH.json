@@ -17,7 +17,10 @@
     "days": "d",
     "hours": "u",
     "minutes": "min",
-    "backToHome": "Terug naar home"
+    "backToHome": "Terug naar home",
+    "cancel": "Annuleer",
+    "edit": "Bewerk",
+    "save": "Opslaan"
   },
   "shop": {
     "label": "Kenaz shop",
@@ -43,9 +46,14 @@
       "about": "Over Kenaz",
       "shop": "Shop",
       "privacy": "Privacybeleid",
-      "terms": "Voorwaarden"
+      "terms": "Voorwaarden",
+      "membership": "Kenaz lidmaatschap"
     },
-    "copyright": "© {year} Fundacja Centrum Kenaz"
+    "copyright": "© {year} Fundacja Centrum Kenaz",
+    "emailTechLabel": "Technische zaken",
+    "emailTech": "tech@centrumkenaz.pl",
+    "emailGeneralLabel": "Algemene vragen",
+    "emailGeneral": "kontakt@centrumkenaz.pl"
   },
   "privacy": {
     "title": "Privacybeleid",
@@ -743,6 +751,10 @@
       "usersList": {
         "title": "Gebruikers",
         "description": "Bekijk alle gebruikers en beheer toegang."
+      },
+      "icons": {
+        "title": "Evenementtypes",
+        "description": "Bekijk ingebouwde pictogrammen en voeg aangepaste activiteitstypen toe."
       }
     },
     "feedback": {
@@ -932,6 +944,50 @@
       "colIncome": "Inkomsten",
       "colPlan": "Plan",
       "colRefundCount": "Terugbetalingen (st.)"
+    },
+    "promote": {
+      "title": "Admin toevoegen",
+      "subtitle": "Ken adminrechten toe aan een bestaande gebruiker.",
+      "emailLabel": "E-mailadres van gebruiker",
+      "emailPlaceholder": "jan@example.com",
+      "submitButton": "Adminrechten toekennen",
+      "confirmTitle": "Bevestig adminpromotie",
+      "warning1": "Waarschuwing! Deze actie kan onomkeerbaar zijn.",
+      "warning2": "Een administrator heeft volledige toegang tot het adminpaneel, gebruikersgegevens, betalingen en evenementen. Per ongeluk bevorderen kan leiden tot ernstige en moeilijk ongedaan te maken schade.",
+      "warning3": "Weet je zeker dat je deze persoon volledige adminrechten wilt geven?",
+      "confirmInstruction": "Typ de onderstaande code om te bevestigen:",
+      "targetEmail": "Gebruikers-e-mail",
+      "typePlaceholder": "Typ de code",
+      "confirmButton": "Bevestigen — admin toekennen",
+      "promoting": "Bevorderen...",
+      "success": "Adminrechten zijn toegekend.",
+      "error": "Kon adminrechten niet toekennen."
+    },
+    "usersList": {
+      "title": "Gebruikers",
+      "subtitle": "Alle geregistreerde gebruikers op het platform.",
+      "searchPlaceholder": "Zoeken op naam of e-mail...",
+      "filterAll": "Alle statussen",
+      "status": {
+        "active": "Actief",
+        "pending": "In behandeling",
+        "banned": "Geblokkeerd"
+      },
+      "role": {
+        "admin": "Admin",
+        "member": "Lid",
+        "guest": "Gast"
+      },
+      "blockButton": "Blokkeren",
+      "unblockButton": "Deblokkeren",
+      "blockSuccess": "Account is geblokkeerd.",
+      "blockError": "Account blokkeren mislukt.",
+      "unblockSuccess": "Account is gedeblokkeerd en wacht op hergoedkeuring.",
+      "unblockError": "Account deblokkeren mislukt.",
+      "loadError": "Gebruikerslijst laden mislukt.",
+      "empty": "Geen gebruikers voldoen aan de criteria.",
+      "noName": "(geen naam)",
+      "count": "{count} gebruikers"
     }
   },
   "participants": {
@@ -1072,7 +1128,22 @@
     "submitting": "Bezig met inloggen...",
     "passwordMismatch": "Wachtwoorden komen niet overeen.",
     "genericError": "Inloggen mislukt.",
-    "openLogin": "Inloggen"
+    "openLogin": "Inloggen",
+    "forgotPassword": "Wachtwoord vergeten?",
+    "forgotPasswordEmailLabel": "Uw e-mailadres",
+    "forgotPasswordEmailPlaceholder": "bijv. jan@voorbeeld.nl",
+    "forgotPasswordSend": "Link sturen",
+    "forgotPasswordSendingLabel": "Verzenden...",
+    "forgotPasswordSentTitle": "E-mail verzonden!",
+    "forgotPasswordSentBody": "Als het account bestaat, sturen we instructies naar dat adres.",
+    "resetPasswordTitle": "Nieuw wachtwoord",
+    "resetPasswordLabel": "Nieuw wachtwoord",
+    "resetPasswordConfirmLabel": "Bevestig nieuw wachtwoord",
+    "resetPasswordSubmit": "Nieuw wachtwoord opslaan",
+    "resetPasswordSuccess": "Wachtwoord gewijzigd. U kunt nu inloggen.",
+    "resetPasswordInvalidToken": "De link is ongeldig of verlopen. Probeer opnieuw.",
+    "termsCheckbox": "Ik accepteer de gebruiksvoorwaarden van Centrum Kenaz",
+    "termsRequired": "U moet de gebruiksvoorwaarden accepteren om een account aan te maken."
   },
   "comments": {
     "title": "Reacties",

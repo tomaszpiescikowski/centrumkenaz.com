@@ -17,7 +17,10 @@
     "days": "天",
     "hours": "时",
     "minutes": "分",
-    "backToHome": "返回首页"
+    "backToHome": "返回首页",
+    "cancel": "取消",
+    "edit": "编辑",
+    "save": "保存"
   },
   "shop": {
     "label": "Kenaz 商店",
@@ -43,9 +46,14 @@
       "about": "关于 Kenaz",
       "shop": "商店",
       "privacy": "隐私政策",
-      "terms": "服务条款"
+      "terms": "服务条款",
+      "membership": "Kenaz 会员"
     },
-    "copyright": "© {year} Fundacja Centrum Kenaz"
+    "copyright": "© {year} Fundacja Centrum Kenaz",
+    "emailTechLabel": "技术事务",
+    "emailTech": "tech@centrumkenaz.pl",
+    "emailGeneralLabel": "一般咨询",
+    "emailGeneral": "kontakt@centrumkenaz.pl"
   },
   "privacy": {
     "title": "隐私政策",
@@ -743,6 +751,10 @@
       "usersList": {
         "title": "用户",
         "description": "浏览所有用户并管理账号访问权限。"
+      },
+      "icons": {
+        "title": "活动类型",
+        "description": "浏览内置图标并添加自定义活动类型。"
       }
     },
     "feedback": {
@@ -932,6 +944,50 @@
       "colIncome": "收入",
       "colPlan": "计划",
       "colRefundCount": "退款（件）"
+    },
+    "promote": {
+      "title": "添加管理员",
+      "subtitle": "授予现有用户管理员权限。",
+      "emailLabel": "用户邮箱地址",
+      "emailPlaceholder": "user@example.com",
+      "submitButton": "授予管理员权限",
+      "confirmTitle": "确认管理员提升",
+      "warning1": "警告！此操作可能无法撤销。",
+      "warning2": "管理员拥有对管理面板、用户数据、支付和活动的完全访问权限。意外提升可能导致严重且难以撤销的损害。",
+      "warning3": "请确认您确实要授予此人完全管理员权限。",
+      "confirmInstruction": "请输入以下确认码：",
+      "targetEmail": "用户邮箱",
+      "typePlaceholder": "输入确认码",
+      "confirmButton": "确认 — 授予管理员",
+      "promoting": "正在授权...",
+      "success": "管理员权限已授予。",
+      "error": "授权失败。"
+    },
+    "usersList": {
+      "title": "用户",
+      "subtitle": "平台上所有注册用户。",
+      "searchPlaceholder": "按姓名或邮箱搜索...",
+      "filterAll": "所有状态",
+      "status": {
+        "active": "活跃",
+        "pending": "待审核",
+        "banned": "已封禁"
+      },
+      "role": {
+        "admin": "管理员",
+        "member": "成员",
+        "guest": "访客"
+      },
+      "blockButton": "封禁",
+      "unblockButton": "解封",
+      "blockSuccess": "账户已被封禁。",
+      "blockError": "封禁账户失败。",
+      "unblockSuccess": "账户已解封，等待重新审核。",
+      "unblockError": "解封账户失败。",
+      "loadError": "加载用户列表失败。",
+      "empty": "没有符合条件的用户。",
+      "noName": "（无名称）",
+      "count": "{count} 名用户"
     }
   },
   "participants": {
@@ -1072,7 +1128,22 @@
     "submitting": "正在登录...",
     "passwordMismatch": "两次输入的密码不一致。",
     "genericError": "登录失败。",
-    "openLogin": "登录"
+    "openLogin": "登录",
+    "forgotPassword": "忘记密码？",
+    "forgotPasswordEmailLabel": "您的电子邮件地址",
+    "forgotPasswordEmailPlaceholder": "例如：zhang@example.com",
+    "forgotPasswordSend": "发送链接",
+    "forgotPasswordSendingLabel": "发送中...",
+    "forgotPasswordSentTitle": "邮件已发送！",
+    "forgotPasswordSentBody": "如果账户存在，我们将向该地址发送操作说明。",
+    "resetPasswordTitle": "新密码",
+    "resetPasswordLabel": "新密码",
+    "resetPasswordConfirmLabel": "确认新密码",
+    "resetPasswordSubmit": "保存新密码",
+    "resetPasswordSuccess": "密码已更改。您现在可以登录。",
+    "resetPasswordInvalidToken": "链接无效或已过期，请重试。",
+    "termsCheckbox": "我接受 Centrum Kenaz 服务条款",
+    "termsRequired": "您必须接受服务条款才能创建账户。"
   },
   "comments": {
     "title": "评论",

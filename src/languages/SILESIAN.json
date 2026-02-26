@@ -17,7 +17,10 @@
     "days": "d",
     "hours": "g",
     "minutes": "min",
-    "backToHome": "Nŏzŏd na stronã"
+    "backToHome": "Nŏzŏd na stronã",
+    "cancel": "Anuluj",
+    "edit": "Edytuj",
+    "save": "Zapisz"
   },
   "shop": {
     "label": "Kenaz sklep",
@@ -43,9 +46,14 @@
       "about": "O Kenaz",
       "shop": "Sklep",
       "privacy": "Polityka prywatności",
-      "terms": "Regulamin"
+      "terms": "Regulamin",
+      "membership": "Członkostwo Kenaz"
     },
-    "copyright": "© {year} Fundacja Centrum Kenaz"
+    "copyright": "© {year} Fundacja Centrum Kenaz",
+    "emailTechLabel": "Sprawy techniczne",
+    "emailTech": "tech@centrumkenaz.pl",
+    "emailGeneralLabel": "Sprawy ogólne",
+    "emailGeneral": "kontakt@centrumkenaz.pl"
   },
   "privacy": {
     "title": "Polityka prywatności",
@@ -743,6 +751,10 @@
       "usersList": {
         "title": "Użytkownicy",
         "description": "Przejrzyj wszyjstkich użytkownikōw i zarzōndź dostympym."
+      },
+      "icons": {
+        "title": "Typy aktywności",
+        "description": "Przeglądej wbudowane ikony i dodawej własne typy aktywności."
       }
     },
     "feedback": {
@@ -936,6 +948,50 @@
       "colIncome": "Przychód",
       "colPlan": "Plan",
       "colRefundCount": "Zwroty (szt.)"
+    },
+    "promote": {
+      "title": "Dodej admina",
+      "subtitle": "Dej uprawniynio admina istniejōncymu użytkownikowi.",
+      "emailLabel": "Email użytkownika",
+      "emailPlaceholder": "jan@example.com",
+      "submitButton": "Dej uprawniynio admina",
+      "confirmTitle": "Potwiyrdzynie nadanio uprawiyń",
+      "warning1": "Pozōr! Ta ôperacyjo może być nieôdwracalno.",
+      "warning2": "Admin mo pełny dostymp do panelu, danych użytkownikōw, płatności i wydarzyń. Przypadkowe nadaniy uprawiyń może prowadzić do poważnych szkōd.",
+      "warning3": "Upewnij sie, że noprowda chcesz dać tyj ôsobie pełne uprawniynio admina.",
+      "confirmInstruction": "Coby potwierdzić, wpisz tyn kod:",
+      "targetEmail": "Email użytkownika",
+      "typePlaceholder": "Wpisz kod",
+      "confirmButton": "Potwiyrdzōm — dej admina",
+      "promoting": "Nadowōm...",
+      "success": "Uprawniynio admina zostały nadane.",
+      "error": "Niy szło nadać uprawiyń."
+    },
+    "usersList": {
+      "title": "Użytkownicy",
+      "subtitle": "Wszyscy zapisani użytkownicy platformy.",
+      "searchPlaceholder": "Szukej po mianie abo emailu...",
+      "filterAll": "Wszystkie statusy",
+      "status": {
+        "active": "Aktywny",
+        "pending": "Ôczekujōncy",
+        "banned": "Zablokowany"
+      },
+      "role": {
+        "admin": "Admin",
+        "member": "Czōnek",
+        "guest": "Gość"
+      },
+      "blockButton": "Zablokuj",
+      "unblockButton": "Ôdblokuj",
+      "blockSuccess": "Konto zostało zablokowane.",
+      "blockError": "Niy szło zablokować konta.",
+      "unblockSuccess": "Konto zostało ôdblokowane i ôczekuje na ponowno akceptacyjo.",
+      "unblockError": "Niy szło ôdblokować konta.",
+      "loadError": "Niy szło wczytać listy użytkownikōw.",
+      "empty": "Brak użytkownikōw spełniajōncych kryteria.",
+      "noName": "(brak miana)",
+      "count": "{count} użytkownikōw"
     }
   },
   "participants": {
@@ -1076,7 +1132,22 @@
     "submitting": "Trwo logowanie...",
     "passwordMismatch": "Hasła niy som take same.",
     "genericError": "Niy szło sie zalogować.",
-    "openLogin": "Zaloguj sie"
+    "openLogin": "Zaloguj sie",
+    "forgotPassword": "Niy pamiyntóm hasła?",
+    "forgotPasswordEmailLabel": "Twój adres email",
+    "forgotPasswordEmailPlaceholder": "np. jan@przykłod.pl",
+    "forgotPasswordSend": "Wyślij link",
+    "forgotPasswordSendingLabel": "Wysyłanie...",
+    "forgotPasswordSentTitle": "Email wysłany!",
+    "forgotPasswordSentBody": "Jak konto istniyje, wyślemy instrukcjy na podany adres.",
+    "resetPasswordTitle": "Nowe hasło",
+    "resetPasswordLabel": "Nowe hasło",
+    "resetPasswordConfirmLabel": "Powtórz nowe hasło",
+    "resetPasswordSubmit": "Zapisz nowe hasło",
+    "resetPasswordSuccess": "Hasło zostało zmiyniōne. Możesz sie terŏz zalogować.",
+    "resetPasswordInvalidToken": "Link je nieprawidłowyj abo wygasł. Spróbuj jeszcze rŏz.",
+    "termsCheckbox": "Akceptuja regulamin Centrum Kenaz",
+    "termsRequired": "Musisz zaakceptować regulamin, coby założyć konto."
   },
   "comments": {
     "title": "Komentarze",

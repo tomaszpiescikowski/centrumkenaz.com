@@ -17,7 +17,10 @@
     "days": "g",
     "hours": "h",
     "minutes": "min",
-    "backToHome": "Torna alla home"
+    "backToHome": "Torna alla home",
+    "cancel": "Annulla",
+    "edit": "Modifica",
+    "save": "Salva"
   },
   "shop": {
     "label": "Kenaz shop",
@@ -43,9 +46,14 @@
       "about": "Chi è Kenaz",
       "shop": "Shop",
       "privacy": "Privacy",
-      "terms": "Termini"
+      "terms": "Termini",
+      "membership": "Iscrizione Kenaz"
     },
-    "copyright": "© {year} Fundacja Centrum Kenaz"
+    "copyright": "© {year} Fundacja Centrum Kenaz",
+    "emailTechLabel": "Questioni tecniche",
+    "emailTech": "tech@centrumkenaz.pl",
+    "emailGeneralLabel": "Richieste generali",
+    "emailGeneral": "kontakt@centrumkenaz.pl"
   },
   "privacy": {
     "title": "Privacy",
@@ -743,6 +751,10 @@
       "usersList": {
         "title": "Utenti",
         "description": "Sfoglia tutti gli utenti e gestisci l'accesso."
+      },
+      "icons": {
+        "title": "Tipi di evento",
+        "description": "Sfoglia le icone integrate e aggiungi i tuoi tipi di attività personalizzati."
       }
     },
     "feedback": {
@@ -932,6 +944,50 @@
       "colIncome": "Ricavo",
       "colPlan": "Piano",
       "colRefundCount": "Rimborsi (n.)"
+    },
+    "promote": {
+      "title": "Aggiungi admin",
+      "subtitle": "Concedi i privilegi di amministratore a un utente esistente.",
+      "emailLabel": "Indirizzo email dell'utente",
+      "emailPlaceholder": "mario@example.com",
+      "submitButton": "Concedi privilegi admin",
+      "confirmTitle": "Conferma promozione admin",
+      "warning1": "Attenzione! Questa azione potrebbe essere irreversibile.",
+      "warning2": "Un amministratore ha accesso completo al pannello admin, ai dati utente, ai pagamenti e agli eventi. Una promozione accidentale può causare danni gravi e difficili da annullare.",
+      "warning3": "Assicurati di voler davvero concedere a questa persona i pieni privilegi di amministratore.",
+      "confirmInstruction": "Per confermare, digita il codice qui sotto:",
+      "targetEmail": "Email utente",
+      "typePlaceholder": "Digita il codice",
+      "confirmButton": "Confermo — concedi admin",
+      "promoting": "Promuovendo...",
+      "success": "I privilegi di amministratore sono stati concessi.",
+      "error": "Impossibile concedere i privilegi."
+    },
+    "usersList": {
+      "title": "Utenti",
+      "subtitle": "Tutti gli utenti registrati sulla piattaforma.",
+      "searchPlaceholder": "Cerca per nome o email...",
+      "filterAll": "Tutti gli stati",
+      "status": {
+        "active": "Attivo",
+        "pending": "In attesa",
+        "banned": "Bloccato"
+      },
+      "role": {
+        "admin": "Admin",
+        "member": "Membro",
+        "guest": "Ospite"
+      },
+      "blockButton": "Blocca",
+      "unblockButton": "Sblocca",
+      "blockSuccess": "Account bloccato con successo.",
+      "blockError": "Impossibile bloccare l'account.",
+      "unblockSuccess": "Account sbloccato e in attesa di riapprovazione.",
+      "unblockError": "Impossibile sbloccare l'account.",
+      "loadError": "Impossibile caricare la lista utenti.",
+      "empty": "Nessun utente corrisponde ai criteri.",
+      "noName": "(nessun nome)",
+      "count": "{count} utenti"
     }
   },
   "participants": {
@@ -1072,7 +1128,22 @@
     "submitting": "Accesso in corso...",
     "passwordMismatch": "Le password non coincidono.",
     "genericError": "Accesso non riuscito.",
-    "openLogin": "Accedi"
+    "openLogin": "Accedi",
+    "forgotPassword": "Password dimenticata?",
+    "forgotPasswordEmailLabel": "Il tuo indirizzo email",
+    "forgotPasswordEmailPlaceholder": "es. mario@esempio.it",
+    "forgotPasswordSend": "Invia link",
+    "forgotPasswordSendingLabel": "Invio in corso...",
+    "forgotPasswordSentTitle": "Email inviata!",
+    "forgotPasswordSentBody": "Se l'account esiste, invieremo le istruzioni all'indirizzo indicato.",
+    "resetPasswordTitle": "Nuova password",
+    "resetPasswordLabel": "Nuova password",
+    "resetPasswordConfirmLabel": "Conferma nuova password",
+    "resetPasswordSubmit": "Salva nuova password",
+    "resetPasswordSuccess": "Password modificata. Ora puoi accedere.",
+    "resetPasswordInvalidToken": "Il link non è valido o è scaduto. Riprova.",
+    "termsCheckbox": "Accetto i termini del servizio del Centro Kenaz",
+    "termsRequired": "Devi accettare i termini per creare un account."
   },
   "comments": {
     "title": "Commenti",
