@@ -680,8 +680,9 @@ function AdminManualPayments() {
       ...row,
       user_sort: `${row.user_name || ''} ${row.user_email || ''}`,
       amount_value: parseAmount(row.total_amount),
+      status_label: t(`account.statuses.${row.status}`) || row.status,
     })),
-    [subscriptionPurchases]
+    [subscriptionPurchases, t]
   )
 
   const subscriptionColumns = [
@@ -719,7 +720,7 @@ function AdminManualPayments() {
       key: 'status',
       label: t('account.status'),
       sortValue: (row) => row.status,
-      render: (row) => <span>{row.status}</span>,
+      render: (row) => <span>{row.status_label}</span>,
     },
     {
       key: 'created_at',
