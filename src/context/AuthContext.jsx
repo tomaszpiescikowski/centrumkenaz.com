@@ -6,11 +6,16 @@ const AuthContext = createContext()
 
 const POST_LOGIN_REDIRECT_KEY = 'postLoginRedirect'
 
-const normalizeReturnTo = (returnTo, fallbackReturnTo) => (
-  typeof returnTo === 'string' && returnTo.startsWith('/')
+const PUBLIC_RETURN_EXCLUDED = ['/support']
+
+const normalizeReturnTo = (returnTo, fallbackReturnTo) => {
+  const candidate = typeof returnTo === 'string' && returnTo.startsWith('/')
     ? returnTo
     : fallbackReturnTo
-)
+  return PUBLIC_RETURN_EXCLUDED.some(p => candidate === p || candidate.startsWith(p + '?'))
+    ? '/'
+    : candidate
+}
 
 const parseErrorDetail = async (response, fallbackMessage) => {
   try {
