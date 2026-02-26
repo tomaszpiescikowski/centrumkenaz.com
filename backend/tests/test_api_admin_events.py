@@ -385,7 +385,10 @@ class TestEventCreateValidation:
         db_session,
         admin_client: AsyncClient,
     ):
-        target_day = datetime(2026, 2, 24)
+        from datetime import timezone
+        target_day = (datetime.now(tz=timezone.utc) + timedelta(days=2)).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
         for idx in range(3):
             await _create_event(
                 db_session,
@@ -393,11 +396,12 @@ class TestEventCreateValidation:
                 start_date=target_day.replace(hour=9 + idx),
             )
 
+        fourth_start = target_day.replace(hour=18).strftime("%Y-%m-%dT%H:%M:%SZ")
         response = await admin_client.post(
             "/events/",
             json=_event_create_payload(
                 title="Fourth allowed",
-                start_date="2026-02-24T18:00:00Z",
+                start_date=fourth_start,
             ),
         )
 
@@ -409,7 +413,10 @@ class TestEventCreateValidation:
         db_session,
         admin_client: AsyncClient,
     ):
-        target_day = datetime(2026, 2, 25)
+        from datetime import timezone
+        target_day = (datetime.now(tz=timezone.utc) + timedelta(days=3)).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
         for idx in range(4):
             await _create_event(
                 db_session,
@@ -417,16 +424,18 @@ class TestEventCreateValidation:
                 start_date=target_day.replace(hour=8 + idx),
             )
 
+        fifth_start = target_day.replace(hour=17).strftime("%Y-%m-%dT%H:%M:%SZ")
+        expected_day = target_day.date().isoformat()
         response = await admin_client.post(
             "/events/",
             json=_event_create_payload(
                 title="Fifth blocked",
-                start_date="2026-02-25T17:00:00Z",
+                start_date=fifth_start,
             ),
         )
 
         assert response.status_code == 422
-        assert response.json()["detail"] == "Maximum 4 events per day exceeded for 2026-02-25"
+        assert response.json()["detail"] == f"Maximum 4 events per day exceeded for {expected_day}"
 
     @pytest.mark.asyncio
     async def test_create_event_enforces_manual_verification_and_default_transfer_url(
