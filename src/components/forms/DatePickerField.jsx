@@ -64,10 +64,26 @@ function TimeInput24h({ value, onTimeChange, required, className }) {
     const raw = e.target.value
     // Strip anything that isn't a digit or colon
     const digits = raw.replace(/\D/g, '').slice(0, 4)
-    const formatted = formatTimeDigits(digits)
+
+    // Clamp digits to valid 24h time ranges as the user types,
+    // so invalid values like "01:77" never appear in the display.
+    let clamped = digits
+    if (digits.length >= 2) {
+      const hh = Math.min(parseInt(digits.slice(0, 2), 10), 23)
+      clamped = String(hh).padStart(2, '0') + digits.slice(2)
+    }
+    if (digits.length === 4) {
+      const mm = Math.min(parseInt(digits.slice(2, 4), 10), 59)
+      clamped = clamped.slice(0, 2) + String(mm).padStart(2, '0')
+    } else if (digits.length === 3) {
+      // First minute digit > 5 would always yield mm >= 60, so clamp it to 5
+      if (parseInt(digits[2], 10) > 5) clamped = clamped.slice(0, 2) + '5'
+    }
+
+    const formatted = formatTimeDigits(clamped)
     setDisplay(formatted)
 
-    const parsed = parseTimeInput(digits)
+    const parsed = parseTimeInput(clamped)
     onTimeChange(parsed || '')
   }, [onTimeChange])
 
@@ -141,9 +157,9 @@ function DatePickerField({
     }
 
     return (
-      <div className="flex gap-2 min-w-0">
+      <div className="flex flex-wrap gap-2 min-w-0">
         {/* Date part */}
-        <div className="relative flex-1 min-w-0">
+        <div className="relative flex-1 min-w-[140px]">
           <input
             ref={dateRef}
             type="date"
@@ -164,7 +180,7 @@ function DatePickerField({
         </div>
 
         {/* Time part — custom text input, always 24h regardless of device locale */}
-        <div className="relative w-24 shrink-0">
+        <div className="relative w-24">
           <TimeInput24h
             value={timePart}
             onTimeChange={handleTimeChange}
