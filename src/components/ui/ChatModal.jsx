@@ -22,7 +22,7 @@ function ChatModal() {
   const {
     open, view, eventId, eventTitle,
     closeChat, navigateChat,
-    hasUnread, setLatestMessageTime,
+    hasUnread, unreadCounts, setLatestMessageTime,
   } = useChat()
   const navigate = useNavigate()
 
@@ -244,7 +244,7 @@ function ChatModal() {
                             {ev.city} · {formatDate(ev.startDateTime)}
                           </span>
                         </span>
-                        {unread && <span className="chat-unread-dot" aria-label="unread" />}
+                        {unread && <span className="chat-unread-badge" aria-label="unread">{(unreadCounts[chatId] || 0) > 9 ? '9+' : (unreadCounts[chatId] || 1)}</span>}
                         <svg className="chat-event-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="9 18 15 12 9 6" />
                         </svg>

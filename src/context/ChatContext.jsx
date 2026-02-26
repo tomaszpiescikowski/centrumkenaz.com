@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react'
 
 const ChatContext = createContext(null)
 
@@ -35,6 +35,9 @@ function ChatProvider({ children }) {
   // registeredEvents — kept in sync by ChatPage so ChatPoller can poll all chats
   const [registeredEvents, setRegisteredEventsState] = useState([])
   const setRegisteredEvents = useCallback((evts) => setRegisteredEventsState(evts || []), [])
+  // Per-chat unread message counts (populated by ChatPoller)
+  const unreadCountsRef = useRef({})
+  const [unreadCounts, setUnreadCounts] = useState({})
 
   const openChat = useCallback((opts = {}) => {
     if (opts.eventId) {
@@ -66,6 +69,17 @@ function ChatProvider({ children }) {
       saveLastRead(next)
       return next
     })
+    // Clear unread count for this chat
+    if (unreadCountsRef.current[chatId]) {
+      unreadCountsRef.current = { ...unreadCountsRef.current, [chatId]: 0 }
+      setUnreadCounts(unreadCountsRef.current)
+    }
+  }, [])
+
+  const setUnreadCount = useCallback((chatId, count) => {
+    if (unreadCountsRef.current[chatId] === count) return
+    unreadCountsRef.current = { ...unreadCountsRef.current, [chatId]: count }
+    setUnreadCounts(unreadCountsRef.current)
   }, [])
 
   const setLatestMessageTime = useCallback((chatId, timestampOrObj) => {
@@ -104,20 +118,20 @@ function ChatProvider({ children }) {
   }, [])
 
   const totalUnread = useMemo(() => {
-    return Object.keys(latestMessages).filter((chatId) => hasUnread(chatId)).length
-  }, [latestMessages, hasUnread])
+    return Object.values(unreadCounts).reduce((sum, c) => sum + (c || 0), 0)
+  }, [unreadCounts])
 
   const value = useMemo(
     () => ({
       ...chatState,
       openChat, closeChat, navigateChat,
       markAsRead, setLatestMessageTime,
-      hasUnread, totalUnread,
+      hasUnread, totalUnread, unreadCounts, setUnreadCount,
       lastReadTimestamps, latestMessages,
       pendingRefresh, addPendingRefresh, clearPendingRefresh,
       registeredEvents, setRegisteredEvents,
     }),
-    [chatState, openChat, closeChat, navigateChat, markAsRead, setLatestMessageTime, hasUnread, totalUnread, lastReadTimestamps, latestMessages, pendingRefresh, addPendingRefresh, clearPendingRefresh, registeredEvents, setRegisteredEvents],
+    [chatState, openChat, closeChat, navigateChat, markAsRead, setLatestMessageTime, hasUnread, totalUnread, unreadCounts, setUnreadCount, lastReadTimestamps, latestMessages, pendingRefresh, addPendingRefresh, clearPendingRefresh, registeredEvents, setRegisteredEvents],
   )
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>

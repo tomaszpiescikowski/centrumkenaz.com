@@ -321,12 +321,12 @@ async def check_new_messages(
     body: CheckRequest,
     user: OptionalActiveUser = None,
     db: AsyncSession = Depends(get_db),
-) -> dict[str, str]:
-    """Return a map of chatId → latestTimestamp for each chat that has messages
+) -> dict[str, dict]:
+    """Return a map of chatId → {latest, count} for each chat that has messages
     newer than the requested since-timestamp. Chats with no new activity are
     omitted from the response so the client can detect silence quickly."""
 
-    result: dict[str, str] = {}
+    result: dict[str, dict] = {}
 
     for chat_id, since in body.chats.items():
         # chatId format: "resource_type:resource_id" e.g. "event:uuid", "general:global"
@@ -339,22 +339,25 @@ async def check_new_messages(
         if since.tzinfo is None:
             since = since.replace(tzinfo=timezone.utc)
 
-        stmt = (
-            select(sa_func.max(Comment.created_at))
-            .where(
-                Comment.resource_type == resource_type,
-                Comment.resource_id == resource_id,
-                Comment.created_at > since,
-                Comment.is_deleted.is_(False),
-            )
+        base_filter = and_(
+            Comment.resource_type == resource_type,
+            Comment.resource_id == resource_id,
+            Comment.created_at > since,
+            Comment.is_deleted.is_(False),
         )
-        max_res = await db.execute(stmt)
-        latest = max_res.scalar_one_or_none()
+
+        stmt = select(
+            sa_func.max(Comment.created_at),
+            sa_func.count(Comment.id),
+        ).where(base_filter)
+        row = (await db.execute(stmt)).one()
+        latest, count = row[0], row[1]
+
         if latest is not None:
             # Ensure tz-aware
             if latest.tzinfo is None:
                 latest = latest.replace(tzinfo=timezone.utc)
-            result[chat_id] = latest.isoformat()
+            result[chat_id] = {"latest": latest.isoformat(), "count": count}
 
     return result
 

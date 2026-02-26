@@ -11,7 +11,7 @@ export default function ChatPoller() {
   const { user, authFetch } = useAuth()
   const {
     latestMessages, setLatestMessageTime, addPendingRefresh,
-    registeredEvents, lastReadTimestamps,
+    registeredEvents, lastReadTimestamps, setUnreadCount,
   } = useChat()
 
   // Keep stable refs so the interval always reads the freshest data
@@ -60,8 +60,12 @@ export default function ChatPoller() {
 
       try {
         const result = await checkNewMessages(authFetchRef.current, sinceMap)
-        for (const [chatId, latestTs] of Object.entries(result)) {
+        for (const [chatId, data] of Object.entries(result)) {
+          // data is { latest: ISO, count: N }
+          const latestTs = typeof data === 'string' ? data : data.latest
+          const count = typeof data === 'object' ? (data.count || 0) : 0
           setLatestMessageTime(chatId, { ts: latestTs, text: null, author: null })
+          setUnreadCount(chatId, count)
           addPendingRefresh(chatId)
         }
       } catch {
@@ -72,7 +76,7 @@ export default function ChatPoller() {
     const id = setInterval(poll, POLL_INTERVAL_MS)
     return () => clearInterval(id)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, setLatestMessageTime, addPendingRefresh])
+  }, [user, setLatestMessageTime, addPendingRefresh, setUnreadCount])
 
   return null
 }

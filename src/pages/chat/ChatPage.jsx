@@ -16,7 +16,7 @@ function ChatPage() {
   const {
     view, eventId, eventTitle,
     navigateChat,
-    markAsRead, hasUnread, setLatestMessageTime, latestMessages,
+    markAsRead, hasUnread, unreadCounts, setLatestMessageTime, latestMessages,
     setRegisteredEvents,
   } = useChat()
   const navigate = useNavigate()
@@ -312,7 +312,7 @@ function ChatPage() {
                         <span className="cp-event-right">
                           <span className="cp-event-time">{timeLabel}</span>
                           <span className="cp-event-right-bottom">
-                            {unread && <span className="chat-unread-dot" aria-label="unread" />}
+                            {unread && <span className="chat-unread-badge" aria-label="unread">{(unreadCounts[chatId] || 0) > 9 ? '9+' : (unreadCounts[chatId] || 1)}</span>}
                           </span>
                         </span>
                       </button>

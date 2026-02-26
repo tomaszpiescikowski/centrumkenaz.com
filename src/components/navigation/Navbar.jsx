@@ -35,7 +35,7 @@ function Navbar({ darkMode, setDarkMode }) {
   const navigate = useNavigate()
   const { t } = useLanguage()
   const { user, isAuthenticated, logout } = useAuth()
-  const { openChat } = useChat()
+  const { openChat, totalUnread } = useChat()
 
   const isActive = (path) => (
     location.pathname === path || location.pathname.startsWith(`${path}/`)
@@ -114,9 +114,16 @@ function Navbar({ darkMode, setDarkMode }) {
                 className="btn-nav h-10 px-3 lg:px-4 transition-colors text-indigo-600 dark:text-indigo-400 border-indigo-400/40 dark:border-indigo-400/30 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 font-semibold text-xs"
                 aria-label={t('comments.chatTitle')}
               >
-                <svg className="h-4 w-4 lg:mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-                </svg>
+                <span className="relative">
+                  <svg className="h-4 w-4 lg:mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                  </svg>
+                  {totalUnread > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-bold text-white">
+                      {totalUnread > 9 ? '9+' : totalUnread}
+                    </span>
+                  )}
+                </span>
                 <span className="hidden lg:inline">{t('comments.chatTitle')}</span>
               </button>
             )}
