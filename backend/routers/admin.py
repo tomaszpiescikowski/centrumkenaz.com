@@ -1040,6 +1040,37 @@ async def list_pending_manual_payments(
     ]
 
 
+@router.get("/manual-payments/history", response_model=list[ManualPaymentPendingResponse])
+async def list_manual_payment_history(
+    db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(get_admin_user_dependency),
+    limit: int = 200,
+) -> list[ManualPaymentPendingResponse]:
+    """
+    Return recently confirmed manual payment registrations for the admin audit log.
+
+    Returns up to *limit* rows ordered by confirmation timestamp descending so
+    the most recently approved entries appear first.
+    """
+    rows = await db.execute(
+        select(Registration, User, Event, Payment)
+        .join(User, Registration.user_id == User.id)
+        .join(Event, Registration.event_id == Event.id)
+        .outerjoin(Payment, Payment.external_id == Registration.payment_id)
+        .where(
+            Registration.status == RegistrationStatus.CONFIRMED.value,
+            Event.manual_payment_verification.is_(True),
+            Registration.manual_payment_confirmed_at.is_not(None),
+        )
+        .order_by(Registration.manual_payment_confirmed_at.desc())
+        .limit(limit)
+    )
+    return [
+        _serialize_manual_pending_row(registration, user, event, payment)
+        for registration, user, event, payment in rows.all()
+    ]
+
+
 @router.post(
     "/manual-payments/{registration_id}/approve",
     response_model=ManualPaymentPendingResponse,
@@ -1295,6 +1326,37 @@ async def list_pending_subscription_purchases(
             SubscriptionPurchase.manual_payment_confirmed_at.asc(),
             SubscriptionPurchase.created_at.asc(),
         )
+    )
+    return [
+        _serialize_subscription_purchase_pending_row(purchase, user)
+        for purchase, user in rows.all()
+    ]
+
+
+@router.get(
+    "/subscription-purchases/history",
+    response_model=list[SubscriptionPurchasePendingResponse],
+)
+async def list_subscription_purchase_history(
+    db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(get_admin_user_dependency),
+    limit: int = 200,
+) -> list[SubscriptionPurchasePendingResponse]:
+    """
+    Return recently confirmed subscription purchases for the admin audit log.
+
+    Returns up to *limit* rows ordered by confirmation timestamp descending so
+    the most recently approved entries appear first.
+    """
+    rows = await db.execute(
+        select(SubscriptionPurchase, User)
+        .join(User, SubscriptionPurchase.user_id == User.id)
+        .where(
+            SubscriptionPurchase.status == SubscriptionPurchaseStatus.CONFIRMED.value,
+            SubscriptionPurchase.manual_payment_confirmed_at.is_not(None),
+        )
+        .order_by(SubscriptionPurchase.manual_payment_confirmed_at.desc())
+        .limit(limit)
     )
     return [
         _serialize_subscription_purchase_pending_row(purchase, user)

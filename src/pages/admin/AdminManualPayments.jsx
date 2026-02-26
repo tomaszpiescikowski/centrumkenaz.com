@@ -6,9 +6,11 @@ import { useNotification } from '../../context/NotificationContext'
 import {
   approveManualPayment,
   approveSubscriptionPurchase,
+  fetchManualPaymentsHistory,
   fetchManualRefundTasks,
   fetchPendingManualPayments,
   fetchPendingSubscriptionPurchases,
+  fetchSubscriptionPurchasesHistory,
   fetchWaitlistPromotions,
   updateManualRefundTask,
   updateWaitlistPromotion,
@@ -125,9 +127,11 @@ function AdminManualPayments() {
   const { sortByView, toggleSort } = useViewSorts(createDefaultSorts)
   /* ── data ── */
   const [pendingPayments, setPendingPayments] = useState([])
+  const [pendingPaymentsHistory, setPendingPaymentsHistory] = useState([])
   const [refundTasks, setRefundTasks] = useState([])
   const [promotionTasks, setPromotionTasks] = useState([])
   const [subscriptionPurchases, setSubscriptionPurchases] = useState([])
+  const [subscriptionPurchasesHistory, setSubscriptionPurchasesHistory] = useState([])
 
   /* ── loading states ── */
   const [approvingId, setApprovingId] = useState(null)
@@ -149,16 +153,20 @@ function AdminManualPayments() {
   const loadData = async () => {
     setLoading(true)
     try {
-      const [pending, refunds, promotions, subPurchases] = await Promise.all([
+      const [pending, refunds, promotions, subPurchases, pendingHistory, subHistory] = await Promise.all([
         fetchPendingManualPayments(authFetch),
         fetchManualRefundTasks(authFetch),
         fetchWaitlistPromotions(authFetch),
         fetchPendingSubscriptionPurchases(authFetch),
+        fetchManualPaymentsHistory(authFetch).catch(() => []),
+        fetchSubscriptionPurchasesHistory(authFetch).catch(() => []),
       ])
       setPendingPayments(Array.isArray(pending) ? pending : [])
       setRefundTasks(Array.isArray(refunds) ? refunds : [])
       setPromotionTasks(Array.isArray(promotions) ? promotions : [])
       setSubscriptionPurchases(Array.isArray(subPurchases) ? subPurchases : [])
+      setPendingPaymentsHistory(Array.isArray(pendingHistory) ? pendingHistory : [])
+      setSubscriptionPurchasesHistory(Array.isArray(subHistory) ? subHistory : [])
       const drafts = {}
       for (const row of (Array.isArray(refunds) ? refunds : [])) {
         drafts[row.task_id] = {
@@ -174,6 +182,8 @@ function AdminManualPayments() {
       setRefundTasks([])
       setPromotionTasks([])
       setSubscriptionPurchases([])
+      setPendingPaymentsHistory([])
+      setSubscriptionPurchasesHistory([])
       setRefundDrafts({})
     } finally {
       setLoading(false)
@@ -389,6 +399,17 @@ function AdminManualPayments() {
     [pendingPayments, t]
   )
 
+  const pendingHistoryRows = useMemo(
+    () => pendingPaymentsHistory.map((row) => ({
+      ...row,
+      user_sort: `${row.user_name || ''} ${row.user_email || ''}`,
+      event_sort: `${row.event_title || ''} ${row.occurrence_date || ''}`,
+      amount_value: parseAmount(row.amount),
+      status_label: t(`account.statuses.${row.status}`),
+    })),
+    [pendingPaymentsHistory, t]
+  )
+
   const refundRows = useMemo(
     () => refundTasks.map((row) => {
       const draft = refundDrafts[row.task_id] || {
@@ -418,6 +439,15 @@ function AdminManualPayments() {
       deadline_sort: row.payment_deadline || '',
     })),
     [promotionTasks, t]
+  )
+
+  const activePromotionRows = useMemo(
+    () => promotionRows.filter((r) => !r.waitlist_notification_sent),
+    [promotionRows]
+  )
+  const resolvedPromotionRows = useMemo(
+    () => promotionRows.filter((r) => r.waitlist_notification_sent),
+    [promotionRows]
   )
 
   const pendingColumns = [
@@ -675,6 +705,149 @@ function AdminManualPayments() {
     },
   ]
 
+  const pendingHistoryColumns = [
+    {
+      key: 'user_sort',
+      label: t('admin.tables.user'),
+      sortValue: (row) => row.user_sort,
+      render: (row) => (
+        <div className="opacity-70">
+          <p className="font-semibold">{row.user_name || '—'}</p>
+          <p className="text-[11px] text-navy/60 dark:text-cream/60">{row.user_email}</p>
+        </div>
+      ),
+    },
+    {
+      key: 'event_sort',
+      label: t('admin.tables.event'),
+      sortValue: (row) => row.event_sort,
+      render: (row) => (
+        <div className="opacity-70">
+          <p className="font-semibold">{row.event_title}</p>
+          <p className="text-[11px] text-navy/60 dark:text-cream/60">{row.occurrence_date}</p>
+        </div>
+      ),
+    },
+    {
+      key: 'amount_value',
+      label: t('admin.tables.amount'),
+      sortValue: (row) => row.amount_value,
+      render: (row) => <span className="opacity-70">{row.amount} {row.currency}</span>,
+    },
+    {
+      key: 'transfer_reference',
+      label: t('admin.manualPayments.referenceColumn'),
+      sortValue: (row) => row.transfer_reference,
+      render: (row) => <code className="text-[11px] opacity-70">{row.transfer_reference}</code>,
+    },
+    {
+      key: 'manual_payment_confirmed_at',
+      label: t('admin.manualPayments.approvedAtColumn'),
+      sortValue: (row) => row.manual_payment_confirmed_at || '',
+      render: (row) => (
+        <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+          {row.manual_payment_confirmed_at
+            ? new Date(row.manual_payment_confirmed_at).toLocaleDateString('pl-PL')
+            : '—'}
+        </span>
+      ),
+    },
+  ]
+
+  const promotionResolvedColumns = [
+    {
+      key: 'user_sort',
+      label: t('admin.tables.user'),
+      sortValue: (row) => row.user_sort,
+      render: (row) => (
+        <div className="opacity-70">
+          <p className="font-semibold">{row.user_name || '—'}</p>
+          <p className="text-[11px] text-navy/60 dark:text-cream/60">{row.user_email}</p>
+        </div>
+      ),
+    },
+    {
+      key: 'event_sort',
+      label: t('admin.tables.event'),
+      sortValue: (row) => row.event_sort,
+      render: (row) => (
+        <div className="opacity-70">
+          <p className="font-semibold">{row.event_title}</p>
+          <p className="text-[11px] text-navy/60 dark:text-cream/60">{row.occurrence_date}</p>
+        </div>
+      ),
+    },
+    {
+      key: 'status_label',
+      label: t('account.status'),
+      sortValue: (row) => row.status_label,
+      render: (row) => <span className="opacity-70">{row.status_label}</span>,
+    },
+    {
+      key: 'deadline_sort',
+      label: t('admin.manualPayments.deadlineColumn'),
+      sortValue: (row) => row.deadline_sort,
+      render: (row) => <span className="opacity-70">{row.payment_deadline || '—'}</span>,
+    },
+    {
+      key: 'waitlist_notified_at',
+      label: t('admin.manualPayments.notifiedAtColumn'),
+      sortValue: (row) => row.waitlist_notified_at || '',
+      render: (row) => (
+        <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+          ✓ {row.waitlist_notified_at
+            ? new Date(row.waitlist_notified_at).toLocaleDateString('pl-PL')
+            : t('admin.manualPayments.notifiedLabel')}
+        </span>
+      ),
+    },
+  ]
+
+  const subscriptionHistoryColumns = [
+    {
+      key: 'user_sort',
+      label: t('admin.tables.user'),
+      sortValue: (row) => row.user_sort,
+      render: (row) => (
+        <div className="opacity-70">
+          <p className="font-semibold">{row.user_name || '—'}</p>
+          <p className="text-[11px] text-navy/60 dark:text-cream/60">{row.user_email}</p>
+        </div>
+      ),
+    },
+    {
+      key: 'plan_code',
+      label: t('admin.manualPayments.subscriptionPlanColumn'),
+      sortValue: (row) => row.plan_code,
+      render: (row) => (
+        <div className="opacity-70">
+          <p className="font-semibold">{row.plan_label || row.plan_code}</p>
+          <p className="text-[11px] text-navy/60 dark:text-cream/60">
+            {row.periods} {row.periods === 1 ? t('admin.manualPayments.period') : t('admin.manualPayments.periods')}
+          </p>
+        </div>
+      ),
+    },
+    {
+      key: 'amount_value',
+      label: t('admin.tables.amount'),
+      sortValue: (row) => row.amount_value,
+      render: (row) => <span className="opacity-70">{row.total_amount} {row.currency}</span>,
+    },
+    {
+      key: 'manual_payment_confirmed_at',
+      label: t('admin.manualPayments.approvedAtColumn'),
+      sortValue: (row) => row.manual_payment_confirmed_at || '',
+      render: (row) => (
+        <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+          {row.manual_payment_confirmed_at
+            ? new Date(row.manual_payment_confirmed_at).toLocaleDateString('pl-PL')
+            : '—'}
+        </span>
+      ),
+    },
+  ]
+
   const subscriptionRows = useMemo(
     () => subscriptionPurchases.map((row) => ({
       ...row,
@@ -684,6 +857,17 @@ function AdminManualPayments() {
       plan_label: t(`plans.plan.${row.plan_code}.title`) || row.plan_label || row.plan_code,
     })),
     [subscriptionPurchases, t]
+  )
+
+  const subscriptionHistoryRows = useMemo(
+    () => subscriptionPurchasesHistory.map((row) => ({
+      ...row,
+      user_sort: `${row.user_name || ''} ${row.user_email || ''}`,
+      amount_value: parseAmount(row.total_amount),
+      status_label: t(`account.statuses.${row.status}`) || row.status,
+      plan_label: t(`plans.plan.${row.plan_code}.title`) || row.plan_label || row.plan_code,
+    })),
+    [subscriptionPurchasesHistory, t]
   )
 
   const subscriptionColumns = [
@@ -843,15 +1027,47 @@ function AdminManualPayments() {
           )}
 
           {activeView === 'pending' && (
-            <SortableDataTable
-              columns={pendingColumns}
-              rows={pendingRows}
-              sort={sortByView.pending}
-              onSort={(key) => toggleSort('pending', key)}
-              rowKey={(row) => row.registration_id}
-              emptyText={t('admin.manualPayments.pendingEmpty')}
-              t={t}
-            />
+            <section className="space-y-4">
+              {pendingRows.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-navy dark:text-cream mb-2">
+                    {t('admin.manualPayments.activeTasksHeading')}
+                  </h3>
+                  <SortableDataTable
+                    columns={pendingColumns}
+                    rows={pendingRows}
+                    sort={sortByView.pending}
+                    onSort={(key) => toggleSort('pending', key)}
+                    rowKey={(row) => row.registration_id}
+                    emptyText={t('admin.manualPayments.pendingEmpty')}
+                    t={t}
+                  />
+                </div>
+              )}
+              {pendingRows.length === 0 && pendingHistoryRows.length === 0 && (
+                <p className="text-sm text-navy/40 dark:text-cream/40 text-center py-8">
+                  {t('admin.manualPayments.pendingEmpty')}
+                </p>
+              )}
+              {pendingHistoryRows.length > 0 && (
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-semibold text-navy/50 dark:text-cream/50 hover:text-navy dark:hover:text-cream transition-colors select-none">
+                    {t('admin.manualPayments.resolvedTasksHeading')} ({pendingHistoryRows.length})
+                  </summary>
+                  <div className="mt-2 opacity-60">
+                    <SortableDataTable
+                      columns={pendingHistoryColumns}
+                      rows={pendingHistoryRows}
+                      sort={sortByView.pending}
+                      onSort={(key) => toggleSort('pending', key)}
+                      rowKey={(row) => row.registration_id}
+                      emptyText=""
+                      t={t}
+                    />
+                  </div>
+                </details>
+              )}
+            </section>
           )}
 
           {activeView === 'refunds' && (
@@ -923,27 +1139,91 @@ function AdminManualPayments() {
           )}
 
           {activeView === 'promotions' && (
-            <SortableDataTable
-              columns={promotionColumns}
-              rows={promotionRows}
-              sort={sortByView.promotions}
-              onSort={(key) => toggleSort('promotions', key)}
-              rowKey={(row) => row.registration_id}
-              emptyText={t('admin.manualPayments.promotionsEmpty')}
-              t={t}
-            />
+            <section className="space-y-4">
+              {activePromotionRows.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-navy dark:text-cream mb-2">
+                    {t('admin.manualPayments.activeTasksHeading')}
+                  </h3>
+                  <SortableDataTable
+                    columns={promotionColumns}
+                    rows={activePromotionRows}
+                    sort={sortByView.promotions}
+                    onSort={(key) => toggleSort('promotions', key)}
+                    rowKey={(row) => row.registration_id}
+                    emptyText={t('admin.manualPayments.promotionsEmpty')}
+                    t={t}
+                  />
+                </div>
+              )}
+              {activePromotionRows.length === 0 && resolvedPromotionRows.length === 0 && (
+                <p className="text-sm text-navy/40 dark:text-cream/40 text-center py-8">
+                  {t('admin.manualPayments.promotionsEmpty')}
+                </p>
+              )}
+              {resolvedPromotionRows.length > 0 && (
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-semibold text-navy/50 dark:text-cream/50 hover:text-navy dark:hover:text-cream transition-colors select-none">
+                    {t('admin.manualPayments.resolvedTasksHeading')} ({resolvedPromotionRows.length})
+                  </summary>
+                  <div className="mt-2 opacity-60">
+                    <SortableDataTable
+                      columns={promotionResolvedColumns}
+                      rows={resolvedPromotionRows}
+                      sort={sortByView.promotions}
+                      onSort={(key) => toggleSort('promotions', key)}
+                      rowKey={(row) => row.registration_id}
+                      emptyText=""
+                      t={t}
+                    />
+                  </div>
+                </details>
+              )}
+            </section>
           )}
 
           {activeView === 'subscriptions' && (
-            <SortableDataTable
-              columns={subscriptionColumns}
-              rows={subscriptionRows}
-              sort={sortByView.subscriptions}
-              onSort={(key) => toggleSort('subscriptions', key)}
-              rowKey={(row) => row.purchase_id}
-              emptyText={t('admin.manualPayments.subscriptionsEmpty')}
-              t={t}
-            />
+            <section className="space-y-4">
+              {subscriptionRows.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-navy dark:text-cream mb-2">
+                    {t('admin.manualPayments.activeTasksHeading')}
+                  </h3>
+                  <SortableDataTable
+                    columns={subscriptionColumns}
+                    rows={subscriptionRows}
+                    sort={sortByView.subscriptions}
+                    onSort={(key) => toggleSort('subscriptions', key)}
+                    rowKey={(row) => row.purchase_id}
+                    emptyText={t('admin.manualPayments.subscriptionsEmpty')}
+                    t={t}
+                  />
+                </div>
+              )}
+              {subscriptionRows.length === 0 && subscriptionHistoryRows.length === 0 && (
+                <p className="text-sm text-navy/40 dark:text-cream/40 text-center py-8">
+                  {t('admin.manualPayments.subscriptionsEmpty')}
+                </p>
+              )}
+              {subscriptionHistoryRows.length > 0 && (
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-semibold text-navy/50 dark:text-cream/50 hover:text-navy dark:hover:text-cream transition-colors select-none">
+                    {t('admin.manualPayments.resolvedTasksHeading')} ({subscriptionHistoryRows.length})
+                  </summary>
+                  <div className="mt-2 opacity-60">
+                    <SortableDataTable
+                      columns={subscriptionHistoryColumns}
+                      rows={subscriptionHistoryRows}
+                      sort={sortByView.subscriptions}
+                      onSort={(key) => toggleSort('subscriptions', key)}
+                      rowKey={(row) => row.purchase_id}
+                      emptyText=""
+                      t={t}
+                    />
+                  </div>
+                </details>
+              )}
+            </section>
           )}
         </>
       )}

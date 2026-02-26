@@ -136,6 +136,24 @@ export async function fetchPendingSubscriptionPurchases(authFetch) {
   return safeJson(response)
 }
 
+export async function fetchManualPaymentsHistory(authFetch) {
+  const response = await authFetch(`${API_URL}/admin/manual-payments/history`)
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.detail || 'Failed to fetch manual payments history')
+  }
+  return safeJson(response)
+}
+
+export async function fetchSubscriptionPurchasesHistory(authFetch) {
+  const response = await authFetch(`${API_URL}/admin/subscription-purchases/history`)
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.detail || 'Failed to fetch subscription purchases history')
+  }
+  return safeJson(response)
+}
+
 export async function approveSubscriptionPurchase(authFetch, purchaseId) {
   const response = await authFetch(`${API_URL}/admin/subscription-purchases/${purchaseId}/approve`, {
     method: 'POST',
