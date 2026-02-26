@@ -1914,7 +1914,7 @@ img.cmt-av-img {
   background: rgba(255, 253, 245, 0.03);
 }
 
-/* Auto-loading older messages — indicator at top of messenger list */
+/* Load-older button at top of messenger list */
 .cmt-load-older-indicator {
   display: flex;
   align-items: center;
@@ -1923,15 +1923,37 @@ img.cmt-av-img {
   margin-bottom: 0.25rem;
 }
 
-.cmt-load-older-hint {
+.cmt-load-older-btn {
   font-size: 0.75rem;
-  color: var(--muted, rgba(15,23,74,0.35));
-  opacity: 0.7;
+  font-weight: 500;
+  color: var(--accent, rgb(99,102,241));
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  transition: background 0.15s;
   user-select: none;
 }
 
-.dark .cmt-load-older-hint {
-  color: rgba(240,234,217,0.35);
+.cmt-load-older-btn:hover {
+  background: rgba(99,102,241,0.08);
+}
+
+.cmt-load-older-btn:active {
+  background: rgba(99,102,241,0.15);
+}
+
+.dark .cmt-load-older-btn {
+  color: rgba(240,234,217,0.7);
+}
+
+.dark .cmt-load-older-btn:hover {
+  background: rgba(240,234,217,0.08);
+}
+
+.dark .cmt-load-older-btn:active {
+  background: rgba(240,234,217,0.12);
 }
 
 /* Three-dot pulsing spinner */

@@ -1077,7 +1077,8 @@
     "noRegisteredEvents": "Non sei ancora iscritto a nessun evento",
     "loginToSeeEvents": "Accedi per vedere le chat dei tuoi eventi",
     "goToEvent": "Vai all'evento",
-    "back": "Indietro"
+    "back": "Indietro",
+    "loadOlder": "Carica messaggi precedenti"
   },
   "panel": {
     "loginRequiredTitle": "Accedi per accedere al pannello",

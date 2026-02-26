@@ -1081,7 +1081,8 @@
     "loginRequiredButton": "Log in",
     "pendingRequiredTitle": "Account pending approval",
     "pendingRequiredBody": "Chat is blocked until an admin approves your account.",
-    "pendingRequiredButton": "Check account status"
+    "pendingRequiredButton": "Check account status",
+    "loadOlder": "Load older messages"
   },
   "panel": {
     "loginRequiredTitle": "Log in to use the panel",

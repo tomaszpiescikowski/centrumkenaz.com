@@ -1105,7 +1105,8 @@
     "loginRequiredButton": "Zaloguj się",
     "pendingRequiredTitle": "Konto czeka na akceptację",
     "pendingRequiredBody": "Do czasu akceptacji przez admina czat jest zablokowany.",
-    "pendingRequiredButton": "Sprawdź status konta"
+    "pendingRequiredButton": "Sprawdź status konta",
+    "loadOlder": "Załaduj starsze wiadomości"
   },
   "panel": {
     "loginRequiredTitle": "Zaloguj się, aby otworzyć panel",

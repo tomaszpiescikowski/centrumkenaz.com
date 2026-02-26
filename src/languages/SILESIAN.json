@@ -1081,7 +1081,8 @@
     "noRegisteredEvents": "Niy mosz jeszcze ????dnych zapis??w na wydarzynio",
     "loginToSeeEvents": "Zaloguj sie, coby ??boczy?? czaty wydarzy??",
     "goToEvent": "Przejd?? do wydarzynio",
-    "back": "Naz??d"
+    "back": "Naz??d",
+    "loadOlder": "Załaduj starsze wiadomości"
   },
   "panel": {
     "loginRequiredTitle": "Zaloguj sie, coby używać panelu",

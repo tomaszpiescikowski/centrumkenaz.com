@@ -774,17 +774,6 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   // callback directly — this avoids recreating the listener on every eventPage/generalPage change.
   useEffect(() => { loadOlderRef.current = loadOlderMessages }, [loadOlderMessages])
 
-  // Auto-trigger when user scrolls near the top of the messenger list
-  useEffect(() => {
-    const list = listRef.current
-    if (!list || !messengerLayout) return
-    const onScroll = () => {
-      if (list.scrollTop < 120) loadOlderRef.current?.()
-    }
-    list.addEventListener('scroll', onScroll, { passive: true })
-    return () => list.removeEventListener('scroll', onScroll)
-  }, [messengerLayout])
-
   const toggleReplies = (id) => {
     setExpandedReplies(prev => {
       const next = new Set(prev)
@@ -1146,12 +1135,12 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
         <>
           {/* Scrollable messages – pinned at top (via backend sort), oldest first, newest bottom */}
           <div className="cmt-list cmt-list-messenger" ref={listRef}>
-            {/* Older-messages indicator — auto-loads on scroll, no manual button needed */}
+            {/* Load older messages button */}
             {(hasMoreOlder || loadingOlder) && (
               <div className="cmt-load-older-indicator" aria-live="polite">
                 {loadingOlder
                   ? <span className="cmt-load-older-spinner" />
-                  : <span className="cmt-load-older-hint">↑</span>
+                  : <button type="button" className="cmt-load-older-btn" onClick={() => loadOlderRef.current?.()}>{t('comments.loadOlder')}</button>
                 }
               </div>
             )}

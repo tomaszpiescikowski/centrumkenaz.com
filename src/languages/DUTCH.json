@@ -1077,7 +1077,8 @@
     "noRegisteredEvents": "Je hebt nog geen inschrijvingen voor evenementen",
     "loginToSeeEvents": "Log in om je evenementchats te bekijken",
     "goToEvent": "Ga naar evenement",
-    "back": "Terug"
+    "back": "Terug",
+    "loadOlder": "Oudere berichten laden"
   },
   "panel": {
     "loginRequiredTitle": "Log in om het dashboard te gebruiken",
