@@ -9,9 +9,10 @@ import { API_URL } from '../../api/config'
 import RegisterButton from '../../components/forms/RegisterButton'
 import DatePickerField from '../../components/forms/DatePickerField'
 import AuthGateCard from '../../components/ui/AuthGateCard'
-import CustomSelect from '../../components/controls/CustomSelect'
+import EventIconPicker from '../../components/common/EventIconPicker'
 import CommentsSection from '../../components/common/CommentsSection'
 import EventIcon from '../../components/common/EventIcon'
+import { useCustomEventTypes } from '../../hooks/useCustomEventTypes'
 
 function buildGoogleCalendarUrl(event) {
   const start = new Date(event.startDateTime)
@@ -50,6 +51,7 @@ function EventDetail() {
   const [savingAdmin, setSavingAdmin] = useState(false)
   const [deletingAdmin, setDeletingAdmin] = useState(false)
   const { openChat, setLatestMessageTime, markAsRead } = useChat()
+  const { customTypes } = useCustomEventTypes()
   const isAdmin = user?.role === 'admin'
 
   const userAccountStatus = user?.account_status
@@ -542,15 +544,14 @@ function EventDetail() {
                     )}
                   </label>
 
-                  <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
+                  <div className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
                     {t('admin.fields.eventType')}
-                    <CustomSelect
-                      options={['karate', 'mors', 'planszowki', 'ognisko', 'spacer', 'joga', 'wyjazd', 'inne'].map((item) => ({ value: item, label: t(`eventTypes.${item}`) }))}
+                    <EventIconPicker
                       value={adminForm.event_type}
                       onChange={(val) => handleAdminChange('event_type', val)}
-                      isInvalid={Boolean(fieldHints.event_type)}
+                      customTypes={customTypes}
                     />
-                  </label>
+                  </div>
 
                   <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
                     {t('admin.fields.startDate')}

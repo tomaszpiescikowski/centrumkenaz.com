@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Path
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field
-from typing import Literal
 from datetime import datetime, timedelta, date
 from decimal import Decimal
 
@@ -125,9 +124,7 @@ class EventCreateRequest(BaseModel):
 
     title: str = Field(min_length=1, max_length=255, description="Event title.")
     description: str | None = Field(default=None, description="Event description.")
-    event_type: Literal["karate", "mors", "planszowki", "ognisko", "spacer", "joga", "wyjazd", "inne"] = Field(
-        description="Event category tag."
-    )
+    event_type: str = Field(min_length=1, max_length=50, description="Event category tag.")
     start_date: datetime = Field(description="Start datetime.")
     end_date: datetime | None = Field(default=None, description="End datetime if provided.")
     time_info: str | None = Field(default=None, max_length=100, description="Free-form time label.")
@@ -187,10 +184,7 @@ class EventUpdateRequest(BaseModel):
 
     title: str | None = Field(default=None, min_length=1, max_length=255, description="Event title.")
     description: str | None = Field(default=None, description="Event description.")
-    event_type: Literal["karate", "mors", "planszowki", "ognisko", "spacer", "joga", "wyjazd", "inne"] | None = Field(
-        default=None,
-        description="Event category tag.",
-    )
+    event_type: str | None = Field(default=None, min_length=1, max_length=50, description="Event category tag.")
     start_date: datetime | None = Field(default=None, description="Start datetime.")
     end_date: datetime | None = Field(default=None, description="End datetime if provided.")
     time_info: str | None = Field(default=None, max_length=100, description="Free-form time label.")
@@ -307,7 +301,7 @@ async def _ensure_daily_event_limit(
 async def list_events(
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
-    event_type: Literal["karate", "mors", "planszowki", "ognisko", "spacer", "joga", "wyjazd", "inne"] | None = None,
+    event_type: str | None = None,
     city: str | None = None,
     month: str | None = Query(None, description="Filter by month in YYYY-MM format"),
     start_from: datetime | None = Query(None),
