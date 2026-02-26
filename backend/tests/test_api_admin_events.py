@@ -511,7 +511,11 @@ class TestEventAdminManage:
         db_session,
         admin_client: AsyncClient,
     ):
-        target_day = datetime(2026, 2, 26)
+        from datetime import timezone
+        target_day = (datetime.now(tz=timezone.utc) + timedelta(days=30)).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
+        expected_day = target_day.date().isoformat()
         for idx in range(4):
             await _create_event(
                 db_session,
@@ -522,16 +526,17 @@ class TestEventAdminManage:
         movable_event = await _create_event(
             db_session,
             title="Movable event",
-            start_date=datetime(2026, 2, 27, 11, 0),
+            start_date=target_day + timedelta(days=1),
         )
 
+        move_to = target_day.replace(hour=20).strftime("%Y-%m-%dT%H:%M:%SZ")
         response = await admin_client.put(
             f"/events/{movable_event.id}",
-            json={"start_date": "2026-02-26T20:00:00Z"},
+            json={"start_date": move_to},
         )
 
         assert response.status_code == 422
-        assert response.json()["detail"] == "Maximum 4 events per day exceeded for 2026-02-26"
+        assert response.json()["detail"] == f"Maximum 4 events per day exceeded for {expected_day}"
 
     @pytest.mark.asyncio
     async def test_admin_cannot_move_event_to_past_date(
