@@ -30,6 +30,21 @@ function AuthCallback() {
 
       let userData = null
       if (accessToken && refreshToken) {
+        // If we were opened as a popup from a PWA loginWithGoogle() call, postMessage the tokens
+        // back to the opener instead of storing them here (which would put them in Safari's
+        // isolated localStorage, not the PWA's). The opener's handler stores tokens and navigates.
+        if (window.opener && !window.opener.closed) {
+          try {
+            window.opener.postMessage(
+              { type: 'kenaz_auth_callback', access_token: accessToken, refresh_token: refreshToken },
+              window.location.origin
+            )
+            window.close()
+            return
+          } catch {
+            // postMessage failed — fall through to normal flow
+          }
+        }
         userData = await handleAuthCallback(accessToken, refreshToken)
       }
 

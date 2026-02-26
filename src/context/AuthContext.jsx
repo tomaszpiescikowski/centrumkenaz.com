@@ -157,8 +157,53 @@ export function AuthProvider({ children }) {
     } else if (!existingRedirect) {
       setPostLoginRedirect('/')
     }
-    window.location.href = `${API_URL}/auth/google/login`
-  }, [setPostLoginRedirect])
+
+    const isPwa = window.navigator.standalone === true ||
+      window.matchMedia('(display-mode: standalone)').matches
+
+    if (isPwa) {
+      // In standalone/PWA mode on iOS, a full-page navigation to an external domain
+      // (accounts.google.com) leaves the app and opens Safari — the OAuth callback
+      // then stores tokens in Safari's isolated localStorage, never in the PWA.
+      // Fix: open OAuth in a popup window; AuthCallback.jsx will postMessage the tokens
+      // back here so the PWA receives them without ever leaving the app.
+      const popup = window.open(`${API_URL}/auth/google/login`, '_blank')
+
+      let pollClosed
+      const handler = async (event) => {
+        if (event.origin !== window.location.origin) return
+        if (event.data?.type !== 'kenaz_auth_callback') return
+        window.removeEventListener('message', handler)
+        clearInterval(pollClosed)
+        const { access_token, refresh_token } = event.data
+        if (access_token && refresh_token) {
+          const userData = await handleAuthCallback(access_token, refresh_token)
+          const redirectTo = consumePostLoginRedirect()
+          if (userData?.account_status === 'pending') {
+            navigate('/pending-approval')
+            return
+          }
+          const nextManualPayment = userData?.next_action_manual_payment
+          if (nextManualPayment?.registration_id) {
+            navigate(`/manual-payment/${nextManualPayment.registration_id}?from=waitlist`)
+            return
+          }
+          navigate(redirectTo || '/')
+        }
+      }
+
+      window.addEventListener('message', handler)
+      // Clean up listener when the popup closes without posting a message (user cancelled)
+      pollClosed = setInterval(() => {
+        if (popup?.closed) {
+          clearInterval(pollClosed)
+          window.removeEventListener('message', handler)
+        }
+      }, 500)
+    } else {
+      window.location.href = `${API_URL}/auth/google/login`
+    }
+  }, [setPostLoginRedirect, handleAuthCallback, consumePostLoginRedirect, navigate])
 
   const consumePostLoginRedirect = useCallback(() => {
     const stored = localStorage.getItem(POST_LOGIN_REDIRECT_KEY)
