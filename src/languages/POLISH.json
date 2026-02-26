@@ -1022,7 +1022,6 @@
     "submitRegister": "Zarejestruj się",
     "submitting": "Trwa logowanie...",
     "forgotPassword": "Nie pamiętam hasła?",
-    "forgotPasswordHint": "Napisz do nas: centrumkenaz.it@gmail.com",
     "forgotPasswordEmailLabel": "Twój adres email",
     "forgotPasswordEmailPlaceholder": "np. jan@example.com",
     "forgotPasswordSend": "Wyślij link",
