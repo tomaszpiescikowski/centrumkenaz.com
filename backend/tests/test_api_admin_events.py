@@ -512,7 +512,7 @@ class TestEventAdminManage:
         admin_client: AsyncClient,
     ):
         from datetime import timezone
-        target_day = (datetime.now(tz=timezone.utc) + timedelta(days=30)).replace(
+        target_day = (datetime.now(tz=timezone.utc) + timedelta(days=60)).replace(
             hour=0, minute=0, second=0, microsecond=0
         )
         expected_day = target_day.date().isoformat()
