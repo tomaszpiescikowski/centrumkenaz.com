@@ -349,30 +349,6 @@
   color: rgba(165, 167, 255, 0.50);
 }
 
-/* Pinned comment */
-.cmt-featured {
-  background: rgba(245, 158, 11, 0.14);
-  border-radius: 0.5rem;
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  padding: 0.75rem 0.875rem;
-  margin-bottom: 0.375rem;
-}
-
-.dark .cmt-featured {
-  background: rgba(245, 158, 11, 0.16);
-  border-color: rgba(255, 190, 60, 0.38);
-}
-
-.cmt-feature-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  color: rgba(245, 158, 11, 0.9);
-  margin-bottom: 0.25rem;
-}
-
 /* ── Header ────────────────────────────────────────── */
 
 .cmt-header {

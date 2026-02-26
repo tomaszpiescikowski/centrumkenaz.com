@@ -72,19 +72,6 @@ export async function deleteComment(commentId, authFetch) {
   }
 }
 
-/**
- * Toggle pin on a comment (admin only).
- */
-export async function togglePinComment(commentId, authFetch) {
-  const res = await requestWithAuth(authFetch, `${API_URL}/comments/${commentId}/pin`, {
-    method: 'POST',
-  })
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error(err.detail || 'Failed to toggle pin')
-  }
-  return res.json()
-}
 
 /**
  * Toggle a reaction on a comment.

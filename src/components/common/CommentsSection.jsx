@@ -11,7 +11,6 @@ import {
   createComment,
   updateComment,
   deleteComment,
-  togglePinComment,
   toggleReaction,
 } from '../../api/comments'
 import './CommentsSection.css'
@@ -528,20 +527,6 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     }
   }
 
-  const handlePin = async (commentId) => {
-    if (submitting) return
-    setSubmitting(true)
-    setError(null)
-    try {
-      await togglePinComment(commentId, authFetch)
-      await reloadCurrent()
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
   const scrollCommentToTop = (commentId) => {
     const list = listRef.current
     if (!list) return
@@ -830,7 +815,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           </div>
         )}
       <div
-        className={`cmt-item ${item.is_pinned ? 'cmt-featured' : ''} ${item._visualDepth > 0 ? 'cmt-threaded' : ''} ${item._hasChildren && item._visualDepth === 0 ? 'cmt-has-replies' : ''}`}
+        className={`cmt-item ${item._visualDepth > 0 ? 'cmt-threaded' : ''} ${item._hasChildren && item._visualDepth === 0 ? 'cmt-has-replies' : ''}`}
         onTouchStart={(e) => { if (!item.is_deleted) handleTouchStart(item.id, e) }}
         onTouchEnd={handleTouchEnd}
         onTouchMove={handleTouchMove}
@@ -839,15 +824,6 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
       >
 
         <div className="cmt-item-body">
-          {item.is_pinned && (
-            <div className="cmt-feature-badge">
-              <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M9.828.722a.5.5 0 0 1 .354.146l4.95 4.95a.5.5 0 0 1-.707.707l-.708-.707-3.535 3.536.707.707a.5.5 0 0 1-.707.707l-1.414-1.414-2.829 2.828a.5.5 0 0 1-.707 0l-.707-.707L1.414 14.5l-.707-.707 3.182-3.182-.707-.707a.5.5 0 0 1 0-.707l2.829-2.829L4.596 5.04a.5.5 0 1 1 .707-.707l.707.707L9.546 1.5l-.707-.707a.5.5 0 0 1 .283-.849l.707-.222z" />
-              </svg>
-              {t('comments.pinned')}
-            </div>
-          )}
-
           {/* "replying to X" for deeply nested */}
           {item._replyToName && (
             <div className="cmt-reply-to">
@@ -955,9 +931,6 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
               )}
               {(isOwn || isAdmin) && (
                 <button className="cmt-action-btn cmt-action-danger" onClick={() => handleDelete(item.id)}>{t('comments.delete')}</button>
-              )}
-              {isAdmin && (
-                <button className="cmt-action-btn" onClick={() => handlePin(item.id)}>{item.is_pinned ? t('comments.unpin') : t('comments.pin')}</button>
               )}
             </div>
           )}

@@ -1,5 +1,5 @@
 """
-Comments API router – threaded, reactable, pinnable comments.
+Comments API router – threaded, reactable comments.
 
 Reusable across resource types via `resource_type` path parameter.
 Currently used for events; extensible to announcements, products, etc.
@@ -11,14 +11,14 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
-from sqlalchemy import select, update, func as sa_func, and_
+from sqlalchemy import select, func as sa_func, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from database import get_db
 from models.comment import Comment, CommentReaction, ReactionType
 from models.user import UserRole
-from security.guards import ActiveUser, AdminUser, OptionalActiveUser
+from security.guards import ActiveUser, OptionalActiveUser
 
 router = APIRouter(prefix="/comments", tags=["comments"])
 
@@ -55,7 +55,6 @@ class CommentResponse(BaseModel):
     resource_id: str
     content: str
     parent_id: Optional[str] = None
-    is_pinned: bool
     is_deleted: bool
     version: int
     created_at: datetime
@@ -126,7 +125,6 @@ def _build_comment_response(
         resource_id=comment.resource_id,
         content=display_content,
         parent_id=comment.parent_id,
-        is_pinned=comment.is_pinned,
         is_deleted=comment.is_deleted,
         version=comment.version,
         created_at=comment.created_at,
@@ -188,7 +186,7 @@ async def _refetch_comment(db: AsyncSession, comment_id: str) -> Comment | None:
 
 
 # ── Endpoints ─────────────────────────────────────────────────────
-# NOTE: Single-segment and specific two-segment routes (pin, reactions)
+# NOTE: Specific two-segment routes (reactions)
 # MUST be declared BEFORE the generic /{resource_type}/{resource_id}
 # routes, otherwise FastAPI will match them to the generic pattern.
 
@@ -251,47 +249,6 @@ async def delete_comment(
     comment.content = "[deleted]"
     comment.version += 1
     await db.commit()
-
-
-@router.post(
-    "/{comment_id}/pin",
-    response_model=CommentResponse,
-    summary="Pin/unpin a comment (admin only)",
-)
-async def toggle_pin(
-    comment_id: str = Path(..., min_length=1),
-    user: AdminUser = None,
-    db: AsyncSession = Depends(get_db),
-):
-    """Toggle pinned status on a comment. Admin only."""
-
-    comment = await _refetch_comment(db, comment_id)
-
-    if not comment:
-        raise HTTPException(status_code=404, detail="Comment not found")
-
-    new_pinned = not comment.is_pinned
-
-    if new_pinned:
-        # Unpin any other pinned comment for the same resource (max 1 pin)
-        stmt = (
-            update(Comment)
-            .where(
-                Comment.resource_type == comment.resource_type,
-                Comment.resource_id == comment.resource_id,
-                Comment.is_pinned.is_(True),
-                Comment.id != comment.id,
-            )
-            .values(is_pinned=False)
-        )
-        await db.execute(stmt)
-
-    comment.is_pinned = new_pinned
-    comment.version += 1
-    await db.commit()
-
-    comment = await _refetch_comment(db, comment_id)
-    return _build_comment_response(comment, user.id)
 
 
 @router.post(
@@ -449,7 +406,7 @@ async def list_comments(
         .execution_options(populate_existing=True)
         .order_by(
             *(
-                [Comment.is_pinned.desc(), Comment.created_at.asc()]
+                [Comment.created_at.asc()]
                 if order == 'asc'
                 else [Comment.created_at.desc()]
             )

@@ -88,14 +88,6 @@ class Comment(Base):
         comment="FK to parent comment for threading (NULL for top-level).",
     )
 
-    # Admin pinning
-    is_pinned = Column(
-        Boolean,
-        default=False,
-        nullable=False,
-        comment="Whether this comment is pinned by an admin.",
-    )
-
     # Soft delete
     is_deleted = Column(
         Boolean,

@@ -2,7 +2,7 @@
 Comprehensive tests for the comments API.
 
 Covers: CRUD operations, threading (replies), reactions (toggle on/off,
-multiple types, dedup), pinning (admin-only), soft-delete, optimistic
+multiple types, dedup), soft-delete, optimistic
 concurrency control, authorization guards, pagination, edge cases,
 and concurrent request safety.
 """
@@ -620,7 +620,7 @@ async def test_pinned_comments_appear_first(comments_api_client, db_session):
     assert data[0]["is_pinned"] is True
 
 
-# ── 5. Authorization Guards ───────────────────────────────────────
+# ── 4. Authorization Guards ───────────────────────────────────────
 
 
 @pytest.mark.asyncio
