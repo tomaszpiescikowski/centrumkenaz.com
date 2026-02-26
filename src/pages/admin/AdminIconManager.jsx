@@ -145,10 +145,20 @@ function AdminIconManager() {
       </Link>
 
       <div className="mt-4 mb-8">
-        <h1 className="text-2xl sm:text-3xl font-black text-navy dark:text-cream">Ikony aktywności</h1>
+        <h1 className="text-2xl sm:text-3xl font-black text-navy dark:text-cream">Typy aktywności</h1>
         <p className="mt-1 text-navy/60 dark:text-cream/60 text-sm">
-          Przeglądaj wbudowane ikony i dodawaj własne typy aktywności dla nowych wydarzeń.
+          Przeglądaj wbudowane typy i dodawaj własne dla nowych wydarzeń.
         </p>
+        <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-navy/15 dark:border-cream/15 bg-navy/5 dark:bg-cream/5 px-4 py-3 text-sm text-navy/70 dark:text-cream/70">
+          <svg className="mt-0.5 h-4 w-4 shrink-0 text-navy/50 dark:text-cream/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p className="leading-relaxed">
+            <span className="font-semibold text-navy dark:text-cream">Wbudowane typy</span> są zawsze dostępne i nie można ich usunąć.{' '}
+            <span className="font-semibold text-navy dark:text-cream">Własne typy</span> tworzysz poniżej — nadaj nazwę, wybierz ikonę i kolor.{' '}
+            <span className="font-medium text-amber-600 dark:text-amber-400">Uwaga:</span> własne typy są zapisane w pamięci tej przeglądarki (localStorage) — pamiętaj, aby dodawać je z urządzenia, na którym korzystasz z panelu admina. Nie będą widoczne na innych urządzeniach ani po wyczyszczeniu danych przeglądarki.
+          </p>
+        </div>
       </div>
 
       {/* ── Built-in icons ── */}

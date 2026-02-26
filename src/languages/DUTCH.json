@@ -1074,6 +1074,9 @@
     "spacer": "Wandeling",
     "joga": "Yoga",
     "wyjazd": "Trip",
+    "bieganie": "Hardlopen",
+    "medytacja": "Meditatie",
+    "kajak": "Kajakken",
     "inne": "Overig"
   },
   "notifications": {

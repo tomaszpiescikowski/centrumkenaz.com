@@ -1093,12 +1093,15 @@
   },
   "eventTypes": {
     "karate": "Karate",
-    "mors": "Mors",
+    "mors": "Morsowanie",
     "planszowki": "Planszówki",
     "ognisko": "Ognisko",
     "spacer": "Spacer",
     "joga": "Joga",
     "wyjazd": "Wyjazd",
+    "bieganie": "Bieganie",
+    "medytacja": "Medytacja",
+    "kajak": "Kajaki",
     "inne": "Inne"
   },
   "notifications": {

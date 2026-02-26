@@ -1101,6 +1101,9 @@
     "spacer": "Walk",
     "joga": "Yoga",
     "wyjazd": "Trip",
+    "bieganie": "Running",
+    "medytacja": "Meditation",
+    "kajak": "Kayaking",
     "inne": "Other"
   },
   "notifications": {
