@@ -462,6 +462,18 @@ function AdminManualPayments() {
       render: (row) => <span>{row.status_label}</span>,
     },
     {
+      key: 'manual_payment_confirmed_at',
+      label: t('admin.manualPayments.eventPaymentDateColumn'),
+      sortValue: (row) => row.manual_payment_confirmed_at || '',
+      render: (row) => (
+        <span className={row.manual_payment_confirmed_at ? 'font-semibold text-emerald-700 dark:text-emerald-400' : 'text-navy/40 dark:text-cream/40'}>
+          {row.manual_payment_confirmed_at
+            ? new Date(row.manual_payment_confirmed_at).toLocaleDateString('pl-PL')
+            : '—'}
+        </span>
+      ),
+    },
+    {
       key: 'actions',
       label: t('admin.manualPayments.actionsColumn'),
       align: 'right',
@@ -713,7 +725,19 @@ function AdminManualPayments() {
       key: 'created_at',
       label: t('admin.manualPayments.createdColumn'),
       sortValue: (row) => row.created_at || '',
-      render: (row) => <span>{row.created_at || '—'}</span>,
+      render: (row) => <span>{row.created_at ? new Date(row.created_at).toLocaleDateString('pl-PL') : '—'}</span>,
+    },
+    {
+      key: 'manual_payment_confirmed_at',
+      label: t('admin.manualPayments.paymentDateColumn'),
+      sortValue: (row) => row.manual_payment_confirmed_at || '',
+      render: (row) => (
+        <span className={row.manual_payment_confirmed_at ? 'font-semibold text-emerald-700 dark:text-emerald-400' : 'text-navy/40 dark:text-cream/40'}>
+          {row.manual_payment_confirmed_at
+            ? new Date(row.manual_payment_confirmed_at).toLocaleDateString('pl-PL')
+            : '—'}
+        </span>
+      ),
     },
     {
       key: 'actions',

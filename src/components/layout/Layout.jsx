@@ -6,6 +6,7 @@ import MobileBottomNav from '../navigation/MobileBottomNav'
 import PwaInstallBanner from '../common/PwaInstallBanner'
 import PendingApprovalOverlay from '../common/PendingApprovalOverlay'
 import ChatModal from '../ui/ChatModal'
+import DraggableFeedbackButton from '../common/DraggableFeedbackButton'
 
 const MOBILE_APP_SHELL_PATHS = new Set([
   '/',
@@ -43,6 +44,7 @@ function Layout({ children, darkMode, setDarkMode }) {
       <MobileBottomNav />
       <ChatModal />
       <PendingApprovalOverlay />
+      <DraggableFeedbackButton />
     </div>
   )
 }

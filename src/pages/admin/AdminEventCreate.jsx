@@ -8,7 +8,9 @@ import { createEvent } from '../../api/events'
 import DatePickerField from '../../components/forms/DatePickerField'
 import AuthGateCard from '../../components/ui/AuthGateCard'
 import Tooltip from '../../components/ui/Tooltip'
+import EventIconPicker from '../../components/common/EventIconPicker'
 import CustomSelect from '../../components/controls/CustomSelect'
+import { useCustomEventTypes } from '../../hooks/useCustomEventTypes'
 
 const PREFILL_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
 const DEFAULT_START_TIME = '10:00'
@@ -34,6 +36,7 @@ function AdminEventCreate() {
   const { cities, selectedCity } = useCity()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { customTypes } = useCustomEventTypes()
   const prefillDate = useMemo(
     () => normalizePrefillDate(searchParams.get('prefill_date')),
     [searchParams]
@@ -75,6 +78,7 @@ function AdminEventCreate() {
     () => ['karate', 'mors', 'planszowki', 'ognisko', 'spacer', 'joga', 'wyjazd'],
     []
   )
+  // eventTypeOptions kept for potential legacy use; visual selection handled by EventIconPicker
 
   const isAdmin = user?.role === 'admin'
 
@@ -317,15 +321,15 @@ function AdminEventCreate() {
               <p className={validationHintClass}>{t(fieldHints.title)}</p>
             )}
           </label>
+        </div>
 
-          <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
-            {t('admin.fields.eventType')}
-            <CustomSelect
-              options={eventTypeOptions.map((key) => ({ value: key, label: t(`eventTypes.${key}`) }))}
-              value={form.eventType}
-              onChange={(val) => updateField('eventType', val)}
-            />
-          </label>
+        <div className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
+          {t('admin.fields.eventType')}
+          <EventIconPicker
+            value={form.eventType}
+            onChange={(val) => updateField('eventType', val)}
+            customTypes={customTypes}
+          />
         </div>
 
         <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">

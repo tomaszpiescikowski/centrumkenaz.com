@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { useAuth } from '../../context/AuthContext'
 import { useChat } from '../../context/ChatContext'
-import FeedbackModal from '../ui/FeedbackModal'
 
 const ICON_CLASS = 'h-6 w-6'
 const ITEM_BASE = 'flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium'
@@ -77,7 +76,6 @@ function MobileBottomNav() {
   const { totalUnread } = useChat()
   const location = useLocation()
   const navigate = useNavigate()
-  const [feedbackOpen, setFeedbackOpen] = useState(false)
   const navRef = useRef(null)
 
   // Single owner of keyboard-state for the whole PWA:
@@ -196,17 +194,6 @@ function MobileBottomNav() {
 
   return (
     <>
-    {/* Temporary feedback floating button */}
-    <button
-      type="button"
-      onClick={() => setFeedbackOpen(true)}
-      className="fixed right-3 top-[calc(env(safe-area-inset-top)+0.75rem)] z-50 sm:hidden flex items-center justify-center rounded-full bg-amber-500 text-white shadow-lg p-2.5 transition hover:bg-amber-600 active:scale-95"
-      aria-label={t('feedback.button')}
-    >
-      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-      </svg>
-    </button>
     <nav
       ref={navRef}
       data-kb-hide
@@ -262,7 +249,6 @@ function MobileBottomNav() {
         </button>
       </div>
     </nav>
-    <FeedbackModal open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </>
   )
 }

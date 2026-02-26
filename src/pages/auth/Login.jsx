@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 
@@ -29,6 +29,7 @@ function Login() {
     email: '',
     fullName: '',
     confirmPassword: '',
+    termsAccepted: false,
   })
 
   useEffect(() => {
@@ -72,6 +73,13 @@ function Login() {
     }))
   }
 
+  const handleCheckbox = (field) => (event) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: event.target.checked,
+    }))
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
 
@@ -81,6 +89,11 @@ function Login() {
 
     if (mode === MODE_REGISTER && form.password !== form.confirmPassword) {
       setErrorMessage(t('auth.passwordMismatch'))
+      return
+    }
+
+    if (mode === MODE_REGISTER && !form.termsAccepted) {
+      setErrorMessage(t('auth.termsRequired') || 'Musisz zaakceptować regulamin.')
       return
     }
 
@@ -226,6 +239,18 @@ function Login() {
             />
           </label>
 
+          {mode === MODE_LOGIN && (
+            <div className="text-right -mt-2">
+              <button
+                type="button"
+                className="text-xs text-navy/50 dark:text-cream/50 hover:text-navy dark:hover:text-cream underline underline-offset-2 transition"
+                onClick={() => setErrorMessage(t('auth.forgotPasswordHint') || 'Napisz na centrumkenaz.it@gmail.com')}
+              >
+                {t('auth.forgotPassword')}
+              </button>
+            </div>
+          )}
+
           {mode === MODE_REGISTER && (
             <label className="block">
               <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-navy/65 dark:text-cream/65">{t('auth.confirmPasswordLabel')}</span>
@@ -240,6 +265,24 @@ function Login() {
                 maxLength={128}
                 required
               />
+            </label>
+          )}
+
+          {mode === MODE_REGISTER && (
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.termsAccepted}
+                onChange={handleCheckbox('termsAccepted')}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-navy dark:accent-cream"
+                required
+              />
+              <span className="text-sm text-navy/80 dark:text-cream/80">
+                {t('auth.termsCheckbox').split('regulamin')[0]}
+                <Link to="/terms" className="font-semibold underline underline-offset-2 hover:text-navy dark:hover:text-cream" target="_blank">
+                  regulamin Centrum Kenaz
+                </Link>
+              </span>
             </label>
           )}
 

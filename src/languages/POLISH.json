@@ -26,10 +26,13 @@
     "empty": "Produkty pojawią się wkrótce."
   },
   "footer": {
-    "tagline": "Społeczność offline. Ruch, relacje i rozwój w jednym rytmie.",
+    "tagline": "Kenaz to przestrzeń między pracą a domem, w oparciu o trzy filary: ruch, relacje i rozwój w jednym miejscu.",
     "contactTitle": "Kontakt",
     "address": "Wyżyny 16, 61-654 Poznań, Polska",
-    "email": "[email protected]",
+    "emailTechLabel": "Sprawy techniczne",
+    "emailTech": "[email protected]",
+    "emailGeneralLabel": "Sprawy ogólne",
+    "emailGeneral": "[email protected]",
     "orgTitle": "Fundacja",
     "legalName": "Fundacja Centrum Kenaz",
     "krs": "KRS 0001211548",
@@ -40,7 +43,7 @@
       "home": "Start",
       "calendar": "Kalendarz",
       "about": "O Kenaz",
-      "shop": "Sklep",
+      "membership": "Członkostwo Kenaz",
       "privacy": "Polityka prywatności",
       "terms": "Regulamin"
     },
@@ -52,7 +55,7 @@
   },
   "terms": {
     "title": "Regulamin",
-    "body": "Zasady korzystania z serwisu zostaną udostępnione w pełnej wersji regulaminu."
+    "body": "Regulamin – dostarczymy w następnym tygodniu"
   },
   "nav": {
     "home": "Start",
@@ -729,6 +732,10 @@
       "balance": {
         "title": "Bilans finansowy",
         "description": "Przychody, zwroty i bilans miesięczny/kwartalny."
+      },
+      "icons": {
+        "title": "Ikony aktywności",
+        "description": "Przeglądaj wbudowane ikony i dodawaj własne typy aktywności."
       }
     },
     "feedback": {
@@ -841,6 +848,8 @@
       "period": "okres",
       "periods": "okresy",
       "createdColumn": "Utworzono",
+      "paymentDateColumn": "Data wpłaty składki",
+      "eventPaymentDateColumn": "Data wpłaty",
       "resolvedAtColumn": "Rozwiązano",
       "markNotifiedButton": "Oznacz powiadomionego",
       "activeTasksHeading": "Aktywne zadania",
@@ -995,7 +1004,7 @@
     "title": "Zaloguj się",
     "subtitle": "Wybierz Google albo login i hasło.",
     "modeLogin": "Logowanie",
-    "modeRegister": "Nowe konto",
+    "modeRegister": "Zarejestruj się",
     "loginWithGoogle": "Kontynuuj przez Google",
     "loginLabel": "Login lub e-mail",
     "loginPlaceholder": "np. jan.kowalski lub [email protected]",
@@ -1010,8 +1019,12 @@
     "confirmPasswordLabel": "Powtórz hasło",
     "confirmPasswordPlaceholder": "Wpisz hasło ponownie",
     "submitLogin": "Zaloguj się",
-    "submitRegister": "Utwórz konto",
+    "submitRegister": "Zarejestruj się",
     "submitting": "Trwa logowanie...",
+    "forgotPassword": "Nie pamiętam hasła?",
+    "forgotPasswordHint": "Napisz do nas: centrumkenaz.it@gmail.com",
+    "termsCheckbox": "Akceptuję regulamin Centrum Kenaz",
+    "termsRequired": "Musisz zaakceptować regulamin, aby założyć konto.",
     "passwordMismatch": "Hasła nie są takie same.",
     "genericError": "Nie udało się zalogować.",
     "openLogin": "Zaloguj się"

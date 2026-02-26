@@ -17,6 +17,7 @@ import AdminManualPayments from './pages/admin/AdminManualPayments'
 import AdminFeedback from './pages/admin/AdminFeedback'
 import AdminUsersApproval from './pages/admin/AdminUsersApproval'
 import AdminBalance from './pages/admin/AdminBalance'
+import AdminIconManager from './pages/admin/AdminIconManager'
 import Account from './pages/account/Account'
 import Plans from './pages/account/Plans'
 import AboutSection from './pages/public/AboutSection'
@@ -133,6 +134,7 @@ function App() {
                     <Route path="/admin/manual-payments" element={<AdminManualPayments />} />
                     <Route path="/admin/feedback" element={<AdminFeedback />} />
                     <Route path="/admin/balance" element={<AdminBalance />} />
+                    <Route path="/admin/icons" element={<AdminIconManager />} />
                   </Route>
                   <Route element={<RequireAuth />}>
                     <Route path="/me" element={<Account darkMode={darkMode} setDarkMode={setDarkMode} />} />

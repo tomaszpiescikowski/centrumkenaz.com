@@ -34,9 +34,14 @@ function Footer() {
             <p className="mt-3 text-sm text-navy dark:text-cream">
               {t('footer.address')}
             </p>
-            <p className="mt-2 text-sm text-navy dark:text-cream">
-              {t('footer.email')}
-            </p>
+            <div className="mt-2">
+              <p className="text-xs text-navy/50 dark:text-cream/50">{t('footer.emailTechLabel')}</p>
+              <a href={`mailto:${t('footer.emailTech')}`} className="text-sm text-navy dark:text-cream hover:underline">{t('footer.emailTech')}</a>
+            </div>
+            <div className="mt-2">
+              <p className="text-xs text-navy/50 dark:text-cream/50">{t('footer.emailGeneralLabel')}</p>
+              <a href={`mailto:${t('footer.emailGeneral')}`} className="text-sm text-navy dark:text-cream hover:underline">{t('footer.emailGeneral')}</a>
+            </div>
           </div>
 
           <div>
@@ -54,10 +59,10 @@ function Footer() {
               {t('footer.linksTitle')}
             </h3>
             <div className="mt-3 flex flex-col gap-2 text-sm">
-              <Link className="text-navy dark:text-cream hover:underline" to="/">{t('footer.links.home')}</Link>
+              <Link className="text-navy dark:text-cream hover:underline" to="/" reloadDocument>{t('footer.links.home')}</Link>
               <Link className="text-navy dark:text-cream hover:underline" to="/calendar">{t('footer.links.calendar')}</Link>
               <Link className="text-navy dark:text-cream hover:underline" to="/about">{t('footer.links.about')}</Link>
-              <Link className="text-navy dark:text-cream hover:underline" to="/shop">{t('footer.links.shop')}</Link>
+              <Link className="text-navy dark:text-cream hover:underline" to="/plans">{t('footer.links.membership')}</Link>
               <Link className="text-navy dark:text-cream hover:underline" to="/privacy">{t('footer.links.privacy')}</Link>
               <Link className="text-navy dark:text-cream hover:underline" to="/terms">{t('footer.links.terms')}</Link>
             </div>

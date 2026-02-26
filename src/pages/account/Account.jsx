@@ -347,7 +347,7 @@ function Account({ darkMode, setDarkMode }) {
               <div className="mt-4">
                 <Link
                   to="/plans"
-                  className="btn-primary h-10 w-full px-5 text-sm"
+                  className="inline-flex h-10 w-full items-center justify-center rounded-full bg-accent-red px-5 text-sm font-semibold text-white hover:bg-[#c62828] transition-colors"
                 >
                   {t('account.manageSubscription')}
                 </Link>
