@@ -94,8 +94,9 @@ function RefundDecisionSelect({ value, onChange, disabled, t }) {
 
 function LegendPanel({ t }) {
   const items = Object.keys(RECOMMENDATION_CODES)
+  const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 640
   return (
-    <details className="page-subcard text-xs" data-no-hover="true">
+    <details open={isDesktop} className="page-subcard text-xs" data-no-hover="true">
       <summary className="cursor-pointer font-semibold text-navy dark:text-cream select-none">
         {t('admin.manualPayments.legendTitle')}
       </summary>
