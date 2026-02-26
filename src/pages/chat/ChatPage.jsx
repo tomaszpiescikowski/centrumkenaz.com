@@ -17,6 +17,7 @@ function ChatPage() {
     view, eventId, eventTitle,
     navigateChat,
     markAsRead, hasUnread, setLatestMessageTime, latestMessages,
+    setRegisteredEvents,
   } = useChat()
   const navigate = useNavigate()
 
@@ -73,12 +74,14 @@ function ChatPage() {
     try {
       const data = await fetchRegisteredEvents(authFetch)
       setEvents(data)
+      setRegisteredEvents(data)
     } catch {
       setEvents([])
+      setRegisteredEvents([])
     } finally {
       setEventsLoading(false)
     }
-  }, [isAuthenticated, authFetch])
+  }, [isAuthenticated, authFetch, setRegisteredEvents])
 
   useEffect(() => {
     if (view === 'events') loadEvents()
@@ -106,13 +109,34 @@ function ChatPage() {
     navigate(`/event/${eventId}`)
   }
 
+  const locale = currentLanguage === 'pl' ? 'pl-PL' : 'en-GB'
+
   const formatDate = (dateStr) => {
     if (!dateStr) return ''
     const d = new Date(dateStr)
-    return d.toLocaleDateString(currentLanguage === 'pl' ? 'pl-PL' : 'en-GB', {
-      day: 'numeric', month: 'short',
-    })
+    return d.toLocaleDateString(locale, { day: 'numeric', month: 'short' })
   }
+
+  // WhatsApp-style time: today → HH:MM, this week → weekday, older → d MMM
+  const formatMsgTime = (ts) => {
+    if (!ts) return ''
+    const d = new Date(ts)
+    const now = new Date()
+    const diffMs = now - d
+    const diffDays = Math.floor(diffMs / 86400000)
+    if (diffDays < 1) return d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
+    if (diffDays < 7) return d.toLocaleDateString(locale, { weekday: 'short' })
+    return d.toLocaleDateString(locale, { day: 'numeric', month: 'short' })
+  }
+
+  const sortedEvents = events ? (() => {
+    const now = new Date()
+    const upcoming = events.filter(ev => new Date(ev.startDateTime) >= now)
+      .sort((a, b) => new Date(a.startDateTime) - new Date(b.startDateTime))
+    const past = events.filter(ev => new Date(ev.startDateTime) < now)
+      .sort((a, b) => new Date(b.startDateTime) - new Date(a.startDateTime))
+    return [...upcoming, ...past]
+  })() : []
 
   const activeTab = view === 'general' ? 'general' : 'events'
 
@@ -259,30 +283,47 @@ function ChatPage() {
               <div className="cp-empty"><p>{t('comments.noRegisteredEvents')}</p></div>
             ) : (
               <ul className="cp-event-list">
-                {events.map((ev) => {
+                {sortedEvents.map((ev) => {
                   const chatId = `event:${ev.id}`
                   const unread = hasUnread(chatId)
                   const previewMsg = latestMessages[chatId]
+                  const isPast = new Date(ev.startDateTime) < new Date()
+                  // Shorten author to first name for compact preview
+                  const authorShort = previewMsg?.author
+                    ? previewMsg.author.split(' ')[0].replace(/^~/, '')
+                    : null
+                  const previewText = previewMsg?.text
+                    ? (previewMsg.text.length > 40 ? previewMsg.text.slice(0, 40) + '\u2026' : previewMsg.text)
+                    : null
+                  const timeLabel = previewMsg?.ts
+                    ? formatMsgTime(previewMsg.ts)
+                    : formatDate(ev.startDateTime)
                   return (
                     <li key={ev.id}>
-                      <button className="cp-event-item" onClick={() => handleEventClick(ev)}>
+                      <button
+                        className={`cp-event-item${isPast ? ' cp-event-item--past' : ''}`}
+                        onClick={() => handleEventClick(ev)}
+                      >
                         <span className="cp-event-icon">
                           <EventIcon type={ev.type} size="sm" />
                         </span>
                         <span className="cp-event-info">
                           <span className={`cp-event-title-text${unread ? ' cp-event-title-unread' : ''}`}>{ev.title}</span>
-                          {previewMsg?.text ? (
+                          {previewText ? (
                             <span className={`cp-event-preview${unread ? ' cp-event-preview-unread' : ''}`}>
-                              {previewMsg.author ? `${previewMsg.author}: ` : ''}{previewMsg.text.length > 45 ? previewMsg.text.slice(0, 45) + '\u2026' : previewMsg.text}
+                              {authorShort ? <span className="cp-event-preview-author">{authorShort}:&nbsp;</span> : null}
+                              {previewText}
                             </span>
                           ) : (
                             <span className="cp-event-meta">{ev.city} &middot; {formatDate(ev.startDateTime)}</span>
                           )}
                         </span>
-                        {unread && <span className="chat-unread-dot" aria-label="unread" />}
-                        <svg className="cp-event-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="9 18 15 12 9 6" />
-                        </svg>
+                        <span className="cp-event-right">
+                          <span className="cp-event-time">{timeLabel}</span>
+                          <span className="cp-event-right-bottom">
+                            {unread && <span className="chat-unread-dot" aria-label="unread" />}
+                          </span>
+                        </span>
                       </button>
                     </li>
                   )

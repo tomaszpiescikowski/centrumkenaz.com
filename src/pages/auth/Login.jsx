@@ -29,7 +29,6 @@ function Login() {
   const [form, setForm] = useState({
     login: '',
     password: '',
-    username: '',
     email: '',
     fullName: '',
     confirmPassword: '',
@@ -122,7 +121,6 @@ function Login() {
           password: form.password,
         })
         : await registerWithPassword({
-          username: form.username.trim(),
           email: form.email.trim(),
           full_name: form.fullName.trim(),
           password: form.password,
@@ -199,20 +197,6 @@ function Login() {
             </label>
           ) : (
             <>
-              <label className="block">
-                <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-navy/65 dark:text-cream/65">{t('auth.usernameLabel')}</span>
-                <input
-                  value={form.username}
-                  onChange={handleChange('username')}
-                  className={authInputClass}
-                  placeholder={t('auth.usernamePlaceholder')}
-                  autoComplete="username"
-                  pattern="[A-Za-z0-9._-]+"
-                  minLength={3}
-                  maxLength={32}
-                  required
-                />
-              </label>
               <label className="block">
                 <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-navy/65 dark:text-cream/65">{t('auth.emailLabel')}</span>
                 <input

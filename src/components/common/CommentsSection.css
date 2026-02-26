@@ -1821,6 +1821,43 @@ img.cmt-av-img {
 .cp-event-arrow {
   flex-shrink: 0;
   color: var(--muted);
+  display: none; /* replaced by cp-event-right column */
+}
+
+/* Past events — still clickable but visually dimmed */
+.cp-event-item--past {
+  opacity: 0.48;
+}
+.cp-event-item--past .cp-event-icon * {
+  filter: grayscale(1);
+}
+
+/* Right-side column: timestamp on top, unread dot on bottom */
+.cp-event-right {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  min-width: 2.5rem;
+}
+
+.cp-event-time {
+  font-size: 0.725rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.cp-event-right-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 0.625rem;
+}
+
+/* Author name in preview (bold, slightly different tone) */
+.cp-event-preview-author {
+  font-weight: 600;
 }
 
 .cp-empty {

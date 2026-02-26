@@ -1,5 +1,6 @@
 import httpx
 import re
+import secrets
 from datetime import datetime, timedelta
 from urllib.parse import urlencode
 from jose import jwt, JWTError
@@ -80,6 +81,34 @@ class AuthService:
         The method collapses repeated whitespace and trims the result.
         """
         return " ".join(str(full_name or "").split()).strip()
+
+    async def generate_username_from_email(self, email: str) -> str:
+        """
+        Derive a unique username from an email address.
+
+        Takes the local part (before @), strips characters not allowed in
+        usernames, truncates to 28 chars, and appends a numeric suffix (e.g.
+        _2, _3) if the base candidate is already taken.
+        """
+        local = (email.split("@")[0] if "@" in email else email).lower()
+        # Keep only allowed characters; replace anything else with a dot
+        cleaned = re.sub(r"[^A-Za-z0-9._-]", ".", local)
+        # Collapse consecutive dots/dashes and strip leading/trailing punctuation
+        cleaned = re.sub(r"[._-]{2,}", ".", cleaned).strip("._-")
+        candidate = cleaned[:28] or "user"
+        if len(candidate) < 3:
+            candidate = candidate + "user"
+
+        # Find a unique username by walking numeric suffixes
+        result = await self.get_user_by_username(candidate)
+        if result is None:
+            return candidate
+        for suffix in range(2, 9999):
+            attempt = f"{candidate[:27]}_{suffix}"
+            if await self.get_user_by_username(attempt) is None:
+                return attempt
+        # Extreme fallback: add a random hex fragment
+        return f"{candidate[:20]}_{secrets.token_hex(4)}"
 
     @staticmethod
     def _resolve_role_and_status(email: str) -> tuple[UserRole, AccountStatus]:

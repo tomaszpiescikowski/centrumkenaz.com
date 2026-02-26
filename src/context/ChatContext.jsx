@@ -32,6 +32,9 @@ function ChatProvider({ children }) {
   const [latestMessages, setLatestMessages] = useState({})
   // pendingRefresh tracks chatIds that have new messages detected by polling
   const [pendingRefresh, setPendingRefresh] = useState({})
+  // registeredEvents — kept in sync by ChatPage so ChatPoller can poll all chats
+  const [registeredEvents, setRegisteredEventsState] = useState([])
+  const setRegisteredEvents = useCallback((evts) => setRegisteredEventsState(evts || []), [])
 
   const openChat = useCallback((opts = {}) => {
     if (opts.eventId) {
@@ -112,8 +115,9 @@ function ChatProvider({ children }) {
       hasUnread, totalUnread,
       lastReadTimestamps, latestMessages,
       pendingRefresh, addPendingRefresh, clearPendingRefresh,
+      registeredEvents, setRegisteredEvents,
     }),
-    [chatState, openChat, closeChat, navigateChat, markAsRead, setLatestMessageTime, hasUnread, totalUnread, lastReadTimestamps, latestMessages, pendingRefresh, addPendingRefresh, clearPendingRefresh],
+    [chatState, openChat, closeChat, navigateChat, markAsRead, setLatestMessageTime, hasUnread, totalUnread, lastReadTimestamps, latestMessages, pendingRefresh, addPendingRefresh, clearPendingRefresh, registeredEvents, setRegisteredEvents],
   )
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>

@@ -15,8 +15,16 @@ const normalizeReturnTo = (returnTo, fallbackReturnTo) => (
 const parseErrorDetail = async (response, fallbackMessage) => {
   try {
     const payload = await response.json()
+    // Our API returns {detail: "string"} for application errors
     if (typeof payload?.detail === 'string' && payload.detail.trim()) {
       return payload.detail
+    }
+    // FastAPI / Pydantic returns {detail: [{msg, loc, ...}, ...]} for validation errors
+    if (Array.isArray(payload?.detail) && payload.detail.length > 0) {
+      const first = payload.detail[0]
+      const field = first?.loc?.slice(1).join('.') ?? ''
+      const msg = first?.msg ?? ''
+      return field ? `${field}: ${msg}` : msg
     }
   } catch (error) {
     console.error('Failed to parse auth error payload:', error)

@@ -1,59 +1,67 @@
-/**
- * ChatPoller — global background component that polls the server every 3 s
- * to check whether any tracked chat has received new messages.
- *
- * Strategy
- * ─────────
- * 1. Build a sinceMap from latestMessages  { chatId → latestKnownTs }
- * 2. POST /comments/check  →  server returns only chats with newer activity
- * 3. For each chat returned:
- *    a. Update latestMessages (so the unread badge reflects the new ts)
- *    b. Add chatId to pendingRefresh (CommentsSection picks this up to reload
- *       and play the receive sound / highlight new messages)
- *
- * This component renders nothing — it is purely a side-effect holder.
- */
-
 import { useEffect, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useChat } from '../context/ChatContext'
 import { checkNewMessages } from '../api/comments'
 
 const POLL_INTERVAL_MS = 3000
+// Fallback "since" timestamp for chats that have never been opened/read
+const EPOCH_FALLBACK = '2020-01-01T00:00:00.000Z'
 
 export default function ChatPoller() {
   const { user, authFetch } = useAuth()
-  const { latestMessages, setLatestMessageTime, addPendingRefresh } = useChat()
+  const {
+    latestMessages, setLatestMessageTime, addPendingRefresh,
+    registeredEvents, lastReadTimestamps,
+  } = useChat()
 
-  // Keep a stable ref to latestMessages so the interval always reads fresh data
+  // Keep stable refs so the interval always reads the freshest data
   const latestMessagesRef = useRef(latestMessages)
   useEffect(() => { latestMessagesRef.current = latestMessages }, [latestMessages])
 
   const authFetchRef = useRef(authFetch)
   useEffect(() => { authFetchRef.current = authFetch }, [authFetch])
 
+  const registeredEventsRef = useRef(registeredEvents)
+  useEffect(() => { registeredEventsRef.current = registeredEvents }, [registeredEvents])
+
+  const lastReadRef = useRef(lastReadTimestamps)
+  useEffect(() => { lastReadRef.current = lastReadTimestamps }, [lastReadTimestamps])
+
   useEffect(() => {
-    // Only poll when logged in
     if (!user) return
 
     const poll = async () => {
       const snapshot = latestMessagesRef.current
-      if (!snapshot || Object.keys(snapshot).length === 0) return
+      const lastRead = lastReadRef.current
+      const events = registeredEventsRef.current
 
-      // Build sinceMap  { chatId → ISO string }
+      // Build sinceMap from latestMessages (chats that have been opened)
       const sinceMap = {}
       for (const [chatId, msg] of Object.entries(snapshot)) {
         const ts = typeof msg === 'string' ? msg : msg?.ts
         if (ts) sinceMap[chatId] = ts
       }
+
+      // Also add general chat if not already tracked
+      if (!sinceMap['general:global']) {
+        sinceMap['general:global'] = lastRead['general:global'] || EPOCH_FALLBACK
+      }
+
+      // Add all registered event chats — use lastRead ts or fallback
+      // so we detect new messages even in chats never opened this session
+      for (const ev of events) {
+        const chatId = `event:${ev.id}`
+        if (!sinceMap[chatId]) {
+          sinceMap[chatId] = lastRead[chatId] || EPOCH_FALLBACK
+        }
+      }
+
       if (Object.keys(sinceMap).length === 0) return
 
       try {
         const result = await checkNewMessages(authFetchRef.current, sinceMap)
         for (const [chatId, latestTs] of Object.entries(result)) {
-          // Update the unread tracker so the badge stays in sync
           setLatestMessageTime(chatId, { ts: latestTs, text: null, author: null })
-          // Signal CommentsSection that this chat needs a live refresh
           addPendingRefresh(chatId)
         }
       } catch {

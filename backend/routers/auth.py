@@ -77,18 +77,12 @@ class TokenResponse(BaseModel):
 
 class PasswordRegisterRequest(BaseModel):
     """
-    Register a new user using username/email and password.
+    Register a new user using email and password.
 
-    This payload is validated for username format and minimum password length
-    before a pending user account is created.
+    Username is optional — when omitted it is auto-derived from the email
+    address so users never need to think about it.
     """
 
-    username: str = Field(
-        min_length=3,
-        max_length=32,
-        pattern=r"^[A-Za-z0-9._-]+$",
-        description="Unique username used for local password login.",
-    )
     email: EmailStr = Field(description="User email used for login and contact.")
     full_name: str = Field(
         min_length=1,
@@ -99,6 +93,13 @@ class PasswordRegisterRequest(BaseModel):
         min_length=8,
         max_length=128,
         description="Plain password to be hashed on the server.",
+    )
+    username: str | None = Field(
+        default=None,
+        min_length=3,
+        max_length=32,
+        pattern=r"^[A-Za-z0-9._-]+$",
+        description="Optional username. Auto-generated from email when not provided.",
     )
 
 
@@ -300,8 +301,11 @@ async def password_register(
     """
     auth_service = AuthService(db)
     try:
+        resolved_username = payload.username or await auth_service.generate_username_from_email(
+            str(payload.email)
+        )
         user = await auth_service.register_with_password(
-            username=payload.username,
+            username=resolved_username,
             email=str(payload.email),
             full_name=payload.full_name,
             password=payload.password,
