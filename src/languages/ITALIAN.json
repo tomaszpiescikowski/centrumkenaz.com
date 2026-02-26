@@ -22,13 +22,6 @@
     "edit": "Modifica",
     "save": "Salva"
   },
-  "shop": {
-    "label": "Kenaz shop",
-    "title": "Kenaz Shop",
-    "subtitle": "Capi per momenti condivisi — semplici, comodi, nostri.",
-    "cta": "Aggiungi al carrello",
-    "empty": "I prodotti arriveranno presto."
-  },
   "footer": {
     "tagline": "Community offline. Movimento, connessioni e crescita in un solo ritmo.",
     "contactTitle": "Contatti",
@@ -66,7 +59,6 @@
   "nav": {
     "home": "Home",
     "calendar": "Calendario",
-    "shop": "Shop",
     "myEvents": "I miei eventi",
     "events": "Eventi",
     "panel": "Pannello",
@@ -138,9 +130,6 @@
     "followUs": "Resta con noi:",
     "socialTitle": "Vivi l’atmosfera Kenaz",
     "socialSubtitle": "Guarda le persone e l’energia prima di entrare.",
-    "shopTitle": "Kenaz Shop",
-    "shopBody": "Capi semplici e comodi per i momenti condivisi. Se vuoi portare Kenaz nella quotidianità, visita lo shop.",
-    "shopButton": "Vai allo shop",
     "legalTitle": "Dati della fondazione",
     "legalNameLabel": "Nome",
     "legalName": "Fundacja Centrum Kenaz",

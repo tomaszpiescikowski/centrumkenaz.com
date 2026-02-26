@@ -22,13 +22,6 @@
     "edit": "编辑",
     "save": "保存"
   },
-  "shop": {
-    "label": "Kenaz 商店",
-    "title": "Kenaz 商店",
-    "subtitle": "为共享时刻而生的单品 — 简洁、舒适、属于我们。",
-    "cta": "加入购物车",
-    "empty": "产品即将上线。"
-  },
   "footer": {
     "tagline": "线下社群。运动、连接与成长同频。",
     "contactTitle": "联系方式",
@@ -66,7 +59,6 @@
   "nav": {
     "home": "首页",
     "calendar": "日历",
-    "shop": "商店",
     "myEvents": "我的活动",
     "events": "活动",
     "panel": "面板",
@@ -138,9 +130,6 @@
     "followUs": "关注我们：",
     "socialTitle": "感受 Kenaz 氛围",
     "socialSubtitle": "先看看我们的日常与人群，再决定加入。",
-    "shopTitle": "Kenaz 商店",
-    "shopBody": "简单舒适的日常单品，为一起的时刻而生。想把 Kenaz 带回生活，就去商店看看。",
-    "shopButton": "前往商店",
     "legalTitle": "基金会信息",
     "legalNameLabel": "名称",
     "legalName": "Fundacja Centrum Kenaz",

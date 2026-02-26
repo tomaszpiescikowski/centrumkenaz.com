@@ -22,13 +22,6 @@
     "edit": "Edytuj",
     "save": "Zapisz"
   },
-  "shop": {
-    "label": "Kenaz sklep",
-    "title": "Kenaz Sklep",
-    "subtitle": "Rzeczy stworzone do wspólnych chwil — proste, wygodne i nasze.",
-    "cta": "Dodaj do koszyka",
-    "empty": "Produkty pojawią się wkrótce."
-  },
   "footer": {
     "tagline": "Kenaz to przestrzeń między pracą a domem, w oparciu o trzy filary: ruch, relacje i rozwój w jednym miejscu.",
     "contactTitle": "Kontakt",
@@ -64,7 +57,6 @@
   "nav": {
     "home": "Start",
     "calendar": "Kalendarz",
-    "shop": "Sklep",
     "myEvents": "Moje wydarzenia",
     "events": "Wydarzenia",
     "panel": "Panel",
@@ -136,9 +128,6 @@
     "followUs": "Bądź z nami:",
     "socialTitle": "Poczuj klimat Kenaz",
     "socialSubtitle": "Zajrzyj do nas, zobacz ludzi i atmosferę, zanim dołączysz.",
-    "shopTitle": "Kenaz Sklep",
-    "shopBody": "Nasze rzeczy są proste, wygodne i tworzone z myślą o wspólnych momentach. Jeśli chcesz mieć kawałek Kenaz na co dzień — zerknij do sklepu.",
-    "shopButton": "Przejdź do sklepu",
     "legalTitle": "Dane fundacji",
     "legalNameLabel": "Nazwa",
     "legalName": "Fundacja Centrum Kenaz",

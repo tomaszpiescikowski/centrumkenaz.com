@@ -22,13 +22,6 @@
     "edit": "Edytuj",
     "save": "Zapisz"
   },
-  "shop": {
-    "label": "Kenaz sklep",
-    "title": "Kenaz Sklep",
-    "subtitle": "Rzecy na wspólne chwile — proste, wygodne i nasze.",
-    "cta": "Dodej do koszyka",
-    "empty": "Produkty bydōm wkrōtce."
-  },
   "footer": {
     "tagline": "Offline społeczność. Ruch, relacyje i rozwōj w jednym rytmie.",
     "contactTitle": "Kontakt",
@@ -66,7 +59,6 @@
   "nav": {
     "home": "Start",
     "calendar": "Kalyndarz",
-    "shop": "Sklep",
     "myEvents": "Moje wydarzyńa",
     "events": "Wydarzyńa",
     "panel": "Panel",
@@ -138,9 +130,6 @@
     "followUs": "Bōndź z nōmi:",
     "socialTitle": "Poczuj klimat Kenaz",
     "socialSubtitle": "Zajerzij do nos i ôbocz ludzi oraz atmosferã.",
-    "shopTitle": "Kenaz Sklep",
-    "shopBody": "Proste, wygodne rzeczy na wspólne chwile. Jak chcesz mieć Kenaz na co dziyń — wejdzij do sklepu.",
-    "shopButton": "Idź do sklepu",
     "legalTitle": "Dane fundacyjŏ",
     "legalNameLabel": "Nōzwa",
     "legalName": "Fundacja Centrum Kenaz",

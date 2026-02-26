@@ -25,7 +25,6 @@ import SupportUs from './pages/public/SupportUs'
 import Account from './pages/account/Account'
 import Plans from './pages/account/Plans'
 import AboutSection from './pages/public/AboutSection'
-import Shop from './pages/public/Shop'
 import Privacy from './pages/public/Privacy'
 import Terms from './pages/public/Terms'
 import PendingApproval from './pages/account/PendingApproval'
@@ -129,7 +128,6 @@ function App() {
                   <Route path="/panel" element={<Panel />} />
                   <Route path="/about" element={<AboutSection />} />
                   <Route path="/support" element={<SupportUs />} />
-                  <Route path="/shop" element={<Shop />} />
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/event/:id" element={<EventDetail />} />

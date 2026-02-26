@@ -22,13 +22,6 @@
     "edit": "Edit",
     "save": "Save"
   },
-  "shop": {
-    "label": "Kenaz shop",
-    "title": "Kenaz Shop",
-    "subtitle": "Pieces made for shared moments — simple, comfortable, ours.",
-    "cta": "Add to cart",
-    "empty": "Products are coming soon."
-  },
   "footer": {
     "tagline": "Offline community. Movement, connection, growth in one rhythm.",
     "contactTitle": "Contact",
@@ -66,7 +59,6 @@
   "nav": {
     "home": "Home",
     "calendar": "Calendar",
-    "shop": "Shop",
     "myEvents": "My events",
     "events": "Events",
     "panel": "Panel",
@@ -138,9 +130,6 @@
     "followUs": "Stay close:",
     "socialTitle": "Feel the Kenaz vibe",
     "socialSubtitle": "See the people and the atmosphere before you join.",
-    "shopTitle": "Kenaz Shop",
-    "shopBody": "Simple, comfortable pieces made for shared moments. If you want a bit of Kenaz in everyday life — check the shop.",
-    "shopButton": "Go to the shop",
     "legalTitle": "Foundation details",
     "legalNameLabel": "Name",
     "legalName": "Fundacja Centrum Kenaz",

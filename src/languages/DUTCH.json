@@ -22,13 +22,6 @@
     "edit": "Bewerk",
     "save": "Opslaan"
   },
-  "shop": {
-    "label": "Kenaz shop",
-    "title": "Kenaz Shop",
-    "subtitle": "Items voor gedeelde momenten — eenvoudig, comfortabel, van ons.",
-    "cta": "In winkelwagen",
-    "empty": "Producten volgen binnenkort."
-  },
   "footer": {
     "tagline": "Offline community. Beweging, verbinding en groei in één ritme.",
     "contactTitle": "Contact",
@@ -66,7 +59,6 @@
   "nav": {
     "home": "Home",
     "calendar": "Kalender",
-    "shop": "Shop",
     "myEvents": "Mijn events",
     "events": "Events",
     "panel": "Paneel",
@@ -138,9 +130,6 @@
     "followUs": "Blijf bij ons:",
     "socialTitle": "Voel de Kenaz-sfeer",
     "socialSubtitle": "Bekijk de mensen en de energie voordat je meedoet.",
-    "shopTitle": "Kenaz Shop",
-    "shopBody": "Eenvoudige, comfortabele items voor gedeelde momenten. Wil je Kenaz in je dagelijks leven? Kijk in de shop.",
-    "shopButton": "Ga naar de shop",
     "legalTitle": "Stichtingsgegevens",
     "legalNameLabel": "Naam",
     "legalName": "Fundacja Centrum Kenaz",

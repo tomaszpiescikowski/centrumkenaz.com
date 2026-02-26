@@ -31,7 +31,6 @@ function AboutSection() {
   ]
   const stories = Array.isArray(t('about.stories')) ? t('about.stories') : []
   const statsItems = Array.isArray(t('about.stats.items')) ? t('about.stats.items') : []
-  const shopUrl = '/shop'
 
   return (
     <div className="page-shell">
@@ -103,19 +102,6 @@ function AboutSection() {
             if (index === 3) {
               blocks.push(
                 <WideStatsCard key="stats-2" items={statsItems.slice(2, 4)} />
-              )
-            }
-
-            if (index === 4) {
-              blocks.push(
-                <WideShopCard
-                  key="shop"
-                  title={t('about.shopTitle')}
-                  body={t('about.shopBody')}
-                  buttonLabel={t('about.shopButton')}
-                  image="/static/about6.jpg"
-                  onClick={() => window.location.assign(shopUrl)}
-                />
               )
             }
 
@@ -277,34 +263,6 @@ function WideSocialCard({ title, subtitle, facebookLabel, instagramLabel }) {
           label={instagramLabel}
           icon="instagram"
         />
-      </div>
-    </div>
-  )
-}
-
-function WideShopCard({ title, body, buttonLabel, image, onClick }) {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center p-6 rounded-2xl border border-navy/10 bg-transparent dark:border-cream/15 dark:bg-transparent">
-      <img
-        src={image}
-        alt="Dziewczyna w czapce Kenaz w miejskim otoczeniu"
-        className="w-full h-72 rounded-xl object-cover object-center"
-        loading="lazy"
-      />
-      <div>
-        <h3 className="text-2xl md:text-3xl font-black text-navy dark:text-cream">
-          {title}
-        </h3>
-        <p className="mt-4 text-base md:text-lg leading-relaxed text-navy/80 dark:text-cream/80">
-          {body}
-        </p>
-        <button
-          onClick={onClick}
-          className="mt-6 px-6 h-12 inline-flex items-center rounded-full font-semibold text-base
-            btn-primary"
-        >
-          {buttonLabel}
-        </button>
       </div>
     </div>
   )
