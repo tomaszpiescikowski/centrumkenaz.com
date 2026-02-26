@@ -140,6 +140,14 @@ function AboutSection() {
                   sponsorHref="https://go.decathlon.pl/profil/d2cbf959-efd9-4a9d-be09-664cbe53fa54"
                 />
               )
+              blocks.push(
+                <WideSupportCard
+                  key="support"
+                  title={t('about.supportTitle')}
+                  body={t('about.supportBody')}
+                  buttonLabel={t('about.supportButton')}
+                />
+              )
             }
 
             return blocks
@@ -340,6 +348,30 @@ function WideMediaCard({ title, body, articleLabel, articleHref, videoTitle, vid
           />
         </div>
       </div>
+    </div>
+  )
+}
+
+function WideSupportCard({ title, body, buttonLabel }) {
+  return (
+    <div className="p-6 rounded-2xl border border-navy/10 bg-transparent dark:border-cream/15 dark:bg-transparent flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/30">
+            <svg className="h-5 w-5 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
+          <div className="text-2xl font-bold text-navy dark:text-cream">{title}</div>
+        </div>
+        <div className="text-base text-navy/70 dark:text-cream/70">{body}</div>
+      </div>
+      <a
+        href="/support"
+        className="shrink-0 px-5 h-11 inline-flex items-center rounded-full font-semibold btn-primary"
+      >
+        {buttonLabel}
+      </a>
     </div>
   )
 }
