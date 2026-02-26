@@ -337,8 +337,9 @@ async def confirm_donation(
     """
     Confirm a pending donation.
 
-    If the donor is an authenticated active subscriber, loyalty points are
-    calculated as floor(amount * points_per_zloty) and added to their balance.
+    If the donor is an authenticated user, loyalty points are calculated as
+    floor(amount * points_per_zloty) and added to their points balance.
+    A Subscription row is created automatically if one does not yet exist.
     """
     result = await db.execute(
         select(Donation)
@@ -355,7 +356,10 @@ async def confirm_donation(
     donation.confirmed_at = datetime.utcnow()
     donation.admin_note = body.note
 
-    # Award loyalty points to active subscribers
+    # Award loyalty points to any authenticated user who donates.
+    # Points are stored on the Subscription row (which also tracks plan end dates).
+    # If no Subscription row exists yet, one is created so the points balance
+    # can be established even before the user purchases a plan.
     points_awarded = 0
     if donation.user_id:
         settings = await _get_or_create_settings(db)
@@ -363,11 +367,13 @@ async def confirm_donation(
             select(Subscription).where(Subscription.user_id == donation.user_id)
         )
         sub = sub_result.scalar_one_or_none()
-        if sub and (sub.end_date is None or sub.end_date > datetime.utcnow()):
-            points = floor(float(donation.amount) * float(settings.points_per_zloty))
-            if points > 0:
-                sub.points = (sub.points or 0) + points
-                points_awarded = points
+        if sub is None:
+            sub = Subscription(user_id=donation.user_id, points=0)
+            db.add(sub)
+        points = floor(float(donation.amount) * float(settings.points_per_zloty))
+        if points > 0:
+            sub.points = (sub.points or 0) + points
+            points_awarded = points
 
     donation.points_awarded = points_awarded if points_awarded > 0 else None
     await db.commit()
