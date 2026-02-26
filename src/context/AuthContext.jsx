@@ -149,6 +149,13 @@ export function AuthProvider({ children }) {
     navigate('/login')
   }, [navigate, setPostLoginRedirect])
 
+  const consumePostLoginRedirect = useCallback(() => {
+    const stored = localStorage.getItem(POST_LOGIN_REDIRECT_KEY)
+    if (!stored) return null
+    localStorage.removeItem(POST_LOGIN_REDIRECT_KEY)
+    return stored
+  }, [])
+
   const loginWithGoogle = useCallback((options = {}) => {
     const { returnTo } = options
     const existingRedirect = localStorage.getItem(POST_LOGIN_REDIRECT_KEY)
@@ -204,13 +211,6 @@ export function AuthProvider({ children }) {
       window.location.href = `${API_URL}/auth/google/login`
     }
   }, [setPostLoginRedirect, handleAuthCallback, consumePostLoginRedirect, navigate])
-
-  const consumePostLoginRedirect = useCallback(() => {
-    const stored = localStorage.getItem(POST_LOGIN_REDIRECT_KEY)
-    if (!stored) return null
-    localStorage.removeItem(POST_LOGIN_REDIRECT_KEY)
-    return stored
-  }, [])
 
   const loginWithPassword = useCallback(async (credentials) => {
     const response = await fetch(`${API_URL}/auth/password/login`, {
