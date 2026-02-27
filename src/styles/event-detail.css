@@ -119,6 +119,7 @@
   display: flex;
   align-items: center;
   gap: 0.375rem;
+  --event-icon-size: 1em;
 }
 
 .ev-title svg {

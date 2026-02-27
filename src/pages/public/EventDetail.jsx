@@ -748,7 +748,7 @@ function EventDetail() {
             <div className="ev-header-row">
               <div className="ev-header-left">
                 <h1 className="ev-title">
-                  <EventIcon type={event.type || 'inne'} size="sm" />
+                  <EventIcon type={event.type || 'inne'} size="md" />
                   {event.title}
                 </h1>
 
