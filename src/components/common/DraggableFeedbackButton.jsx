@@ -5,8 +5,8 @@ import { useLanguage } from '../../context/LanguageContext'
 const STORAGE_KEY = 'kenaz.feedbackBtn.pos'
 const BTN_SIZE = 48
 const MARGIN = 12
-// Approximate mobile bottom nav height (3.5rem ≈ 56px + safe area)
-const MOBILE_NAV_H = 72
+// Mobile bottom nav height: 3.5rem (56px) + safe area (~34px on modern iPhones)
+const MOBILE_NAV_H = 96
 
 function getDefaultPos() {
   const w = window.innerWidth
@@ -15,6 +15,15 @@ function getDefaultPos() {
   return {
     left: w - BTN_SIZE - MARGIN,
     top: h - BTN_SIZE - MARGIN - (isMobile ? MOBILE_NAV_H : MARGIN),
+  }
+}
+
+function clampPos(pos) {
+  const w = window.innerWidth
+  const h = window.innerHeight
+  return {
+    left: clamp(pos.left, MARGIN, w - BTN_SIZE - MARGIN),
+    top: clamp(pos.top, MARGIN, h - BTN_SIZE - MARGIN),
   }
 }
 
@@ -37,12 +46,19 @@ function DraggableFeedbackButton() {
   const dragState = useRef(null)
   const hasDragged = useRef(false)
 
-  // Set default position after mount when window dimensions are known
+  // Set default position (or clamp stale stored position) once window dims are known
   useEffect(() => {
     if (!pos) {
       setPos(getDefaultPos())
+    } else {
+      // Clamp stored position to current viewport — fixes off-screen on smaller devices
+      const clamped = clampPos(pos)
+      if (clamped.left !== pos.left || clamped.top !== pos.top) {
+        setPos(clamped)
+      }
     }
-  }, [pos])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Persist position to localStorage
   useEffect(() => {
