@@ -178,28 +178,28 @@ function AdminUsersList() {
             const busy = pendingId === u.id
             return (
               <div key={u.id} className="page-card flex items-center gap-3">
-                {/* Avatar */}
-                <div className="shrink-0">
-                  {u.picture_url ? (
-                    <img src={u.picture_url} alt={u.full_name || ''} className="w-10 h-10 rounded-full object-cover border border-navy/10 dark:border-cream/10" />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-navy/10 dark:bg-cream/10 flex items-center justify-center text-sm font-bold text-navy/50 dark:text-cream/50">
-                      {initials(u.full_name)}
-                    </div>
-                  )}
-                </div>
-
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-1.5 mb-0.5">
-                    <span className="font-semibold text-navy dark:text-cream text-sm truncate">
-                      {u.full_name || t('admin.usersList.noName')}
-                    </span>
-                    <RoleBadge role={u.role} t={t} />
-                    <StatusBadge status={u.account_status} t={t} />
+                {/* Avatar + Info — clickable link to profile */}
+                <Link to={`/people/${u.id}`} className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-75 transition-opacity">
+                  <div className="shrink-0">
+                    {u.picture_url ? (
+                      <img src={u.picture_url} alt={u.full_name || ''} className="w-10 h-10 rounded-full object-cover border border-navy/10 dark:border-cream/10" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-navy/10 dark:bg-cream/10 flex items-center justify-center text-sm font-bold text-navy/50 dark:text-cream/50">
+                        {initials(u.full_name)}
+                      </div>
+                    )}
                   </div>
-                  <p className="text-xs text-navy/50 dark:text-cream/50 truncate">{u.email}</p>
-                </div>
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-1.5 mb-0.5">
+                      <span className="font-semibold text-navy dark:text-cream text-sm truncate">
+                        {u.full_name || t('admin.usersList.noName')}
+                      </span>
+                      <RoleBadge role={u.role} t={t} />
+                      <StatusBadge status={u.account_status} t={t} />
+                    </div>
+                    <p className="text-xs text-navy/50 dark:text-cream/50 truncate">{u.email}</p>
+                  </div>
+                </Link>
 
                 {/* Action */}
                 {!isSelf && u.role !== 'admin' && (
