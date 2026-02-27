@@ -158,34 +158,34 @@ function DatePickerField({
 
     return (
       <div className="grid grid-cols-3 gap-2 min-w-0">
-        {/* Date part — 2/3 of the row */}
-        <div className="relative col-span-2">
+        {/* Date part — 2/3 of the row: input + calendar button inline (no absolute) */}
+        <div className="col-span-2 flex items-stretch gap-1.5">
           <input
             ref={dateRef}
             type="date"
             value={datePart}
             onChange={handleDateChange}
             required={required}
-            className={`ui-input ui-input-date ${inputClassName}`}
+            className={`ui-input min-w-0 flex-1 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 ${inputClassName}`}
             style={{ minWidth: 0 }}
           />
           <button
             type="button"
             onClick={openDatePicker}
             aria-label={buttonLabel}
-            className="ui-input-picker-button"
+            className="flex shrink-0 items-center justify-center rounded-xl bg-navy/10 px-2.5 text-navy transition hover:bg-navy/20 dark:bg-cream/10 dark:text-cream dark:hover:bg-cream/20"
           >
             <CalendarIcon />
           </button>
         </div>
 
         {/* Time part — 1/3 of the row; custom text input, always 24h */}
-        <div className="relative col-span-1">
+        <div className="col-span-1">
           <TimeInput24h
             value={timePart}
             onTimeChange={handleTimeChange}
             required={required}
-            className={`ui-input w-full ${inputClassName}`}
+            className={`ui-input w-full text-center ${inputClassName}`}
           />
         </div>
       </div>
