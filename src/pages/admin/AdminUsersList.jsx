@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
@@ -47,7 +47,10 @@ function AdminUsersList() {
   const [query, setQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [subscriberFilter, setSubscriberFilter] = useState('all')
+  const [page, setPage] = useState(1)
   const [pendingId, setPendingId] = useState(null)
+
+  const PAGE_SIZE = 25
 
   const isAdmin = user?.role === 'admin'
 
@@ -69,6 +72,9 @@ function AdminUsersList() {
     return () => { cancelled = true }
   }, [authFetch, isAdmin, isAuthenticated, t, showError])
 
+  // Reset to page 1 whenever filters change
+  useEffect(() => { setPage(1) }, [query, statusFilter, subscriberFilter])
+
   const now = useMemo(() => new Date(), [])
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -84,6 +90,12 @@ function AdminUsersList() {
       return matchesQuery && matchesStatus && matchesSubscriber
     })
   }, [users, query, statusFilter, subscriberFilter, now])
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
+  const paginated = useMemo(
+    () => filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [filtered, page, PAGE_SIZE]
+  )
 
   const handleBlock = async (userId) => {
     setPendingId(userId)
@@ -186,7 +198,7 @@ function AdminUsersList() {
         </div>
       ) : (
         <div className="space-y-2">
-          {filtered.map((u) => {
+          {paginated.map((u) => {
             const isSelf = u.id === user?.id
             const isBlocked = u.account_status === 'banned'
             const isActive = u.account_status === 'active'
@@ -241,6 +253,28 @@ function AdminUsersList() {
               </div>
             )
           })}
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="mt-5 flex items-center justify-center gap-2">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="px-3 py-1.5 rounded-full text-xs font-semibold bg-navy/10 text-navy dark:bg-cream/10 dark:text-cream hover:bg-navy/20 dark:hover:bg-cream/20 transition disabled:opacity-30"
+          >
+            ←
+          </button>
+          <span className="text-xs text-navy/60 dark:text-cream/60">
+            {page} / {totalPages}
+          </span>
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="px-3 py-1.5 rounded-full text-xs font-semibold bg-navy/10 text-navy dark:bg-cream/10 dark:text-cream hover:bg-navy/20 dark:hover:bg-cream/20 transition disabled:opacity-30"
+          >
+            →
+          </button>
         </div>
       )}
 
