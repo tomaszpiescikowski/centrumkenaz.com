@@ -7,6 +7,7 @@ Currently used for events; extensible to announcements, products, etc.
 
 from datetime import datetime, timezone
 from typing import Optional
+import re
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from typing import Literal
@@ -18,10 +19,21 @@ from sqlalchemy.orm import selectinload
 from database import get_db
 from models.comment import Comment, CommentReaction, ReactionType
 from models.registration import Registration, RegistrationStatus
-from models.user import UserRole
+from models.user import User, UserRole
+from services import push_service
 from security.guards import ActiveUser, OptionalActiveUser
 
 router = APIRouter(prefix="/comments", tags=["comments"])
+
+
+# ── Mention extraction ────────────────────────────────────────────
+
+_MENTION_RE = re.compile(r'@([\w\u00C0-\u017E]+(?:\s+[\w\u00C0-\u017E]+){0,2})')
+
+
+def _extract_mention_candidates(content: str) -> list[str]:
+    """Return a deduplicated list of name candidates from @-mentions."""
+    return list(dict.fromkeys(_MENTION_RE.findall(content)))
 
 
 # ── Pydantic schemas ──────────────────────────────────────────────
@@ -509,4 +521,36 @@ async def create_comment(
     await db.commit()
 
     comment = await _refetch_comment(db, comment.id)
+
+    # ── Push notifications for @mentions ──────────────────────────────────
+    try:
+        mentioned = _extract_mention_candidates(body.content)
+        if mentioned and user.full_name:
+            # Build the URL to navigate to
+            if resource_type == 'general':
+                chat_url = "/chat"
+            elif resource_type == 'event':
+                chat_url = f"/events/{resource_id}"
+            else:
+                chat_url = "/"
+
+            for candidate in mentioned:
+                # Skip self-mentions
+                if user.full_name and candidate.lower() == user.full_name.lower():
+                    continue
+                res = await db.execute(
+                    select(User).where(User.full_name.ilike(candidate))
+                )
+                target_user = res.scalar_one_or_none()
+                if target_user and str(target_user.id) != str(user.id):
+                    await push_service.send_to_user(
+                        db,
+                        str(target_user.id),
+                        f"💬 {user.full_name} wspomniał(a) o Tobie",
+                        body.content[:120] + ("…" if len(body.content) > 120 else ""),
+                        chat_url,
+                    )
+    except Exception:  # noqa: BLE001
+        pass
+
     return _build_comment_response(comment, user.id)

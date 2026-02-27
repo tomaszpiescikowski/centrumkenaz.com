@@ -17,12 +17,12 @@ function urlBase64ToUint8Array(base64String) {
  *
  * Only meaningful when:
  *  - The browser supports Push API and Notification API
- *  - `isAdmin` is true
+ *  - `isActive` is true (user is authenticated and account is active)
  *
- * @param {{ authFetch: Function, isAdmin: boolean }} options
+ * @param {{ authFetch: Function, isActive: boolean }} options
  * @returns {{ supported, permission, subscribed, subscribing, subscribe, unsubscribe }}
  */
-export function usePushNotifications({ authFetch, isAdmin } = {}) {
+export function usePushNotifications({ authFetch, isActive } = {}) {
   const supported =
     typeof window !== 'undefined' &&
     'serviceWorker' in navigator &&
@@ -37,16 +37,16 @@ export function usePushNotifications({ authFetch, isAdmin } = {}) {
 
   // Check existing subscription state on mount
   useEffect(() => {
-    if (!supported || !isAdmin) return
+    if (!supported || !isActive) return
     navigator.serviceWorker.ready.then((reg) => {
       reg.pushManager.getSubscription().then((sub) => {
         setSubscribed(!!sub)
       })
     }).catch(() => {})
-  }, [supported, isAdmin])
+  }, [supported, isActive])
 
   const subscribe = useCallback(async () => {
-    if (!supported || !isAdmin || subscribing) return
+    if (!supported || !isActive || subscribing) return
     setSubscribing(true)
     try {
       const perm = await Notification.requestPermission()
@@ -68,10 +68,10 @@ export function usePushNotifications({ authFetch, isAdmin } = {}) {
     } finally {
       setSubscribing(false)
     }
-  }, [supported, isAdmin, subscribing, authFetch])
+  }, [supported, isActive, subscribing, authFetch])
 
   const unsubscribe = useCallback(async () => {
-    if (!supported || !isAdmin) return
+    if (!supported || !isActive) return
     try {
       const reg = await navigator.serviceWorker.ready
       const sub = await reg.pushManager.getSubscription()
@@ -83,7 +83,7 @@ export function usePushNotifications({ authFetch, isAdmin } = {}) {
     } catch (err) {
       console.error('[PushNotifications] unsubscribe error:', err)
     }
-  }, [supported, isAdmin, authFetch])
+  }, [supported, isActive, authFetch])
 
   return { supported, permission, subscribed, subscribing, subscribe, unsubscribe }
 }

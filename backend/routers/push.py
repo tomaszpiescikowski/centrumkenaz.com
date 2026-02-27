@@ -19,7 +19,7 @@ from config import get_settings
 from database import get_db
 from models.push_subscription import PushSubscription
 from models.user import User
-from security.guards import get_admin_user_dependency
+from security.guards import get_active_user_dependency
 
 router = APIRouter(prefix="/push", tags=["push"])
 
@@ -60,10 +60,10 @@ async def get_vapid_public_key() -> dict:
 async def subscribe(
     payload: PushSubscribeRequest,
     db: AsyncSession = Depends(get_db),
-    user: User = Depends(get_admin_user_dependency),
+    user: User = Depends(get_active_user_dependency),
 ) -> None:
     """
-    Upsert a push subscription for the authenticated admin.
+    Upsert a push subscription for the authenticated active user.
 
     If the endpoint already exists (e.g. after a page refresh) the keys are
     refreshed in place.  New endpoints create a new row.
@@ -95,9 +95,9 @@ async def subscribe(
 async def unsubscribe(
     payload: PushSubscribeRequest,
     db: AsyncSession = Depends(get_db),
-    user: User = Depends(get_admin_user_dependency),
+    user: User = Depends(get_active_user_dependency),
 ) -> None:
-    """Remove a push subscription for the authenticated admin."""
+    """Remove a push subscription for the authenticated user."""
     result = await db.execute(
         select(PushSubscription).where(
             PushSubscription.endpoint == payload.endpoint,

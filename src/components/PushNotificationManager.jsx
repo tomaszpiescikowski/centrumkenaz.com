@@ -4,7 +4,7 @@ import { usePushNotifications } from '../hooks/usePushNotifications'
 
 /**
  * Invisible component that automatically requests and registers a push
- * subscription for logged-in admin users.
+ * subscription for all logged-in active users (admins and members alike).
  *
  * Mounted once at the top level in App.jsx.  The subscription is requested
  * silently on mount: if permission has already been granted the browser
@@ -13,28 +13,28 @@ import { usePushNotifications } from '../hooks/usePushNotifications'
  */
 function PushNotificationManager() {
   const { user, isAuthenticated, authFetch } = useAuth()
-  const isAdmin = isAuthenticated && user?.role === 'admin' && user?.account_status === 'active'
+  const isActive = isAuthenticated && user?.account_status === 'active'
 
   const { supported, permission, subscribed, subscribing, subscribe } = usePushNotifications({
     authFetch,
-    isAdmin,
+    isActive,
   })
 
-  // Only attempt once per admin session
+  // Only attempt once per session
   const attempted = useRef(false)
 
   useEffect(() => {
-    if (!supported || !isAdmin || attempted.current || subscribing) return
+    if (!supported || !isActive || attempted.current || subscribing) return
 
     // If permission was already granted, silently re-register without a prompt.
     // If permission is 'default' (not yet asked), immediately request it –
-    // this is intentional: admins should get notified automatically.
+    // this ensures all active members receive important notifications.
     if (permission === 'denied') return
     if (subscribed) return  // already subscribed this session
 
     attempted.current = true
     subscribe()
-  }, [supported, isAdmin, permission, subscribed, subscribing, subscribe])
+  }, [supported, isActive, permission, subscribed, subscribing, subscribe])
 
   return null
 }

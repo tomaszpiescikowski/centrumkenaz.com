@@ -8,6 +8,7 @@ from sqlalchemy.orm import joinedload
 
 from database import get_db
 from services.log_service import log_action, _get_request_ip, user_email_from
+from services import push_service
 from models.announcement import Announcement
 from models.user import User
 from security.guards import AdminUser
@@ -103,6 +104,19 @@ async def create_announcement(
         announcement_id=str(announcement.id),
         title=announcement.title,
     )
+
+    # Push notification to all active users
+    try:
+        preview = (body.content[:120] + "…") if len(body.content) > 120 else body.content
+        await push_service.send_to_all_active_users(
+            db,
+            f"📣 {body.title}",
+            preview,
+            "/chat",
+        )
+    except Exception:  # noqa: BLE001
+        pass
+
     return {
         "id": announcement.id,
         "title": announcement.title,

@@ -26,6 +26,7 @@ from adapters.fake_payment_adapter import get_shared_fake_payment_adapter
 from services.payment_service import PaymentService
 from services.log_service import log_action, _get_request_ip, user_email_from, _sanitise_email_for_filename, _LOGS_ROOT
 from services.registration_service import RegistrationService, RegistrationError
+from services import push_service
 from utils.legacy_ids import legacy_id_eq, optional_str_id
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -915,6 +916,19 @@ async def approve_user(
         target_user_id=user_id,
         target_email=target.email,
     )
+
+    # Notify the newly approved user
+    try:
+        await push_service.send_to_user(
+            db,
+            str(target.id),
+            "✅ Twoje konto zostało zatwierdzone",
+            "Witaj w społeczności Kenaz! Możesz teraz korzystać z pełnej wersji serwisu.",
+            "/dashboard",
+        )
+    except Exception:  # noqa: BLE001
+        pass
+
     return PendingUserResponse(
         user_id=str(target.id),
         full_name=target.full_name,
@@ -1127,6 +1141,19 @@ async def approve_pending_manual_payment(
         event_id=str(event.id),
         event_title=event.title,
     )
+
+    # Notify the user that their registration is confirmed
+    try:
+        await push_service.send_to_user(
+            db,
+            str(user.id),
+            "Platnosc zatwierdzona",
+            f"Twoja rejestracja na wydarzenie '{event.title}' zostala potwierdzona.",
+            f"/events/{event.id}",
+        )
+    except Exception:  # noqa: BLE001
+        pass
+
     return _serialize_manual_pending_row(registration, user, event, payment)
 
 
@@ -1298,6 +1325,20 @@ async def update_waitlist_promotion_status(
         registration_id=registration_id,
         notification_sent=payload.waitlist_notification_sent,
     )
+
+    # Notify the user they've been promoted from the waitlist
+    if payload.waitlist_notification_sent:
+        try:
+            await push_service.send_to_user(
+                db,
+                str(user.id),
+                "Awans z listy oczekujacych",
+                f"Mozesz dokonczyc rejestracje na wydarzenie '{event.title}'.",
+                f"/events/{event.id}",
+            )
+        except Exception:  # noqa: BLE001
+            pass
+
     return _serialize_waitlist_promotion_row(registration, user, event)
 
 
@@ -1440,6 +1481,20 @@ async def approve_subscription_purchase(
         purchase_id=purchase_id,
         plan_code=purchase.plan_code,
     )
+
+    # Notify the user that their subscription is now active
+    purchase_row, sub_user = result
+    try:
+        await push_service.send_to_user(
+            db,
+            str(sub_user.id),
+            "🎉 Subskrypcja aktywowana",
+            f"Twoja subskrypcja ({purchase_row.plan_code}) została zatwierdzona i jest aktywna.",
+            "/account",
+        )
+    except Exception:  # noqa: BLE001
+        pass
+
     return _serialize_subscription_purchase_pending_row(*result)
 
 

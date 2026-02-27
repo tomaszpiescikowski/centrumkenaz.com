@@ -1,8 +1,14 @@
 """
-Push notification service – sends Web Push messages to all admin subscriptions.
+Push notification service – sends Web Push messages to push subscriptions.
 
 Uses pywebpush + py-vapid.  The VAPID key pair is read from settings once on
 first call and cached for the lifetime of the process.
+
+Public API
+----------
+send_to_admins(db, title, body, url)       – notify all admin subscriptions
+send_to_user(db, user_id, title, body, url)   – notify one specific user
+send_to_all_active_users(db, title, body, url) – notify every subscriber
 """
 import asyncio
 import json
@@ -15,6 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import get_settings
 from models.push_subscription import PushSubscription
+from models.user import User, UserRole
 
 logger = logging.getLogger(__name__)
 
@@ -65,12 +72,53 @@ async def send_to_admins(db: AsyncSession, title: str, body: str, url: str = "/a
         logger.debug("VAPID not configured – skipping push notification")
         return
 
-    result = await db.execute(select(PushSubscription))
+    result = await db.execute(
+        select(PushSubscription)
+        .join(User, PushSubscription.user_id == User.id)
+        .where(User.role == UserRole.ADMIN)
+    )
     subscriptions = result.scalars().all()
     if not subscriptions:
         return
 
     payload = {"title": title, "body": body, "url": url, "tag": "kenaz-admin"}
+    await _dispatch(db, subscriptions, payload)
+
+
+async def send_to_user(db: AsyncSession, user_id: str, title: str, body: str, url: str = "/") -> None:
+    """Send a push notification to all subscriptions belonging to *user_id*."""
+    settings = get_settings()
+    if not settings.vapid_private_key:
+        return
+
+    result = await db.execute(
+        select(PushSubscription).where(PushSubscription.user_id == user_id)
+    )
+    subscriptions = result.scalars().all()
+    if not subscriptions:
+        return
+
+    payload = {"title": title, "body": body, "url": url, "tag": f"kenaz-user-{user_id}"}
+    await _dispatch(db, subscriptions, payload)
+
+
+async def send_to_all_active_users(db: AsyncSession, title: str, body: str, url: str = "/") -> None:
+    """Send a push notification to every stored subscription (all active users)."""
+    settings = get_settings()
+    if not settings.vapid_private_key:
+        return
+
+    result = await db.execute(select(PushSubscription))
+    subscriptions = result.scalars().all()
+    if not subscriptions:
+        return
+
+    payload = {"title": title, "body": body, "url": url, "tag": "kenaz-announcement"}
+    await _dispatch(db, subscriptions, payload)
+
+
+async def _dispatch(db: AsyncSession, subscriptions: list, payload: dict) -> None:
+    """Fire-and-forget push to a list of subscriptions, pruning expired ones."""
     loop = asyncio.get_event_loop()
     expired_ids: list[str] = []
 
