@@ -11,8 +11,9 @@ export async function fetchDonationSettings() {
   return safeJson(response)
 }
 
-export async function createDonation(data) {
-  const response = await fetch(`${API_URL}/donations/`, {
+export async function createDonation(data, authFetch = null) {
+  const caller = authFetch ?? fetch
+  const response = await caller(`${API_URL}/donations/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),

@@ -73,7 +73,7 @@ function CopyField({ label, value }) {
 /* ────────────────────────────── main component ─────────────────────── */
 
 function SupportUs() {
-  const { user, isAuthenticated } = useAuth()
+  const { user, isAuthenticated, authFetch } = useAuth()
   const { t } = useLanguage()
   const { showError } = useNotification()
 
@@ -130,7 +130,7 @@ function SupportUs() {
         donor_name: donorName.trim() || null,
         donor_email: donorEmail.trim() || null,
       }
-      const result = await createDonation(payload)
+      const result = await createDonation(payload, isAuthenticated ? authFetch : null)
       setDonated(result)
     } catch (err) {
       showError(err.message || t('support.submitError'))
