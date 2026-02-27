@@ -26,6 +26,7 @@ function ChatProvider({ children }) {
     view: 'general',   // 'general' | 'events' | 'event'
     eventId: null,
     eventTitle: null,
+    eventData: null,   // full normalized event object when in event view
   })
 
   const [lastReadTimestamps, setLastReadTimestamps] = useState(loadLastRead)
@@ -59,6 +60,7 @@ function ChatProvider({ children }) {
       view,
       eventId: opts.eventId ?? null,
       eventTitle: opts.eventTitle ?? null,
+      eventData: opts.eventData ?? null,
     }))
   }, [])
 
@@ -95,8 +97,8 @@ function ChatProvider({ children }) {
           }
       const current = prev[chatId]
       if (current && current.ts >= incoming.ts) {
-        // Not newer – but update authors if incoming has fresher data
-        if (incoming.recentAuthors?.length && !current.recentAuthors?.length) {
+        // Not newer – but always update authors when incoming has fresher data
+        if (incoming.recentAuthors?.length) {
           return { ...prev, [chatId]: { ...current, recentAuthors: incoming.recentAuthors } }
         }
         return prev

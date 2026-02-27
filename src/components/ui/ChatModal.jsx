@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useChat } from '../../context/ChatContext'
 import { fetchRegisteredEvents } from '../../api/events'
 import CommentsSection from '../common/CommentsSection'
+import EventIcon from '../common/EventIcon'
 import { useCustomEventTypes } from '../../hooks/useCustomEventTypes'
 import '../common/CommentsSection.css'
 
@@ -64,7 +65,7 @@ function ChatModal() {
   const { t, currentLanguage } = useLanguage()
   const { isAuthenticated, authFetch } = useAuth()
   const {
-    open, view, eventId, eventTitle,
+    open, view, eventId, eventTitle, eventData,
     closeChat, navigateChat,
     hasUnread, unreadCounts, setLatestMessageTime, latestMessages,
   } = useChat()
@@ -143,7 +144,7 @@ function ChatModal() {
   if (typeof window !== 'undefined' && window.innerWidth < 640) return null
 
   const handleEventClick = (ev) => {
-    navigateChat('event', { eventId: ev.id, eventTitle: ev.title })
+    navigateChat('event', { eventId: ev.id, eventTitle: ev.title, eventData: ev })
   }
 
   const handleGoToEvent = () => {
@@ -180,63 +181,89 @@ function ChatModal() {
         style={modalSize ? { width: modalSize.width, height: modalSize.height } : undefined}
       >
         {/* ── Header ── */}
-        <div className="chat-modal-header">
-          {/* Back button when in event chat */}
-          {view === 'event' && (
+        <div className={`chat-modal-header${view === 'event' ? ' chat-modal-header--event' : ''}`}>
+          <div className="chat-modal-header-row">
+            {/* Back button when in event chat */}
+            {view === 'event' && (
+              <button
+                className="chat-modal-back"
+                onClick={() => navigateChat('events')}
+                aria-label={t('comments.back')}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </button>
+            )}
+
+            {view === 'event' ? (
+              <div className="chat-modal-event-header">
+                <span className="chat-modal-title chat-modal-title-truncate">{eventTitle || t('comments.eventChat')}</span>
+                <button
+                  className="chat-modal-goto"
+                  onClick={handleGoToEvent}
+                  aria-label={t('comments.goToEvent')}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                  {t('comments.goToEvent')}
+                </button>
+              </div>
+            ) : (
+              <div className="cmt-tabs" style={{ margin: 0, flex: 1 }}>
+                <button
+                  className={`cmt-tab ${activeTab === 'general' ? 'cmt-tab-active' : ''}`}
+                  onClick={() => navigateChat('general')}
+                >
+                  {t('comments.tabGeneral')}
+                </button>
+                <button
+                  className={`cmt-tab ${activeTab === 'events' ? 'cmt-tab-active' : ''}`}
+                  onClick={() => navigateChat('events')}
+                >
+                  {t('comments.tabEvents')}
+                </button>
+              </div>
+            )}
+
             <button
-              className="chat-modal-back"
-              onClick={() => navigateChat('events')}
-              aria-label={t('comments.back')}
+              className="chat-modal-close"
+              onClick={closeChat}
+              aria-label={t('comments.cancel')}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="15 18 9 12 15 6" />
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
-          )}
+          </div>
 
-          {view === 'event' ? (
-            <div className="chat-modal-event-header">
-              <span className="chat-modal-title chat-modal-title-truncate">{eventTitle || t('comments.eventChat')}</span>
-              <button
-                className="chat-modal-goto"
-                onClick={handleGoToEvent}
-                aria-label={t('comments.goToEvent')}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
-                  <polyline points="15 3 21 3 21 9" />
-                  <line x1="10" y1="14" x2="21" y2="3" />
-                </svg>
-                {t('comments.goToEvent')}
-              </button>
-            </div>
-          ) : (
-            <div className="cmt-tabs" style={{ margin: 0, flex: 1 }}>
-              <button
-                className={`cmt-tab ${activeTab === 'general' ? 'cmt-tab-active' : ''}`}
-                onClick={() => navigateChat('general')}
-              >
-                {t('comments.tabGeneral')}
-              </button>
-              <button
-                className={`cmt-tab ${activeTab === 'events' ? 'cmt-tab-active' : ''}`}
-                onClick={() => navigateChat('events')}
-              >
-                {t('comments.tabEvents')}
-              </button>
-            </div>
-          )}
-
-          <button
-            className="chat-modal-close"
-            onClick={closeChat}
-            aria-label={t('comments.cancel')}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
+          {/* Event details sub-header */}
+          {view === 'event' && eventData && (() => {
+            const locale = currentLanguage === 'pl' ? 'pl-PL' : 'en-GB'
+            const palette = getTypePalette(eventData.type, customTypes)
+            const d = new Date(eventData.startDateTime)
+            const dateStr = d.toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' })
+            const timeStr = d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
+            return (
+              <div className="cp-ev-subheader cp-ev-subheader--modal">
+                {eventData.type && (
+                  <span className="cp-ev-sub-tag" style={{ color: palette.bg, borderColor: palette.bg + '40', background: palette.bg + '18' }}>
+                    {eventData.type}
+                  </span>
+                )}
+                <span className="cp-ev-sub-info">{dateStr}&nbsp;&middot;&nbsp;{timeStr}</span>
+                {eventData.city && <span className="cp-ev-sub-info">{eventData.city}</span>}
+                {eventData.location && <span className="cp-ev-sub-info">{eventData.location}</span>}
+                {eventData.maxParticipants && (
+                  <span className="cp-ev-sub-info">max.&nbsp;{eventData.maxParticipants}</span>
+                )}
+              </div>
+            )
+          })()}
         </div>
 
         {/* ── Body ── */}
@@ -264,6 +291,7 @@ function ChatModal() {
             ) : events.length === 0 ? (
               <div className="cp-empty"><p>{t('comments.noRegisteredEvents')}</p></div>
             ) : (() => {
+              const locale = currentLanguage === 'pl' ? 'pl-PL' : 'en-GB'
               const sorted = [...events].sort((a, b) => {
                 const aP = new Date(a.startDateTime) < new Date()
                 const bP = new Date(b.startDateTime) < new Date()
@@ -271,7 +299,7 @@ function ChatModal() {
                 return new Date(a.startDateTime) - new Date(b.startDateTime)
               })
               return (
-                <ul className="cp-event-list">
+                <ul className="cp-ev-list">
                   {sorted.map((ev, idx) => {
                     const chatId = `event:${ev.id}`
                     const unread = hasUnread(chatId)
@@ -288,7 +316,7 @@ function ChatModal() {
                       ? previewMsg.author.split(' ')[0].replace(/^~/, '')
                       : null
                     const previewText = previewMsg?.text
-                      ? (previewMsg.text.length > 50 ? previewMsg.text.slice(0, 50) + '\u2026' : previewMsg.text)
+                      ? (previewMsg.text.length > 55 ? previewMsg.text.slice(0, 55) + '\u2026' : previewMsg.text)
                       : null
                     const timeLabel = previewMsg?.ts
                       ? formatMsgTime(previewMsg.ts)
@@ -301,9 +329,18 @@ function ChatModal() {
                       evDate.getMonth() === now.getMonth() &&
                       evDate.getFullYear() === now.getFullYear()
 
+                    const tomorrow = new Date(now)
+                    tomorrow.setDate(tomorrow.getDate() + 1)
+                    const isTomorrow = !isPast && !isToday &&
+                      evDate.getDate() === tomorrow.getDate() &&
+                      evDate.getMonth() === tomorrow.getMonth() &&
+                      evDate.getFullYear() === tomorrow.getFullYear()
+
                     const evTime = ev.startDateTime
-                      ? new Date(ev.startDateTime).toLocaleTimeString(currentLanguage === 'pl' ? 'pl-PL' : 'en-GB', { hour: '2-digit', minute: '2-digit' })
+                      ? new Date(ev.startDateTime).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
                       : null
+
+                    const authors = previewMsg?.recentAuthors
 
                     return (
                       <li key={ev.id}>
@@ -313,17 +350,33 @@ function ChatModal() {
                           </div>
                         )}
                         <button
-                          className={`cp-event-card${isPast ? ' cp-event-card--past' : ''}${unread ? ' cp-event-card--unread' : ''}`}
+                          className={`cp-ev-row${isPast ? ' cp-ev-row--past' : ''}${unread ? ' cp-ev-row--unread' : ''}`}
+                          style={{ '--ev-color': palette.bg }}
                           onClick={() => handleEventClick(ev)}
                         >
-                          <span className="cp-card-stripe" style={{ background: palette.bg }} />
-                          {(() => {
-                            const authors = latestMessages[chatId]?.recentAuthors
-                            if (!authors?.length) return null
-                            return (
-                              <span className="cp-card-participants">
-                                {authors.map((a, i) => (
-                                  <span key={a.id} className="cmt-reply-av" style={{ zIndex: authors.length - i }}>
+                          {/* Line 1: icon + title + timestamp */}
+                          <span className="cp-ev-top">
+                            <span className="cp-ev-icon" style={{ color: palette.bg }}>
+                              <EventIcon type={ev.type} size="sm" customTypes={customTypes} />
+                            </span>
+                            <span className={`cp-ev-title${unread ? ' cp-ev-title--bold' : ''}`}>{ev.title}</span>
+                            <span className="cp-ev-ts">{timeLabel}</span>
+                          </span>
+
+                          {/* Line 2: meta + today + avatars + badge / chevron */}
+                          <span className="cp-ev-bottom">
+                            <span className="cp-ev-meta">
+                              {ev.city}
+                              {ev.city && evTime && <> &middot;</>}
+                              {evTime && <> {isToday ? evTime : formatDate(ev.startDateTime)}</>}
+                              {!ev.city && !evTime && formatDate(ev.startDateTime)}
+                            </span>
+                            {isToday && <span className="cp-ev-today">{t('comments.today')}</span>}
+                            {isTomorrow && <span className="cp-ev-tomorrow">{t('comments.tomorrow')}</span>}
+                            {authors?.length > 0 && (
+                              <span className="cp-ev-avs">
+                                {authors.slice(0, 3).map((a, i) => (
+                                  <span key={a.id} className="cmt-reply-av" style={{ zIndex: 3 - i }}>
                                     {a.picture_url
                                       ? <img src={a.picture_url} alt={a.full_name} />
                                       : <span>{initials(a.full_name)}</span>
@@ -331,32 +384,20 @@ function ChatModal() {
                                   </span>
                                 ))}
                               </span>
-                            )
-                          })()}
-                          <span className="cp-card-body">
-                            <span className="cp-card-top-row">
-                              <span className={`cp-card-title${unread ? ' cp-card-title--unread' : ''}`}>{ev.title}</span>
-                              <span className="cp-card-ts">{timeLabel}</span>
-                            </span>
-                            <span className="cp-card-meta-row">
-                              <span className="cp-card-meta">
-                                {ev.city}
-                                {evTime && <> &middot; {evTime}</>}
-                                {!previewText && <> &middot; {formatDate(ev.startDateTime)}</>}
-                              </span>
-                              {isToday && <span className="cp-card-today-badge">{t('comments.today')}</span>}
-                              {unread
-                                ? <span className="cp-card-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
-                                : <span className="cp-card-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
-                              }
-                            </span>
-                            {previewText && (
-                              <span className={`cp-card-preview${unread ? ' cp-card-preview--unread' : ''}`}>
-                                {authorShort && <span className="cp-card-preview-author">{authorShort}:&nbsp;</span>}
-                                {previewText}
-                              </span>
                             )}
+                            {unread
+                              ? <span className="cp-ev-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
+                              : <span className="cp-ev-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+                            }
                           </span>
+
+                          {/* Line 3 (optional): latest message preview */}
+                          {previewText && (
+                            <span className={`cp-ev-preview${unread ? ' cp-ev-preview--bold' : ''}`}>
+                              {authorShort && <span className="cp-ev-preview-who">{authorShort}:&nbsp;</span>}
+                              {previewText}
+                            </span>
+                          )}
                         </button>
                       </li>
                     )

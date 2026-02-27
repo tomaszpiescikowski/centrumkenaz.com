@@ -1194,6 +1194,7 @@
     "pendingRequiredButton": "Check account status",
     "loadOlder": "Load older messages",
     "today": "Today",
+    "tomorrow": "Tomorrow",
     "pastEvents": "Past events"
   },
   "panel": {

@@ -56,7 +56,7 @@ function ChatPage() {
 
   const isPendingApproval = isAuthenticated && user?.account_status !== 'active'
   const {
-    view, eventId, eventTitle,
+    view, eventId, eventTitle, eventData,
     navigateChat,
     markAsRead, hasUnread, unreadCounts, setLatestMessageTime, latestMessages,
     setRegisteredEvents,
@@ -135,7 +135,7 @@ function ChatPage() {
   }, [view, eventId, markAsRead])
 
   const handleEventClick = (ev) => {
-    navigateChat('event', { eventId: ev.id, eventTitle: ev.title })
+    navigateChat('event', { eventId: ev.id, eventTitle: ev.title, eventData: ev })
   }
 
   const handleGoToEvent = () => {
@@ -251,27 +251,50 @@ function ChatPage() {
       <div className="cp-header">
         {view === 'event' ? (
           <div className="cp-event-header">
-            <button
-              className="cp-back-btn"
-              onClick={() => navigateChat('events')}
-              aria-label={t('comments.back')}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-            </button>
-            <span className="cp-event-title">{eventTitle || t('comments.eventChat')}</span>
-            <button
-              className="cp-goto-btn"
-              onClick={handleGoToEvent}
-              aria-label={t('comments.goToEvent')}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
-                <polyline points="15 3 21 3 21 9" />
-                <line x1="10" y1="14" x2="21" y2="3" />
-              </svg>
-            </button>
+            <div className="cp-event-nav-row">
+              <button
+                className="cp-back-btn"
+                onClick={() => navigateChat('events')}
+                aria-label={t('comments.back')}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </button>
+              <span className="cp-event-title">{eventTitle || t('comments.eventChat')}</span>
+              <button
+                className="cp-goto-btn"
+                onClick={handleGoToEvent}
+                aria-label={t('comments.goToEvent')}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </button>
+            </div>
+            {eventData && (() => {
+              const palette = getTypePalette(eventData.type, customTypes)
+              const d = new Date(eventData.startDateTime)
+              const dateStr = d.toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' })
+              const timeStr = d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
+              return (
+                <div className="cp-ev-subheader">
+                  {eventData.type && (
+                    <span className="cp-ev-sub-tag" style={{ color: palette.bg, borderColor: palette.bg + '40', background: palette.bg + '18' }}>
+                      {eventData.type}
+                    </span>
+                  )}
+                  <span className="cp-ev-sub-info">{dateStr}&nbsp;&middot;&nbsp;{timeStr}</span>
+                  {eventData.city && <span className="cp-ev-sub-info">{eventData.city}</span>}
+                  {eventData.location && <span className="cp-ev-sub-info">{eventData.location}</span>}
+                  {eventData.maxParticipants && (
+                    <span className="cp-ev-sub-info">max.&nbsp;{eventData.maxParticipants}</span>
+                  )}
+                </div>
+              )
+            })()}
           </div>
         ) : (
           <div className="cp-tabs">
@@ -347,6 +370,13 @@ function ChatPage() {
                     evDate.getMonth() === now.getMonth() &&
                     evDate.getFullYear() === now.getFullYear()
 
+                  const tomorrow = new Date(now)
+                  tomorrow.setDate(tomorrow.getDate() + 1)
+                  const isTomorrow = !isPast && !isToday &&
+                    evDate.getDate() === tomorrow.getDate() &&
+                    evDate.getMonth() === tomorrow.getMonth() &&
+                    evDate.getFullYear() === tomorrow.getFullYear()
+
                   const evTime = ev.startDateTime
                     ? new Date(ev.startDateTime).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
                     : null
@@ -383,6 +413,7 @@ function ChatPage() {
                             {!ev.city && !evTime && formatDate(ev.startDateTime)}
                           </span>
                           {isToday && <span className="cp-ev-today">{t('comments.today')}</span>}
+                          {isTomorrow && <span className="cp-ev-tomorrow">{t('comments.tomorrow')}</span>}
                           {authors?.length > 0 && (
                             <span className="cp-ev-avs">
                               {authors.slice(0, 3).map((a, i) => (
