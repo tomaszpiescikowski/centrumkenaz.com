@@ -253,18 +253,27 @@ async def google_login(db: AsyncSession = Depends(get_db)) -> RedirectResponse:
 
 
 @router.get("/google/calendar", dependencies=[Depends(auth_login_rate_limit)])
-async def google_calendar_connect(db: AsyncSession = Depends(get_db)) -> RedirectResponse:
+async def google_calendar_connect(
+    request: Request,
+    token: str = Query(..., min_length=1),
+    db: AsyncSession = Depends(get_db),
+) -> RedirectResponse:
     """
     Redirect the user to Google OAuth to grant Google Calendar access.
 
-    This is a separate flow from the main login. The user is already
-    authenticated; this endpoint requests the calendar.events scope
-    incrementally so that the main login no longer triggers the
-    'restricted scope' warning screen.
+    This is a separate flow from the main login. The user must supply their
+    current access token via ``?token=`` so we can identify them and embed
+    their user-ID in the OAuth ``state`` parameter (``cc:<id>``).  The
+    shared callback recognises that prefix and saves the calendar tokens
+    to the existing user record instead of performing a full login.
     """
     auth_service = AuthService(db)
+    payload = auth_service.verify_token(token)
+    if not payload or payload.get("type") != "access" or not payload.get("sub"):
+        raise HTTPException(status_code=401, detail="Invalid or missing access token")
+    user_id = payload["sub"]
     try:
-        auth_url = await auth_service.get_google_calendar_auth_url()
+        auth_url = await auth_service.get_google_calendar_auth_url(user_id)
     except ValueError as e:
         raise HTTPException(status_code=500, detail=str(e))
     return RedirectResponse(url=auth_url)
@@ -274,17 +283,43 @@ async def google_calendar_connect(db: AsyncSession = Depends(get_db)) -> Redirec
 async def google_callback(
     request: Request,
     code: str = Query(..., min_length=1),
+    state: str = Query(default=""),
     db: AsyncSession = Depends(get_db),
 ) -> RedirectResponse:
     """
     Handle the Google OAuth callback and issue JWT tokens.
 
-    This endpoint exchanges the authorization code for tokens, creates or updates
-    the user, and redirects to the frontend with access and refresh tokens while
-    mapping OAuth or policy errors to a dedicated error page.
+    When ``state`` starts with ``cc:`` this is a calendar-connect flow:
+    the code is exchanged for tokens, the calendar tokens are saved to
+    the existing user identified by the ID embedded in state, and the
+    user is redirected back to their account page — no new JWT is issued.
+
+    Otherwise this is a standard login flow: creates/updates the user
+    and redirects to the frontend with fresh access and refresh tokens.
     """
     auth_service = AuthService(db)
 
+    # ── Calendar-connect path ───────────────────────────────────────────────
+    if state.startswith("cc:"):
+        user_id = state[3:]
+        try:
+            user = await auth_service.get_user_by_id(user_id)
+            if not user:
+                raise ValueError("User not found")
+            tokens = await auth_service.exchange_code_for_tokens(code)
+            await auth_service.update_google_tokens(user, tokens)
+            await log_action(
+                action="USER_CALENDAR_CONNECTED",
+                user_email=user.email,
+                ip=_get_request_ip(request),
+            )
+            return RedirectResponse(url=f"{settings.frontend_url}/me?calendar=connected")
+        except Exception:
+            logger.exception("Calendar connect callback error")
+            error_url = f"{settings.frontend_url}/auth/error?message=Calendar connection failed"
+            return RedirectResponse(url=error_url)
+
+    # ── Standard login path ─────────────────────────────────────────────────
     try:
         tokens = await auth_service.exchange_code_for_tokens(code)
         user_info = await auth_service.get_google_user_info(tokens["access_token"])

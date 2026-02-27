@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
@@ -14,6 +14,17 @@ function Account({ darkMode, setDarkMode }) {
   const { t } = useLanguage()
   const { showError, showSuccess } = useNotification()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+
+  // After calendar connect redirect (?calendar=connected) re-fetch the user
+  // so has_google_calendar flips to true, then clean the URL.
+  useEffect(() => {
+    if (searchParams.get('calendar') === 'connected') {
+      fetchUser()
+      showSuccess(t('account.calendarConnected') || 'Połączono z Google Calendar')
+      navigate('/me', { replace: true })
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const [aboutMe, setAboutMe] = useState('')
   const [originalAboutMe, setOriginalAboutMe] = useState('')
   const [interestTags, setInterestTags] = useState([])

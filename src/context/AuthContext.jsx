@@ -160,11 +160,14 @@ export function AuthProvider({ children }) {
   }, [])
 
   const connectGoogleCalendar = useCallback(() => {
-    // Store the return path so AuthCallback sends the user back to the account
-    // page after granting calendar access.
-    setPostLoginRedirect('/me')
-    window.location.href = `${API_URL}/auth/google/calendar`
-  }, [setPostLoginRedirect])
+    // Pass the current access token so the backend can identify the user and
+    // embed the user-ID in the OAuth state parameter (cc:<id>). After Google
+    // redirects back, the callback saves the calendar tokens to this user
+    // without issuing a new login session.
+    const token = localStorage.getItem('accessToken')
+    if (!token) return
+    window.location.href = `${API_URL}/auth/google/calendar?token=${encodeURIComponent(token)}`
+  }, [])
 
   const loginWithGoogle = useCallback((options = {}) => {
     const { returnTo } = options
