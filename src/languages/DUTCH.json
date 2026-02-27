@@ -1220,6 +1220,7 @@
     "transferReference": "Overschrijvingsreferentie",
     "amount": "Bedrag",
     "referenceHint": "Vergeet niet de exacte referentie te vermelden in de overschrijving.",
+    "openTransfer": "Ga naar betaalpagina",
     "successTitle": "Bedankt!",
     "successBody": "Je donatie is geregistreerd. Maak de overschrijving met onderstaande gegevens."
   },
@@ -1274,7 +1275,9 @@
       "bankOwnerName": "Rekeninghouder",
       "bankOwnerAddress": "Adres houder",
       "messagePlaceholder": "Schrijf een bericht voor donateurs...",
-      "messageHint": "Dit bericht wordt getoond op de \"Steun ons\" pagina."
+      "messageHint": "Dit bericht wordt getoond op de \"Steun ons\" pagina.",
+      "paymentUrl": "Link naar betaalsite",
+      "paymentUrlHint": "URL (bijv. buycoffee.to) waar donateurs online kunnen betalen."
     },
     "stats": {
       "pendingCount": "Openstaand",

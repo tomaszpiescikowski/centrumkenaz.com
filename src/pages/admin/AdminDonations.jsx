@@ -157,6 +157,7 @@ function SettingsForm({ authFetch, t, showSuccess, showError }) {
     payment_title: '',
     bank_owner_name: '',
     bank_owner_address: '',
+    payment_url: '',
     message: '',
   })
 
@@ -175,6 +176,7 @@ function SettingsForm({ authFetch, t, showSuccess, showError }) {
             payment_title: data.payment_title ?? '',
             bank_owner_name: data.bank_owner_name ?? '',
             bank_owner_address: data.bank_owner_address ?? '',
+            payment_url: data.payment_url ?? '',
             message: data.message ?? '',
           })
         }
@@ -207,6 +209,7 @@ function SettingsForm({ authFetch, t, showSuccess, showError }) {
         payment_title: form.payment_title || null,
         bank_owner_name: form.bank_owner_name || null,
         bank_owner_address: form.bank_owner_address || null,
+        payment_url: form.payment_url || null,
         message: form.message || null,
       })
       showSuccess(t('adminDonations.settings.saved'))
@@ -307,6 +310,11 @@ function SettingsForm({ authFetch, t, showSuccess, showError }) {
         <div>
           <label className={labelClass}>{t('adminDonations.settings.bankOwnerAddress')}</label>
           <textarea rows={2} value={form.bank_owner_address} onChange={(e) => set('bank_owner_address', e.target.value)} className={`${fieldClass} resize-none`} />
+        </div>
+        <div>
+          <label className={labelClass}>{t('adminDonations.settings.paymentUrl')}</label>
+          <input type="url" value={form.payment_url} onChange={(e) => set('payment_url', e.target.value)} placeholder="https://buycoffee.to/kenazplus" className={fieldClass} />
+          <p className={hintClass}>{t('adminDonations.settings.paymentUrlHint')}</p>
         </div>
       </section>
 

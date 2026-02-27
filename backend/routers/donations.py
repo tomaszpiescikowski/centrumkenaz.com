@@ -93,6 +93,7 @@ class PublicDonationSettingsResponse(BaseModel):
     payment_title: Optional[str]
     bank_owner_name: Optional[str]
     bank_owner_address: Optional[str]
+    payment_url: Optional[str] = None
     message: Optional[str]
     points_per_zloty: float
 
@@ -125,6 +126,7 @@ class AdminDonationSettingsUpdate(BaseModel):
     payment_title: Optional[str] = None
     bank_owner_name: Optional[str] = None
     bank_owner_address: Optional[str] = None
+    payment_url: Optional[str] = None
     message: Optional[str] = None
 
 
@@ -163,6 +165,7 @@ async def get_public_donation_settings(db: AsyncSession = Depends(get_db)):
         payment_title=settings.payment_title,
         bank_owner_name=settings.bank_owner_name,
         bank_owner_address=settings.bank_owner_address,
+        payment_url=settings.payment_url,
         message=settings.message,
         points_per_zloty=float(settings.points_per_zloty),
     )
@@ -273,6 +276,7 @@ async def get_admin_donation_settings(
         "payment_title": settings.payment_title,
         "bank_owner_name": settings.bank_owner_name,
         "bank_owner_address": settings.bank_owner_address,
+        "payment_url": settings.payment_url,
         "message": settings.message,
     }
 
@@ -293,6 +297,7 @@ async def update_admin_donation_settings(
     settings.payment_title = body.payment_title
     settings.bank_owner_name = body.bank_owner_name
     settings.bank_owner_address = body.bank_owner_address
+    settings.payment_url = body.payment_url
     settings.message = body.message
     await db.commit()
     return {"ok": True}

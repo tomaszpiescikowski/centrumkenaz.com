@@ -1225,6 +1225,7 @@
     "transferReference": "Transfer reference",
     "amount": "Amount",
     "referenceHint": "Remember to include the exact transfer reference - it is the only way we can identify your donation.",
+    "openTransfer": "Go to payment page",
     "successTitle": "Thank you!",
     "successBody": "Your donation has been registered. Please make a bank transfer using the details below."
   },
@@ -1279,7 +1280,9 @@
       "bankOwnerName": "Account owner",
       "bankOwnerAddress": "Owner address",
       "messagePlaceholder": "Write a message for donors...",
-      "messageHint": "This message is shown on the \"Support us\" page."
+      "messageHint": "This message is shown on the \"Support us\" page.",
+      "paymentUrl": "Payment site link",
+      "paymentUrlHint": "URL (e.g. buycoffee.to) where donors can make an online transfer."
     },
     "stats": {
       "pendingCount": "Pending",

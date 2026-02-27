@@ -1225,6 +1225,7 @@
     "transferReference": "Tytuł przelewu",
     "amount": "Kwota",
     "referenceHint": "Pamiyntej podać dokładny tytuł przelewu.",
+    "openTransfer": "Idź na strōnã przelewu",
     "successTitle": "Dziynkujymy!",
     "successBody": "Twoje zgłoszyniy dostalimy. Zrōb przelyw z podanymi danymi."
   },
@@ -1279,7 +1280,9 @@
       "bankOwnerName": "Właściciel konta",
       "bankOwnerAddress": "Adres",
       "messagePlaceholder": "Napisz wiadōmość...",
-      "messageHint": "Wyświetlo sie na strōnie \"Wspōmōż nos\"."
+      "messageHint": "Wyświetlo sie na strōnie \"Wspōmōż nos\".",
+      "paymentUrl": "Link do strōny przelewu",
+      "paymentUrlHint": "Adres URL (np. buycoffee.to), kaj darczyńcy mōgōm zrobić przelew przez internet."
     },
     "stats": {
       "pendingCount": "Czekajōnce",

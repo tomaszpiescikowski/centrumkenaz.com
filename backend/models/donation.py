@@ -160,6 +160,11 @@ class DonationSetting(Base):
         nullable=True,
         comment="Account owner address for display on the support page.",
     )
+    payment_url = Column(
+        String(512),
+        nullable=True,
+        comment="URL of the payment/transfer site shown to donors (e.g. buycoffee.to).",
+    )
     message = Column(
         Text,
         nullable=True,

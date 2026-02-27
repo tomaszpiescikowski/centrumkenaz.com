@@ -1,4 +1,5 @@
 import httpx
+import logging
 import re
 import secrets
 from datetime import datetime, timedelta
@@ -14,6 +15,7 @@ from config import get_settings
 from models.user import User, UserRole, AccountStatus
 
 settings = get_settings()
+logger = logging.getLogger(__name__)
 
 
 def _get_admin_emails() -> set[str]:
@@ -279,17 +281,36 @@ class AuthService:
         Update stored Google refresh tokens and scopes for the user.
 
         The method only commits when refresh token or scope values change.
+        Existing broader-scoped tokens are preserved — if the user already has
+        calendar access, a subsequent narrow-scope login will not downgrade it.
         """
         refresh_token = tokens.get("refresh_token")
-        scopes = tokens.get("scope")
+        scopes = tokens.get("scope") or ""
+
+        existing_scopes = getattr(user, "google_scopes", "") or ""
+        new_has_calendar = "calendar.events" in scopes
+        existing_has_calendar = "calendar.events" in existing_scopes
 
         changed = False
+
+        # Only update refresh_token if the new token carries at least as many
+        # scopes as the current one.  This prevents a plain login from
+        # silently revoking calendar access that was granted separately.
         if refresh_token:
-            user.google_refresh_token = refresh_token
-            changed = True
+            if not existing_has_calendar or new_has_calendar:
+                user.google_refresh_token = refresh_token
+                changed = True
+                logger.info("GCal tokens: updated refresh_token for user %s (calendar=%s)", user.id, new_has_calendar)
+            else:
+                logger.info("GCal tokens: preserving existing calendar refresh_token for user %s", user.id)
+
         if scopes:
-            user.google_scopes = scopes
-            changed = True
+            if not existing_has_calendar or new_has_calendar:
+                user.google_scopes = scopes
+                changed = True
+                logger.info("GCal tokens: updated scopes for user %s: %s", user.id, scopes[:120])
+            else:
+                logger.info("GCal tokens: preserving existing calendar scopes for user %s", user.id)
 
         if changed:
             self.db.add(user)

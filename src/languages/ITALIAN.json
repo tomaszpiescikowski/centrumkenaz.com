@@ -1220,6 +1220,7 @@
     "transferReference": "Riferimento bonifico",
     "amount": "Importo",
     "referenceHint": "Ricorda di includere il riferimento esatto nel bonifico.",
+    "openTransfer": "Vai alla pagina di pagamento",
     "successTitle": "Grazie!",
     "successBody": "La tua donazione e stata registrata. Effettua un bonifico con i dati seguenti."
   },
@@ -1274,7 +1275,9 @@
       "bankOwnerName": "Titolare del conto",
       "bankOwnerAddress": "Indirizzo titolare",
       "messagePlaceholder": "Scrivi un messaggio per i donatori...",
-      "messageHint": "Questo messaggio viene mostrato sulla pagina \"Sostienici\"."
+      "messageHint": "Questo messaggio viene mostrato sulla pagina \"Sostienici\".",
+      "paymentUrl": "Link al sito di pagamento",
+      "paymentUrlHint": "URL (es. buycoffee.to) dove i donatori possono effettuare un pagamento online."
     },
     "stats": {
       "pendingCount": "In attesa",

@@ -1223,6 +1223,7 @@
     "transferReference": "Tytuł przelewu",
     "amount": "Kwota",
     "referenceHint": "Pamiętaj, aby podać dokładny tytuł przelewu - to jedyny sposób, w jaki możemy Cię zidentyfikować.",
+    "openTransfer": "Przejdź do strony przelewu",
     "successTitle": "Dziękujemy!",
     "successBody": "Twoje zgłoszenie wsparcia zostało przyjęte. Wykonaj przelew z podanymi danymi, a my potwierdzimy wpłatę."
   },
@@ -1277,7 +1278,9 @@
       "bankOwnerName": "Właściciel konta",
       "bankOwnerAddress": "Adres właściciela konta",
       "messagePlaceholder": "Napisz wiadomość dla darczyńców...",
-      "messageHint": "Ta wiadomość wyświetla się na stronie \"Wesprzyj nas\"."
+      "messageHint": "Ta wiadomość wyświetla się na stronie \"Wesprzyj nas\".",
+      "paymentUrl": "Link do strony przelewu",
+      "paymentUrlHint": "Adres URL (np. buycoffee.to), gdzie darczyńcy mogą wykonać przelew online."
     },
     "stats": {
       "pendingCount": "Oczekujące",

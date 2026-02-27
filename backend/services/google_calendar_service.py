@@ -1,5 +1,6 @@
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, timezone
 from typing import Optional
+import logging
 
 import httpx
 
@@ -8,6 +9,7 @@ from models.event import Event
 from models.user import User
 
 settings = get_settings()
+logger = logging.getLogger(__name__)
 
 
 class GoogleCalendarService:
@@ -42,6 +44,11 @@ class GoogleCalendarService:
                 },
             )
             if response.status_code >= 400:
+                logger.warning(
+                    "GCal: token refresh failed status=%s body=%s",
+                    response.status_code,
+                    response.text[:200],
+                )
                 return None
             payload = response.json()
             return payload.get("access_token")
@@ -95,6 +102,16 @@ class GoogleCalendarService:
         if not user.google_refresh_token:
             return None
 
+        # Verify the stored token actually has calendar scope before trying.
+        google_scopes = getattr(user, "google_scopes", "") or ""
+        if "calendar.events" not in google_scopes:
+            logger.warning(
+                "GCal: user %s has google_refresh_token but no calendar.events scope (%s)",
+                user.id,
+                google_scopes[:120],
+            )
+            return None
+
         access_token = await self._refresh_access_token(user.google_refresh_token)
         if not access_token:
             return None
@@ -142,15 +159,20 @@ class GoogleCalendarService:
                     {"method": "popup", "minutes": 60},
                 ],
             },
-            "source": {
-                "title": "Kenaz",
-                "url": (
-                    f"{settings.frontend_url}/event/{event.id}?occurrence={occurrence_date.isoformat()}"
-                    if occurrence_date
-                    else f"{settings.frontend_url}/event/{event.id}"
-                ),
-            },
         }
+
+        # Ensure datetimes are timezone-aware (Google requires timezone offset)
+        if start_dt.tzinfo is None:
+            start_dt = start_dt.replace(tzinfo=timezone.utc)
+        if end_dt.tzinfo is None:
+            end_dt = end_dt.replace(tzinfo=timezone.utc)
+
+        logger.debug(
+            "GCal: creating event '%s' for user %s (occurrence=%s)",
+            event.title,
+            user.id,
+            occurrence_date,
+        )
 
         async with httpx.AsyncClient() as client:
             response = await client.post(
@@ -159,6 +181,11 @@ class GoogleCalendarService:
                 json=payload,
             )
             if response.status_code >= 400:
+                logger.warning(
+                    "GCal: create event failed status=%s body=%s",
+                    response.status_code,
+                    response.text[:500],
+                )
                 return None
             data = response.json()
             return data.get("id")

@@ -1220,6 +1220,7 @@
     "transferReference": "转账参考号",
     "amount": "金额",
     "referenceHint": "请务必在转账备注中填写准确的参考号。",
+    "openTransfer": "前往付款页面",
     "successTitle": "感谢您！",
     "successBody": "您的捐款已登记。请按以下信息进行银行转账。"
   },
@@ -1274,7 +1275,9 @@
       "bankOwnerName": "账户持有人",
       "bankOwnerAddress": "持有人地址",
       "messagePlaceholder": "为捐款人写一条消息...",
-      "messageHint": "此消息显示在\"支持我们\"页面。"
+      "messageHint": "此消息显示在\"支持我们\"页面。",
+      "paymentUrl": "付款网站链接",
+      "paymentUrlHint": "URL（如 buycoffee.to），捐赠者可在此进行在线转账。"
     },
     "stats": {
       "pendingCount": "待处理",

@@ -191,9 +191,19 @@ function SupportUs() {
             <p className="mt-6 text-xs text-navy/50 dark:text-cream/50">
               {t('support.referenceHint')}
             </p>
+            {settings?.payment_url && (
+              <a
+                href={settings.payment_url}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-navy text-cream dark:bg-cream dark:text-navy px-6 py-3 text-sm font-bold"
+              >
+                {t('support.openTransfer')}
+              </a>
+            )}
             <Link
               to="/"
-              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-navy text-cream dark:bg-cream dark:text-navy px-6 py-3 text-sm font-bold"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-navy/20 dark:border-cream/20 px-6 py-3 text-sm font-semibold text-navy dark:text-cream"
             >
               {t('common.backToHome')}
             </Link>
@@ -348,6 +358,16 @@ function SupportUs() {
             <p className="mt-4 text-xs text-navy/50 dark:text-cream/50">
               {t('support.referenceHint')}
             </p>
+            {settings?.payment_url && (
+              <a
+                href={settings.payment_url}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-navy text-cream dark:bg-cream dark:text-navy px-4 py-3 text-sm font-bold"
+              >
+                {t('support.openTransfer')}
+              </a>
+            )}
           </div>
         )}
 
