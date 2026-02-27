@@ -778,8 +778,8 @@ async def test_cannot_delete_other_users_comment(comments_api_client, db_session
 
 
 @pytest.mark.asyncio
-async def test_admin_can_delete_any_comment(comments_api_client, db_session):
-    """Admin should be able to delete any user's comment."""
+async def test_admin_cannot_delete_other_users_comment(comments_api_client, db_session):
+    """Admins cannot delete another user's comment — delete is owner-only."""
     user = _make_user("adm-del-user")
     admin = _make_user("adm-del-admin", role=UserRole.ADMIN)
     event = _make_event()
@@ -797,7 +797,7 @@ async def test_admin_can_delete_any_comment(comments_api_client, db_session):
 
     create_resp = await comments_api_client.post(
         f"/comments/event/{event.id}",
-        json={"content": "admin should delete"},
+        json={"content": "only owner can delete this"},
         headers=user_headers,
     )
     comment_id = create_resp.json()["id"]
@@ -806,7 +806,7 @@ async def test_admin_can_delete_any_comment(comments_api_client, db_session):
         f"/comments/{comment_id}",
         headers=admin_headers,
     )
-    assert resp.status_code == 204
+    assert resp.status_code == 403
 
 
 # ── 6. Optimistic Concurrency Control ────────────────────────────
