@@ -9,7 +9,7 @@ import { BUILT_IN_EVENT_ICONS, ICON_MAP, EXTRA_ICON_MAP } from '../../constants/
  * @param {Function} onChange - called with new key
  * @param {Array} customTypes - from useCustomEventTypes()
  */
-function EventIconPicker({ value, onChange, customTypes = [] }) {
+function EventIconPicker({ value, onChange, customTypes = [], compact = false }) {
   const [search, setSearch] = useState('')
 
   const allOptions = [
@@ -30,7 +30,7 @@ function EventIconPicker({ value, onChange, customTypes = [] }) {
         placeholder="Szukaj ikony..."
         className="ui-input text-sm"
       />
-      <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 max-h-72 overflow-y-auto pr-1">
+      <div className={`grid gap-2 max-h-72 overflow-y-auto pr-1 ${compact ? 'grid-cols-4' : 'grid-cols-4 sm:grid-cols-6 md:grid-cols-8'}`}>
         {filtered.map((opt) => {
           const isSelected = value === opt.key
           return (

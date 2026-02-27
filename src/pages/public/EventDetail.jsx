@@ -550,6 +550,7 @@ function EventDetail() {
                       value={adminForm.event_type}
                       onChange={(val) => handleAdminChange('event_type', val)}
                       customTypes={customTypes}
+                      compact
                     />
                   </div>
 
