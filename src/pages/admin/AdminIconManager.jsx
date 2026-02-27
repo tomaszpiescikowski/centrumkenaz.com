@@ -67,7 +67,6 @@ function ExtraIconPicker({ value, onChange }) {
                 // eslint-disable-next-line react/no-danger
                 dangerouslySetInnerHTML={{ __html: icon.paths }}
               />
-              <span className="text-[8px] leading-tight text-navy/60 dark:text-cream/60 break-words w-full text-center">{icon.label}</span>
             </button>
           )
         })}
@@ -241,7 +240,7 @@ function AdminIconManager() {
                       />
                     ) : (
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-8 w-8">
-                        <circle cx="12" cy="12" r="9" strokeWidth="1.8"/>
+                        <circle cx="12" cy="12" r="9" strokeWidth="2.2"/>
                       </svg>
                     )}
                   </span>
@@ -290,11 +289,7 @@ function AdminIconManager() {
 
           {/* SVG icon picker */}
           <div className="flex flex-col gap-1.5 text-sm text-navy dark:text-cream">
-            <span>Ikona {form.iconKey && (
-              <span className="text-xs text-green-600 dark:text-green-400 ml-1">
-                — {EXTRA_ICON_MAP[form.iconKey]?.label}
-              </span>
-            )}</span>
+            <span>Ikona</span>
             <ExtraIconPicker
               value={form.iconKey}
               onChange={(key) => setForm((p) => ({ ...p, iconKey: key }))}
@@ -320,7 +315,7 @@ function AdminIconManager() {
                       : 'border-navy/20 dark:border-cream/20'
                   }`}
                 >
-                  <span className={`block h-5 w-5 rounded-full ring-1 ring-black/15 dark:ring-white/10 ${col.replace('text-', 'bg-')}`} />
+                  <span className={`block h-5 w-5 rounded-full ring-2 ring-black/30 dark:ring-white/30 ${col.replace('text-', 'bg-')}`} />
                 </button>
               ))}
 
@@ -336,9 +331,11 @@ function AdminIconManager() {
                       dangerouslySetInnerHTML={{ __html: EXTRA_ICON_MAP[form.iconKey]?.paths || '' }}
                     />
                   </span>
+                  {form.label && (
                   <span className="text-xs font-medium text-navy/80 dark:text-cream/80 leading-snug text-center max-w-[72px] break-words">
-                    {form.label || EXTRA_ICON_MAP[form.iconKey]?.label}
+                    {form.label}
                   </span>
+                  )}
                 </div>
               )}
             </div>

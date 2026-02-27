@@ -58,8 +58,8 @@ function EventIcon({ type, size = 'md', customTypes = [] }) {
   // Fallback generic icon
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={iconClassName}>
-      <circle cx="12" cy="12" r="9" strokeWidth="1.8"/>
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M12 8v4M12 16h.01"/>
+      <circle cx="12" cy="12" r="9" strokeWidth="2.2"/>
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M12 8v4M12 16h.01"/>
     </svg>
   )
 }
