@@ -151,7 +151,7 @@ function DraggableFeedbackButton() {
         onClick={handleClick}
         aria-label={t('feedback.button')}
         style={{ left: pos.left, top: pos.top, touchAction: 'none' }}
-        className="fixed z-[60] flex h-12 w-12 select-none cursor-grab items-center justify-center rounded-full bg-amber-500 text-white shadow-lg transition-shadow hover:shadow-xl active:cursor-grabbing"
+        className="fixed z-[60] flex h-9 w-9 select-none cursor-grab items-center justify-center rounded-full bg-amber-500 text-white shadow-lg transition-shadow hover:shadow-xl active:cursor-grabbing"
       >
         {/* Lightbulb icon */}
         <svg className="h-[18px] w-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

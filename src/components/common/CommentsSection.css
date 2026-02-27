@@ -1721,128 +1721,6 @@ img.cmt-av-img {
 }
 
 /* Event list */
-.cp-event-list-wrap {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  padding: 0.5rem 0;
-}
-
-.cp-event-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.cp-event-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  width: 100%;
-  padding: 0.875rem 1rem;
-  border: none;
-  background: none;
-  border-bottom: 1px solid var(--b);
-  cursor: pointer;
-  text-align: left;
-  -webkit-tap-highlight-color: transparent;
-  transition: background 0.12s;
-}
-
-.cp-event-item:hover {
-  background: rgba(15, 23, 74, 0.04);
-}
-
-.dark .cp-event-item:hover {
-  background: rgba(255, 253, 245, 0.04);
-}
-
-.cp-event-icon {
-  flex-shrink: 0;
-}
-
-.cp-event-info {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-}
-
-.cp-event-title-text {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--txt);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.cp-event-title-text.cp-event-title-unread {
-  font-weight: 800;
-}
-
-.cp-event-preview {
-  font-size: 0.8125rem;
-  color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.cp-event-preview.cp-event-preview-unread {
-  font-weight: 600;
-  color: var(--txt);
-}
-
-.cp-event-meta {
-  font-size: 0.8125rem;
-  color: var(--muted);
-}
-
-.cp-event-arrow {
-  flex-shrink: 0;
-  color: var(--muted);
-  display: none; /* replaced by cp-event-right column */
-}
-
-/* Past events — still clickable but visually dimmed */
-.cp-event-item--past {
-  opacity: 0.48;
-}
-.cp-event-item--past .cp-event-icon * {
-  filter: grayscale(1);
-}
-
-/* Right-side column: timestamp on top, unread dot on bottom */
-.cp-event-right {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.3rem;
-  min-width: 2.5rem;
-}
-
-.cp-event-time {
-  font-size: 0.725rem;
-  color: var(--muted);
-  white-space: nowrap;
-}
-
-.cp-event-right-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  min-height: 0.625rem;
-}
-
-/* Author name in preview (bold, slightly different tone) */
-.cp-event-preview-author {
-  font-weight: 600;
-}
-
 .cp-empty {
   display: flex;
   align-items: center;
@@ -2383,14 +2261,12 @@ img.cmt-av-img {
 /* ?????? Dark mode text ???????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????? */
 .dark .cmt-author,
 .dark .cmt-content,
-.dark .cmt-empty p,
-.dark .cp-event-title-text {
+.dark .cmt-empty p {
   color: var(--txt, rgba(255, 245, 225, 0.92));
 }
 .dark .cmt-time,
 .dark .cmt-edited,
-.dark .cmt-action-btn,
-.dark .cp-event-meta {
+.dark .cmt-action-btn {
   color: var(--muted, rgba(255, 245, 225, 0.44));
 }
 .dark .cmt-input {
