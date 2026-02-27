@@ -295,17 +295,6 @@ function WideMediaCard({ title, body, articleLabel, articleHref, videoTitle, vid
           {videoTitle}
         </a>
       </div>
-      <div className="mt-6 overflow-hidden rounded-2xl border border-navy/10 bg-transparent dark:border-cream/15 dark:bg-transparent">
-        <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-          <iframe
-            title={videoTitle}
-            src="https://www.youtube.com/embed/egjMDE_7wDY"
-            className="absolute inset-0 w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        </div>
-      </div>
     </div>
   )
 }
