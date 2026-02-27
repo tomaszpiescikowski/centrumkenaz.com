@@ -306,8 +306,7 @@ function AdminEventCreate() {
       </div>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
+        <label className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
             {t('admin.fields.title')}
             <input
               type="text"
@@ -321,7 +320,6 @@ function AdminEventCreate() {
               <p className={validationHintClass}>{t(fieldHints.title)}</p>
             )}
           </label>
-        </div>
 
         <div className="flex flex-col gap-2 text-sm text-navy dark:text-cream">
           {t('admin.fields.eventType')}
