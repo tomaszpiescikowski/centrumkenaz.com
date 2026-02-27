@@ -28,9 +28,9 @@ export function useCustomEventTypes({ authFetch } = {}) {
       const data = await fetchEventTypes()
       // Normalise: the backend uses icon_key; keep both so legacy consumers work
       setCustomTypes(data.map((t) => ({ ...t, iconKey: t.icon_key })))
-    } catch {
-      // Non-critical — fall back to empty list
-      setCustomTypes([])
+    } catch (err) {
+      // Non-critical — keep the previous list intact rather than wiping to []
+      console.warn('[useCustomEventTypes] fetch failed:', err?.message)
     } finally {
       setLoading(false)
     }

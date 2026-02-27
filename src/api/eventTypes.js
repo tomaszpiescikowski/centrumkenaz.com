@@ -7,7 +7,7 @@ import { API_URL, safeJson } from './config'
  * No authentication required.
  */
 export async function fetchEventTypes() {
-  const response = await fetch(`${API_URL}/event-types`)
+  const response = await fetch(`${API_URL}/event-types`, { cache: 'no-store' })
   if (!response.ok) {
     const data = await response.json().catch(() => ({}))
     throw new Error(data.detail || 'Failed to fetch event types')

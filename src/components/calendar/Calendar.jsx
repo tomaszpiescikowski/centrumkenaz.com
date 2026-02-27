@@ -7,6 +7,7 @@ import { useCity } from '../../context/CityContext'
 import EventIcon from '../common/EventIcon'
 import { toLocalDateKey } from '../../utils/date'
 import { TAG_COLORS as ICON_COLORS } from '../../constants/interestTags'
+import { useCustomEventTypes } from '../../hooks/useCustomEventTypes'
 
 const DATE_KEY_PATTERN = /^\d{4}-\d{2}-\d{2}$/
 const MAX_EVENTS_PER_DAY = 4
@@ -33,8 +34,14 @@ const EVENT_TONES = {
   inne: { marker: 'bg-slate-500 text-white', line: 'bg-slate-500' },
 }
 
-function getTone(type) {
-  return EVENT_TONES[type] || EVENT_TONES.inne
+function getTone(type, customTypes = []) {
+  if (EVENT_TONES[type]) return EVENT_TONES[type]
+  const ct = customTypes.find((c) => c.key === type)
+  if (ct?.color) {
+    const bg = ct.color.replace('text-', 'bg-')
+    return { marker: `${bg} text-white`, line: bg }
+  }
+  return EVENT_TONES.inne
 }
 
 function getEventPath(event) {
@@ -50,6 +57,7 @@ function Calendar({ className = '' }) {
   const isAdmin = user?.role === 'admin' && user?.account_status === 'active'
   const [searchParams, setSearchParams] = useSearchParams()
   const dayFromQuery = searchParams.get('day')
+  const { customTypes } = useCustomEventTypes()
 
   const [currentDate, setCurrentDate] = useState(() => {
     const now = new Date()
@@ -73,6 +81,18 @@ function Calendar({ className = '' }) {
       return acc
     }, {})
   ))
+
+  // When custom types load, add them to the filter map (default: visible)
+  useEffect(() => {
+    if (!customTypes.length) return
+    setTypeFilter((prev) => {
+      const updates = {}
+      for (const ct of customTypes) {
+        if (!(ct.key in prev)) updates[ct.key] = true
+      }
+      return Object.keys(updates).length ? { ...prev, ...updates } : prev
+    })
+  }, [customTypes])
 
   const year = currentDate.getFullYear()
   const month = currentDate.getMonth()
@@ -207,21 +227,26 @@ function Calendar({ className = '' }) {
     }
   }, [events, isActiveUser])
 
+  // All event types = built-in + custom DB types
+  const allEventTypes = useMemo(() => [
+    ...EVENT_TYPES,
+    ...customTypes.map((ct) => ({ type: ct.key, label: ct.label, labelKey: null, color: ct.color })),
+  ], [customTypes])
+
   // Categories present in events for the current month view.
-  // Used to show only relevant legend entries.
   const availableTypes = useMemo(() => {
     if (loading) return null
-    return new Set(events.map((e) => {
-      return EVENT_TYPES.some((row) => row.type === e.type) ? e.type : 'inne'
-    }))
-  }, [loading, events])
+    return new Set(events.map((e) => (
+      allEventTypes.some((row) => row.type === e.type) ? e.type : 'inne'
+    )))
+  }, [loading, events, allEventTypes])
 
   const visibleEvents = useMemo(() => {
     return events.filter((eventItem) => {
-      const typeKey = EVENT_TYPES.some((row) => row.type === eventItem.type) ? eventItem.type : 'inne'
+      const typeKey = allEventTypes.some((row) => row.type === eventItem.type) ? eventItem.type : 'inne'
       return typeFilter[typeKey] !== false
     })
-  }, [events, typeFilter])
+  }, [events, typeFilter, allEventTypes])
 
   const eventsByDay = useMemo(() => {
     const map = new Map()
@@ -335,14 +360,14 @@ function Calendar({ className = '' }) {
     return (
       <div className="mt-1 flex items-center justify-center gap-0.5">
         {dayEvents.slice(0, MAX_EVENTS_PER_DAY).map((eventItem, idx) => {
-          const tone = getTone(eventItem.type)
+          const tone = getTone(eventItem.type, customTypes)
           return (
             <span
               key={`${eventItem.id}-${idx}`}
               className={`inline-flex h-3.5 w-3.5 items-center justify-center rounded-full ${tone.marker}`}
               title={eventItem.title}
             >
-              <EventIcon type={eventItem.type} size="xs" />
+              <EventIcon type={eventItem.type} size="xs" customTypes={customTypes} />
             </span>
           )
         })}
@@ -357,7 +382,7 @@ function Calendar({ className = '' }) {
   }
 
   const toggleAllFilters = (nextValue) => {
-    const typesToToggle = availableTypes ? EVENT_TYPES.filter(({ type }) => availableTypes.has(type)) : EVENT_TYPES
+    const typesToToggle = availableTypes ? allEventTypes.filter(({ type }) => availableTypes.has(type)) : allEventTypes
     setTypeFilter((prev) => {
       const updated = { ...prev }
       typesToToggle.forEach(({ type }) => {
@@ -479,15 +504,19 @@ function Calendar({ className = '' }) {
               </svg>
             </button>
             {legendOpen && <div className="mt-2 flex flex-wrap gap-2">
-              {(availableTypes === null ? EVENT_TYPES : EVENT_TYPES.filter(({ type }) => availableTypes.has(type))).map(({ type, labelKey }) => {
+              {(availableTypes === null ? allEventTypes : allEventTypes.filter(({ type }) => availableTypes.has(type))).map(({ type, labelKey, label, color }) => {
                 const isActive = typeFilter[type] !== false
+                const iconColor = isActive
+                  ? (ICON_COLORS[type] || color || 'text-navy/60 dark:text-cream/60')
+                  : 'text-navy/30 dark:text-cream/30'
+                const displayLabel = labelKey ? t(labelKey) : label
                 return (
                   <button
                     key={type}
                     type="button"
                     onClick={() => setTypeFilter((prev) => ({ ...prev, [type]: !isActive }))}
                     onDoubleClick={() => {
-                      const activeLegendTypes = availableTypes ? EVENT_TYPES.filter(({ type }) => availableTypes.has(type)) : EVENT_TYPES
+                      const activeLegendTypes = availableTypes ? allEventTypes.filter(({ type: t2 }) => availableTypes.has(t2)) : allEventTypes
                       const allActive = activeLegendTypes.every(({ type: itemType }) => typeFilter[itemType] !== false)
                       toggleAllFilters(!allActive)
                     }}
@@ -500,10 +529,10 @@ function Calendar({ className = '' }) {
                       }`
                     }
                   >
-                    <span className={isActive ? ICON_COLORS[type] : 'text-navy/30 dark:text-cream/30'}>
-                      <EventIcon type={type} size="sm" />
+                    <span className={iconColor}>
+                      <EventIcon type={type} size="sm" customTypes={customTypes} />
                     </span>
-                    <span>{t(labelKey)}</span>
+                    <span>{displayLabel}</span>
                   </button>
                 )
               })}
@@ -540,7 +569,7 @@ function Calendar({ className = '' }) {
                     : 0
                   const progressPercent = progressRatio * 100
                   const progressTone = getProgressTone(progressRatio)
-                  const tone = getTone(eventItem.type)
+                  const tone = getTone(eventItem.type, customTypes)
 
                   return (
                     <Link
@@ -552,7 +581,7 @@ function Calendar({ className = '' }) {
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 text-sm font-semibold text-navy dark:text-cream">
-                          <EventIcon type={eventItem.type} size="sm" />
+                          <EventIcon type={eventItem.type} size="sm" customTypes={customTypes} />
                           <span className="truncate">{eventItem.title}</span>
                         </div>
                         <div className="mt-1 text-xs text-navy/65 dark:text-cream/65">
