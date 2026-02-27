@@ -14,6 +14,7 @@ import ViewCard from '../../components/ui/ViewCard'
 import AuthGateCard from '../../components/ui/AuthGateCard'
 import usePreserveScrollSearchSwitch from '../../hooks/usePreserveScrollSearchSwitch'
 import useViewSorts from '../../hooks/useViewSorts'
+import { useCustomEventTypes } from '../../hooks/useCustomEventTypes'
 import { formatAmount, formatPercent, parseAmount, parsePercent } from '../../utils/numberFormat'
 
 const ALLOWED_VIEWS = ['events', 'users', 'payments', 'registrations']
@@ -28,6 +29,7 @@ function AdminPayments() {
   const { user, isAuthenticated, authFetch, login } = useAuth()
   const { t } = useLanguage()
   const { showError } = useNotification()
+  const { customTypes } = useCustomEventTypes()
   const [eventStats, setEventStats] = useState([])
   const [userStats, setUserStats] = useState([])
   const [paymentStats, setPaymentStats] = useState(null)
@@ -224,7 +226,7 @@ function AdminPayments() {
       render: (row) => (
         <div className="min-w-0">
           <div className="truncate font-semibold text-navy dark:text-cream">{row.title}</div>
-          <div className="truncate text-[11px] text-navy/60 dark:text-cream/60">{t(`eventTypes.${row.event_type}`)}</div>
+          <div className="truncate text-[11px] text-navy/60 dark:text-cream/60">{customTypes.find(c => c.key === row.event_type)?.label || t(`eventTypes.${row.event_type}`)}</div>
         </div>
       ),
     },

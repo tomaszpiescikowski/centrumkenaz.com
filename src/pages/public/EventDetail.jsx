@@ -867,7 +867,7 @@ function EventDetail() {
                 {availabilityTag.label}
               </span>
               <span className="ev-tag ev-tag-outline">
-                {t(`eventTypes.${event.type}`) || event.type}
+                {customTypes.find(c => c.key === event.type)?.label || t(`eventTypes.${event.type}`)}
               </span>
               {event.requiresSubscription && (
                 <span className="ev-tag ev-tag-outline">
