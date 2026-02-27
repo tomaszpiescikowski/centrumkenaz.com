@@ -71,7 +71,7 @@
   "feedback": {
     "button": "Feedback",
     "title": "Deel je feedback",
-    "subtitle": "De app is in een vroege testfase — elke mening is heel belangrijk!",
+    "subtitle": "De app is in een vroege testfase - elke mening is heel belangrijk!",
     "hint": "Schrijf alles wat je opviel, bijvoorbeeld:",
     "examples": [
       "Iets ziet er lelijk uit of is moeilijk te lezen",
@@ -123,7 +123,7 @@
     "label": "Ontdek Kenaz",
     "backHome": "Terug naar home",
     "title": "Waarom Kenaz?",
-    "subtitle": "Een plek waar beweging, verbinding en groei één ritme delen. Sluit aan wanneer het past — blijf omdat het goed voelt.",
+    "subtitle": "Een plek waar beweging, verbinding en groei één ritme delen. Sluit aan wanneer het past - blijf omdat het goed voelt.",
     "ctaMessage": "Doe nu mee en ervaar Kenaz van binnenuit.",
     "joinNow": "Doe nu mee",
     "joinSecondary": "Ik wil het proberen",
@@ -156,7 +156,7 @@
     "sponsorsBody": "We werken samen met merken die een actieve, gezonde levensstijl en community-groei ondersteunen.",
     "sponsorsPrimary": "Decathlon",
     "supportTitle": "Steun ons",
-    "supportBody": "Kenaz is een stichting — we groeien dankzij mensen die geloven in wat we doen. Elke złoty gaat rechtstreeks naar het organiseren van evenementen en het ondersteunen van de community.",
+    "supportBody": "Kenaz is een stichting - we groeien dankzij mensen die geloven in wat we doen. Elke złoty gaat rechtstreeks naar het organiseren van evenementen en het ondersteunen van de community.",
     "supportButton": "Steun Kenaz",
     "social": {
       "facebook": "Facebook",
@@ -201,7 +201,7 @@
     "stories": [
       {
         "title": "Events met ritme",
-        "body": "Kenaz geeft je week structuur en energie. Je hebt geen topvorm nodig — alleen de wil om te komen en iets goeds voor jezelf te doen."
+        "body": "Kenaz geeft je week structuur en energie. Je hebt geen topvorm nodig - alleen de wil om te komen en iets goeds voor jezelf te doen."
       },
       {
         "title": "Beweging die balans brengt",
@@ -221,7 +221,7 @@
       },
       {
         "title": "De kracht van samen",
-        "body": "Wat Kenaz bijzonder maakt is hoe echt het voelt — steun, gesprekken, lachen en samen moeite doen."
+        "body": "Wat Kenaz bijzonder maakt is hoe echt het voelt - steun, gesprekken, lachen en samen moeite doen."
       }
     ],
     "sections": {
@@ -229,18 +229,18 @@
         "title": "Events",
         "subtitle": "Regelmatige bijeenkomsten die het ritme en de energie van de community bepalen.",
         "highlights": [
-          "Kenaz geeft je een ritme dat je uit de sleur haalt — zonder druk, in goed gezelschap.",
+          "Kenaz geeft je een ritme dat je uit de sleur haalt - zonder druk, in goed gezelschap.",
           "Onze trainingen en activiteiten zijn niet voor de show. Het is rustig, consequent werken aan energie en welzijn.",
           "We ontmoeten elkaar offline, omdat echte relaties ontstaan in echte momenten.",
           "Elke bijeenkomst heeft een eigen vibe: soms sportief, soms sociaal, soms herstellend.",
           "We houden groepen klein, zodat je mensen echt leert kennen en je thuis voelt.",
-          "Je sluit aan wanneer het jou past — kies de activiteiten die bij je tempo passen.",
+          "Je sluit aan wanneer het jou past - kies de activiteiten die bij je tempo passen.",
           "Zoek je natuurlijke groei en een steunende sfeer? Dan is Kenaz voor jou."
         ]
       },
       "community": {
         "title": "Community",
-        "subtitle": "Relaties die blijven — een kring van mensen met gedeelde waarden.",
+        "subtitle": "Relaties die blijven - een kring van mensen met gedeelde waarden.",
         "highlights": [
           "Offline ontmoetingen zonder druk of schijn",
           "Een sterk gevoel van verbondenheid en steun",
@@ -253,7 +253,7 @@
         "highlights": [
           "Sauna's, berghutten en themareizen",
           "Geselecteerde locaties en intieme groepen",
-          "Geen verveling — maximale gedeelde verhalen"
+          "Geen verveling - maximale gedeelde verhalen"
         ]
       }
     }
@@ -455,7 +455,7 @@
     "cancellationOpen": "Mogelijk",
     "cancellationClosed": "Gesloten",
     "cancellationClosedMessage": "Annuleringsvenster gesloten.",
-    "cancellationNotPossible": "Annulering is niet meer mogelijk — de deadline is verstreken.",
+    "cancellationNotPossible": "Annulering is niet meer mogelijk - de deadline is verstreken.",
     "cancelConfirmMessage": "Weet je zeker dat je je inschrijving voor dit evenement wilt annuleren?",
     "cancelConfirmManualRefund": "Aangezien je via bankoverschrijving hebt betaald, wordt een terugbetalingsverzoek naar de beheerder gestuurd.",
     "cancelConfirmButton": "Ja, annuleren",
@@ -522,7 +522,7 @@
           "Toegangskaarten tegen lagere ledenprijzen"
         ],
         "cta": "Word lid van de gemeenschap",
-        "ctaAriaLabel": "Word lid van de gemeenschap — 33 PLN per maand"
+        "ctaAriaLabel": "Word lid van de gemeenschap - 33 PLN per maand"
       },
       "yearly": {
         "title": "Jaarlijks lidmaatschap",
@@ -533,7 +533,7 @@
           "Voorrang bij inschrijving voor kwartaalevenementen"
         ],
         "cta": "Kies jaarplan",
-        "ctaAriaLabel": "Kies jaarplan — 333 PLN per jaar"
+        "ctaAriaLabel": "Kies jaarplan - 333 PLN per jaar"
       }
     },
     "mostPopular": "MEEST POPULAIR",
@@ -950,7 +950,7 @@
       "confirmInstruction": "Typ de onderstaande code om te bevestigen:",
       "targetEmail": "Gebruikers-e-mail",
       "typePlaceholder": "Typ de code",
-      "confirmButton": "Bevestigen — admin toekennen",
+      "confirmButton": "Bevestigen - admin toekennen",
       "promoting": "Bevorderen...",
       "success": "Adminrechten zijn toegekend.",
       "error": "Kon adminrechten niet toekennen."
@@ -1019,7 +1019,7 @@
       "confirmInstruction": "Typ de onderstaande code om te bevestigen:",
       "targetEmail": "Gebruikers-e-mail",
       "typePlaceholder": "Typ de code",
-      "confirmButton": "Bevestigen — admin toekennen",
+      "confirmButton": "Bevestigen - admin toekennen",
       "promoting": "Bevorderen...",
       "success": "Adminrechten zijn toegekend.",
       "error": "Kon adminrechten niet toekennen."
@@ -1202,11 +1202,11 @@
     "optionalInfo": "Optionele gegevens",
     "donorName": "Naam of nickname (optioneel)",
     "donorEmail": "E-mailadres (optioneel)",
-    "loggedInHint": "Je bent ingelogd — je donatie wordt gekoppeld aan je account.",
+    "loggedInHint": "Je bent ingelogd - je donatie wordt gekoppeld aan je account.",
     "submitButton": "Genereer overschrijving",
     "manualNote": "Na het invullen ontvang je een unieke overschrijvingsreferentie.",
     "minAmountError": "Minimale donatie is {min} zl",
-    "submitError": "Fout bij indienen — probeer opnieuw",
+    "submitError": "Fout bij indienen - probeer opnieuw",
     "bankDetails": "Bankgegevens",
     "recipient": "Ontvanger",
     "accountNumber": "Rekeningnummer",
@@ -1220,14 +1220,14 @@
     "successBody": "Je donatie is geregistreerd. Maak de overschrijving met onderstaande gegevens."
   },
   "adminDonations": {
-    "title": "Steun ons — beheer",
+    "title": "Steun ons - beheer",
     "subtitle": "Beheer donaties, punten en instellingen.",
     "anonymous": "anoniem",
     "confirm": "Bevestig",
     "cancel": "Annuleer",
     "confirmed": "Donatie bevestigd.",
     "cancelled": "Donatie geannuleerd.",
-    "confirmedWithPoints": "Donatie bevestigd — {points} pts toegekend.",
+    "confirmedWithPoints": "Donatie bevestigd - {points} pts toegekend.",
     "noPending": "Geen openstaande donaties.",
     "noAll": "Geen donaties gevonden.",
     "tabs": {

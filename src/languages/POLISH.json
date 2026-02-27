@@ -69,7 +69,7 @@
   "feedback": {
     "button": "Feedback",
     "title": "Podziel się opinią",
-    "subtitle": "Aplikacja jest we wczesnej fazie testów — każda opinia jest dla nas bardzo ważna!",
+    "subtitle": "Aplikacja jest we wczesnej fazie testów - każda opinia jest dla nas bardzo ważna!",
     "hint": "Napisz cokolwiek, co Ci się rzuciło w oczy, np.:",
     "examples": [
       "Coś brzydko wygląda lub jest nieczytelne",
@@ -121,7 +121,7 @@
     "label": "Poznaj Kenaz",
     "backHome": "Wróć na start",
     "title": "Dlaczego Kenaz?",
-    "subtitle": "To miejsce, w którym ruch, relacje i rozwój spotykają się w jednym rytmie. Dołączysz kiedy chcesz — zostajesz, bo tu jest dobrze.",
+    "subtitle": "To miejsce, w którym ruch, relacje i rozwój spotykają się w jednym rytmie. Dołączysz kiedy chcesz - zostajesz, bo tu jest dobrze.",
     "ctaMessage": "Dołącz teraz i zobacz, jak wygląda Kenaz od środka.",
     "joinNow": "Dołącz teraz",
     "joinSecondary": "Chcę spróbować",
@@ -154,7 +154,7 @@
     "sponsorsBody": "Współpracujemy z markami, które wspierają aktywny, zdrowy styl życia i rozwój społeczności.",
     "sponsorsPrimary": "Decathlon",
     "supportTitle": "Wesprzyj nas",
-    "supportBody": "Kenaz to fundacja — rozwijamy się dzięki ludziom, którzy wierzą w to, co robimy. Każda złotówka trafia bezpośrednio na organizację wydarzeń i utrzymanie społeczności.",
+    "supportBody": "Kenaz to fundacja - rozwijamy się dzięki ludziom, którzy wierzą w to, co robimy. Każda złotówka trafia bezpośrednio na organizację wydarzeń i utrzymanie społeczności.",
     "supportButton": "Wesprzyj Kenaz",
     "social": {
       "facebook": "Facebook",
@@ -199,7 +199,7 @@
     "stories": [
       {
         "title": "Wydarzenia, które budują rytm",
-        "body": "Kenaz to regularne spotkania, które porządkują tydzień i dają energię. Nie musisz mieć formy ani doświadczenia — wystarczy chęć, żeby być z ludźmi i zrobić coś dobrego dla siebie. Z czasem ten rytm wchodzi naturalnie w życie."
+        "body": "Kenaz to regularne spotkania, które porządkują tydzień i dają energię. Nie musisz mieć formy ani doświadczenia - wystarczy chęć, żeby być z ludźmi i zrobić coś dobrego dla siebie. Z czasem ten rytm wchodzi naturalnie w życie."
       },
       {
         "title": "Ruch, który daje balans",
@@ -211,7 +211,7 @@
       },
       {
         "title": "Motywacja do zmian",
-        "body": "Wspólna energia działa jak najlepszy impuls. Łatwiej utrzymać zdrowy styl życia, kiedy widzisz, że inni też wybierają ruch, spokój i dobre relacje. Tu nikt nie udaje — jesteśmy normalni, ale konsekwentni."
+        "body": "Wspólna energia działa jak najlepszy impuls. Łatwiej utrzymać zdrowy styl życia, kiedy widzisz, że inni też wybierają ruch, spokój i dobre relacje. Tu nikt nie udaje - jesteśmy normalni, ale konsekwentni."
       },
       {
         "title": "Wyjazdy, które zostają w pamięci",
@@ -219,7 +219,7 @@
       },
       {
         "title": "Siła wspólnej energii",
-        "body": "Najbardziej wyjątkowe w Kenaz jest to, że czujesz się częścią czegoś prawdziwego. Wsparcie, rozmowy, śmiech i wysiłek — to właśnie buduje klimat, do którego chce się wracać."
+        "body": "Najbardziej wyjątkowe w Kenaz jest to, że czujesz się częścią czegoś prawdziwego. Wsparcie, rozmowy, śmiech i wysiłek - to właśnie buduje klimat, do którego chce się wracać."
       }
     ],
     "sections": {
@@ -227,13 +227,13 @@
         "title": "Wydarzenia",
         "subtitle": "Regularne spotkania, które budują rytm i energię społeczności.",
         "highlights": [
-          "Kenaz to rytuał, który pozwala wyrwać się z rutyny i zrobić coś dla siebie — bez presji, za to w dobrym towarzystwie.",
+          "Kenaz to rytuał, który pozwala wyrwać się z rutyny i zrobić coś dla siebie - bez presji, za to w dobrym towarzystwie.",
           "Wspólne treningi i aktywności nie są „na pokaz”. To spokojna, konsekwentna praca nad formą i energią na co dzień.",
-          "Spotykamy się offline, bo relacje buduje się naprawdę — rozmową, śmiechem, wspólnym wysiłkiem.",
+          "Spotykamy się offline, bo relacje buduje się naprawdę - rozmową, śmiechem, wspólnym wysiłkiem.",
           "Każde wydarzenie ma klimat: czasem sportowy, czasem integracyjny, czasem po prostu regeneracyjny.",
           "Działamy w małych grupach, dlatego łatwo o poznanie ludzi i poczucie, że tu się pasuje.",
-          "Dołączasz wtedy, kiedy chcesz — wybierasz aktywności, które są dla Ciebie.",
-          "Jeśli szukasz miejsca, w którym rozwój jest naturalny, a atmosfera wspierająca — Kenaz jest dla Ciebie."
+          "Dołączasz wtedy, kiedy chcesz - wybierasz aktywności, które są dla Ciebie.",
+          "Jeśli szukasz miejsca, w którym rozwój jest naturalny, a atmosfera wspierająca - Kenaz jest dla Ciebie."
         ]
       },
       "community": {
@@ -453,7 +453,7 @@
     "cancellationOpen": "Możliwa",
     "cancellationClosed": "Zamknięta",
     "cancellationClosedMessage": "Okno rezygnacji zamknięte.",
-    "cancellationNotPossible": "Rezygnacja nie jest już możliwa — termin minął.",
+    "cancellationNotPossible": "Rezygnacja nie jest już możliwa - termin minął.",
     "cancelConfirmMessage": "Czy na pewno chcesz zrezygnować z udziału w tym wydarzeniu?",
     "cancelConfirmManualRefund": "Ponieważ płatność była przelewem, prośba o zwrot środków zostanie wysłana do administratora.",
     "cancelConfirmButton": "Tak, zrezygnuj",
@@ -520,7 +520,7 @@
           "Bilety wstępu w niższych cenach członkowskich"
         ],
         "cta": "Dołącz do społeczności",
-        "ctaAriaLabel": "Dołącz do społeczności — 33 PLN miesięcznie"
+        "ctaAriaLabel": "Dołącz do społeczności - 33 PLN miesięcznie"
       },
       "yearly": {
         "title": "Członkostwo roczne",
@@ -531,7 +531,7 @@
           "Pierwszeństwo przy zapisach na wydarzenia kwartalne"
         ],
         "cta": "Wybierz plan roczny",
-        "ctaAriaLabel": "Wybierz plan roczny — 333 PLN rocznie"
+        "ctaAriaLabel": "Wybierz plan roczny - 333 PLN rocznie"
       }
     },
     "mostPopular": "NAJPOPULARNIEJSZY",
@@ -785,7 +785,7 @@
       "city": "Miasto",
       "location": "Lokalizacja",
       "locationPlaceholder": "np. Poznań, Jezioro Rusałka",
-      "locationTooltip": "Aby dodać dokładną pinezkę: kliknij na mapie poniżej 'View larger map' (lewy górny róg) — otworzy się Google Maps. Następnie kliknij prawym przyciskiem myszy w wybranym punkcie i skopiuj współrzędne liczbowe. Wklej je tutaj w pole Lokalizacja.",
+      "locationTooltip": "Aby dodać dokładną pinezkę: kliknij na mapie poniżej 'View larger map' (lewy górny róg) - otworzy się Google Maps. Następnie kliknij prawym przyciskiem myszy w wybranym punkcie i skopiuj współrzędne liczbowe. Wklej je tutaj w pole Lokalizacja.",
       "showMap": "Pokaż mapę lokalizacji w widoku wydarzenia",
       "locationPreview": "Podgląd lokalizacji",
       "openInMaps": "Otwórz w Google Maps",
@@ -952,7 +952,7 @@
       "confirmInstruction": "Aby potwierdzić, przepisz poniższy kod:",
       "targetEmail": "Email użytkownika",
       "typePlaceholder": "Wpisz kod",
-      "confirmButton": "Potwierdzam — nadaj admina",
+      "confirmButton": "Potwierdzam - nadaj admina",
       "promoting": "Nadaję...",
       "success": "Uprawnienia administratora zostały nadane.",
       "error": "Nie udało się nadać uprawnień."
@@ -1044,7 +1044,7 @@
       "confirmInstruction": "Aby potwierdzić, przepisz poniższy kod:",
       "targetEmail": "Email użytkownika",
       "typePlaceholder": "Wpisz kod",
-      "confirmButton": "Potwierdzam — nadaj admina",
+      "confirmButton": "Potwierdzam - nadaj admina",
       "promoting": "Nadaję...",
       "success": "Uprawnienia administratora zostały nadane.",
       "error": "Nie udało się nadać uprawnień."
@@ -1204,11 +1204,11 @@
     "optionalInfo": "Dane opcjonalne",
     "donorName": "Twoje imię lub pseudonim (opcjonalnie)",
     "donorEmail": "Adres e-mail (opcjonalnie)",
-    "loggedInHint": "Jesteś zalogowany — Twoje wsparcie zostanie powiązane z Twoim kontem.",
+    "loggedInHint": "Jesteś zalogowany - Twoje wsparcie zostanie powiązane z Twoim kontem.",
     "submitButton": "Wygeneruj przelew",
     "manualNote": "Po wypełnieniu formularza otrzymasz unikalny tytuł przelewu.",
     "minAmountError": "Minimalna kwota wsparcia to {min} zł",
-    "submitError": "Błąd przy zgłoszeniu — spróbuj ponownie",
+    "submitError": "Błąd przy zgłoszeniu - spróbuj ponownie",
     "bankDetails": "Dane do przelewu",
     "recipient": "Odbiorca",
     "accountNumber": "Numer konta",
@@ -1217,19 +1217,19 @@
     "transferDetails": "Dane do przelewu",
     "transferReference": "Tytuł przelewu",
     "amount": "Kwota",
-    "referenceHint": "Pamiętaj, aby podać dokładny tytuł przelewu — to jedyny sposób, w jaki możemy Cię zidentyfikować.",
+    "referenceHint": "Pamiętaj, aby podać dokładny tytuł przelewu - to jedyny sposób, w jaki możemy Cię zidentyfikować.",
     "successTitle": "Dziękujemy!",
     "successBody": "Twoje zgłoszenie wsparcia zostało przyjęte. Wykonaj przelew z podanymi danymi, a my potwierdzimy wpłatę."
   },
   "adminDonations": {
-    "title": "Wesprzyj nas — panel",
+    "title": "Wesprzyj nas - panel",
     "subtitle": "Zarządzaj wpłatami, punktami i ustawieniami zbiórki wsparcia.",
     "anonymous": "anonimowy",
     "confirm": "Potwierdź",
     "cancel": "Anuluj",
     "confirmed": "Wpłata potwierdzona.",
     "cancelled": "Wpłata anulowana.",
-    "confirmedWithPoints": "Wpłata potwierdzona — przyznano {points} pkt.",
+    "confirmedWithPoints": "Wpłata potwierdzona - przyznano {points} pkt.",
     "noPending": "Brak oczekujących wpłat.",
     "noAll": "Brak wpłat w bazie.",
     "tabs": {

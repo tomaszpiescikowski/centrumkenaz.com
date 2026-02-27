@@ -71,7 +71,7 @@
   "feedback": {
     "button": "Feedback",
     "title": "Share your feedback",
-    "subtitle": "The app is in early testing — every opinion matters a lot!",
+    "subtitle": "The app is in early testing - every opinion matters a lot!",
     "hint": "Write anything you noticed, for example:",
     "examples": [
       "Something looks ugly or is hard to read",
@@ -123,7 +123,7 @@
     "label": "Discover Kenaz",
     "backHome": "Back to home",
     "title": "Why Kenaz?",
-    "subtitle": "A place where movement, connection, and growth share one rhythm. Join when it fits — stay because it feels right.",
+    "subtitle": "A place where movement, connection, and growth share one rhythm. Join when it fits - stay because it feels right.",
     "ctaMessage": "Join now and see what Kenaz feels like from the inside.",
     "joinNow": "Join now",
     "joinSecondary": "I want to try",
@@ -156,7 +156,7 @@
     "sponsorsBody": "We work with brands that support active, healthy lifestyles and community growth.",
     "sponsorsPrimary": "Decathlon",
     "supportTitle": "Support us",
-    "supportBody": "Kenaz is a foundation — we grow thanks to people who believe in what we do. Every zloty goes directly to organising events and sustaining the community.",
+    "supportBody": "Kenaz is a foundation - we grow thanks to people who believe in what we do. Every zloty goes directly to organising events and sustaining the community.",
     "supportButton": "Support Kenaz",
     "social": {
       "facebook": "Facebook",
@@ -201,11 +201,11 @@
     "stories": [
       {
         "title": "Events that create rhythm",
-        "body": "Kenaz is a steady cadence of meetups that gives your week energy. You don’t need experience or peak form — just a willingness to show up and do something good for yourself."
+        "body": "Kenaz is a steady cadence of meetups that gives your week energy. You don’t need experience or peak form - just a willingness to show up and do something good for yourself."
       },
       {
         "title": "Movement that brings balance",
-        "body": "We mix activities that strengthen body and mind. Training here isn’t a race — it’s calm, consistent progress. We meet offline because real bonds happen in real moments."
+        "body": "We mix activities that strengthen body and mind. Training here isn’t a race - it’s calm, consistent progress. We meet offline because real bonds happen in real moments."
       },
       {
         "title": "A community with values",
@@ -217,11 +217,11 @@
       },
       {
         "title": "Trips that stay with you",
-        "body": "From time to time we go bigger — a trip, a focused weekend, a shared adventure. These moments bond the group and create stories for years."
+        "body": "From time to time we go bigger - a trip, a focused weekend, a shared adventure. These moments bond the group and create stories for years."
       },
       {
         "title": "The power of shared energy",
-        "body": "What makes Kenaz special is how real it feels. Support, conversation, laughter, effort — that’s the atmosphere you want to return to."
+        "body": "What makes Kenaz special is how real it feels. Support, conversation, laughter, effort - that’s the atmosphere you want to return to."
       }
     ],
     "sections": {
@@ -229,18 +229,18 @@
         "title": "Events",
         "subtitle": "Regular gatherings that set the rhythm and energy of our community.",
         "highlights": [
-          "Kenaz is a rhythm that helps you break routine and do something for yourself — without pressure, in good company.",
+          "Kenaz is a rhythm that helps you break routine and do something for yourself - without pressure, in good company.",
           "Our trainings and activities aren’t for show. It’s steady, grounded work on energy and wellbeing.",
-          "We meet offline because real relationships are built in real moments — talk, laughter, shared effort.",
+          "We meet offline because real relationships are built in real moments - talk, laughter, shared effort.",
           "Each event has a vibe: sometimes sporty, sometimes social, sometimes purely restorative.",
           "We keep groups small, so it’s easy to meet people and feel like you belong.",
-          "Join when it fits you — pick the activities that match your pace.",
+          "Join when it fits you - pick the activities that match your pace.",
           "If you want growth that feels natural and a supportive atmosphere, Kenaz is for you."
         ]
       },
       "community": {
         "title": "Community",
-        "subtitle": "Relationships that last — a circle of people with shared values.",
+        "subtitle": "Relationships that last - a circle of people with shared values.",
         "highlights": [
           "Offline meetups without pressure or pretense",
           "A strong sense of belonging and support",
@@ -253,7 +253,7 @@
         "highlights": [
           "Saunas, mountain lodges, and themed expeditions",
           "Handpicked destinations and intimate groups",
-          "No boredom — maximum shared stories"
+          "No boredom - maximum shared stories"
         ]
       }
     }
@@ -455,7 +455,7 @@
     "cancellationOpen": "Open",
     "cancellationClosed": "Closed",
     "cancellationClosedMessage": "Cancellation window closed.",
-    "cancellationNotPossible": "Cancellation is no longer possible — the deadline has passed.",
+    "cancellationNotPossible": "Cancellation is no longer possible - the deadline has passed.",
     "cancelConfirmMessage": "Are you sure you want to cancel your registration for this event?",
     "cancelConfirmManualRefund": "Since you paid via bank transfer, a refund request will be sent to the admin.",
     "cancelConfirmButton": "Yes, cancel",
@@ -522,7 +522,7 @@
           "Entry tickets at lower member prices"
         ],
         "cta": "Join the community",
-        "ctaAriaLabel": "Join the community — 33 PLN per month"
+        "ctaAriaLabel": "Join the community - 33 PLN per month"
       },
       "yearly": {
         "title": "Annual membership",
@@ -533,7 +533,7 @@
           "Priority registration for quarterly events"
         ],
         "cta": "Choose annual plan",
-        "ctaAriaLabel": "Choose annual plan — 333 PLN per year"
+        "ctaAriaLabel": "Choose annual plan - 333 PLN per year"
       }
     },
     "mostPopular": "MOST POPULAR",
@@ -954,7 +954,7 @@
       "confirmInstruction": "To confirm, type the code below:",
       "targetEmail": "User email",
       "typePlaceholder": "Type the code",
-      "confirmButton": "Confirm — grant admin",
+      "confirmButton": "Confirm - grant admin",
       "promoting": "Promoting...",
       "success": "Admin privileges have been granted.",
       "error": "Failed to grant admin privileges."
@@ -1046,7 +1046,7 @@
       "confirmInstruction": "To confirm, type the code below:",
       "targetEmail": "User email",
       "typePlaceholder": "Type the code",
-      "confirmButton": "Confirm — grant admin",
+      "confirmButton": "Confirm - grant admin",
       "promoting": "Promoting...",
       "success": "Admin privileges have been granted.",
       "error": "Failed to grant admin privileges."
@@ -1206,11 +1206,11 @@
     "optionalInfo": "Optional details",
     "donorName": "Your name or nickname (optional)",
     "donorEmail": "Email address (optional)",
-    "loggedInHint": "You are logged in — your donation will be linked to your account.",
+    "loggedInHint": "You are logged in - your donation will be linked to your account.",
     "submitButton": "Generate transfer",
     "manualNote": "After submitting you will receive a unique transfer reference.",
     "minAmountError": "Minimum donation is {min} zl",
-    "submitError": "Submission error — please try again",
+    "submitError": "Submission error - please try again",
     "bankDetails": "Bank transfer details",
     "recipient": "Recipient",
     "accountNumber": "Account number",
@@ -1219,19 +1219,19 @@
     "transferDetails": "Transfer details",
     "transferReference": "Transfer reference",
     "amount": "Amount",
-    "referenceHint": "Remember to include the exact transfer reference — it is the only way we can identify your donation.",
+    "referenceHint": "Remember to include the exact transfer reference - it is the only way we can identify your donation.",
     "successTitle": "Thank you!",
     "successBody": "Your donation has been registered. Please make a bank transfer using the details below."
   },
   "adminDonations": {
-    "title": "Support Us — Admin",
+    "title": "Support Us - Admin",
     "subtitle": "Manage donations, points and support settings.",
     "anonymous": "anonymous",
     "confirm": "Confirm",
     "cancel": "Cancel",
     "confirmed": "Donation confirmed.",
     "cancelled": "Donation cancelled.",
-    "confirmedWithPoints": "Donation confirmed — {points} pts awarded.",
+    "confirmedWithPoints": "Donation confirmed - {points} pts awarded.",
     "noPending": "No pending donations.",
     "noAll": "No donations found.",
     "tabs": {

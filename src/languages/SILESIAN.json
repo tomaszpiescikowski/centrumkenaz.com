@@ -71,7 +71,7 @@
   "feedback": {
     "button": "Feedback",
     "title": "Podziel sie ôpiniōm",
-    "subtitle": "Apka je we wczesnyj fazie testōw — kożdo ôpinijo je dlo nos fest ważno!",
+    "subtitle": "Apka je we wczesnyj fazie testōw - kożdo ôpinijo je dlo nos fest ważno!",
     "hint": "Napisz cosik, co Ci sie rzuciōło w ôczy, bp.:",
     "examples": [
       "Cosik brzidko wyglōndo abo je nieczytelne",
@@ -123,7 +123,7 @@
     "label": "Poznej Kenaz",
     "backHome": "Wróć na start",
     "title": "Czamu Kenaz?",
-    "subtitle": "Miyjsce, kaj ruch, relacyje i rozwōj idōm tym samym rytmem. Dołōnczysz, kej chcesz — ôstŏwŏsz, bo je dobrze.",
+    "subtitle": "Miyjsce, kaj ruch, relacyje i rozwōj idōm tym samym rytmem. Dołōnczysz, kej chcesz - ôstŏwŏsz, bo je dobrze.",
     "ctaMessage": "Dołōncz terŏz i zobŏcz Kenaz ôd środka.",
     "joinNow": "Dołōncz terŏz",
     "joinSecondary": "Chca sprōbować",
@@ -156,7 +156,7 @@
     "sponsorsBody": "Wspōłprŏcujemy z markami, kere wspierajōm aktywny, zdrowy styl życiŏ i rozwōj społeczności.",
     "sponsorsPrimary": "Decathlon",
     "supportTitle": "Wesprzyj nos",
-    "supportBody": "Kenaz je fundacyjŏ — rozwijōmy sie dziynki ludziōm, kerzi wierzōm w to, co rybimy. Kŏżdo złotōwka idzie na organizacyje zdarzyń i utrzymanie społeczności.",
+    "supportBody": "Kenaz je fundacyjŏ - rozwijōmy sie dziynki ludziōm, kerzi wierzōm w to, co rybimy. Kŏżdo złotōwka idzie na organizacyje zdarzyń i utrzymanie społeczności.",
     "supportButton": "Wesprzyj Kenaz",
     "social": {
       "facebook": "Facebook",
@@ -201,11 +201,11 @@
     "stories": [
       {
         "title": "Wydarzyńa, kere dŏjōm rytm",
-        "body": "Kenaz to regularne spotkania, kere dŏjōm energia na co dziyń. Niy musisz być w formie — wystarczy chcieć być z ludźmi i zrobić coś dobrego dlo siebie."
+        "body": "Kenaz to regularne spotkania, kere dŏjōm energia na co dziyń. Niy musisz być w formie - wystarczy chcieć być z ludźmi i zrobić coś dobrego dlo siebie."
       },
       {
         "title": "Ruch, kere daje balans",
-        "body": "Łōnczymy aktywności dlo ciała i głowy. To niy wyścig — ino spokojno, konsekwentno robota nad sobōm."
+        "body": "Łōnczymy aktywności dlo ciała i głowy. To niy wyścig - ino spokojno, konsekwentno robota nad sobōm."
       },
       {
         "title": "Społeczność z wartościami",
@@ -229,12 +229,12 @@
         "title": "Wydarzyńa",
         "subtitle": "Regulary spotkania, co budujōm rytm i energia społeczności.",
         "highlights": [
-          "Kenaz to rytm, co wyciōngŏ z rutyny — bez presyje, w dobrym towarzystwie.",
+          "Kenaz to rytm, co wyciōngŏ z rutyny - bez presyje, w dobrym towarzystwie.",
           "Nasze aktywności niy som na pokaz. To spokojno, konsekwentno robota nad formōm i energijōm.",
           "Spotykōmy sie offline, bo prawdziwe relacyje rosnōm z prawdziwych chwil.",
           "Kożde wydarzyńe mo swōj klimat: rŏz sportowy, rŏz społeczny, rŏz regeneracyjny.",
           "Małe grupy ułŏtwiōm poznŏnie ludzi i poczucie, że sie tu pasuje.",
-          "Dołōnczŏsz, kej chcesz — wybiyrŏsz aktywności, co sōm dla Ciebie.",
+          "Dołōnczŏsz, kej chcesz - wybiyrŏsz aktywności, co sōm dla Ciebie.",
           "Jak szukŏsz naturalnego rozwoju i wspierajōncej atmosfery, Kenaz je dla Ciebie."
         ]
       },
@@ -455,7 +455,7 @@
     "cancellationOpen": "Możliwŏ",
     "cancellationClosed": "Zamkniyntŏ",
     "cancellationClosedMessage": "Ôkno rezygnacyje zamkniynte.",
-    "cancellationNotPossible": "Rezygnacyjo już niy je możliwŏ — termin minōł.",
+    "cancellationNotPossible": "Rezygnacyjo już niy je możliwŏ - termin minōł.",
     "cancelConfirmMessage": "Na zicher chcesz zrezygnować z zapisu na to wydarzynie?",
     "cancelConfirmManualRefund": "Skuli tego, żeś płaciōł przelewym, prośba ô zwrot bydzie wysłanŏ do admina.",
     "cancelConfirmButton": "Ja, zrezygnuj",
@@ -522,7 +522,7 @@
           "Bilety wstympu w niższych cynach człōnkowskich"
         ],
         "cta": "Dołōncz do społeczności",
-        "ctaAriaLabel": "Dołōncz do społeczności — 33 PLN miesiyncznie"
+        "ctaAriaLabel": "Dołōncz do społeczności - 33 PLN miesiyncznie"
       },
       "yearly": {
         "title": "Człōnkostwo roczne",
@@ -533,7 +533,7 @@
           "Pierwyństwo przi zapisach na wydarzynia kwartalne"
         ],
         "cta": "Ôbier plan roczny",
-        "ctaAriaLabel": "Ôbier plan roczny — 333 PLN rocznie"
+        "ctaAriaLabel": "Ôbier plan roczny - 333 PLN rocznie"
       }
     },
     "mostPopular": "NŎJPOPULARNIYJSZY",
@@ -787,7 +787,7 @@
       "city": "Miasto",
       "location": "Lokalizacyjo",
       "locationPlaceholder": "np. Poznań, Jezioro Rusałka",
-      "locationTooltip": "Coby dodać dokładnōm pinezkã: kliknij na mapie 'View larger map' (lewy gōrny rōg) — ôtworzōm sie Google Maps. Potym kliknij prawym klawiszym myszy w punktcie i skopiuj współrzyndne liczbowe. Wklej je sam w pole Lokalizacyjo.",
+      "locationTooltip": "Coby dodać dokładnōm pinezkã: kliknij na mapie 'View larger map' (lewy gōrny rōg) - ôtworzōm sie Google Maps. Potym kliknij prawym klawiszym myszy w punktcie i skopiuj współrzyndne liczbowe. Wklej je sam w pole Lokalizacyjo.",
       "showMap": "Pokaż mapa lokalizacyje w widoku wydarzynio",
       "locationPreview": "Podglōnd lokalizacyje",
       "openInMaps": "Ôtwōrz w Google Maps",
@@ -954,7 +954,7 @@
       "confirmInstruction": "Coby potwierdzić, wpisz tyn kod:",
       "targetEmail": "Email użytkownika",
       "typePlaceholder": "Wpisz kod",
-      "confirmButton": "Potwiyrdzōm — dej admina",
+      "confirmButton": "Potwiyrdzōm - dej admina",
       "promoting": "Nadowōm...",
       "success": "Uprawniynio admina zostały nadane.",
       "error": "Niy szło nadać uprawiyń."
@@ -1023,7 +1023,7 @@
       "confirmInstruction": "Coby potwierdzić, wpisz tyn kod:",
       "targetEmail": "Email użytkownika",
       "typePlaceholder": "Wpisz kod",
-      "confirmButton": "Potwiyrdzōm — dej admina",
+      "confirmButton": "Potwiyrdzōm - dej admina",
       "promoting": "Nadowōm...",
       "success": "Uprawniynio admina zostały nadane.",
       "error": "Niy szło nadać uprawiyń."
@@ -1206,11 +1206,11 @@
     "optionalInfo": "Dane niy ôbowiōnzkowe",
     "donorName": "Miano (niy ôbowiōnzkowe)",
     "donorEmail": "E-mail (niy ôbowiōnzkowe)",
-    "loggedInHint": "Jesteś zalogowany — twoja wpłata tyż bydzie przipisano do konta.",
+    "loggedInHint": "Jesteś zalogowany - twoja wpłata tyż bydzie przipisano do konta.",
     "submitButton": "Wygeneruj przelyw",
     "manualNote": "Dostŏniesz unikatowy tytuł przelewu.",
     "minAmountError": "Minimalno kwota: {min} zł",
-    "submitError": "Bład — sprōbuj jyszcze rōz",
+    "submitError": "Bład - sprōbuj jyszcze rōz",
     "bankDetails": "Dane do przelewu",
     "recipient": "Ôdbiorca",
     "accountNumber": "Numer konta",
@@ -1224,14 +1224,14 @@
     "successBody": "Twoje zgłoszyniy dostalimy. Zrōb przelyw z podanymi danymi."
   },
   "adminDonations": {
-    "title": "Wspōmaganiy — panel",
+    "title": "Wspōmaganiy - panel",
     "subtitle": "Zarzōndzaj wpłatami, punktami i ustawiynianmi.",
     "anonymous": "anōnimowy",
     "confirm": "Potwierdź",
     "cancel": "Anuluj",
     "confirmed": "Wpłata potwierdzōno.",
     "cancelled": "Wpłata anulowano.",
-    "confirmedWithPoints": "Potwierdzōno — {points} pkt.",
+    "confirmedWithPoints": "Potwierdzōno - {points} pkt.",
     "noPending": "Żŏdnych oczekujōncych.",
     "noAll": "Żŏdnych wpłat.",
     "tabs": {

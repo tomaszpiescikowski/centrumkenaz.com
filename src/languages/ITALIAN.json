@@ -71,7 +71,7 @@
   "feedback": {
     "button": "Feedback",
     "title": "Condividi la tua opinione",
-    "subtitle": "L'app è in fase di test iniziale — ogni opinione è molto importante!",
+    "subtitle": "L'app è in fase di test iniziale - ogni opinione è molto importante!",
     "hint": "Scrivi qualsiasi cosa tu abbia notato, ad esempio:",
     "examples": [
       "Qualcosa è brutto o difficile da leggere",
@@ -123,7 +123,7 @@
     "label": "Scopri Kenaz",
     "backHome": "Torna alla home",
     "title": "Perché Kenaz?",
-    "subtitle": "Un luogo dove movimento, connessioni e crescita condividono lo stesso ritmo. Entra quando vuoi — resta perché si sta bene.",
+    "subtitle": "Un luogo dove movimento, connessioni e crescita condividono lo stesso ritmo. Entra quando vuoi - resta perché si sta bene.",
     "ctaMessage": "Unisciti ora e vivi Kenaz dall’interno.",
     "joinNow": "Unisciti ora",
     "joinSecondary": "Voglio provare",
@@ -156,7 +156,7 @@
     "sponsorsBody": "Collaboriamo con brand che sostengono uno stile di vita attivo e la crescita della community.",
     "sponsorsPrimary": "Decathlon",
     "supportTitle": "Sostienici",
-    "supportBody": "Kenaz è una fondazione — cresciamo grazie alle persone che credono in quello che facciamo. Ogni złoty va direttamente all'organizzazione di eventi e al sostegno della community.",
+    "supportBody": "Kenaz è una fondazione - cresciamo grazie alle persone che credono in quello che facciamo. Ogni złoty va direttamente all'organizzazione di eventi e al sostegno della community.",
     "supportButton": "Sostieni Kenaz",
     "social": {
       "facebook": "Facebook",
@@ -229,18 +229,18 @@
         "title": "Eventi",
         "subtitle": "Incontri regolari che danno ritmo ed energia alla community.",
         "highlights": [
-          "Kenaz dà un ritmo che ti aiuta a uscire dalla routine — senza pressione, in buona compagnia.",
+          "Kenaz dà un ritmo che ti aiuta a uscire dalla routine - senza pressione, in buona compagnia.",
           "Le nostre attività non sono uno show: è un percorso concreto di benessere ed energia.",
           "Ci incontriamo offline perché le relazioni reali nascono da momenti reali.",
           "Ogni evento ha un’atmosfera diversa: sportiva, sociale o rigenerante.",
           "Gruppi piccoli, così è facile conoscersi e sentirsi parte del gruppo.",
-          "Ti unisci quando vuoi — scegli le attività che parlano al tuo ritmo.",
+          "Ti unisci quando vuoi - scegli le attività che parlano al tuo ritmo.",
           "Se cerchi crescita naturale e un clima di supporto, Kenaz fa per te."
         ]
       },
       "community": {
         "title": "Community",
-        "subtitle": "Relazioni che restano — una cerchia di persone con valori condivisi.",
+        "subtitle": "Relazioni che restano - una cerchia di persone con valori condivisi.",
         "highlights": [
           "Incontri offline senza pressione o apparenza",
           "Forte senso di appartenenza e supporto",
@@ -253,7 +253,7 @@
         "highlights": [
           "Saune, rifugi di montagna e viaggi a tema",
           "Luoghi selezionati e gruppi intimi",
-          "Zero noia — massimo di storie condivise"
+          "Zero noia - massimo di storie condivise"
         ]
       }
     }
@@ -455,7 +455,7 @@
     "cancellationOpen": "Possibile",
     "cancellationClosed": "Chiuso",
     "cancellationClosedMessage": "Finestra di annullamento chiusa.",
-    "cancellationNotPossible": "L'annullamento non è più possibile — il termine è scaduto.",
+    "cancellationNotPossible": "L'annullamento non è più possibile - il termine è scaduto.",
     "cancelConfirmMessage": "Sei sicuro di voler annullare la tua iscrizione a questo evento?",
     "cancelConfirmManualRefund": "Dato che hai pagato tramite bonifico bancario, una richiesta di rimborso verrà inviata all'amministratore.",
     "cancelConfirmButton": "Sì, annulla",
@@ -522,7 +522,7 @@
           "Biglietti d'ingresso a prezzi ridotti per i membri"
         ],
         "cta": "Unisciti alla comunità",
-        "ctaAriaLabel": "Unisciti alla comunità — 33 PLN al mese"
+        "ctaAriaLabel": "Unisciti alla comunità - 33 PLN al mese"
       },
       "yearly": {
         "title": "Abbonamento annuale",
@@ -533,7 +533,7 @@
           "Priorità nelle iscrizioni agli eventi trimestrali"
         ],
         "cta": "Scegli il piano annuale",
-        "ctaAriaLabel": "Scegli il piano annuale — 333 PLN all'anno"
+        "ctaAriaLabel": "Scegli il piano annuale - 333 PLN all'anno"
       }
     },
     "mostPopular": "PIÙ POPOLARE",
@@ -950,7 +950,7 @@
       "confirmInstruction": "Per confermare, digita il codice qui sotto:",
       "targetEmail": "Email utente",
       "typePlaceholder": "Digita il codice",
-      "confirmButton": "Confermo — concedi admin",
+      "confirmButton": "Confermo - concedi admin",
       "promoting": "Promuovendo...",
       "success": "I privilegi di amministratore sono stati concessi.",
       "error": "Impossibile concedere i privilegi."
@@ -1019,7 +1019,7 @@
       "confirmInstruction": "Per confermare, digita il codice qui sotto:",
       "targetEmail": "Email utente",
       "typePlaceholder": "Digita il codice",
-      "confirmButton": "Confermo — concedi admin",
+      "confirmButton": "Confermo - concedi admin",
       "promoting": "Promuovendo...",
       "success": "I privilegi di amministratore sono stati concessi.",
       "error": "Impossibile concedere i privilegi."
@@ -1202,11 +1202,11 @@
     "optionalInfo": "Dati facoltativi",
     "donorName": "Nome o soprannome (opzionale)",
     "donorEmail": "Indirizzo email (opzionale)",
-    "loggedInHint": "Sei connesso — la tua donazione sara collegata al tuo account.",
+    "loggedInHint": "Sei connesso - la tua donazione sara collegata al tuo account.",
     "submitButton": "Genera bonifico",
     "manualNote": "Dopo l'invio riceverai un riferimento univoco per il bonifico.",
     "minAmountError": "Importo minimo: {min} zl",
-    "submitError": "Errore durante l'invio — riprova",
+    "submitError": "Errore durante l'invio - riprova",
     "bankDetails": "Dati bancari",
     "recipient": "Destinatario",
     "accountNumber": "Numero di conto",
@@ -1220,14 +1220,14 @@
     "successBody": "La tua donazione e stata registrata. Effettua un bonifico con i dati seguenti."
   },
   "adminDonations": {
-    "title": "Sostienici — pannello",
+    "title": "Sostienici - pannello",
     "subtitle": "Gestisci donazioni, punti e impostazioni.",
     "anonymous": "anonimo",
     "confirm": "Conferma",
     "cancel": "Annulla",
     "confirmed": "Donazione confermata.",
     "cancelled": "Donazione annullata.",
-    "confirmedWithPoints": "Donazione confermata — {points} pt assegnati.",
+    "confirmedWithPoints": "Donazione confermata - {points} pt assegnati.",
     "noPending": "Nessuna donazione in attesa.",
     "noAll": "Nessuna donazione trovata.",
     "tabs": {

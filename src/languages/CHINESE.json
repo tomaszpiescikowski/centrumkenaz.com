@@ -71,7 +71,7 @@
   "feedback": {
     "button": "反馈",
     "title": "分享你的意见",
-    "subtitle": "应用处于早期测试阶段——每条意见对我们都非常重要！",
+    "subtitle": "应用处于早期测试阶段--每条意见对我们都非常重要！",
     "hint": "写下你注意到的任何事情，例如：",
     "examples": [
       "某些地方看起来不好看或难以阅读",
@@ -156,7 +156,7 @@
     "sponsorsBody": "我们与支持健康生活方式和社群成长的品牌合作。",
     "sponsorsPrimary": "Decathlon",
     "supportTitle": "支持我们",
-    "supportBody": "Kenaz 是一个基金会——我们的成长离不开相信我们所做之事的人们。每一分钱都直接用于活动组织和社群维护。",
+    "supportBody": "Kenaz 是一个基金会--我们的成长离不开相信我们所做之事的人们。每一分钱都直接用于活动组织和社群维护。",
     "supportButton": "支持 Kenaz",
     "social": {
       "facebook": "Facebook",
@@ -201,7 +201,7 @@
     "stories": [
       {
         "title": "有节奏的活动",
-        "body": "Kenaz 的活动为你的每周带来能量。你不需要经验或很强的体能——只要愿意出现、为自己做点好事。"
+        "body": "Kenaz 的活动为你的每周带来能量。你不需要经验或很强的体能--只要愿意出现、为自己做点好事。"
       },
       {
         "title": "带来平衡的运动",
@@ -221,7 +221,7 @@
       },
       {
         "title": "共享的能量",
-        "body": "Kenaz 的特别之处在于真实：支持、聊天、笑声与努力——这是你会想回来的氛围。"
+        "body": "Kenaz 的特别之处在于真实：支持、聊天、笑声与努力--这是你会想回来的氛围。"
       }
     ],
     "sections": {
@@ -240,7 +240,7 @@
       },
       "community": {
         "title": "社群",
-        "subtitle": "持久的关系——共享价值观的圈子。",
+        "subtitle": "持久的关系--共享价值观的圈子。",
         "highlights": [
           "线下见面，没有压力与表演",
           "强烈的归属感与互相支持",
@@ -253,7 +253,7 @@
         "highlights": [
           "桑拿、山间木屋与主题旅程",
           "精选地点与小型团体",
-          "没有无聊——只有共同故事"
+          "没有无聊--只有共同故事"
         ]
       }
     }
@@ -455,7 +455,7 @@
     "cancellationOpen": "可取消",
     "cancellationClosed": "已关闭",
     "cancellationClosedMessage": "取消窗口已关闭。",
-    "cancellationNotPossible": "已无法取消——截止时间已过。",
+    "cancellationNotPossible": "已无法取消--截止时间已过。",
     "cancelConfirmMessage": "确定要取消此活动的报名吗？",
     "cancelConfirmManualRefund": "由于您通过银行转账付款，退款请求将发送给管理员。",
     "cancelConfirmButton": "是的，取消",
@@ -522,7 +522,7 @@
           "以更低的会员价格购买入场门票"
         ],
         "cta": "加入社区",
-        "ctaAriaLabel": "加入社区 — 每月 33 PLN"
+        "ctaAriaLabel": "加入社区 - 每月 33 PLN"
       },
       "yearly": {
         "title": "年度会员",
@@ -533,7 +533,7 @@
           "季度活动优先报名"
         ],
         "cta": "选择年度计划",
-        "ctaAriaLabel": "选择年度计划 — 每年 333 PLN"
+        "ctaAriaLabel": "选择年度计划 - 每年 333 PLN"
       }
     },
     "mostPopular": "最受欢迎",
@@ -950,7 +950,7 @@
       "confirmInstruction": "请输入以下确认码：",
       "targetEmail": "用户邮箱",
       "typePlaceholder": "输入确认码",
-      "confirmButton": "确认 — 授予管理员",
+      "confirmButton": "确认 - 授予管理员",
       "promoting": "正在授权...",
       "success": "管理员权限已授予。",
       "error": "授权失败。"
@@ -1019,7 +1019,7 @@
       "confirmInstruction": "请输入以下确认码：",
       "targetEmail": "用户邮箱",
       "typePlaceholder": "输入确认码",
-      "confirmButton": "确认 — 授予管理员",
+      "confirmButton": "确认 - 授予管理员",
       "promoting": "正在授权...",
       "success": "管理员权限已授予。",
       "error": "授权失败。"
@@ -1202,7 +1202,7 @@
     "optionalInfo": "可选信息",
     "donorName": "姓名或昵称（可选）",
     "donorEmail": "电子邮筱（可选）",
-    "loggedInHint": "您已登录——捐款将与您的账户关联。",
+    "loggedInHint": "您已登录--捐款将与您的账户关联。",
     "submitButton": "生成转账信息",
     "manualNote": "提交后您将获得唯一转账参考号。",
     "minAmountError": "最低捐款金额为 {min} zl",
@@ -1227,7 +1227,7 @@
     "cancel": "取消",
     "confirmed": "捐款已确认。",
     "cancelled": "捐款已取消。",
-    "confirmedWithPoints": "已确认 — 授予 {points} 积分。",
+    "confirmedWithPoints": "已确认 - 授予 {points} 积分。",
     "noPending": "无待处理捐款。",
     "noAll": "无捐款记录。",
     "tabs": {
