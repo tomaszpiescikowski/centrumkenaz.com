@@ -5,22 +5,26 @@ function Home() {
   const { t } = useLanguage()
 
   return (
-    <div className="page-shell flex h-full min-h-0 flex-col items-center pb-[calc(env(safe-area-inset-bottom)+5.25rem)] sm:min-h-[calc(100vh-4rem)] sm:pb-12">
-      {/* Logo centred in the remaining vertical space */}
-      <div className="flex flex-1 items-center justify-center">
-        <div
-          role="img"
-          aria-label="Kenaz Centrum"
-          className="h-36 w-36 bg-navy transition-colors duration-300 dark:bg-cream sm:h-56 sm:w-56
-            [mask-image:url('/static/render.png')] [mask-repeat:no-repeat]
-            [mask-position:center] [mask-size:contain]
-            [-webkit-mask-image:url('/static/render.png')] [-webkit-mask-repeat:no-repeat]
-            [-webkit-mask-position:center] [-webkit-mask-size:contain]"
-        />
-      </div>
+    <div className="page-shell flex flex-col items-center [min-height:calc(100svh_-_env(safe-area-inset-bottom,0px)_-_5.25rem)] sm:min-h-[calc(100vh-4rem)] sm:pb-12">
+      {/* Golden-ratio spacer — logo sits at ~38% from top */}
+      <div className="flex-[0.38]" />
+
+      {/* Logo */}
+      <div
+        role="img"
+        aria-label="Kenaz Centrum"
+        className="h-36 w-36 flex-none bg-navy transition-colors duration-300 dark:bg-cream sm:h-56 sm:w-56
+          [mask-image:url('/static/render.png')] [mask-repeat:no-repeat]
+          [mask-position:center] [mask-size:contain]
+          [-webkit-mask-image:url('/static/render.png')] [-webkit-mask-repeat:no-repeat]
+          [-webkit-mask-position:center] [-webkit-mask-size:contain]"
+      />
+
+      {/* Gap between logo and buttons */}
+      <div className="flex-[0.18] min-h-8" />
 
       {/* Action buttons */}
-      <div className="w-full max-w-xs space-y-4 px-8 sm:max-w-sm">
+      <div className="w-full max-w-xs flex-none space-y-4 px-8 sm:max-w-sm">
         <Link
           to="/login"
           className="block w-full rounded-full bg-navy px-8 py-4 text-center text-base font-black text-cream shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl dark:bg-cream dark:text-navy sm:text-lg"
@@ -46,6 +50,9 @@ function Home() {
           <span>{t('support.label')}</span>
         </Link>
       </div>
+
+      {/* Bottom spacer — slightly larger than top for golden ratio feel */}
+      <div className="flex-[0.44]" />
     </div>
   )
 }
