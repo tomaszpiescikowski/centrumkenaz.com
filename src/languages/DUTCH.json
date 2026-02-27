@@ -95,9 +95,11 @@
   "pwa": {
     "installCta": "Installeer de app op je telefoon",
     "installDesc": "Er verschijnt een snelkoppeling op je startscherm – als een gewone app. Sneller toegang, geen browser nodig.",
+    "installPwaNote": "Deze site is een PWA (Progressive Web App) – geoptimaliseerd voor mobiel: snel, licht en werkt als een echte app.",
     "installBtn": "Installeer",
-    "installHintIos": "1. Open deze pagina in Safari\n2. Tik op het deelicoon ⤴\n   (balk onderaan het scherm)\n3. Scroll naar beneden door de opties\n4. Kies \"Zet op beginscherm\"\n5. Tik op \"Voeg toe\" rechtsboven",
-    "installHintAndroid": "Open in Chrome het ⋮ menu (drie puntjes rechtsboven) en kies \"Toevoegen aan startscherm\" of \"App installeren\"."
+    "installManualTitle": "Handmatig installeren in Chrome:",
+    "installHintAndroid": "1. Tik op ⋮ (drie puntjes) rechtsboven in Chrome\n2. Kies \"Toevoegen aan startscherm\"\n3. Tik op \"Toevoegen\" in het venster dat verschijnt",
+    "installHintIos": "1. Open deze pagina in Safari\n2. Tik op het deelicoon ⤴\n   (balk onderaan het scherm)\n3. Scroll naar beneden door de opties\n4. Kies \"Zet op beginscherm\"\n5. Tik op \"Voeg toe\" rechtsboven"
   },
   "home": {
     "demoLabel": "demo",

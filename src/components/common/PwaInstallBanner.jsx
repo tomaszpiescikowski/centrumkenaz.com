@@ -85,6 +85,9 @@ function PwaInstallBanner() {
               <p className="mt-1 text-xs text-navy/70 dark:text-cream/70">
                 {t('pwa.installDesc')}
               </p>
+              <p className="mt-1 text-xs italic text-navy/50 dark:text-cream/50">
+                {t('pwa.installPwaNote')}
+              </p>
               <div className="mt-2 space-y-0.5">
                 {hint.split('\n').map((line, i) => (
                   <p key={i} className="text-xs leading-relaxed text-navy/70 dark:text-cream/70">
@@ -113,6 +116,9 @@ function PwaInstallBanner() {
             <p className="mt-1 text-xs text-navy/70 dark:text-cream/70">
               {t('pwa.installDesc')}
             </p>
+            <p className="mt-1 text-xs italic text-navy/50 dark:text-cream/50">
+              {t('pwa.installPwaNote')}
+            </p>
 
             {/* Automatic install button – shown when browser supports it */}
             {deferredPrompt && (
@@ -130,9 +136,18 @@ function PwaInstallBanner() {
 
             {/* Manual Chrome instructions – fallback */}
             {showManual && (
-              <p className="mt-1.5 text-xs text-navy/70 dark:text-cream/70">
-                {t('pwa.installHintAndroid')}
-              </p>
+              <div className="mt-2">
+                <p className="text-xs font-medium text-navy/80 dark:text-cream/80">
+                  {t('pwa.installManualTitle')}
+                </p>
+                <div className="mt-1 space-y-0.5">
+                  {t('pwa.installHintAndroid').split('\n').map((line, i) => (
+                    <p key={i} className="text-xs leading-relaxed text-navy/70 dark:text-cream/70">
+                      {line}
+                    </p>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
           <CloseButton onClick={() => setDismissed(true)} label={t('common.close')} />

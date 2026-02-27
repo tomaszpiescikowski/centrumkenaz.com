@@ -95,9 +95,11 @@
   "pwa": {
     "installCta": "Installa l'app sul telefono",
     "installDesc": "Un collegamento apparirà sulla schermata iniziale – come una normale app. Accesso più veloce, senza aprire il browser.",
+    "installPwaNote": "Questo sito è una PWA (Progressive Web App) – ottimizzata per mobile: veloce, leggera e funziona come un’app vera.",
     "installBtn": "Installa",
-    "installHintIos": "1. Apri questa pagina in Safari\n2. Tocca l'icona di condivisione ⤴\n   (barra in basso)\n3. Scorri le opzioni verso il basso\n4. Seleziona \"Aggiungi alla schermata Home\"\n5. Tocca \"Aggiungi\" in alto a destra",
-    "installHintAndroid": "In Chrome tocca ⋮ (tre puntini in alto a destra) e seleziona \"Aggiungi alla schermata Home\" o \"Installa app\"."
+    "installManualTitle": "Come installare manualmente in Chrome:",
+    "installHintAndroid": "1. Tocca ⋮ (tre puntini) in alto a destra in Chrome\n2. Scegli \"Aggiungi alla schermata Home\"\n3. Tocca \"Aggiungi\" nel popup che appare",
+    "installHintIos": "1. Apri questa pagina in Safari\n2. Tocca l'icona di condivisione ⤴\n   (barra in basso)\n3. Scorri le opzioni verso il basso\n4. Seleziona \"Aggiungi alla schermata Home\"\n5. Tocca \"Aggiungi\" in alto a destra"
   },
   "home": {
     "demoLabel": "demo",
