@@ -918,7 +918,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
               {isOwn && (
                 <button className="cmt-action-btn" onClick={() => { setEditingId(item.id); setEditContent(item.content); setEditVersion(item.version) }}>{t('comments.edit')}</button>
               )}
-              {(isOwn || isAdmin) && (
+              {isOwn && (
                 <button className="cmt-action-btn cmt-action-danger" onClick={() => handleDelete(item.id)}>{t('comments.delete')}</button>
               )}
             </div>

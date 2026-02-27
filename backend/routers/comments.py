@@ -228,14 +228,14 @@ async def update_comment(
 @router.delete(
     "/{comment_id}",
     status_code=204,
-    summary="Delete a comment (own or admin)",
+    summary="Delete a comment (own only)",
 )
 async def delete_comment(
     comment_id: str = Path(..., min_length=1),
     user: ActiveUser = None,
     db: AsyncSession = Depends(get_db),
 ):
-    """Soft-delete a comment. Owner or admin can delete."""
+    """Soft-delete a comment. Only the author can delete their own message."""
 
     stmt = select(Comment).where(Comment.id == comment_id)
     result = await db.execute(stmt)
@@ -244,8 +244,7 @@ async def delete_comment(
     if not comment:
         raise HTTPException(status_code=404, detail="Comment not found")
 
-    is_admin = user.role == UserRole.ADMIN
-    if comment.user_id != user.id and not is_admin:
+    if comment.user_id != user.id:
         raise HTTPException(status_code=403, detail="Cannot delete another user's comment")
 
     comment.is_deleted = True
