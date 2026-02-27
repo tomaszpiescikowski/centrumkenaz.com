@@ -56,7 +56,7 @@ function AboutSection() {
           {stories.map((story, index) => {
             const isEven = index % 2 === 0
             const image = storyImages[index]
-            const shouldReverse = index === 5 ? false : !isEven
+            const shouldReverse = index === 5 ? true : !isEven
             const blocks = []
 
             blocks.push(
