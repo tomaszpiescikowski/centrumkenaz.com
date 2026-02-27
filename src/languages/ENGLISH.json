@@ -96,6 +96,8 @@
     "installCta": "Install the app on your phone",
     "installDesc": "A shortcut will appear on your home screen – just like a real app. Faster access, no browser needed.",
     "installPwaNote": "This site is a PWA (Progressive Web App) – optimised for mobile: fast, lightweight and works like a native app.",
+    "installIosNote": "On iPhone the browser doesn’t allow automatic installation. You can do it manually in a few steps – it takes less than a minute.",
+    "installIosManualTitle": "How to install in Safari:",
     "installBtn": "Install",
     "installManualTitle": "How to install manually in Chrome:",
     "installHintAndroid": "1. Tap ⋮ (three dots) in the top-right corner of Chrome\n2. Choose \"Add to Home screen\"\n3. Tap \"Add\" in the popup that appears",

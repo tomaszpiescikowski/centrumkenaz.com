@@ -88,7 +88,13 @@ function PwaInstallBanner() {
               <p className="mt-1 text-xs italic text-navy/50 dark:text-cream/50">
                 {t('pwa.installPwaNote')}
               </p>
-              <div className="mt-2 space-y-0.5">
+              <p className="mt-1.5 text-xs text-navy/70 dark:text-cream/70">
+                {t('pwa.installIosNote')}
+              </p>
+              <p className="mt-2 text-xs font-medium text-navy/80 dark:text-cream/80">
+                {t('pwa.installIosManualTitle')}
+              </p>
+              <div className="mt-1 space-y-0.5">
                 {hint.split('\n').map((line, i) => (
                   <p key={i} className="text-xs leading-relaxed text-navy/70 dark:text-cream/70">
                     {line}

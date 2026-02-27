@@ -96,6 +96,8 @@
     "installCta": "Installa l'app sul telefono",
     "installDesc": "Un collegamento apparirà sulla schermata iniziale – come una normale app. Accesso più veloce, senza aprire il browser.",
     "installPwaNote": "Questo sito è una PWA (Progressive Web App) – ottimizzata per mobile: veloce, leggera e funziona come un’app vera.",
+    "installIosNote": "Su iPhone il browser non consente l’installazione automatica. Puoi farlo manualmente in pochi passi – ci vuole meno di un minuto.",
+    "installIosManualTitle": "Come installare in Safari:",
     "installBtn": "Installa",
     "installManualTitle": "Come installare manualmente in Chrome:",
     "installHintAndroid": "1. Tocca ⋮ (tre puntini) in alto a destra in Chrome\n2. Scegli \"Aggiungi alla schermata Home\"\n3. Tocca \"Aggiungi\" nel popup che appare",

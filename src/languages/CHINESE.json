@@ -96,6 +96,8 @@
     "installCta": "在手机上安装应用",
     "installDesc": "快捷方式将出现在主屏幕上，就像普通应用一样。访问更快，无需打开浏览器。",
     "installPwaNote": "本站是 PWA（渐进式网络应用）——专为手机优化：快速、轻量，用起来像原生应用。",
+    "installIosNote": "在 iPhone 上，浏览器不支持自动安装。您可以按以下步骤手动完成，不到一分钟。",
+    "installIosManualTitle": "如何在 Safari 中安装：",
     "installBtn": "安装",
     "installManualTitle": "如何在 Chrome 中手动安装：",
     "installHintAndroid": "1. 点击 Chrome 右上角的 ⋮（三个点）\n2. 选择“添加到主屏幕”\n3. 在弹出的窗口中点击“添加”",

@@ -96,6 +96,8 @@
     "installCta": "Installeer de app op je telefoon",
     "installDesc": "Er verschijnt een snelkoppeling op je startscherm – als een gewone app. Sneller toegang, geen browser nodig.",
     "installPwaNote": "Deze site is een PWA (Progressive Web App) – geoptimaliseerd voor mobiel: snel, licht en werkt als een echte app.",
+    "installIosNote": "Op iPhone staat de browser geen automatische installatie toe. Je kunt het handmatig doen in een paar stappen – het kost minder dan een minuut.",
+    "installIosManualTitle": "Installeren in Safari:",
     "installBtn": "Installeer",
     "installManualTitle": "Handmatig installeren in Chrome:",
     "installHintAndroid": "1. Tik op ⋮ (drie puntjes) rechtsboven in Chrome\n2. Kies \"Toevoegen aan startscherm\"\n3. Tik op \"Toevoegen\" in het venster dat verschijnt",

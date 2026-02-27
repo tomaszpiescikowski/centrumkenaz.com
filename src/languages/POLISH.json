@@ -94,6 +94,8 @@
     "installCta": "Zainstaluj aplikację na telefonie",
     "installDesc": "Skrót pojawi się na ekranie głównym – jak normalna aplikacja. Szybszy dostęp, bez otwierania przeglądarki.",
     "installPwaNote": "Ta strona to PWA (Progressive Web App) – jest zoptymalizowana pod telefon: szybka, lekka i działa jak prawdziwa aplikacja.",
+    "installIosNote": "Na iPhonie przeglądarka nie pozwala na automatyczną instalację. Możesz to zrobić ręcznie w kilku krokach – zajmie to mniej niż minutę.",
+    "installIosManualTitle": "Jak zainstalować w Safari:",
     "installBtn": "Zainstaluj",
     "installManualTitle": "Jak zainstalować ręcznie w Chrome:",
     "installHintAndroid": "1. Kliknij ⋮ (trzy kropki) w prawym górnym rogu Chrome\n2. Wybierz „Dodaj do ekranu głównego”\n3. Kliknij „Dodaj” w okienku, które się pojawi",

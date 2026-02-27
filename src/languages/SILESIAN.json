@@ -96,6 +96,8 @@
     "installCta": "Zainstaluj apka na telefonie",
     "installDesc": "Skrōt pojawi sie na głōwnym ekranie – jak normalnō apka. Chyńdzij dostympny, bez ôtwiyranio przeglodarki.",
     "installPwaNote": "Ta strōna to PWA (Progressive Web App) – je zoptymalizowano pod telfōn: chytko, lekko i dziŏła jak prŏwdziwŏ apka.",
+    "installIosNote": "Na iPhōnie przeglodarko niy może zainstalować sōmo. Możesz to zrobić sam w kilķku krokach – niy zajmie to minutē.",
+    "installIosManualTitle": "Jak zainstalować w Safari:",
     "installBtn": "Zainstaluj",
     "installManualTitle": "Jak zainstalować sam w Chrome:",
     "installHintAndroid": "1. Kliknij ⋮ (trzi krōpki) w prawym gōrnym rogu Chrome\n2. Wybiyrz „Dodŏj do ekranu głōwnego”\n3. Kliknij „Dodŏj” w ôkiynku, co sie pojawi",
