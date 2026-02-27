@@ -275,7 +275,7 @@ async def google_callback(
         access_token = auth_service.create_access_token(user)
         refresh_token = auth_service.create_refresh_token(user)
         await log_action(
-            "USER_LOGIN_GOOGLE",
+                        action="USER_LOGIN_GOOGLE",
             user_email=user.email,
             ip=_get_request_ip(request),
             full_name=user.full_name,
@@ -285,11 +285,11 @@ async def google_callback(
 
     except (AuthConflictError, AuthPolicyError) as exc:
         error_url = f"{settings.frontend_url}/auth/error?message={str(exc)}"
-        await log_action("USER_LOGIN_GOOGLE_BLOCKED", ip=_get_request_ip(request), reason=str(exc))
+        await log_action(action="USER_LOGIN_GOOGLE_BLOCKED", ip=_get_request_ip(request), reason=str(exc))
         return RedirectResponse(url=error_url)
     except Exception:
         logger.exception("Unhandled Google callback error")
-        await log_action("USER_LOGIN_GOOGLE_ERROR", ip=_get_request_ip(request))
+        await log_action(action="USER_LOGIN_GOOGLE_ERROR", ip=_get_request_ip(request))
         error_url = f"{settings.frontend_url}/auth/error?message=Authentication failed"
         return RedirectResponse(url=error_url)
 
@@ -329,7 +329,7 @@ async def password_register(
         raise HTTPException(status_code=422, detail=str(exc))
 
     await log_action(
-        "USER_REGISTERED",
+                action="USER_REGISTERED",
         user_email=user.email,
         ip=_get_request_ip(request),
         full_name=user.full_name,
@@ -361,7 +361,7 @@ async def password_login(
     user = await auth_service.authenticate_with_password(payload.login, payload.password)
     if not user:
         await log_action(
-            "USER_LOGIN_FAILED",
+                        action="USER_LOGIN_FAILED",
             user_email=None,
             ip=_get_request_ip(request),
             login=payload.login,
@@ -369,7 +369,7 @@ async def password_login(
         raise HTTPException(status_code=401, detail="Invalid login or password")
 
     await log_action(
-        "USER_LOGIN",
+                action="USER_LOGIN",
         user_email=user.email,
         ip=_get_request_ip(request),
         method="password",
@@ -615,7 +615,7 @@ async def forgot_password(
     await db.commit()
 
     await log_action(
-        "PASSWORD_RESET_REQUESTED",
+                action="PASSWORD_RESET_REQUESTED",
         user_email=email,
     )
     reset_url = (
@@ -673,6 +673,6 @@ async def reset_password(
     user.password_reset_token = None
     user.password_reset_token_expires_at = None
     await db.commit()
-    await log_action("PASSWORD_RESET_COMPLETED", user_email=user.email)
+    await log_action(action="PASSWORD_RESET_COMPLETED", user_email=user.email)
 
     return {"message": "Hasło zostało zmienione. Możesz się teraz zalogować."}

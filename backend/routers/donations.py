@@ -206,7 +206,7 @@ async def create_donation(
     await db.commit()
     await db.refresh(donation)
     await log_action(
-        "DONATION_CREATED",
+                action="DONATION_CREATED",
         user_email=body.donor_email or user_email_from(current_user),
         ip=_get_request_ip(http_request),
         amount=str(body.amount),
@@ -388,7 +388,7 @@ async def confirm_donation(
     donation.points_awarded = points_awarded if points_awarded > 0 else None
     await db.commit()
     await log_action(
-        "ADMIN_DONATION_CONFIRMED",
+                action="ADMIN_DONATION_CONFIRMED",
         user_email=user_email_from(admin_),
         ip=_get_request_ip(http_request),
         donation_id=donation_id,
@@ -419,7 +419,7 @@ async def cancel_donation(
     donation.admin_note = body.note
     await db.commit()
     await log_action(
-        "ADMIN_DONATION_CANCELLED",
+                action="ADMIN_DONATION_CANCELLED",
         user_email=user_email_from(admin_),
         ip=_get_request_ip(http_request),
         donation_id=donation_id,

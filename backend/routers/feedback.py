@@ -48,7 +48,7 @@ async def submit_feedback(
     db.add(entry)
     await db.commit()
     await log_action(
-        "FEEDBACK_SUBMITTED",
+                action="FEEDBACK_SUBMITTED",
         user_email=payload.email,
         ip=_get_request_ip(http_request),
         comment_len=len(payload.comment.strip()),

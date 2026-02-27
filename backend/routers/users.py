@@ -297,7 +297,7 @@ async def submit_join_request(
     await db.refresh(user)
     await db.refresh(profile)
     await log_action(
-        "JOIN_REQUEST_SUBMITTED",
+                action="JOIN_REQUEST_SUBMITTED",
         user_email=user_email_from(user),
         ip=_get_request_ip(http_request),
         full_name=user.full_name,
@@ -335,7 +335,7 @@ async def update_my_profile(
     await db.commit()
     await db.refresh(profile)
     await log_action(
-        "PROFILE_UPDATED",
+                action="PROFILE_UPDATED",
         user_email=user_email_from(user),
         ip=_get_request_ip(http_request),
     )

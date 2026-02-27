@@ -270,7 +270,7 @@ async def start_subscription_checkout(
     )
 
     await log_action(
-        "PAYMENT_CHECKOUT_STARTED",
+                action="PAYMENT_CHECKOUT_STARTED",
         user_email=user_email_from(user),
         ip=_get_request_ip(request),
         type="subscription",
@@ -311,7 +311,7 @@ async def switch_to_free_plan(
     await db.commit()
     await db.refresh(user)
     await log_action(
-        "SUBSCRIPTION_SWITCHED_TO_FREE",
+                action="SUBSCRIPTION_SWITCHED_TO_FREE",
         user_email=user_email_from(user),
         ip=_get_request_ip(request),
     )
@@ -350,7 +350,7 @@ async def start_subscription_manual_checkout(
     if not details:
         raise HTTPException(status_code=500, detail="Failed to load purchase details")
     await log_action(
-        "SUBSCRIPTION_MANUAL_CHECKOUT_STARTED",
+                action="SUBSCRIPTION_MANUAL_CHECKOUT_STARTED",
         user_email=user_email_from(user),
         ip=_get_request_ip(request),
         plan=payload.plan_code,
@@ -447,7 +447,7 @@ async def confirm_subscription_manual_payment(
     if not details:
         raise HTTPException(status_code=404, detail="Purchase not found")
     await log_action(
-        "SUBSCRIPTION_MANUAL_PAYMENT_CONFIRMED_BY_USER",
+                action="SUBSCRIPTION_MANUAL_PAYMENT_CONFIRMED_BY_USER",
         user_email=user_email_from(user),
         ip=_get_request_ip(request),
         purchase_id=purchase_id,
@@ -482,7 +482,7 @@ async def get_payment_status(
         await db.refresh(payment)
 
     await log_action(
-        "PAYMENT_STATUS_CHECKED",
+                action="PAYMENT_STATUS_CHECKED",
         user_email=user_email_from(user),
         ip=_get_request_ip(request),
         payment_id=payment.external_id,
@@ -531,7 +531,7 @@ async def handle_payment_webhook(
 
     if not payment:
         await log_action(
-            "WEBHOOK_PAYMENT_NOT_FOUND",
+                        action="WEBHOOK_PAYMENT_NOT_FOUND",
             ip=_get_request_ip(request),
             payment_id=payload.payment_id,
             status=payload.status,
@@ -545,7 +545,7 @@ async def handle_payment_webhook(
         if payment.payment_type == PaymentType.EVENT.value:
             await registration_service.confirm_registration(payment.external_id)
             await log_action(
-                "WEBHOOK_EVENT_PAYMENT_COMPLETED",
+                                action="WEBHOOK_EVENT_PAYMENT_COMPLETED",
                 ip=_get_request_ip(request),
                 payment_id=payment.external_id,
                 type="event",
@@ -555,7 +555,7 @@ async def handle_payment_webhook(
         elif payment.payment_type == PaymentType.SUBSCRIPTION.value:
             await payment_service.apply_subscription_for_payment(payment)
             await log_action(
-                "WEBHOOK_SUBSCRIPTION_PAYMENT_COMPLETED",
+                                action="WEBHOOK_SUBSCRIPTION_PAYMENT_COMPLETED",
                 ip=_get_request_ip(request),
                 payment_id=payment.external_id,
                 type="subscription",
@@ -564,7 +564,7 @@ async def handle_payment_webhook(
             )
     else:
         await log_action(
-            "WEBHOOK_PAYMENT_STATUS_UPDATED",
+                        action="WEBHOOK_PAYMENT_STATUS_UPDATED",
             ip=_get_request_ip(request),
             payment_id=payment.external_id,
             status=payment.status,

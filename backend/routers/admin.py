@@ -908,7 +908,7 @@ async def approve_user(
         return [str(t) for t in parsed] if isinstance(parsed, list) else []
 
     await log_action(
-        "ADMIN_USER_APPROVED",
+                action="ADMIN_USER_APPROVED",
         user_email=user_email_from(_admin),
         ip=_get_request_ip(http_request),
         target_user_id=user_id,
@@ -1118,7 +1118,7 @@ async def approve_pending_manual_payment(
         raise HTTPException(status_code=404, detail="Registration not found")
     registration, user, event, payment = result
     await log_action(
-        "ADMIN_MANUAL_PAYMENT_APPROVED",
+                action="ADMIN_MANUAL_PAYMENT_APPROVED",
         user_email=user_email_from(_admin),
         ip=_get_request_ip(http_request),
         registration_id=registration_id,
@@ -1214,7 +1214,7 @@ async def update_refund_task(
     await db.refresh(task)
     await db.refresh(registration)
     await log_action(
-        "ADMIN_REFUND_TASK_UPDATED",
+                action="ADMIN_REFUND_TASK_UPDATED",
         user_email=user_email_from(admin),
         ip=_get_request_ip(http_request),
         task_id=task_id,
@@ -1291,7 +1291,7 @@ async def update_waitlist_promotion_status(
     await db.commit()
     await db.refresh(registration)
     await log_action(
-        "ADMIN_WAITLIST_PROMOTION_UPDATED",
+                action="ADMIN_WAITLIST_PROMOTION_UPDATED",
         user_email=user_email_from(_admin),
         ip=_get_request_ip(http_request),
         registration_id=registration_id,
@@ -1433,7 +1433,7 @@ async def approve_subscription_purchase(
     if not result:
         raise HTTPException(status_code=404, detail="Purchase not found")
     await log_action(
-        "ADMIN_SUBSCRIPTION_PURCHASE_APPROVED",
+                action="ADMIN_SUBSCRIPTION_PURCHASE_APPROVED",
         user_email=user_email_from(_admin),
         ip=_get_request_ip(http_request),
         purchase_id=purchase_id,
@@ -1917,7 +1917,7 @@ async def promote_user_to_admin(
     await db.commit()
     await db.refresh(target_user)
     await log_action(
-        "ADMIN_USER_PROMOTED_TO_ADMIN",
+                action="ADMIN_USER_PROMOTED_TO_ADMIN",
         user_email=user_email_from(admin),
         ip=_get_request_ip(http_request),
         target_email=target_user.email,
@@ -1991,7 +1991,7 @@ async def block_user(
     await db.commit()
     await db.refresh(target)
     await log_action(
-        "ADMIN_USER_BLOCKED",
+                action="ADMIN_USER_BLOCKED",
         user_email=user_email_from(admin),
         ip=_get_request_ip(http_request),
         target_user_id=user_id,
@@ -2025,7 +2025,7 @@ async def unblock_user(
     await db.commit()
     await db.refresh(target)
     await log_action(
-        "ADMIN_USER_UNBLOCKED",
+                action="ADMIN_USER_UNBLOCKED",
         user_email=user_email_from(_admin),
         ip=_get_request_ip(http_request),
         target_user_id=user_id,

@@ -69,7 +69,7 @@ async def cancel_registration(
         request_refund=True,
     )
     await log_action(
-        "REGISTRATION_CANCELLED",
+                action="REGISTRATION_CANCELLED",
         user_email=user_email_from(user),
         ip=_get_request_ip(request),
         registration_id=registration_id,
@@ -102,7 +102,7 @@ async def get_manual_payment_details(
     if details is None:
         raise HTTPException(status_code=404, detail="Registration not found")
     await log_action(
-        "REGISTRATION_MANUAL_PAYMENT_CONFIRMED_BY_USER",
+                action="REGISTRATION_MANUAL_PAYMENT_CONFIRMED_BY_USER",
         user_email=user_email_from(user),
         ip=_get_request_ip(request),
         registration_id=registration_id,

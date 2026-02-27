@@ -469,7 +469,7 @@ async def create_event(
     await db.commit()
     await db.refresh(event)
     await log_action(
-        "EVENT_CREATED",
+                action="EVENT_CREATED",
         user_email=user_email_from(_admin),
         ip=_get_request_ip(http_request),
         event_id=str(event.id),
@@ -559,7 +559,7 @@ async def update_event(
     await db.commit()
     await db.refresh(event)
     await log_action(
-        "EVENT_UPDATED",
+                action="EVENT_UPDATED",
         user_email=user_email_from(_admin),
         ip=_get_request_ip(http_request),
         event_id=str(event.id),
@@ -610,7 +610,7 @@ async def delete_event(
     await db.delete(event)
     await db.commit()
     await log_action(
-        "EVENT_DELETED",
+                action="EVENT_DELETED",
         user_email=user_email_from(_admin),
         ip=_get_request_ip(http_request),
         event_id=event_id,
@@ -809,7 +809,7 @@ async def register_for_event(
             cancel_url=str(request.cancel_url),
         )
         await log_action(
-            "EVENT_REGISTRATION_CREATED",
+                        action="EVENT_REGISTRATION_CREATED",
             user_email=user_email_from(user),
             ip=_get_request_ip(http_request),
             event_id=event_id,
@@ -866,7 +866,7 @@ async def cancel_registration(
         request_refund=True,
     )
     await log_action(
-        "EVENT_REGISTRATION_CANCELLED",
+                action="EVENT_REGISTRATION_CANCELLED",
         user_email=user_email_from(user),
         ip=_get_request_ip(http_request),
         event_id=event_id,

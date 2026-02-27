@@ -97,7 +97,7 @@ async def create_announcement(
     announcement = result.scalars().first()
 
     await log_action(
-        "ANNOUNCEMENT_CREATED",
+                action="ANNOUNCEMENT_CREATED",
         user_email=user_email_from(admin),
         ip=_get_request_ip(http_request),
         announcement_id=str(announcement.id),
@@ -134,7 +134,7 @@ async def delete_announcement(
     await db.delete(announcement)
     await db.commit()
     await log_action(
-        "ANNOUNCEMENT_DELETED",
+                action="ANNOUNCEMENT_DELETED",
         user_email=user_email_from(admin),
         ip=_get_request_ip(http_request),
         announcement_id=announcement_id,
