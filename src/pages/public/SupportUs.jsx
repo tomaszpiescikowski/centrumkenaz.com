@@ -146,7 +146,7 @@ function SupportUs() {
         <div className="page-card text-center py-12">
           <HeartIcon className="h-12 w-12 mx-auto mb-4 text-navy/20 dark:text-cream/20" />
           <p className="text-navy/60 dark:text-cream/60">{t('support.disabled')}</p>
-          <Link to="/" className="mt-6 inline-flex text-sm font-semibold text-navy dark:text-cream">
+          <Link to="/" className="mt-6 hidden sm:inline-flex text-sm font-semibold text-navy dark:text-cream">
             ← {t('common.backToHome')}
           </Link>
         </div>
@@ -203,7 +203,7 @@ function SupportUs() {
             )}
             <Link
               to="/"
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-navy/20 dark:border-cream/20 px-6 py-3 text-sm font-semibold text-navy dark:text-cream"
+              className="mt-4 hidden sm:inline-flex items-center gap-2 rounded-xl border border-navy/20 dark:border-cream/20 px-6 py-3 text-sm font-semibold text-navy dark:text-cream"
             >
               {t('common.backToHome')}
             </Link>
@@ -372,7 +372,7 @@ function SupportUs() {
         )}
 
         <div className="mt-6 text-center">
-          <Link to="/" className="text-sm text-navy/60 dark:text-cream/60 hover:text-navy dark:hover:text-cream">
+          <Link to="/" className="hidden sm:inline text-sm text-navy/60 dark:text-cream/60 hover:text-navy dark:hover:text-cream">
             ← {t('common.backToHome')}
           </Link>
         </div>

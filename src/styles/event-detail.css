@@ -990,7 +990,7 @@ img.ev-av-img {
 /* ── Back link ─────────────────────────────────────── */
 
 .ev-back {
-  display: inline-flex;
+  display: none;
   align-items: center;
   gap: 0.5rem;
   font-weight: 500;
@@ -999,6 +999,12 @@ img.ev-av-img {
   text-decoration: none;
   margin-bottom: 1rem;
   transition: color 0.12s;
+}
+
+@media (min-width: 640px) {
+  .ev-back {
+    display: inline-flex;
+  }
 }
 
 .ev-back:hover {
