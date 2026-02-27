@@ -396,7 +396,7 @@ function Calendar({ className = '' }) {
         </button>
       </div>
 
-      {isAdmin && !isSelectedDayPast && !isSelectedDayTooFarFuture && (
+      {isAdmin && !isSelectedDayPast && (
         <div className="mb-3">
           <Link
             to={adminCreatePath}
