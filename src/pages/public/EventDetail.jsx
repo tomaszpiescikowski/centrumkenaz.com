@@ -956,7 +956,7 @@ function EventDetail() {
             className="ev-card ev-chat-card hidden sm:block"
             style={{ marginTop: '0.75rem', padding: '1rem 1.25rem' }}
           >
-            <CommentsSection resourceType="event" resourceId={event.id} chatId={`event:${event.id}`} onLatestMessage={(msg) => setLatestMessageTime(`event:${event.id}`, msg)} onMarkRead={() => markAsRead(`event:${event.id}`)} hideTabs messengerLayout />
+            <CommentsSection resourceType="event" resourceId={event.id} chatId={`event:${event.id}`} onLatestMessage={(msg) => setLatestMessageTime(`event:${event.id}`, msg)} onMarkRead={() => markAsRead(`event:${event.id}`)} hideTabs messengerLayout isRegistered={isRegistered} />
           </div>
 
 

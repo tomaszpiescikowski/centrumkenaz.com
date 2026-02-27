@@ -1161,6 +1161,7 @@
     "tabGeneral": "Ogłoszenia",
     "placeholderGeneral": "Napisz ogłoszenie...",
     "announcementsReadOnly": "Tylko admini mogą pisać ogłoszenia",
+    "notRegisteredReadOnly": "Tylko zapisani uczestnicy mogą pisać w chacie wydarzenia",
     "emptyGeneral": "Brak ogłoszeń.",
     "chatTitle": "Czat",
     "chatBubble": "Czat",

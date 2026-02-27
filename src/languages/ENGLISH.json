@@ -1163,6 +1163,7 @@
     "tabGeneral": "Announcements",
     "placeholderGeneral": "Write an announcement...",
     "announcementsReadOnly": "Only admins can post announcements",
+    "notRegisteredReadOnly": "Only registered participants can write in the event chat",
     "emptyGeneral": "No announcements yet.",
     "chatTitle": "Chat",
     "chatBubble": "Chat",

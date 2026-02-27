@@ -17,6 +17,7 @@ from sqlalchemy.orm import selectinload
 
 from database import get_db
 from models.comment import Comment, CommentReaction, ReactionType
+from models.registration import Registration, RegistrationStatus
 from models.user import UserRole
 from security.guards import ActiveUser, OptionalActiveUser
 
@@ -468,6 +469,23 @@ async def create_comment(
     # Announcements channel is admin-only for writing
     if resource_type == 'general' and user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Only admins can post to announcements")
+
+    # Event chats are restricted to registered (non-cancelled) participants
+    if resource_type == 'event' and user.role != UserRole.ADMIN:
+        reg_stmt = select(Registration).where(
+            Registration.event_id == resource_id,
+            Registration.user_id == user.id,
+            Registration.status.notin_([
+                RegistrationStatus.CANCELLED.value,
+                RegistrationStatus.REFUNDED.value,
+            ]),
+        )
+        reg_result = await db.execute(reg_stmt)
+        if reg_result.scalar_one_or_none() is None:
+            raise HTTPException(
+                status_code=403,
+                detail="You must be registered for this event to participate in its chat",
+            )
 
     # Validate parent exists and belongs to same resource
     if body.parent_id:

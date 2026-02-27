@@ -77,7 +77,7 @@ function collectCommentIds(comments) {
   return ids
 }
 
-function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onTabChange, hideHeader, hideTabs, messengerLayout, chatId, onLatestMessage, onMarkRead }) {
+function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onTabChange, hideHeader, hideTabs, messengerLayout, chatId, onLatestMessage, onMarkRead, isRegistered }) {
   const { user, authFetch } = useAuth()
   const { t } = useLanguage()
   const isAdmin = user?.role === 'admin'
@@ -1013,11 +1013,16 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   // No separate pinned section – pinned items stay inline (backend sorts pinned first)
 
   // General tab = announcements: only admins may post
-  const canPost = !isGeneralTab || isAdmin
+  // Event tab: only registered participants may post (isRegistered=false blocks; undefined=allowed for ChatPage)
+  const canPost = isGeneralTab
+    ? isAdmin
+    : (isAdmin || isRegistered !== false)
 
   const commentForm = (user && !canPost) ? (
     <div className="cmt-new-form">
-      <p className="cmt-readonly-notice">{t('comments.announcementsReadOnly')}</p>
+      <p className="cmt-readonly-notice">
+        {isGeneralTab ? t('comments.announcementsReadOnly') : t('comments.notRegisteredReadOnly')}
+      </p>
     </div>
   ) : user ? (
     <form className="cmt-new-form" onSubmit={handleSubmit}>
