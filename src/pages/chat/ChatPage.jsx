@@ -5,7 +5,6 @@ import { useAuth } from '../../context/AuthContext'
 import { useChat } from '../../context/ChatContext'
 import { fetchRegisteredEvents } from '../../api/events'
 import CommentsSection from '../../components/common/CommentsSection'
-import EventIcon from '../../components/common/EventIcon'
 import { useCustomEventTypes } from '../../hooks/useCustomEventTypes'
 import '../../components/common/CommentsSection.css'
 
@@ -43,6 +42,10 @@ function getTypePalette(type, customTypes = []) {
     return HASH_PALETTE[idx]
   }
   return HASH_PALETTE[strHash(type) % HASH_PALETTE.length]
+}
+
+function initials(name) {
+  return (name || '').split(' ').map(w => w[0]).filter(Boolean).join('').slice(0, 2).toUpperCase()
 }
 
 function ChatPage() {
@@ -361,17 +364,23 @@ function ChatPage() {
                         {/* Colored left stripe */}
                         <span className="cp-card-stripe" style={{ background: palette.bg }} />
 
-                        {/* Colored avatar circle */}
-                        <span className="cp-card-avatar" style={{ background: palette.gradient }}>
-                          <EventIcon type={ev.type} size="sm" customTypes={customTypes} />
-                        </span>
-
-                        {/* Main content */}
-                        <span className="cp-card-body">
-                          <span className="cp-card-top-row">
-                            <span className={`cp-card-title${unread ? ' cp-card-title--unread' : ''}`}>
-                              {ev.title}
-                            </span>
+                          {/* Participant avatar stack */}
+                          {(() => {
+                            const authors = latestMessages[chatId]?.recentAuthors
+                            if (!authors?.length) return null
+                            return (
+                              <span className="cp-card-participants">
+                                {authors.map((a, i) => (
+                                  <span key={a.id} className="cmt-reply-av" style={{ zIndex: authors.length - i }}>
+                                    {a.picture_url
+                                      ? <img src={a.picture_url} alt={a.full_name} />
+                                      : <span>{initials(a.full_name)}</span>
+                                    }
+                                  </span>
+                                ))}
+                              </span>
+                            )
+                          })()}
                             <span className="cp-card-ts">{timeLabel}</span>
                           </span>
                           <span className="cp-card-meta-row">

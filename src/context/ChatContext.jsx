@@ -86,10 +86,25 @@ function ChatProvider({ children }) {
     if (!timestampOrObj) return
     setLatestMessages((prev) => {
       const incoming = typeof timestampOrObj === 'string'
-        ? { ts: timestampOrObj, text: null, author: null }
-        : { ts: timestampOrObj.ts, text: timestampOrObj.text ?? null, author: timestampOrObj.author ?? null }
+        ? { ts: timestampOrObj, text: null, author: null, recentAuthors: null }
+        : {
+            ts: timestampOrObj.ts,
+            text: timestampOrObj.text ?? null,
+            author: timestampOrObj.author ?? null,
+            recentAuthors: timestampOrObj.recentAuthors ?? null,
+          }
       const current = prev[chatId]
-      if (current && current.ts >= incoming.ts) return prev
+      if (current && current.ts >= incoming.ts) {
+        // Not newer – but update authors if incoming has fresher data
+        if (incoming.recentAuthors?.length && !current.recentAuthors?.length) {
+          return { ...prev, [chatId]: { ...current, recentAuthors: incoming.recentAuthors } }
+        }
+        return prev
+      }
+      // Newer message – preserve previous recentAuthors if incoming lacks them
+      if (!incoming.recentAuthors && current?.recentAuthors) {
+        incoming.recentAuthors = current.recentAuthors
+      }
       return { ...prev, [chatId]: incoming }
     })
   }, [])

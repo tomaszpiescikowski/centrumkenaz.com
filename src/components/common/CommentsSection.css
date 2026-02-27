@@ -2464,22 +2464,24 @@ img.cmt-av-img {
   align-self: stretch;
 }
 
-/* ── Avatar circle ── */
-.cp-card-avatar {
+/* ── Participant avatar stack (replaces old type-icon avatar) ── */
+.cp-card-participants {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
   flex-shrink: 0;
-  margin: 0.625rem 0 0.625rem 0.625rem;
-  border-radius: 0.75rem;
-  color: #fff;
+  padding: 0 0 0 0.75rem;
 }
-.cp-card-avatar svg,
-.cp-card-avatar img {
-  filter: brightness(0) invert(1);
-  opacity: 0.95;
+/* Larger & card-coloured border so avatars blend with card bg */
+.cp-card-participants .cmt-reply-av {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-color: #fff;
+}
+.cp-card-participants .cmt-reply-av span {
+  font-size: 0.48rem;
+}
+.dark .cp-card-participants .cmt-reply-av {
+  border-color: #151538;
 }
 
 /* ── Body ── */
@@ -2489,7 +2491,7 @@ img.cmt-av-img {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0.625rem 0.75rem 0.625rem 0.5rem;
+  padding: 0.625rem 0.75rem 0.625rem 0.75rem;
   gap: 0.15rem;
 }
 

@@ -5,7 +5,6 @@ import { useAuth } from '../../context/AuthContext'
 import { useChat } from '../../context/ChatContext'
 import { fetchRegisteredEvents } from '../../api/events'
 import CommentsSection from '../common/CommentsSection'
-import EventIcon from '../common/EventIcon'
 import { useCustomEventTypes } from '../../hooks/useCustomEventTypes'
 import '../common/CommentsSection.css'
 
@@ -47,6 +46,10 @@ function formatMsgTime(isoStr) {
   if (diffDays === 0) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   if (diffDays < 7) return d.toLocaleDateString([], { weekday: 'short' })
   return d.toLocaleDateString([], { day: 'numeric', month: 'short' })
+}
+
+function initials(name) {
+  return (name || '').split(' ').map(w => w[0]).filter(Boolean).join('').slice(0, 2).toUpperCase()
 }
 
 /**
@@ -314,9 +317,22 @@ function ChatModal() {
                           onClick={() => handleEventClick(ev)}
                         >
                           <span className="cp-card-stripe" style={{ background: palette.bg }} />
-                          <span className="cp-card-avatar" style={{ background: palette.gradient }}>
-                            <EventIcon type={ev.type} size="sm" customTypes={customTypes} />
-                          </span>
+                          {(() => {
+                            const authors = latestMessages[chatId]?.recentAuthors
+                            if (!authors?.length) return null
+                            return (
+                              <span className="cp-card-participants">
+                                {authors.map((a, i) => (
+                                  <span key={a.id} className="cmt-reply-av" style={{ zIndex: authors.length - i }}>
+                                    {a.picture_url
+                                      ? <img src={a.picture_url} alt={a.full_name} />
+                                      : <span>{initials(a.full_name)}</span>
+                                    }
+                                  </span>
+                                ))}
+                              </span>
+                            )
+                          })()}
                           <span className="cp-card-body">
                             <span className="cp-card-top-row">
                               <span className={`cp-card-title${unread ? ' cp-card-title--unread' : ''}`}>{ev.title}</span>

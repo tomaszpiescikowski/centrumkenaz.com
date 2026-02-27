@@ -61,10 +61,11 @@ export default function ChatPoller() {
       try {
         const result = await checkNewMessages(authFetchRef.current, sinceMap)
         for (const [chatId, data] of Object.entries(result)) {
-          // data is { latest: ISO, count: N }
+          // data is { latest: ISO, count: N, authors: [...] }
           const latestTs = typeof data === 'string' ? data : data.latest
           const count = typeof data === 'object' ? (data.count || 0) : 0
-          setLatestMessageTime(chatId, { ts: latestTs, text: null, author: null })
+          const recentAuthors = typeof data === 'object' ? (data.authors || []) : []
+          setLatestMessageTime(chatId, { ts: latestTs, text: null, author: null, recentAuthors })
           setUnreadCount(chatId, count)
           addPendingRefresh(chatId)
         }

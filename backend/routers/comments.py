@@ -399,7 +399,33 @@ async def check_new_messages(
             # Ensure tz-aware
             if latest.tzinfo is None:
                 latest = latest.replace(tzinfo=timezone.utc)
-            result[chat_id] = {"latest": latest.isoformat(), "count": count}
+
+            # Fetch up to 3 recent unique message authors for this chat
+            authors_stmt = (
+                select(User.id, User.full_name, User.picture_url)
+                .join(Comment, Comment.author_id == User.id)
+                .where(and_(
+                    Comment.resource_type == resource_type,
+                    Comment.resource_id == resource_id,
+                    Comment.is_deleted.is_(False),
+                ))
+                .order_by(Comment.created_at.desc())
+                .limit(12)
+            )
+            raw_authors = (await db.execute(authors_stmt)).all()
+            seen_ids: set = set()
+            authors: list = []
+            for row in raw_authors:
+                uid = str(row[0])
+                if uid not in seen_ids and len(authors) < 3:
+                    seen_ids.add(uid)
+                    authors.append({
+                        "id": uid,
+                        "full_name": row[1],
+                        "picture_url": row[2],
+                    })
+
+            result[chat_id] = {"latest": latest.isoformat(), "count": count, "authors": authors}
 
     return result
 
