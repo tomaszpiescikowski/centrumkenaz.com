@@ -44,7 +44,7 @@ function ExtraIconPicker({ value, onChange }) {
         placeholder="Szukaj ikony..."
         className="ui-input text-sm"
       />
-      <div className="grid grid-cols-5 sm:grid-cols-8 gap-1.5 max-h-56 overflow-y-auto pr-1">
+      <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 max-h-56 overflow-y-auto pr-1">
         {filtered.map((icon) => {
           const isSelected = value === icon.key
           return (
