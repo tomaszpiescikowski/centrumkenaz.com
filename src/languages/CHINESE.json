@@ -1187,7 +1187,9 @@
     "loginToSeeEvents": "登录以查看活动聊天",
     "goToEvent": "前往活动",
     "back": "返回",
-    "loadOlder": "加载更早的消息"
+    "loadOlder": "加载更早的消息",
+    "today": "今天",
+    "pastEvents": "过去的活动"
   },
   "panel": {
     "loginRequiredTitle": "登录以访问面板",

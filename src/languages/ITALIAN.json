@@ -1187,7 +1187,9 @@
     "loginToSeeEvents": "Accedi per vedere le chat dei tuoi eventi",
     "goToEvent": "Vai all'evento",
     "back": "Indietro",
-    "loadOlder": "Carica messaggi precedenti"
+    "loadOlder": "Carica messaggi precedenti",
+    "today": "Oggi",
+    "pastEvents": "Eventi passati"
   },
   "panel": {
     "loginRequiredTitle": "Accedi per accedere al pannello",

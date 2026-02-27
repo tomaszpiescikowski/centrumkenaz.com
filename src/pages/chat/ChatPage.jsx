@@ -6,11 +6,49 @@ import { useChat } from '../../context/ChatContext'
 import { fetchRegisteredEvents } from '../../api/events'
 import CommentsSection from '../../components/common/CommentsSection'
 import EventIcon from '../../components/common/EventIcon'
+import { useCustomEventTypes } from '../../hooks/useCustomEventTypes'
 import '../../components/common/CommentsSection.css'
+
+const TYPE_PALETTE = {
+  karate:     { bg: '#0891b2', gradient: 'linear-gradient(135deg,#06b6d4,#0891b2)' },
+  mors:       { bg: '#2563eb', gradient: 'linear-gradient(135deg,#60a5fa,#2563eb)' },
+  planszowki: { bg: '#7c3aed', gradient: 'linear-gradient(135deg,#a78bfa,#7c3aed)' },
+  ognisko:    { bg: '#ea580c', gradient: 'linear-gradient(135deg,#fb923c,#ea580c)' },
+  spacer:     { bg: '#059669', gradient: 'linear-gradient(135deg,#34d399,#059669)' },
+  joga:       { bg: '#db2777', gradient: 'linear-gradient(135deg,#f472b6,#db2777)' },
+  wyjazd:     { bg: '#d97706', gradient: 'linear-gradient(135deg,#fbbf24,#d97706)' },
+  inne:       { bg: '#475569', gradient: 'linear-gradient(135deg,#94a3b8,#475569)' },
+}
+
+function strHash(s) {
+  let h = 0
+  for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0
+  return Math.abs(h)
+}
+
+const HASH_PALETTE = [
+  { bg: '#0891b2', gradient: 'linear-gradient(135deg,#06b6d4,#0891b2)' },
+  { bg: '#7c3aed', gradient: 'linear-gradient(135deg,#a78bfa,#7c3aed)' },
+  { bg: '#059669', gradient: 'linear-gradient(135deg,#34d399,#059669)' },
+  { bg: '#db2777', gradient: 'linear-gradient(135deg,#f472b6,#db2777)' },
+  { bg: '#d97706', gradient: 'linear-gradient(135deg,#fbbf24,#d97706)' },
+  { bg: '#dc2626', gradient: 'linear-gradient(135deg,#f87171,#dc2626)' },
+]
+
+function getTypePalette(type, customTypes = []) {
+  if (TYPE_PALETTE[type]) return TYPE_PALETTE[type]
+  const ct = customTypes.find((c) => c.key === type)
+  if (ct?.color) {
+    const idx = strHash(type) % HASH_PALETTE.length
+    return HASH_PALETTE[idx]
+  }
+  return HASH_PALETTE[strHash(type) % HASH_PALETTE.length]
+}
 
 function ChatPage() {
   const { t, currentLanguage } = useLanguage()
   const { isAuthenticated, user, authFetch } = useAuth()
+  const { customTypes } = useCustomEventTypes()
 
   const isPendingApproval = isAuthenticated && user?.account_status !== 'active'
   const {
@@ -274,46 +312,86 @@ function ChatPage() {
               <div className="cp-empty"><p>{t('comments.noRegisteredEvents')}</p></div>
             ) : (
               <ul className="cp-event-list">
-                {sortedEvents.map((ev) => {
+                {sortedEvents.map((ev, idx) => {
                   const chatId = `event:${ev.id}`
                   const unread = hasUnread(chatId)
+                  const unreadCount = unreadCounts[chatId] || 1
                   const previewMsg = latestMessages[chatId]
                   const isPast = new Date(ev.startDateTime) < new Date()
-                  // Shorten author to first name for compact preview
+                  const palette = getTypePalette(ev.type, customTypes)
+
+                  // Section divider between upcoming and past
+                  const prevEv = sortedEvents[idx - 1]
+                  const prevIsPast = prevEv ? new Date(prevEv.startDateTime) < new Date() : false
+                  const showPastDivider = isPast && !prevIsPast && idx > 0
+
                   const authorShort = previewMsg?.author
                     ? previewMsg.author.split(' ')[0].replace(/^~/, '')
                     : null
                   const previewText = previewMsg?.text
-                    ? (previewMsg.text.length > 40 ? previewMsg.text.slice(0, 40) + '\u2026' : previewMsg.text)
+                    ? (previewMsg.text.length > 50 ? previewMsg.text.slice(0, 50) + '\u2026' : previewMsg.text)
                     : null
                   const timeLabel = previewMsg?.ts
                     ? formatMsgTime(previewMsg.ts)
                     : formatDate(ev.startDateTime)
+
+                  // "Dziś" label for today's events
+                  const evDate = new Date(ev.startDateTime)
+                  const now = new Date()
+                  const isToday = !isPast &&
+                    evDate.getDate() === now.getDate() &&
+                    evDate.getMonth() === now.getMonth() &&
+                    evDate.getFullYear() === now.getFullYear()
+
+                  const evTime = ev.startDateTime
+                    ? new Date(ev.startDateTime).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
+                    : null
+
                   return (
                     <li key={ev.id}>
+                      {showPastDivider && (
+                        <div className="cp-section-divider">
+                          <span>{t('comments.pastEvents')}</span>
+                        </div>
+                      )}
                       <button
-                        className={`cp-event-item${isPast ? ' cp-event-item--past' : ''}`}
+                        className={`cp-event-card${isPast ? ' cp-event-card--past' : ''}${unread ? ' cp-event-card--unread' : ''}`}
                         onClick={() => handleEventClick(ev)}
                       >
-                        <span className="cp-event-icon">
-                          <EventIcon type={ev.type} size="sm" />
+                        {/* Colored left stripe */}
+                        <span className="cp-card-stripe" style={{ background: palette.bg }} />
+
+                        {/* Colored avatar circle */}
+                        <span className="cp-card-avatar" style={{ background: palette.gradient }}>
+                          <EventIcon type={ev.type} size="sm" customTypes={customTypes} />
                         </span>
-                        <span className="cp-event-info">
-                          <span className={`cp-event-title-text${unread ? ' cp-event-title-unread' : ''}`}>{ev.title}</span>
-                          {previewText ? (
-                            <span className={`cp-event-preview${unread ? ' cp-event-preview-unread' : ''}`}>
-                              {authorShort ? <span className="cp-event-preview-author">{authorShort}:&nbsp;</span> : null}
+
+                        {/* Main content */}
+                        <span className="cp-card-body">
+                          <span className="cp-card-top-row">
+                            <span className={`cp-card-title${unread ? ' cp-card-title--unread' : ''}`}>
+                              {ev.title}
+                            </span>
+                            <span className="cp-card-ts">{timeLabel}</span>
+                          </span>
+                          <span className="cp-card-meta-row">
+                            <span className="cp-card-meta">
+                              {ev.city}
+                              {evTime && <> &middot; {evTime}</>}
+                              {!previewText && <> &middot; {formatDate(ev.startDateTime)}</>}
+                            </span>
+                            {isToday && <span className="cp-card-today-badge">{t('comments.today')}</span>}
+                            {unread
+                              ? <span className="cp-card-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
+                              : <span className="cp-card-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+                            }
+                          </span>
+                          {previewText && (
+                            <span className={`cp-card-preview${unread ? ' cp-card-preview--unread' : ''}`}>
+                              {authorShort && <span className="cp-card-preview-author">{authorShort}:&nbsp;</span>}
                               {previewText}
                             </span>
-                          ) : (
-                            <span className="cp-event-meta">{ev.city} &middot; {formatDate(ev.startDateTime)}</span>
                           )}
-                        </span>
-                        <span className="cp-event-right">
-                          <span className="cp-event-time">{timeLabel}</span>
-                          <span className="cp-event-right-bottom">
-                            {unread && <span className="chat-unread-badge" aria-label="unread">{(unreadCounts[chatId] || 0) > 9 ? '9+' : (unreadCounts[chatId] || 1)}</span>}
-                          </span>
                         </span>
                       </button>
                     </li>

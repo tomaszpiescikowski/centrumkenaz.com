@@ -1192,7 +1192,9 @@
     "pendingRequiredTitle": "Account pending approval",
     "pendingRequiredBody": "Chat is blocked until an admin approves your account.",
     "pendingRequiredButton": "Check account status",
-    "loadOlder": "Load older messages"
+    "loadOlder": "Load older messages",
+    "today": "Today",
+    "pastEvents": "Past events"
   },
   "panel": {
     "loginRequiredTitle": "Log in to use the panel",

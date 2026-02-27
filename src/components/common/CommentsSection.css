@@ -2496,3 +2496,251 @@ img.cmt-av-img {
 .dark .cmt-swipe-wrap.cmt-new-incoming {
   animation: cmt-new-in-dark 3s ease-out forwards;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   EVENT CHAT LIST — redesigned cards
+   ═══════════════════════════════════════════════════════════════ */
+
+.cp-event-list-wrap {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 0.75rem 0.75rem 1rem;
+  background: var(--bg, #fffdf5);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.cp-event-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* ── Section divider (Upcoming / Past) ── */
+.cp-section-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0.25rem;
+}
+.cp-section-divider::before,
+.cp-section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--b, rgba(15,23,74,0.12));
+}
+.cp-section-divider span {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted, rgba(15,23,74,0.44));
+  white-space: nowrap;
+}
+.dark .cp-section-divider::before,
+.dark .cp-section-divider::after {
+  background: rgba(255,253,245,0.12);
+}
+.dark .cp-section-divider span {
+  color: rgba(255,253,245,0.44);
+}
+
+/* ── Card ── */
+.cp-event-card {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  border: none;
+  background: #fff;
+  border-radius: 1rem;
+  overflow: hidden;
+  cursor: pointer;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 1px 3px rgba(15,23,74,0.07), 0 1px 2px rgba(15,23,74,0.04);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.dark .cp-event-card {
+  background: rgba(255,253,245,0.06);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+.cp-event-card:active {
+  transform: scale(0.985);
+}
+.cp-event-card--unread {
+  box-shadow: 0 2px 8px rgba(15,23,74,0.12), 0 1px 3px rgba(15,23,74,0.06);
+}
+
+/* ── Colored left stripe ── */
+.cp-card-stripe {
+  display: block;
+  width: 4px;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+/* ── Avatar circle ── */
+.cp-card-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  margin: 0.625rem 0 0.625rem 0.625rem;
+  border-radius: 0.75rem;
+  color: #fff;
+}
+.cp-card-avatar svg,
+.cp-card-avatar img {
+  filter: brightness(0) invert(1);
+  opacity: 0.95;
+}
+
+/* ── Body ── */
+.cp-card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.625rem 0.75rem 0.625rem 0.5rem;
+  gap: 0.15rem;
+}
+
+/* ── Top row: title + timestamp ── */
+.cp-card-top-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+.cp-card-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--txt, #0f174a);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+.cp-card-title--unread {
+  font-weight: 800;
+}
+.cp-card-ts {
+  font-size: 0.6875rem;
+  color: var(--muted, rgba(15,23,74,0.44));
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-top: 0.1rem;
+}
+
+/* ── Meta row: city/time + badge ── */
+.cp-card-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+.cp-card-meta {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.8rem;
+  color: var(--muted, rgba(15,23,74,0.55));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── "Dziś" today badge ── */
+.cp-card-today-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #10b981;
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.1em 0.45em;
+  flex-shrink: 0;
+}
+
+/* ── Unread count badge ── */
+.cp-card-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.3rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #fff;
+  background: #eb4731;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ── Chevron (read state) ── */
+.cp-card-chevron {
+  color: var(--muted, rgba(15,23,74,0.3));
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* ── Preview row ── */
+.cp-card-preview {
+  font-size: 0.8rem;
+  color: var(--muted, rgba(15,23,74,0.55));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.35;
+}
+.cp-card-preview--unread {
+  font-weight: 600;
+  color: var(--txt, #0f174a);
+}
+.cp-card-preview-author {
+  font-weight: 700;
+}
+
+/* ── Past events: dimmed ── */
+.cp-event-card--past {
+  opacity: 0.55;
+}
+.cp-event-card--past .cp-card-avatar {
+  filter: grayscale(0.7);
+}
+
+/* ── Dark mode overrides ── */
+.dark .cp-event-card {
+  background: rgba(255,253,245,0.06);
+}
+.dark .cp-card-title {
+  color: rgba(255,253,245,0.92);
+}
+.dark .cp-card-meta,
+.dark .cp-card-ts,
+.dark .cp-card-preview {
+  color: rgba(255,253,245,0.44);
+}
+.dark .cp-card-preview--unread {
+  color: rgba(255,253,245,0.88);
+}
+.dark .cp-card-chevron {
+  color: rgba(255,253,245,0.25);
+}
+.dark .cp-event-list-wrap {
+  background: var(--bg, #0f174a);
+}

@@ -1187,7 +1187,9 @@
     "loginToSeeEvents": "Log in om je evenementchats te bekijken",
     "goToEvent": "Ga naar evenement",
     "back": "Terug",
-    "loadOlder": "Oudere berichten laden"
+    "loadOlder": "Oudere berichten laden",
+    "today": "Vandaag",
+    "pastEvents": "Afgelopen evenementen"
   },
   "panel": {
     "loginRequiredTitle": "Log in om het dashboard te gebruiken",

@@ -1192,7 +1192,9 @@
     "loginToSeeEvents": "Zaloguj sie, coby ôboczyć czaty wydarzyń",
     "goToEvent": "Przejdź do wydarzynio",
     "back": "Nazōd",
-    "loadOlder": "Załaduj starsze wiadomości"
+    "loadOlder": "Załaduj starsze wiadomości",
+    "today": "Dzisiej",
+    "pastEvents": "Przeszłe wydarzynio"
   },
   "panel": {
     "loginRequiredTitle": "Zaloguj sie, coby używać panelu",
