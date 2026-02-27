@@ -79,6 +79,7 @@ async def cancel_registration(
 
 @router.get("/{registration_id}/manual-payment", response_model=ManualPaymentDetailsResponse)
 async def get_manual_payment_details(
+    request: Request,
     registration_id: str = Path(..., min_length=1),
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_active_user_dependency),
