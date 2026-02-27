@@ -1,0 +1,106 @@
+% ── Kenaz PDF header — xelatex + pandoc ──────────────────────────────────────
+% NOTE: pandoc already loads: fontspec (via mainfont var), polyglossia (via lang
+% var), geometry (via geometry var), hyperref (via colorlinks var).
+% This header only adds what pandoc does NOT load.
+
+% ── Colors ───────────────────────────────────────────────────────────────────
+\usepackage{xcolor}
+\definecolor{kenaznavy}{HTML}{0F174A}
+\definecolor{kenazred}{HTML}{E53935}
+\definecolor{kenazdim}{HTML}{4B5385}
+\definecolor{tableshade}{HTML}{F5F4EF}
+\definecolor{tableheaderbg}{HTML}{0F174A}
+% Aliases used in pandoc -V linkcolor / urlcolor variables:
+\colorlet{KenazNavy}{kenaznavy}
+\colorlet{KenazRed}{kenazred}
+
+% ── Widow / orphan / page-break discipline ────────────────────────────────────
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
+\interlinepenalty=200      % slightly penalise breaks inside paragraphs
+\brokenpenalty=4000
+
+% ── Headers & footers ────────────────────────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{kenazdim}\nouppercase{\leftmark}}
+\fancyhead[R]{\small\color{kenazdim}Kenaz Centrum}
+\fancyfoot[C]{\small\color{kenazdim}—\;\thepage\;—}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\headrule}{{\color{kenazdim!40}\hrule width\headwidth height 0.3pt}}
+% Plain style for first page of each section
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\small\color{kenazdim}—\;\thepage\;—}%
+  \renewcommand{\headrulewidth}{0pt}%
+}
+
+% ── Section title formatting ─────────────────────────────────────────────────
+\usepackage{titlesec}
+% h1 → huge navy, top-page-break safe
+\titleformat{\section}
+  {\sffamily\LARGE\bfseries\color{kenaznavy}}
+  {\thesection}{0.8em}{}
+\titlespacing{\section}{0pt}{28pt plus 6pt minus 4pt}{10pt plus 2pt}
+
+% h2 → large, slightly muted
+\titleformat{\subsection}
+  {\sffamily\large\bfseries\color{kenaznavy}}
+  {\thesubsection}{0.8em}{}
+\titlespacing{\subsection}{0pt}{18pt plus 4pt minus 2pt}{6pt plus 2pt}
+
+% h3 → normal size, semi-bold
+\titleformat{\subsubsection}
+  {\sffamily\normalsize\bfseries\color{kenazdim}}
+  {\thesubsubsection}{0.8em}{}
+\titlespacing{\subsubsection}{0pt}{12pt plus 3pt minus 2pt}{4pt plus 1pt}
+
+% ── Keep section headings with following content (needspace) ────────────────
+\usepackage{needspace}
+\preto\section{\needspace{6\baselineskip}}
+\preto\subsection{\needspace{4\baselineskip}}
+\preto\subsubsection{\needspace{3\baselineskip}}
+
+% ── TOC formatting ───────────────────────────────────────────────────────────
+\usepackage{tocloft}
+\renewcommand{\cftsecfont}{\sffamily\bfseries\color{kenaznavy}}
+\renewcommand{\cftsecpagefont}{\sffamily\small\color{kenazdim}}
+\renewcommand{\cftsubsecfont}{\sffamily\small}
+\renewcommand{\cftsubsecpagefont}{\sffamily\small\color{kenazdim}}
+\setlength{\cftbeforesecskip}{4pt}
+
+% ── Tables ───────────────────────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{colortbl}
+\usepackage{tabularx}
+
+% Nicer default table style: alternating rows, ruled header
+\arrayrulecolor{kenaznavy!20}
+\renewcommand{\arraystretch}{1.25}
+
+% pandas/markdown tables via pandoc use longtable — make header navy
+\AtBeginEnvironment{longtable}{%
+  \rowcolors{2}{tableshade}{white}%
+  \small%
+}
+
+% ── Code / verbatim ──────────────────────────────────────────────────────────
+\usepackage{fancyvrb}
+\usepackage{framed}
+\definecolor{shadecolor}{HTML}{F0EFE8}
+% ── Lists ────────────────────────────────────────────────────────────────────
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.5em, itemsep=2pt, topsep=4pt}
+\setlist[enumerate]{leftmargin=1.5em, itemsep=2pt, topsep=4pt}
+
+% ── Misc ─────────────────────────────────────────────────────────────────────
+\usepackage{microtype}         % better justification
+% paragraph spacing — complement pandoc's parskip from linestretch var
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\parindent}{0pt}

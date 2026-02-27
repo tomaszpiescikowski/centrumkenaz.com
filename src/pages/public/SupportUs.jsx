@@ -228,11 +228,9 @@ function SupportUs() {
 
         {/* ── Member points info ── */}
         {isSubscriber && pointsPerZloty > 0 && (
-          <div className="mb-6 rounded-xl border border-amber-200 dark:border-amber-700/40 bg-amber-50/80 dark:bg-amber-900/20 px-5 py-4">
-            <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
-              ⭐ {t('support.memberPointsInfo', { rate: pointsPerZloty })}
-            </p>
-          </div>
+          <p className="mb-6 text-sm text-amber-400">
+            {t('support.memberPointsInfo', { rate: pointsPerZloty })}
+          </p>
         )}
 
         {/* ── Donation form ── */}
