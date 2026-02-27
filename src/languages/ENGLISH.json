@@ -474,7 +474,11 @@
     "pendingSubscriptionTitle": "You have a pending subscription payment.",
     "pendingSubscriptionLink": "Complete payment",
     "verificationSubscriptionTitle": "Payment awaiting verification",
-    "verificationSubscriptionBody": "Your subscription payment has been confirmed and is awaiting admin verification."
+    "verificationSubscriptionBody": "Your subscription payment has been confirmed and is awaiting admin verification.",
+    "googleCalendar": "Google Calendar",
+    "connectCalendar": "Connect Google Calendar",
+    "calendarConnected": "Connected to Google Calendar",
+    "calendarDescription": "Automatically add your upcoming activities to Google Calendar after registration."
   },
   "plans": {
     "backToAccount": "Back to account",

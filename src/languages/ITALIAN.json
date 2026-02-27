@@ -474,7 +474,11 @@
     "inCalendar": "Nel calendario",
     "free": "Gratuito",
     "addedToCalendar": "Aggiunto a Google Calendar",
-    "addToCalendar": "Aggiungi al calendario"
+    "addToCalendar": "Aggiungi al calendario",
+    "googleCalendar": "Google Calendar",
+    "connectCalendar": "Collega Google Calendar",
+    "calendarConnected": "Collegato a Google Calendar",
+    "calendarDescription": "Aggiungi automaticamente le tue prossime attività a Google Calendar dopo la registrazione."
   },
   "plans": {
     "backToAccount": "Torna all'account",

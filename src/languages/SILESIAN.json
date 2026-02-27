@@ -474,7 +474,11 @@
     "inCalendar": "W kalyndōrzu",
     "free": "Bezpłatne",
     "addedToCalendar": "Dodane do Google Calendar",
-    "addToCalendar": "Dodaj do kalyndōrza"
+    "addToCalendar": "Dodaj do kalyndōrza",
+    "googleCalendar": "Google Kalyndorz",
+    "connectCalendar": "Połōncz Google Kalyndorz",
+    "calendarConnected": "Połōnczōno z Google Kalyndorzym",
+    "calendarDescription": "Autōmatycznie dodowoj swoje prziszłe zajyncio do Google Kalyndorza po zapisaniu."
   },
   "plans": {
     "backToAccount": "Wroć do kōnta",

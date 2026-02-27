@@ -159,6 +159,13 @@ export function AuthProvider({ children }) {
     return stored
   }, [])
 
+  const connectGoogleCalendar = useCallback(() => {
+    // Store the return path so AuthCallback sends the user back to the account
+    // page after granting calendar access.
+    setPostLoginRedirect('/me')
+    window.location.href = `${API_URL}/auth/google/calendar`
+  }, [setPostLoginRedirect])
+
   const loginWithGoogle = useCallback((options = {}) => {
     const { returnTo } = options
     const existingRedirect = localStorage.getItem(POST_LOGIN_REDIRECT_KEY)
@@ -317,7 +324,8 @@ export function AuthProvider({ children }) {
     authFetch,
     accessToken,
     consumePostLoginRedirect,
-  }), [user, loading, login, loginWithGoogle, loginWithPassword, registerWithPassword, logout, handleAuthCallback, fetchUser, authFetch, accessToken, consumePostLoginRedirect])
+    connectGoogleCalendar,
+  }), [user, loading, login, loginWithGoogle, loginWithPassword, registerWithPassword, logout, handleAuthCallback, fetchUser, authFetch, accessToken, consumePostLoginRedirect, connectGoogleCalendar])
 
   return (
     <AuthContext.Provider value={value}>

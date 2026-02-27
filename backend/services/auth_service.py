@@ -137,14 +137,39 @@ class AuthService:
             "client_id": settings.google_client_id,
             "redirect_uri": settings.google_redirect_uri,
             "response_type": "code",
-            "scope": "openid email profile https://www.googleapis.com/auth/calendar.events",
+            "scope": "openid email profile",
             "access_type": "offline",
             "prompt": "consent",
-            "include_granted_scopes": "true",
         }
         if state:
             params["state"] = state
 
+        query = urlencode(params)
+        return f"https://accounts.google.com/o/oauth2/v2/auth?{query}"
+
+    async def get_google_calendar_auth_url(self) -> str:
+        """
+        Generate the Google OAuth URL for incrementally requesting calendar access.
+
+        This is a separate flow from the main login — the user is already
+        authenticated with basic scopes and explicitly opts in to calendar sync.
+        Using include_granted_scopes=true means Google merges the new scope with
+        whatever the user already granted, avoiding a full re-consent.
+        """
+        if not settings.google_client_id:
+            raise ValueError("GOOGLE_CLIENT_ID is not configured")
+        if not settings.google_redirect_uri:
+            raise ValueError("GOOGLE_REDIRECT_URI is not configured")
+
+        params = {
+            "client_id": settings.google_client_id,
+            "redirect_uri": settings.google_redirect_uri,
+            "response_type": "code",
+            "scope": "https://www.googleapis.com/auth/calendar.events",
+            "access_type": "offline",
+            "prompt": "consent",
+            "include_granted_scopes": "true",
+        }
         query = urlencode(params)
         return f"https://accounts.google.com/o/oauth2/v2/auth?{query}"
 

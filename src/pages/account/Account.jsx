@@ -10,7 +10,7 @@ import CitySelector from '../../components/controls/CitySelector'
 import AuthGateCard from '../../components/ui/AuthGateCard'
 
 function Account({ darkMode, setDarkMode }) {
-  const { user, isAuthenticated, authFetch, login, logout, fetchUser, accessToken } = useAuth()
+  const { user, isAuthenticated, authFetch, login, logout, fetchUser, accessToken, connectGoogleCalendar } = useAuth()
   const { t } = useLanguage()
   const { showError, showSuccess } = useNotification()
   const navigate = useNavigate()
@@ -273,6 +273,36 @@ function Account({ darkMode, setDarkMode }) {
                   </p>
                   <InterestTagsPicker value={interestTags} onChange={handleInterestsChange} t={t} />
                 </div>
+                <div className="pt-1 border-t border-navy/8 dark:border-cream/8">
+                  <p className="mb-1.5 text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40">
+                    {t('account.googleCalendar')}
+                  </p>
+                  {user?.has_google_calendar ? (
+                    <div className="flex items-center gap-2 rounded-xl border border-green-500/30 bg-green-50 px-4 py-2.5 text-sm font-semibold text-green-800 dark:border-green-400/30 dark:bg-green-900/20 dark:text-green-300">
+                      <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                      </svg>
+                      {t('account.calendarConnected')}
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <p className="text-xs text-navy/60 dark:text-cream/60">
+                        {t('account.calendarDescription')}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={connectGoogleCalendar}
+                        className="flex items-center gap-2 rounded-xl border border-navy/15 bg-cream px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:border-navy/25 hover:bg-navy/5 dark:border-cream/15 dark:bg-navy dark:text-cream dark:hover:border-cream/25"
+                      >
+                        <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a6.033 6.033 0 110-12.064c1.498 0 2.866.549 3.921 1.453l2.814-2.814A9.969 9.969 0 0012.545 2C7.021 2 2.543 6.477 2.543 12s4.478 10 10.002 10c8.396 0 10.249-7.85 9.426-11.748l-9.426-.013z" />
+                        </svg>
+                        {t('account.connectCalendar')}
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <div>
                     <p className="mb-2 text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40">

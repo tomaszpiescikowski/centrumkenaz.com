@@ -252,6 +252,24 @@ async def google_login(db: AsyncSession = Depends(get_db)) -> RedirectResponse:
     return RedirectResponse(url=auth_url)
 
 
+@router.get("/google/calendar", dependencies=[Depends(auth_login_rate_limit)])
+async def google_calendar_connect(db: AsyncSession = Depends(get_db)) -> RedirectResponse:
+    """
+    Redirect the user to Google OAuth to grant Google Calendar access.
+
+    This is a separate flow from the main login. The user is already
+    authenticated; this endpoint requests the calendar.events scope
+    incrementally so that the main login no longer triggers the
+    'restricted scope' warning screen.
+    """
+    auth_service = AuthService(db)
+    try:
+        auth_url = await auth_service.get_google_calendar_auth_url()
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    return RedirectResponse(url=auth_url)
+
+
 @router.get("/google/callback", dependencies=[Depends(auth_callback_rate_limit)])
 async def google_callback(
     request: Request,

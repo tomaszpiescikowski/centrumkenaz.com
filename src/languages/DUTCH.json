@@ -474,7 +474,11 @@
     "inCalendar": "In agenda",
     "free": "Gratis",
     "addedToCalendar": "Toegevoegd aan Google Agenda",
-    "addToCalendar": "Toevoegen aan agenda"
+    "addToCalendar": "Toevoegen aan agenda",
+    "googleCalendar": "Google Agenda",
+    "connectCalendar": "Google Agenda koppelen",
+    "calendarConnected": "Verbonden met Google Agenda",
+    "calendarDescription": "Voeg je aankomende activiteiten automatisch toe aan Google Agenda na inschrijving."
   },
   "plans": {
     "backToAccount": "Terug naar account",
