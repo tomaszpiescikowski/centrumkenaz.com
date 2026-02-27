@@ -1,8 +1,31 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext'
 
+// Images used by /about — prefetch them while user is on the home page
+const ABOUT_IMAGES = [
+  '/static/DSC03468-2.jpg',
+  '/static/DSC03257-2.jpg',
+  '/static/DSC03721-2.jpg',
+  '/static/DSC03635-2.jpg',
+  '/static/about1.jpg',
+  '/static/about7.jpg',
+]
+
 function Home() {
   const { t } = useLanguage()
+
+  useEffect(() => {
+    // Schedule prefetch after a short idle period so it doesn't compete
+    // with the home page's own rendering
+    const id = setTimeout(() => {
+      ABOUT_IMAGES.forEach((src) => {
+        const img = new Image()
+        img.src = src
+      })
+    }, 800)
+    return () => clearTimeout(id)
+  }, [])
 
   return (
     <div className="page-shell flex flex-col items-center [min-height:calc(100svh_-_env(safe-area-inset-bottom,0px)_-_5.25rem)] sm:min-h-[calc(100vh-4rem)] sm:pb-12">
