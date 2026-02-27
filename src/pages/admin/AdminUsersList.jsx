@@ -46,7 +46,7 @@ function toLocalDateString(daysAgo = 0) {
 function AdminUsersList() {
   const { user, isAuthenticated, login, authFetch } = useAuth()
   const { t } = useLanguage()
-  const { showError, showSuccess } = useNotification()
+  const { showError, showSuccess, showConfirm } = useNotification()
 
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(false)
@@ -131,17 +131,28 @@ function AdminUsersList() {
     }
   }
 
-  const handleBlock = async (userId) => {
-    setPendingId(userId)
-    try {
-      const updated = await blockUser(authFetch, userId)
-      setUsers((prev) => prev.map((u) => u.id === userId ? { ...u, account_status: updated.account_status } : u))
-      showSuccess(t('admin.usersList.blockSuccess'))
-    } catch (err) {
-      showError(err.message || t('admin.usersList.blockError'))
-    } finally {
-      setPendingId(null)
-    }
+  const handleBlock = (userId, userName) => {
+    showConfirm(`Zablokować użytkownika „${userName || userId}"? Użytkownik straci dostęp do aplikacji.`, {
+      actions: [
+        { label: t('common.close'), variant: 'neutral' },
+        {
+          label: t('admin.usersList.blockButton'),
+          variant: 'danger',
+          onClick: async () => {
+            setPendingId(userId)
+            try {
+              const updated = await blockUser(authFetch, userId)
+              setUsers((prev) => prev.map((u) => u.id === userId ? { ...u, account_status: updated.account_status } : u))
+              showSuccess(t('admin.usersList.blockSuccess'))
+            } catch (err) {
+              showError(err.message || t('admin.usersList.blockError'))
+            } finally {
+              setPendingId(null)
+            }
+          },
+        },
+      ],
+    })
   }
 
   const handleUnblock = async (userId) => {
@@ -287,7 +298,7 @@ function AdminUsersList() {
                       </button>
                     ) : (
                       <button
-                        onClick={() => handleBlock(u.id)}
+                        onClick={() => handleBlock(u.id, u.full_name || u.email)}
                         disabled={busy}
                         className="px-4 py-1.5 rounded-full text-xs font-semibold bg-[#EB4731]/10 text-[#EB4731] hover:bg-[#EB4731]/20 transition disabled:opacity-40"
                       >
