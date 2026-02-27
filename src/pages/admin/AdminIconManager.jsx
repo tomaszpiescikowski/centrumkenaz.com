@@ -307,7 +307,7 @@ function AdminIconManager() {
           {/* Color picker */}
           <div className="flex flex-col gap-1.5 text-sm text-navy dark:text-cream">
             <span>Kolor</span>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {DEFAULT_COLORS.map((col) => (
                 <button
                   key={col}
@@ -323,6 +323,24 @@ function AdminIconManager() {
                   <span className={`block h-5 w-5 rounded-full ring-1 ring-black/15 dark:ring-white/10 ${col.replace('text-', 'bg-')}`} />
                 </button>
               ))}
+
+              {/* Live preview */}
+              {form.iconKey && (
+                <div className="ml-3 flex flex-col items-center gap-1.5 rounded-2xl border border-navy/10 dark:border-cream/10 bg-navy/5 dark:bg-cream/5 px-4 py-3 min-w-[72px]">
+                  <span className={form.color}>
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      className="h-8 w-8"
+                      dangerouslySetInnerHTML={{ __html: EXTRA_ICON_MAP[form.iconKey]?.paths || '' }}
+                    />
+                  </span>
+                  <span className="text-xs font-medium text-navy/80 dark:text-cream/80 leading-snug text-center max-w-[72px] break-words">
+                    {form.label || EXTRA_ICON_MAP[form.iconKey]?.label}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
