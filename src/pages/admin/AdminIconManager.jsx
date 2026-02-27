@@ -186,19 +186,18 @@ function AdminIconManager() {
         <h2 className="text-base font-bold text-navy dark:text-cream mb-4">
           Wbudowane ikony ({BUILT_IN_EVENT_ICONS.length})
         </h2>
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+        <div className="grid grid-cols-5 gap-3">
           {BUILT_IN_EVENT_ICONS.map((icon) => (
             <div
               key={icon.key}
-              className="flex flex-col items-center gap-2 rounded-2xl border border-navy/10 dark:border-cream/10 bg-navy/5 dark:bg-cream/5 p-3 text-center"
+              className="flex flex-col items-center gap-2 rounded-2xl border border-navy/10 dark:border-cream/10 bg-navy/5 dark:bg-cream/5 p-4 text-center"
             >
               <span className={icon.color}>
-                <IconPreviewSvg iconKey={icon.key} />
+                <IconPreviewSvg iconKey={icon.key} className="h-8 w-8" />
               </span>
-              <span className="text-[10px] font-medium text-navy/70 dark:text-cream/70 leading-tight break-words w-full">
+              <span className="text-xs font-medium text-navy/80 dark:text-cream/80 leading-snug break-words w-full">
                 {icon.label}
               </span>
-              <code className="text-[8px] text-navy/30 dark:text-cream/30 break-all">{icon.key}</code>
             </div>
           ))}
         </div>
@@ -222,13 +221,13 @@ function AdminIconManager() {
             Brak własnych ikon. Dodaj pierwszą poniżej.
           </div>
         ) : (
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
             {customTypes.map((ct) => {
               const extraIcon = EXTRA_ICON_MAP[ct.iconKey]
               return (
                 <div
                   key={ct.key}
-                  className="relative flex flex-col items-center gap-2 rounded-2xl border border-navy/10 dark:border-cream/10 bg-navy/5 dark:bg-cream/5 p-3 text-center group"
+                  className="relative flex flex-col items-center gap-2 rounded-2xl border border-navy/10 dark:border-cream/10 bg-navy/5 dark:bg-cream/5 p-4 text-center group"
                 >
                   <span className={ct.color}>
                     {extraIcon ? (
@@ -236,20 +235,19 @@ function AdminIconManager() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        className="h-6 w-6"
+                        className="h-8 w-8"
                         // eslint-disable-next-line react/no-danger
                         dangerouslySetInnerHTML={{ __html: extraIcon.paths }}
                       />
                     ) : (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-6 w-6">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-8 w-8">
                         <circle cx="12" cy="12" r="9" strokeWidth="1.8"/>
                       </svg>
                     )}
                   </span>
-                  <span className="text-[10px] font-medium text-navy/70 dark:text-cream/70 leading-tight break-words w-full">
+                  <span className="text-xs font-medium text-navy/80 dark:text-cream/80 leading-snug break-words w-full">
                     {ct.label}
                   </span>
-                  <code className="text-[8px] text-navy/30 dark:text-cream/30 break-all">{ct.key}</code>
                   <button
                     type="button"
                     onClick={() => handleRemove(ct.key, ct.label)}
@@ -314,10 +312,15 @@ function AdminIconManager() {
                 <button
                   key={col}
                   type="button"
+                  title={col.replace('text-', '').replace('-500', '')}
                   onClick={() => setForm((p) => ({ ...p, color: col }))}
-                  className={`h-7 w-7 rounded-full border-2 transition-all ${form.color === col ? 'border-navy dark:border-cream scale-110' : 'border-transparent'}`}
+                  className={`h-8 w-8 rounded-full border-2 transition-all flex items-center justify-center ${
+                    form.color === col
+                      ? 'border-navy dark:border-cream scale-110'
+                      : 'border-navy/20 dark:border-cream/20'
+                  }`}
                 >
-                  <span className={`block h-5 w-5 rounded-full mx-auto ${col.replace('text-', 'bg-')}`} />
+                  <span className={`block h-5 w-5 rounded-full ring-1 ring-black/15 dark:ring-white/10 ${col.replace('text-', 'bg-')}`} />
                 </button>
               ))}
             </div>
