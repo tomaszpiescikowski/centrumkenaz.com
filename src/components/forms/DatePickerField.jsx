@@ -157,9 +157,9 @@ function DatePickerField({
     }
 
     return (
-      <div className="flex flex-wrap gap-2 min-w-0">
-        {/* Date part */}
-        <div className="relative flex-1 min-w-[140px]">
+      <div className="grid grid-cols-3 gap-2 min-w-0">
+        {/* Date part — 2/3 of the row */}
+        <div className="relative col-span-2">
           <input
             ref={dateRef}
             type="date"
@@ -179,13 +179,13 @@ function DatePickerField({
           </button>
         </div>
 
-        {/* Time part — custom text input, always 24h regardless of device locale */}
-        <div className="relative w-24">
+        {/* Time part — 1/3 of the row; custom text input, always 24h */}
+        <div className="relative col-span-1">
           <TimeInput24h
             value={timePart}
             onTimeChange={handleTimeChange}
             required={required}
-            className={`ui-input ${inputClassName}`}
+            className={`ui-input w-full ${inputClassName}`}
           />
         </div>
       </div>
