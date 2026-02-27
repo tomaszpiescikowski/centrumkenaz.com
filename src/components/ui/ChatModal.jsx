@@ -6,7 +6,48 @@ import { useChat } from '../../context/ChatContext'
 import { fetchRegisteredEvents } from '../../api/events'
 import CommentsSection from '../common/CommentsSection'
 import EventIcon from '../common/EventIcon'
+import { useCustomEventTypes } from '../../hooks/useCustomEventTypes'
 import '../common/CommentsSection.css'
+
+const TYPE_PALETTE = {
+  karate:     { bg: '#0891b2', gradient: 'linear-gradient(135deg,#06b6d4,#0891b2)' },
+  mors:       { bg: '#2563eb', gradient: 'linear-gradient(135deg,#60a5fa,#2563eb)' },
+  planszowki: { bg: '#7c3aed', gradient: 'linear-gradient(135deg,#a78bfa,#7c3aed)' },
+  ognisko:    { bg: '#ea580c', gradient: 'linear-gradient(135deg,#fb923c,#ea580c)' },
+  spacer:     { bg: '#059669', gradient: 'linear-gradient(135deg,#34d399,#059669)' },
+  joga:       { bg: '#db2777', gradient: 'linear-gradient(135deg,#f472b6,#db2777)' },
+  wyjazd:     { bg: '#d97706', gradient: 'linear-gradient(135deg,#fbbf24,#d97706)' },
+  inne:       { bg: '#475569', gradient: 'linear-gradient(135deg,#94a3b8,#475569)' },
+}
+function strHash(s) {
+  let h = 0
+  for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0
+  return Math.abs(h)
+}
+const HASH_PALETTE = [
+  { bg: '#0891b2', gradient: 'linear-gradient(135deg,#06b6d4,#0891b2)' },
+  { bg: '#7c3aed', gradient: 'linear-gradient(135deg,#a78bfa,#7c3aed)' },
+  { bg: '#059669', gradient: 'linear-gradient(135deg,#34d399,#059669)' },
+  { bg: '#db2777', gradient: 'linear-gradient(135deg,#f472b6,#db2777)' },
+  { bg: '#d97706', gradient: 'linear-gradient(135deg,#fbbf24,#d97706)' },
+  { bg: '#dc2626', gradient: 'linear-gradient(135deg,#f87171,#dc2626)' },
+]
+function getTypePalette(type, customTypes = []) {
+  if (TYPE_PALETTE[type]) return TYPE_PALETTE[type]
+  const ct = customTypes.find((c) => c.key === type)
+  if (ct?.color) return HASH_PALETTE[strHash(type) % HASH_PALETTE.length]
+  return HASH_PALETTE[strHash(type) % HASH_PALETTE.length]
+}
+function formatMsgTime(isoStr) {
+  if (!isoStr) return ''
+  const d = new Date(isoStr)
+  const now = new Date()
+  const diffMs = now - d
+  const diffDays = Math.floor(diffMs / 86400000)
+  if (diffDays === 0) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  if (diffDays < 7) return d.toLocaleDateString([], { weekday: 'short' })
+  return d.toLocaleDateString([], { day: 'numeric', month: 'short' })
+}
 
 /**
  * Global chat overlay with three views:
@@ -22,8 +63,9 @@ function ChatModal() {
   const {
     open, view, eventId, eventTitle,
     closeChat, navigateChat,
-    hasUnread, unreadCounts, setLatestMessageTime,
+    hasUnread, unreadCounts, setLatestMessageTime, latestMessages,
   } = useChat()
+  const { customTypes } = useCustomEventTypes()
   const navigate = useNavigate()
 
   const [events, setEvents] = useState([])
@@ -211,49 +253,101 @@ function ChatModal() {
         )}
 
         {view === 'events' && (
-          <div className="chat-modal-body chat-event-list-body">
+          <div className="cp-event-list-wrap">
             {!isAuthenticated ? (
-              <div className="chat-event-list-empty">
-                <p>{t('comments.loginToSeeEvents')}</p>
-              </div>
+              <div className="cp-empty"><p>{t('comments.loginToSeeEvents')}</p></div>
             ) : eventsLoading ? (
-              <div className="chat-event-list-empty">
-                <p>{t('comments.loading')}</p>
-              </div>
+              <div className="cp-empty"><p>{t('comments.loading')}</p></div>
             ) : events.length === 0 ? (
-              <div className="chat-event-list-empty">
-                <p>{t('comments.noRegisteredEvents')}</p>
-              </div>
-            ) : (
-              <ul className="chat-event-list">
-                {events.map((ev) => {
-                  const chatId = `event:${ev.id}`
-                  const unread = hasUnread(chatId)
-                  return (
-                    <li key={ev.id}>
-                      <button
-                        className="chat-event-item"
-                        onClick={() => handleEventClick(ev)}
-                      >
-                        <span className="chat-event-icon">
-                          <EventIcon type={ev.type} size="sm" />
-                        </span>
-                        <span className="chat-event-info">
-                          <span className="chat-event-title">{ev.title}</span>
-                          <span className="chat-event-meta">
-                            {ev.city} · {formatDate(ev.startDateTime)}
+              <div className="cp-empty"><p>{t('comments.noRegisteredEvents')}</p></div>
+            ) : (() => {
+              const sorted = [...events].sort((a, b) => {
+                const aP = new Date(a.startDateTime) < new Date()
+                const bP = new Date(b.startDateTime) < new Date()
+                if (aP !== bP) return aP ? 1 : -1
+                return new Date(a.startDateTime) - new Date(b.startDateTime)
+              })
+              return (
+                <ul className="cp-event-list">
+                  {sorted.map((ev, idx) => {
+                    const chatId = `event:${ev.id}`
+                    const unread = hasUnread(chatId)
+                    const unreadCount = unreadCounts[chatId] || 1
+                    const previewMsg = latestMessages[chatId]
+                    const isPast = new Date(ev.startDateTime) < new Date()
+                    const palette = getTypePalette(ev.type, customTypes)
+
+                    const prevEv = sorted[idx - 1]
+                    const prevIsPast = prevEv ? new Date(prevEv.startDateTime) < new Date() : false
+                    const showPastDivider = isPast && !prevIsPast && idx > 0
+
+                    const authorShort = previewMsg?.author
+                      ? previewMsg.author.split(' ')[0].replace(/^~/, '')
+                      : null
+                    const previewText = previewMsg?.text
+                      ? (previewMsg.text.length > 50 ? previewMsg.text.slice(0, 50) + '\u2026' : previewMsg.text)
+                      : null
+                    const timeLabel = previewMsg?.ts
+                      ? formatMsgTime(previewMsg.ts)
+                      : formatDate(ev.startDateTime)
+
+                    const evDate = new Date(ev.startDateTime)
+                    const now = new Date()
+                    const isToday = !isPast &&
+                      evDate.getDate() === now.getDate() &&
+                      evDate.getMonth() === now.getMonth() &&
+                      evDate.getFullYear() === now.getFullYear()
+
+                    const evTime = ev.startDateTime
+                      ? new Date(ev.startDateTime).toLocaleTimeString(currentLanguage === 'pl' ? 'pl-PL' : 'en-GB', { hour: '2-digit', minute: '2-digit' })
+                      : null
+
+                    return (
+                      <li key={ev.id}>
+                        {showPastDivider && (
+                          <div className="cp-section-divider">
+                            <span>{t('comments.pastEvents')}</span>
+                          </div>
+                        )}
+                        <button
+                          className={`cp-event-card${isPast ? ' cp-event-card--past' : ''}${unread ? ' cp-event-card--unread' : ''}`}
+                          onClick={() => handleEventClick(ev)}
+                        >
+                          <span className="cp-card-stripe" style={{ background: palette.bg }} />
+                          <span className="cp-card-avatar" style={{ background: palette.gradient }}>
+                            <EventIcon type={ev.type} size="sm" customTypes={customTypes} />
                           </span>
-                        </span>
-                        {unread && <span className="chat-unread-badge" aria-label="unread">{(unreadCounts[chatId] || 0) > 9 ? '9+' : (unreadCounts[chatId] || 1)}</span>}
-                        <svg className="chat-event-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="9 18 15 12 9 6" />
-                        </svg>
-                      </button>
-                    </li>
-                  )
-                })}
-              </ul>
-            )}
+                          <span className="cp-card-body">
+                            <span className="cp-card-top-row">
+                              <span className={`cp-card-title${unread ? ' cp-card-title--unread' : ''}`}>{ev.title}</span>
+                              <span className="cp-card-ts">{timeLabel}</span>
+                            </span>
+                            <span className="cp-card-meta-row">
+                              <span className="cp-card-meta">
+                                {ev.city}
+                                {evTime && <> &middot; {evTime}</>}
+                                {!previewText && <> &middot; {formatDate(ev.startDateTime)}</>}
+                              </span>
+                              {isToday && <span className="cp-card-today-badge">{t('comments.today')}</span>}
+                              {unread
+                                ? <span className="cp-card-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
+                                : <span className="cp-card-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+                              }
+                            </span>
+                            {previewText && (
+                              <span className={`cp-card-preview${unread ? ' cp-card-preview--unread' : ''}`}>
+                                {authorShort && <span className="cp-card-preview-author">{authorShort}:&nbsp;</span>}
+                                {previewText}
+                              </span>
+                            )}
+                          </span>
+                        </button>
+                      </li>
+                    )
+                  })}
+                </ul>
+              )
+            })()}
           </div>
         )}
 
