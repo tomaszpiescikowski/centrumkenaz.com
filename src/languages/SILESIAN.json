@@ -745,8 +745,8 @@
         "description": "Przejrzyj wszyjstkich użytkownikōw i zarzōndź dostympym."
       },
       "icons": {
-        "title": "Typy aktywności",
-        "description": "Przeglądej wbudowane ikony i dodawej własne typy aktywności."
+        "title": "Kategorie wydarzeń",
+        "description": "Przeglądej wbudowane kategorie i dodawej własne kategorie wydarzeń."
       }
     },
     "feedback": {

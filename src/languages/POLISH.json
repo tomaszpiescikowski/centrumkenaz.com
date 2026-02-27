@@ -731,8 +731,8 @@
         "description": "Przychody, zwroty i bilans miesięczny/kwartalny."
       },
       "icons": {
-        "title": "Ikony aktywności",
-        "description": "Przeglądaj wbudowane ikony i dodawaj własne typy aktywności."
+        "title": "Kategorie wydarzeń",
+        "description": "Przeglądaj wbudowane kategorie i dodawaj własne kategorie wydarzeń."
       },
       "donations": {
         "title": "Wesprzyj nas",

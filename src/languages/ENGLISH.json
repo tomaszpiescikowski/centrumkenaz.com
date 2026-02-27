@@ -745,8 +745,8 @@
         "description": "Browse all users and manage account access."
       },
       "icons": {
-        "title": "Event types",
-        "description": "Browse built-in icons and add your own activity types."
+        "title": "Event categories",
+        "description": "Browse built-in categories and add your own event categories."
       }
     },
     "feedback": {

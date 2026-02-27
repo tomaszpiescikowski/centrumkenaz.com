@@ -94,7 +94,7 @@ function AdminIconManager() {
   if (!isAuthenticated) {
     return (
       <AuthGateCard
-        title="Zarządzanie ikonami"
+        title="Zarządzanie kategoriami"
         message={t('admin.loginRequired')}
         actionLabel={t('admin.loginButton')}
         onAction={() => login({ returnTo: '/admin/icons' })}
@@ -105,7 +105,7 @@ function AdminIconManager() {
   if (!isAdmin) {
     return (
       <AuthGateCard
-        title="Zarządzanie ikonami"
+        title="Zarządzanie kategoriami"
         message={t('admin.notAuthorized')}
         actionLabel={t('admin.backToDashboard')}
         actionTo="/admin"
@@ -123,7 +123,7 @@ function AdminIconManager() {
         setFormError(result.error)
         return
       }
-      showSuccess('Nowy typ aktywności dodany.')
+      showSuccess('Nowa kategoria dodana.')
       setForm({ label: '', iconKey: '', color: DEFAULT_COLORS[0] })
     } finally {
       setAdding(false)
@@ -165,18 +165,18 @@ function AdminIconManager() {
       </Link>
 
       <div className="mt-4 mb-8">
-        <h1 className="text-2xl sm:text-3xl font-black text-navy dark:text-cream">Typy aktywności</h1>
+        <h1 className="text-2xl sm:text-3xl font-black text-navy dark:text-cream">Kategorie wydarzeń</h1>
         <p className="mt-1 text-navy/60 dark:text-cream/60 text-sm">
-          Przeglądaj wbudowane typy i dodawaj własne dla nowych wydarzeń.
+          Przeglądaj wbudowane kategorie i zarządzaj własnymi kategoriami wydarzeń.
         </p>
         <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-navy/15 dark:border-cream/15 bg-navy/5 dark:bg-cream/5 px-4 py-3 text-sm text-navy/70 dark:text-cream/70">
           <svg className="mt-0.5 h-4 w-4 shrink-0 text-navy/50 dark:text-cream/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p className="leading-relaxed">
-            <span className="font-semibold text-navy dark:text-cream">Wbudowane typy</span> są zawsze dostępne i nie można ich usunąć.{' '}
-            <span className="font-semibold text-navy dark:text-cream">Własne typy</span> tworzysz poniżej — są zapisane w bazie danych i widoczne dla wszystkich adminów na wszystkich urządzeniach.{' '}
-            Usunięcie własnego typu zmienia typ wszystkich powiązanych wydarzeń na „inne".
+            <span className="font-semibold text-navy dark:text-cream">Wbudowane kategorie</span> są zawsze dostępne i nie można ich usunąć.{' '}
+            <span className="font-semibold text-navy dark:text-cream">Własne kategorie</span> tworzysz poniżej — są zapisane w bazie danych i widoczne dla wszystkich adminów na wszystkich urządzeniach.{' '}
+            Usunięcie własnej kategorii zmienia kategorię wszystkich powiązanych wydarzeń na „inne".
           </p>
         </div>
       </div>
@@ -184,7 +184,7 @@ function AdminIconManager() {
       {/* ── Built-in icons ── */}
       <section className="mb-10">
         <h2 className="text-base font-bold text-navy dark:text-cream mb-4">
-          Wbudowane ikony ({BUILT_IN_EVENT_ICONS.length})
+          Wbudowane kategorie ({BUILT_IN_EVENT_ICONS.length})
         </h2>
         <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
           {BUILT_IN_EVENT_ICONS.map((icon) => (
@@ -206,7 +206,7 @@ function AdminIconManager() {
       {/* ── Custom icons ── */}
       <section className="mb-10">
         <h2 className="text-base font-bold text-navy dark:text-cream mb-1">
-          Własne ikony ({customTypes.length})
+          Własne kategorie ({customTypes.length})
         </h2>
         <p className="text-xs text-navy/50 dark:text-cream/50 mb-4">
           Zapisane w bazie danych — widoczne dla wszystkich adminów. Ikona SVG wybrana z puli 128 wzorów.
@@ -218,7 +218,7 @@ function AdminIconManager() {
           </div>
         ) : customTypes.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-navy/20 dark:border-cream/20 p-6 text-center text-sm text-navy/50 dark:text-cream/50">
-            Brak własnych ikon. Dodaj pierwszą poniżej.
+            Brak własnych kategorii. Dodaj pierwszą poniżej.
           </div>
         ) : (
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
@@ -265,7 +265,7 @@ function AdminIconManager() {
 
       {/* ── Add new custom type ── */}
       <section>
-        <h2 className="text-base font-bold text-navy dark:text-cream mb-4">Dodaj nowy typ aktywności</h2>
+        <h2 className="text-base font-bold text-navy dark:text-cream mb-4">Dodaj nową kategorię</h2>
         <form onSubmit={handleAdd} className="page-card space-y-4">
           {/* Label */}
           <label className="flex flex-col gap-1.5 text-sm text-navy dark:text-cream">
@@ -353,7 +353,7 @@ function AdminIconManager() {
             disabled={!form.iconKey || adding}
             className="w-full sm:w-auto btn-primary px-6 py-2.5 rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {adding ? 'Dodawanie…' : 'Dodaj typ aktywności'}
+            {adding ? 'Dodawanie…' : 'Dodaj kategorię'}
           </button>
         </form>
       </section>

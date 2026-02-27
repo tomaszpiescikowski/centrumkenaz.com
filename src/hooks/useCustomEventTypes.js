@@ -42,7 +42,7 @@ export function useCustomEventTypes({ authFetch } = {}) {
 
   const addCustomType = useCallback(async ({ label, iconKey, color }) => {
     if (!authFetch) return { error: 'Nie zalogowano.' }
-    if (!label?.trim()) return { error: 'Podaj nazwę aktywności.' }
+    if (!label?.trim()) return { error: 'Podaj nazwę kategorii.' }
     if (!iconKey) return { error: 'Wybierz ikonę.' }
     if (!EXTRA_ICON_MAP[iconKey]) return { error: 'Nieprawidłowa ikona.' }
     try {
