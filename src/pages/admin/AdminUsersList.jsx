@@ -46,6 +46,7 @@ function AdminUsersList() {
   const [loading, setLoading] = useState(false)
   const [query, setQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
+  const [subscriberFilter, setSubscriberFilter] = useState('all')
   const [pendingId, setPendingId] = useState(null)
 
   const isAdmin = user?.role === 'admin'
@@ -68,6 +69,7 @@ function AdminUsersList() {
     return () => { cancelled = true }
   }, [authFetch, isAdmin, isAuthenticated, t, showError])
 
+  const now = useMemo(() => new Date(), [])
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return users.filter((u) => {
@@ -75,9 +77,13 @@ function AdminUsersList() {
         || (u.full_name || '').toLowerCase().includes(q)
         || (u.email || '').toLowerCase().includes(q)
       const matchesStatus = statusFilter === 'all' || u.account_status === statusFilter
-      return matchesQuery && matchesStatus
+      const isSubscriber = u.subscription_end_date && new Date(u.subscription_end_date) > now
+      const matchesSubscriber = subscriberFilter === 'all'
+        || (subscriberFilter === 'subscriber' && isSubscriber)
+        || (subscriberFilter === 'non-subscriber' && !isSubscriber)
+      return matchesQuery && matchesStatus && matchesSubscriber
     })
-  }, [users, query, statusFilter])
+  }, [users, query, statusFilter, subscriberFilter, now])
 
   const handleBlock = async (userId) => {
     setPendingId(userId)
@@ -160,6 +166,15 @@ function AdminUsersList() {
           <option value="active">{t('admin.usersList.status.active')}</option>
           <option value="pending">{t('admin.usersList.status.pending')}</option>
           <option value="banned">{t('admin.usersList.status.banned')}</option>
+        </select>
+        <select
+          value={subscriberFilter}
+          onChange={(e) => setSubscriberFilter(e.target.value)}
+          className="ui-input ui-input-compact sm:w-48"
+        >
+          <option value="all">Wszyscy</option>
+          <option value="subscriber">Subskrybenci</option>
+          <option value="non-subscriber">Bez subskrypcji</option>
         </select>
       </div>
 
