@@ -149,10 +149,11 @@ function UserProfile() {
         </div>
       </div>
 
-      {/* Admin detail tile */}
+      {/* Admin detail panel */}
       {isAdmin && (
         <div className="mt-4 page-card">
-          <div className="flex items-center gap-2 mb-4">
+          {/* Header */}
+          <div className="flex items-center gap-2 mb-5">
             <span className="inline-flex items-center rounded-full bg-navy/10 dark:bg-cream/10 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-widest text-navy dark:text-cream">
               Admin
             </span>
@@ -164,15 +165,21 @@ function UserProfile() {
           {adminLoading ? (
             <p className="text-sm text-navy/60 dark:text-cream/60">{t('common.loading')}</p>
           ) : adminDetail ? (
-            <>
-              {/* Stats grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <AdminStat label="Ostatnia aktywność" value={formatAdminDate(adminDetail.last_active_at)} />
-                <AdminStat label="Konto od" value={formatAdminDate(adminDetail.created_at)} />
-                <AdminStat label="Rola / Status" value={`${adminDetail.role} / ${adminDetail.account_status}`} />
-                <AdminStat label="Punkty Kenaz" value={adminDetail.kenaz_points} accent />
-                <AdminStat label="Zapisanych wydarzeń" value={adminDetail.event_count} />
-                <AdminStat
+            <div className="space-y-5">
+
+              {/* Section: Account */}
+              <AdminSection label="Konto">
+                <AdminRow label="Rola" value={adminDetail.role} />
+                <AdminRow label="Status" value={adminDetail.account_status} />
+                <AdminRow label="Zarejestrowany" value={formatAdminDate(adminDetail.created_at)} />
+                <AdminRow label="Ostatnia aktywność" value={formatAdminDate(adminDetail.last_active_at)} />
+              </AdminSection>
+
+              {/* Section: Activity */}
+              <AdminSection label="Aktywność">
+                <AdminRow label="Punkty Kenaz" value={adminDetail.kenaz_points} bold />
+                <AdminRow label="Zapisanych wydarzeń" value={adminDetail.event_count} />
+                <AdminRow
                   label="Subskrypcja"
                   value={
                     adminDetail.subscription_active
@@ -181,40 +188,41 @@ function UserProfile() {
                         ? `wygasła ${formatAdminDate(adminDetail.subscription_end_date)}`
                         : 'brak'
                   }
-                  highlight={adminDetail.subscription_active}
+                  color={adminDetail.subscription_active ? 'green' : null}
                 />
-                <AdminStat label="Wpłacono (wydarzenia)" value={adminDetail.total_paid_events} />
-                <AdminStat label="Wpłacono (subskrypcje)" value={adminDetail.total_paid_subscriptions} />
-                <AdminStat label="Wpłacono łącznie" value={adminDetail.total_paid_all} accent />
-                <AdminStat label="Wsparcia (zatwierdzone)" value={adminDetail.total_donations} />
-              </div>
+              </AdminSection>
 
-              {/* Pending actions */}
+              {/* Section: Finances */}
+              <AdminSection label="Finanse">
+                <AdminRow label="Wpłacono za wydarzenia" value={adminDetail.total_paid_events} />
+                <AdminRow label="Wpłacono za subskrypcje" value={adminDetail.total_paid_subscriptions} />
+                <AdminRow label="Wpłacono łącznie" value={adminDetail.total_paid_all} bold />
+                <AdminRow label="Wsparcia (zatwierdzone)" value={adminDetail.total_donations} />
+              </AdminSection>
+
+              {/* Section: Pending actions */}
               {adminDetail.pending_actions.length > 0 && (
-                <div className="mt-4">
-                  <p className="text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40 mb-2">
-                    Oczekujące akcje
-                  </p>
-                  <div className="flex flex-col gap-2">
+                <AdminSection label="Oczekujące akcje">
+                  <div className="flex flex-col gap-1.5 pt-1">
                     {adminDetail.pending_actions.map((action) => (
                       <div
                         key={action.type}
-                        className="flex items-center justify-between rounded-xl bg-amber-50 dark:bg-amber-900/20 px-3 py-2"
+                        className="flex items-center justify-between rounded-xl bg-amber-400/10 dark:bg-amber-400/10 px-3 py-2"
                       >
-                        <span className="text-sm text-amber-800 dark:text-amber-300 font-medium">
+                        <span className="text-sm text-amber-700 dark:text-amber-300 font-medium">
                           {action.label}
                         </span>
                         {action.count > 1 && (
-                          <span className="text-xs font-bold text-amber-700 dark:text-amber-400 bg-amber-200 dark:bg-amber-800/50 rounded-full px-2 py-0.5">
+                          <span className="text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-200/60 dark:bg-amber-700/40 rounded-full px-2 py-0.5">
                             ×{action.count}
                           </span>
                         )}
                       </div>
                     ))}
                   </div>
-                </div>
+                </AdminSection>
               )}
-            </>
+            </div>
           ) : null}
         </div>
       )}
@@ -222,23 +230,30 @@ function UserProfile() {
   )
 }
 
-function AdminStat({ label, value, accent, highlight }) {
+function AdminSection({ label, children }) {
   return (
-    <div className="rounded-xl bg-navy/5 dark:bg-cream/5 px-3 py-2.5">
-      <p className="text-[10px] font-medium uppercase tracking-wide text-navy/40 dark:text-cream/40 mb-0.5">
+    <div>
+      <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-navy/35 dark:text-cream/35">
         {label}
       </p>
-      <p
-        className={`text-sm font-semibold truncate ${
-          highlight
-            ? 'text-green-700 dark:text-green-400'
-            : accent
-              ? 'text-navy dark:text-cream'
-              : 'text-navy/80 dark:text-cream/80'
-        }`}
-      >
-        {value ?? '—'}
-      </p>
+      <div className="divide-y divide-navy/8 dark:divide-cream/8">
+        {children}
+      </div>
+    </div>
+  )
+}
+
+function AdminRow({ label, value, bold, color }) {
+  const valueClass = color === 'green'
+    ? 'text-green-700 dark:text-green-400'
+    : bold
+      ? 'text-navy dark:text-cream font-semibold'
+      : 'text-navy/80 dark:text-cream/80'
+
+  return (
+    <div className="flex items-baseline justify-between gap-4 py-2">
+      <span className="text-xs text-navy/50 dark:text-cream/50 shrink-0">{label}</span>
+      <span className={`text-sm text-right ${valueClass}`}>{value ?? '—'}</span>
     </div>
   )
 }
