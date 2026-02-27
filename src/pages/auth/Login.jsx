@@ -142,29 +142,7 @@ function Login() {
           <p className="mt-2 text-sm text-navy/70 dark:text-cream/70">{t('auth.subtitle')}</p>
         </div>
 
-        <div className="mb-4 grid grid-cols-2 gap-2 rounded-2xl border border-navy/10 bg-navy/5 p-1 dark:border-cream/15 dark:bg-cream/10">
-          <button
-            type="button"
-            onClick={() => {
-              setMode(MODE_LOGIN)
-              setErrorMessage('')
-            }}
-            className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${mode === MODE_LOGIN ? 'bg-navy text-cream dark:bg-cream dark:text-navy' : 'text-navy/70 hover:bg-navy/10 dark:text-cream/70 dark:hover:bg-cream/10'}`}
-          >
-            {t('auth.modeLogin')}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setMode(MODE_REGISTER)
-              setErrorMessage('')
-            }}
-            className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${mode === MODE_REGISTER ? 'bg-navy text-cream dark:bg-cream dark:text-navy' : 'text-navy/70 hover:bg-navy/10 dark:text-cream/70 dark:hover:bg-cream/10'}`}
-          >
-            {t('auth.modeRegister')}
-          </button>
-        </div>
-
+        {/* ── Google login – jedyna aktywna metoda ─────────────────────────── */}
         <button
           type="button"
           onClick={handleGoogleLogin}
@@ -179,6 +157,44 @@ function Login() {
           </svg>
           {t('auth.loginWithGoogle')}
         </button>
+
+        {/* ── Separator ────────────────────────────────────────────────────── */}
+        <div className="relative my-1 mb-4 flex items-center gap-3 text-xs text-navy/35 dark:text-cream/30">
+          <div className="h-px flex-1 bg-navy/10 dark:bg-cream/10" />
+          lub
+          <div className="h-px flex-1 bg-navy/10 dark:bg-cream/10" />
+        </div>
+
+        {/* ── E-mail / hasło – tymczasowo wyszarzone ───────────────────────── */}
+        <div className="group/nonGoogle relative">
+          {/* Warstwa blokująca kliknięcia i wyświetlająca tooltip */}
+          <div
+            className="absolute inset-0 z-10 cursor-not-allowed rounded-2xl"
+            aria-hidden="true"
+          />
+          {/* Tooltip widoczny po najechaniu (desktop) */}
+          <div className="pointer-events-none absolute -top-10 left-1/2 z-20 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-navy px-3 py-1.5 text-xs font-medium text-cream shadow-lg transition-opacity group-hover/nonGoogle:!block dark:bg-cream dark:text-navy sm:block sm:opacity-0 sm:group-hover/nonGoogle:opacity-100">
+            Tymczasowo niedostępne — zaloguj się przez Google
+            <span className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-navy dark:border-t-cream" />
+          </div>
+          {/* Wyszarzona treść */}
+          <div className="pointer-events-none select-none opacity-40">
+            <div className="mb-4 grid grid-cols-2 gap-2 rounded-2xl border border-navy/10 bg-navy/5 p-1 dark:border-cream/15 dark:bg-cream/10">
+              <button
+                type="button"
+                tabIndex={-1}
+                className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${mode === MODE_LOGIN ? 'bg-navy text-cream dark:bg-cream dark:text-navy' : 'text-navy/70'}`}
+              >
+                {t('auth.modeLogin')}
+              </button>
+              <button
+                type="button"
+                tabIndex={-1}
+                className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${mode === MODE_REGISTER ? 'bg-navy text-cream dark:bg-cream dark:text-navy' : 'text-navy/70'}`}
+              >
+                {t('auth.modeRegister')}
+              </button>
+            </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === MODE_LOGIN ? (
@@ -344,11 +360,14 @@ function Login() {
           <button
             type="submit"
             disabled={submitting}
+            tabIndex={-1}
             className="w-full rounded-xl bg-navy px-4 py-3 text-sm font-semibold text-cream transition hover:bg-navy/90 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-cream dark:text-navy dark:hover:bg-cream/90"
           >
             {submitting ? t('auth.submitting') : mode === MODE_LOGIN ? t('auth.submitLogin') : t('auth.submitRegister')}
           </button>
         </form>
+          </div>{/* /opacity-40 */}
+        </div>{/* /group/nonGoogle */}
       </div>
     </div>
   )
