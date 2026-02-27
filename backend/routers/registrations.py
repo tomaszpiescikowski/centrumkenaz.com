@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, Path, HTTPException
+from fastapi import APIRouter, Depends, Path, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
 from models.user import User
+from services.log_service import log_action, _get_request_ip, user_email_from
 from services.payment_service import PaymentService
 from services.registration_service import RegistrationService, RegistrationError
 from adapters.fake_payment_adapter import get_shared_fake_payment_adapter
@@ -47,6 +48,7 @@ def get_payment_gateway():
 
 @router.post("/{registration_id}/cancel")
 async def cancel_registration(
+    request: Request,
     registration_id: str = Path(..., min_length=1),
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_active_user_dependency),
@@ -61,11 +63,18 @@ async def cancel_registration(
     payment_service = PaymentService(db, payment_gateway)
     registration_service = RegistrationService(db, payment_service)
 
-    return await registration_service.cancel_registration(
+    result = await registration_service.cancel_registration(
         registration_id=registration_id,
         user_id=user.id,
         request_refund=True,
     )
+    await log_action(
+        "REGISTRATION_CANCELLED",
+        user_email=user_email_from(user),
+        ip=_get_request_ip(request),
+        registration_id=registration_id,
+    )
+    return result
 
 
 @router.get("/{registration_id}/manual-payment", response_model=ManualPaymentDetailsResponse)
@@ -92,11 +101,20 @@ async def get_manual_payment_details(
         raise HTTPException(status_code=400, detail=str(exc))
     if details is None:
         raise HTTPException(status_code=404, detail="Registration not found")
+    await log_action(
+        "REGISTRATION_MANUAL_PAYMENT_CONFIRMED_BY_USER",
+        user_email=user_email_from(user),
+        ip=_get_request_ip(request),
+        registration_id=registration_id,
+        event_id=details.get("event_id"),
+        event_title=details.get("event_title"),
+        amount=details.get("amount"),
+    )
     return ManualPaymentDetailsResponse(**details)
-
 
 @router.post("/{registration_id}/manual-payment/confirm", response_model=ManualPaymentDetailsResponse)
 async def confirm_manual_payment(
+    request: Request,
     registration_id: str = Path(..., min_length=1),
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_active_user_dependency),

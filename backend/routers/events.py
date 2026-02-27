@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, Path
+from fastapi import APIRouter, Depends, HTTPException, Query, Path, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field
@@ -9,6 +9,7 @@ from database import get_db
 from models.event import Event
 from models.user import User
 from models.registration import Registration, RegistrationStatus
+from services.log_service import log_action, _get_request_ip, user_email_from
 from services.registration_service import (
     RegistrationService,
     RegistrationError,
@@ -407,6 +408,7 @@ async def list_events(
 @router.post("/", response_model=EventResponse)
 async def create_event(
     payload: EventCreateRequest,
+    http_request: Request,
     _admin: User = Depends(get_admin_user_dependency),
     db: AsyncSession = Depends(get_db),
 ) -> EventResponse:
@@ -466,6 +468,15 @@ async def create_event(
 
     await db.commit()
     await db.refresh(event)
+    await log_action(
+        "EVENT_CREATED",
+        user_email=user_email_from(_admin),
+        ip=_get_request_ip(http_request),
+        event_id=str(event.id),
+        title=event.title,
+        city=event.city,
+        start_date=str(event.start_date),
+    )
     return EventResponse.model_validate(event)
 
 
@@ -473,6 +484,7 @@ async def create_event(
 async def update_event(
     payload: EventUpdateRequest,
     event_id: str = Path(..., min_length=1),
+    http_request: Request = None,
     _admin: User = Depends(get_admin_user_dependency),
     db: AsyncSession = Depends(get_db),
 ) -> EventResponse:
@@ -546,12 +558,21 @@ async def update_event(
     db.add(event)
     await db.commit()
     await db.refresh(event)
+    await log_action(
+        "EVENT_UPDATED",
+        user_email=user_email_from(_admin),
+        ip=_get_request_ip(http_request),
+        event_id=str(event.id),
+        title=event.title,
+        fields_changed=list(updates.keys()),
+    )
     return EventResponse.model_validate(event)
 
 
 @router.delete("/{event_id}")
 async def delete_event(
     event_id: str = Path(..., min_length=1),
+    http_request: Request = None,
     _admin: User = Depends(get_admin_user_dependency),
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, str]:
@@ -588,6 +609,13 @@ async def delete_event(
 
     await db.delete(event)
     await db.commit()
+    await log_action(
+        "EVENT_DELETED",
+        user_email=user_email_from(_admin),
+        ip=_get_request_ip(http_request),
+        event_id=event_id,
+        title=event.title,
+    )
     return {"status": "deleted"}
 
 
@@ -761,6 +789,7 @@ async def register_for_event(
     event_id: str = Path(..., min_length=1),
     user: User = Depends(get_active_user_dependency),
     db: AsyncSession = Depends(get_db),
+    http_request: Request = None,
 ) -> RegistrationResponse:
     """
     Register the authenticated user for an event.
@@ -778,6 +807,14 @@ async def register_for_event(
             event_id=event_id,
             return_url=str(request.return_url),
             cancel_url=str(request.cancel_url),
+        )
+        await log_action(
+            "EVENT_REGISTRATION_CREATED",
+            user_email=user_email_from(user),
+            ip=_get_request_ip(http_request),
+            event_id=event_id,
+            registration_id=str(result.get("registration_id", "")),
+            status=result.get("status"),
         )
         return RegistrationResponse(**result)
 
@@ -798,6 +835,7 @@ async def cancel_registration(
     event_id: str = Path(..., min_length=1),
     user: User = Depends(get_active_user_dependency),
     db: AsyncSession = Depends(get_db),
+    http_request: Request = None,
 ) -> dict[str, object]:
     """
     Cancel the current user's registration for an event.
@@ -827,5 +865,11 @@ async def cancel_registration(
         user_id=user.id,
         request_refund=True,
     )
-
+    await log_action(
+        "EVENT_REGISTRATION_CANCELLED",
+        user_email=user_email_from(user),
+        ip=_get_request_ip(http_request),
+        event_id=event_id,
+        registration_id=str(registration.id),
+    )
     return result

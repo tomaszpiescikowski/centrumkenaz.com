@@ -21,13 +21,14 @@ from decimal import Decimal
 from math import floor
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from database import get_db
+from services.log_service import log_action, _get_request_ip, user_email_from
 from models.donation import Donation, DonationSetting, DonationStatus
 from models.subscription import Subscription
 from models.user import User
@@ -170,6 +171,7 @@ async def get_public_donation_settings(db: AsyncSession = Depends(get_db)):
 @router.post("/", response_model=DonationResponse, status_code=201)
 async def create_donation(
     body: DonationCreateRequest,
+    http_request: Request = None,
     db: AsyncSession = Depends(get_db),
     current_user: User | None = Depends(get_optional_active_user_dependency),
 ):
@@ -203,6 +205,13 @@ async def create_donation(
     db.add(donation)
     await db.commit()
     await db.refresh(donation)
+    await log_action(
+        "DONATION_CREATED",
+        user_email=body.donor_email or user_email_from(current_user),
+        ip=_get_request_ip(http_request),
+        amount=str(body.amount),
+        donor_name=body.donor_name,
+    )
     return DonationResponse(
         id=donation.id,
         amount=str(donation.amount),
@@ -331,8 +340,9 @@ async def list_admin_donations(
 async def confirm_donation(
     donation_id: str,
     body: AdminNoteRequest = AdminNoteRequest(),
+    http_request: Request = None,
     db: AsyncSession = Depends(get_db),
-    _: User = Depends(get_admin_user_dependency),
+    admin_: User = Depends(get_admin_user_dependency),
 ):
     """
     Confirm a pending donation.
@@ -377,6 +387,15 @@ async def confirm_donation(
 
     donation.points_awarded = points_awarded if points_awarded > 0 else None
     await db.commit()
+    await log_action(
+        "ADMIN_DONATION_CONFIRMED",
+        user_email=user_email_from(admin_),
+        ip=_get_request_ip(http_request),
+        donation_id=donation_id,
+        donor_email=donation.donor_email,
+        amount=str(donation.amount),
+        points_awarded=points_awarded,
+    )
     return {"ok": True, "points_awarded": points_awarded}
 
 
@@ -384,8 +403,9 @@ async def confirm_donation(
 async def cancel_donation(
     donation_id: str,
     body: AdminNoteRequest = AdminNoteRequest(),
+    http_request: Request = None,
     db: AsyncSession = Depends(get_db),
-    _: User = Depends(get_admin_user_dependency),
+    admin_: User = Depends(get_admin_user_dependency),
 ):
     """Cancel a pending donation. Confirmed donations cannot be cancelled."""
     result = await db.execute(select(Donation).where(Donation.id == donation_id))
@@ -398,6 +418,14 @@ async def cancel_donation(
     donation.status = DonationStatus.CANCELLED.value
     donation.admin_note = body.note
     await db.commit()
+    await log_action(
+        "ADMIN_DONATION_CANCELLED",
+        user_email=user_email_from(admin_),
+        ip=_get_request_ip(http_request),
+        donation_id=donation_id,
+        donor_email=donation.donor_email,
+        amount=str(donation.amount),
+    )
     return {"ok": True}
 
 

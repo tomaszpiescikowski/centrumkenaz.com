@@ -3,7 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import List, Optional, Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Query
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, Request
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
@@ -18,6 +18,7 @@ from models.registration import RegistrationStatus
 from routers.auth import get_current_user_dependency
 from security.guards import get_active_user_dependency
 from services.payment_service import PaymentService
+from services.log_service import log_action, _get_request_ip, user_email_from
 from services.registration_service import RegistrationService
 from utils.legacy_ids import legacy_id_eq
 
@@ -260,6 +261,7 @@ async def get_my_profile(
 @router.post("/me/join-request", response_model=UserProfileResponse)
 async def submit_join_request(
     payload: JoinRequestPayload,
+    http_request: Request,
     user: User = Depends(get_current_user_dependency),
     db: AsyncSession = Depends(get_db),
 ) -> UserProfileResponse:
@@ -294,6 +296,12 @@ async def submit_join_request(
     await db.commit()
     await db.refresh(user)
     await db.refresh(profile)
+    await log_action(
+        "JOIN_REQUEST_SUBMITTED",
+        user_email=user_email_from(user),
+        ip=_get_request_ip(http_request),
+        full_name=user.full_name,
+    )
 
     return UserProfileResponse(
         id=user.id,
@@ -307,6 +315,7 @@ async def submit_join_request(
 @router.put("/me/profile", response_model=UserProfileResponse)
 async def update_my_profile(
     payload: UserProfileUpdateRequest,
+    http_request: Request,
     user: User = Depends(get_active_user_dependency),
     db: AsyncSession = Depends(get_db),
 ) -> UserProfileResponse:
@@ -325,6 +334,11 @@ async def update_my_profile(
     db.add(profile)
     await db.commit()
     await db.refresh(profile)
+    await log_action(
+        "PROFILE_UPDATED",
+        user_email=user_email_from(user),
+        ip=_get_request_ip(http_request),
+    )
 
     return UserProfileResponse(
         id=user.id,

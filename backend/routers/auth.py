@@ -9,6 +9,7 @@ import logging
 
 from database import get_db
 from config import get_settings
+from services.log_service import log_action, _get_request_ip
 from services.auth_service import (
     AuthConflictError,
     AuthPolicyError,
@@ -253,6 +254,7 @@ async def google_login(db: AsyncSession = Depends(get_db)) -> RedirectResponse:
 
 @router.get("/google/callback", dependencies=[Depends(auth_callback_rate_limit)])
 async def google_callback(
+    request: Request,
     code: str = Query(..., min_length=1),
     db: AsyncSession = Depends(get_db),
 ) -> RedirectResponse:
@@ -272,14 +274,22 @@ async def google_callback(
         await auth_service.update_google_tokens(user, tokens)
         access_token = auth_service.create_access_token(user)
         refresh_token = auth_service.create_refresh_token(user)
+        await log_action(
+            "USER_LOGIN_GOOGLE",
+            user_email=user.email,
+            ip=_get_request_ip(request),
+            full_name=user.full_name,
+        )
         redirect_url = f"{settings.frontend_url}/auth/callback?access_token={access_token}&refresh_token={refresh_token}"
         return RedirectResponse(url=redirect_url)
 
     except (AuthConflictError, AuthPolicyError) as exc:
         error_url = f"{settings.frontend_url}/auth/error?message={str(exc)}"
+        await log_action("USER_LOGIN_GOOGLE_BLOCKED", ip=_get_request_ip(request), reason=str(exc))
         return RedirectResponse(url=error_url)
     except Exception:
         logger.exception("Unhandled Google callback error")
+        await log_action("USER_LOGIN_GOOGLE_ERROR", ip=_get_request_ip(request))
         error_url = f"{settings.frontend_url}/auth/error?message=Authentication failed"
         return RedirectResponse(url=error_url)
 
@@ -290,6 +300,7 @@ async def google_callback(
     dependencies=[Depends(auth_password_register_rate_limit)],
 )
 async def password_register(
+    request: Request,
     payload: PasswordRegisterRequest,
     db: AsyncSession = Depends(get_db),
 ) -> TokenResponse:
@@ -317,6 +328,13 @@ async def password_register(
     except AuthValidationError as exc:
         raise HTTPException(status_code=422, detail=str(exc))
 
+    await log_action(
+        "USER_REGISTERED",
+        user_email=user.email,
+        ip=_get_request_ip(request),
+        full_name=user.full_name,
+        method="password",
+    )
     return TokenResponse(
         access_token=auth_service.create_access_token(user),
         refresh_token=auth_service.create_refresh_token(user),
@@ -329,6 +347,7 @@ async def password_register(
     dependencies=[Depends(auth_password_login_rate_limit)],
 )
 async def password_login(
+    request: Request,
     payload: PasswordLoginRequest,
     db: AsyncSession = Depends(get_db),
 ) -> TokenResponse:
@@ -341,8 +360,20 @@ async def password_login(
     auth_service = AuthService(db)
     user = await auth_service.authenticate_with_password(payload.login, payload.password)
     if not user:
+        await log_action(
+            "USER_LOGIN_FAILED",
+            user_email=None,
+            ip=_get_request_ip(request),
+            login=payload.login,
+        )
         raise HTTPException(status_code=401, detail="Invalid login or password")
 
+    await log_action(
+        "USER_LOGIN",
+        user_email=user.email,
+        ip=_get_request_ip(request),
+        method="password",
+    )
     return TokenResponse(
         access_token=auth_service.create_access_token(user),
         refresh_token=auth_service.create_refresh_token(user),
@@ -583,6 +614,10 @@ async def forgot_password(
     user.password_reset_token_expires_at = expires
     await db.commit()
 
+    await log_action(
+        "PASSWORD_RESET_REQUESTED",
+        user_email=email,
+    )
     reset_url = (
         f"{settings.frontend_url}/reset-password?token={raw_token}"
     )
@@ -638,5 +673,6 @@ async def reset_password(
     user.password_reset_token = None
     user.password_reset_token_expires_at = None
     await db.commit()
+    await log_action("PASSWORD_RESET_COMPLETED", user_email=user.email)
 
     return {"message": "Hasło zostało zmienione. Możesz się teraz zalogować."}

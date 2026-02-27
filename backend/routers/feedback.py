@@ -1,11 +1,12 @@
 """Temporary feedback endpoint for early-access user opinions."""
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from pydantic import BaseModel, Field
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
+from services.log_service import log_action, _get_request_ip
 from models.feedback import Feedback
 from models.user import User
 from security.guards import get_admin_user_dependency
@@ -36,6 +37,7 @@ class FeedbackOut(BaseModel):
 )
 async def submit_feedback(
     payload: FeedbackCreate,
+    http_request: Request = None,
     db: AsyncSession = Depends(get_db),
 ):
     """Accept a feedback comment from any user (no auth required)."""
@@ -45,6 +47,12 @@ async def submit_feedback(
     )
     db.add(entry)
     await db.commit()
+    await log_action(
+        "FEEDBACK_SUBMITTED",
+        user_email=payload.email,
+        ip=_get_request_ip(http_request),
+        comment_len=len(payload.comment.strip()),
+    )
     return {"ok": True}
 
 

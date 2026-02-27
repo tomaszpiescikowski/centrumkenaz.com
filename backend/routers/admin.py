@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 from decimal import Decimal
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Path
+from fastapi import APIRouter, Depends, HTTPException, Query, Path, Request
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -23,6 +23,7 @@ from models.donation import Donation, DonationStatus
 from security.guards import get_admin_user_dependency
 from adapters.fake_payment_adapter import get_shared_fake_payment_adapter
 from services.payment_service import PaymentService
+from services.log_service import log_action, _get_request_ip, user_email_from
 from services.registration_service import RegistrationService, RegistrationError
 from utils.legacy_ids import legacy_id_eq, optional_str_id
 
@@ -861,6 +862,7 @@ async def get_pending_users(
 @router.post("/users/{user_id}/approve", response_model=PendingUserResponse)
 async def approve_user(
     user_id: str = Path(..., min_length=1),
+    http_request: Request = None,
     db: AsyncSession = Depends(get_db),
     _admin: User = Depends(get_admin_user_dependency),
 ) -> PendingUserResponse:
@@ -905,6 +907,13 @@ async def approve_user(
             return []
         return [str(t) for t in parsed] if isinstance(parsed, list) else []
 
+    await log_action(
+        "ADMIN_USER_APPROVED",
+        user_email=user_email_from(_admin),
+        ip=_get_request_ip(http_request),
+        target_user_id=user_id,
+        target_email=target.email,
+    )
     return PendingUserResponse(
         user_id=str(target.id),
         full_name=target.full_name,
@@ -1077,6 +1086,7 @@ async def list_manual_payment_history(
 )
 async def approve_pending_manual_payment(
     registration_id: str = Path(..., min_length=1),
+    http_request: Request = None,
     db: AsyncSession = Depends(get_db),
     _admin: User = Depends(get_admin_user_dependency),
 ) -> ManualPaymentPendingResponse:
@@ -1107,6 +1117,15 @@ async def approve_pending_manual_payment(
     if not result:
         raise HTTPException(status_code=404, detail="Registration not found")
     registration, user, event, payment = result
+    await log_action(
+        "ADMIN_MANUAL_PAYMENT_APPROVED",
+        user_email=user_email_from(_admin),
+        ip=_get_request_ip(http_request),
+        registration_id=registration_id,
+        target_user_email=user.email,
+        event_id=str(event.id),
+        event_title=event.title,
+    )
     return _serialize_manual_pending_row(registration, user, event, payment)
 
 
@@ -1138,6 +1157,7 @@ async def list_refund_tasks(
 async def update_refund_task(
     payload: RefundTaskUpdateRequest,
     task_id: str = Path(..., min_length=1),
+    http_request: Request = None,
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(get_admin_user_dependency),
 ) -> RefundTaskResponse:
@@ -1193,6 +1213,15 @@ async def update_refund_task(
     await db.commit()
     await db.refresh(task)
     await db.refresh(registration)
+    await log_action(
+        "ADMIN_REFUND_TASK_UPDATED",
+        user_email=user_email_from(admin),
+        ip=_get_request_ip(http_request),
+        task_id=task_id,
+        should_refund=task.should_refund,
+        refund_marked_paid=task.refund_marked_paid,
+        override_reason=task.override_reason,
+    )
     return _serialize_refund_task_row(task, registration, user, event)
 
 
@@ -1230,6 +1259,7 @@ async def list_waitlist_promotions(
 async def update_waitlist_promotion_status(
     payload: WaitlistPromotionUpdateRequest,
     registration_id: str = Path(..., min_length=1),
+    http_request: Request = None,
     db: AsyncSession = Depends(get_db),
     _admin: User = Depends(get_admin_user_dependency),
 ) -> WaitlistPromotionResponse:
@@ -1260,6 +1290,13 @@ async def update_waitlist_promotion_status(
     db.add(registration)
     await db.commit()
     await db.refresh(registration)
+    await log_action(
+        "ADMIN_WAITLIST_PROMOTION_UPDATED",
+        user_email=user_email_from(_admin),
+        ip=_get_request_ip(http_request),
+        registration_id=registration_id,
+        notification_sent=payload.waitlist_notification_sent,
+    )
     return _serialize_waitlist_promotion_row(registration, user, event)
 
 
@@ -1368,6 +1405,7 @@ async def list_subscription_purchase_history(
 )
 async def approve_subscription_purchase(
     purchase_id: str = Path(..., min_length=1),
+    http_request: Request = None,
     db: AsyncSession = Depends(get_db),
     _admin: User = Depends(get_admin_user_dependency),
 ) -> SubscriptionPurchasePendingResponse:
@@ -1394,6 +1432,13 @@ async def approve_subscription_purchase(
     result = row.first()
     if not result:
         raise HTTPException(status_code=404, detail="Purchase not found")
+    await log_action(
+        "ADMIN_SUBSCRIPTION_PURCHASE_APPROVED",
+        user_email=user_email_from(_admin),
+        ip=_get_request_ip(http_request),
+        purchase_id=purchase_id,
+        plan_code=purchase.plan_code,
+    )
     return _serialize_subscription_purchase_pending_row(*result)
 
 
@@ -1830,6 +1875,7 @@ class PromoteToAdminResponse(BaseModel):
 )
 async def promote_user_to_admin(
     body: PromoteToAdminRequest,
+    http_request: Request = None,
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(get_admin_user_dependency),
 ):
@@ -1870,6 +1916,12 @@ async def promote_user_to_admin(
     target_user.role = UserRole.ADMIN
     await db.commit()
     await db.refresh(target_user)
+    await log_action(
+        "ADMIN_USER_PROMOTED_TO_ADMIN",
+        user_email=user_email_from(admin),
+        ip=_get_request_ip(http_request),
+        target_email=target_user.email,
+    )
 
     return PromoteToAdminResponse(
         id=target_user.id,
@@ -1921,6 +1973,7 @@ async def list_all_users(
 @router.post("/users/{user_id}/block", response_model=UserListItem)
 async def block_user(
     user_id: str = Path(..., min_length=1),
+    http_request: Request = None,
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(get_admin_user_dependency),
 ) -> UserListItem:
@@ -1937,6 +1990,13 @@ async def block_user(
     target.account_status = AccountStatus.BANNED
     await db.commit()
     await db.refresh(target)
+    await log_action(
+        "ADMIN_USER_BLOCKED",
+        user_email=user_email_from(admin),
+        ip=_get_request_ip(http_request),
+        target_user_id=user_id,
+        target_email=target.email,
+    )
     return UserListItem(
         id=str(target.id),
         full_name=target.full_name,
@@ -1951,6 +2011,7 @@ async def block_user(
 @router.post("/users/{user_id}/unblock", response_model=UserListItem)
 async def unblock_user(
     user_id: str = Path(..., min_length=1),
+    http_request: Request = None,
     db: AsyncSession = Depends(get_db),
     _admin: User = Depends(get_admin_user_dependency),
 ) -> UserListItem:
@@ -1963,6 +2024,13 @@ async def unblock_user(
     target.account_status = AccountStatus.PENDING
     await db.commit()
     await db.refresh(target)
+    await log_action(
+        "ADMIN_USER_UNBLOCKED",
+        user_email=user_email_from(_admin),
+        ip=_get_request_ip(http_request),
+        target_user_id=user_id,
+        target_email=target.email,
+    )
     return UserListItem(
         id=str(target.id),
         full_name=target.full_name,

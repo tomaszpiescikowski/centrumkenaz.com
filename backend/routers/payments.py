@@ -8,6 +8,7 @@ from typing import Optional, Literal
 
 from database import get_db
 from config import get_settings
+from services.log_service import log_action, _get_request_ip, user_email_from
 from models.user import User, UserRole
 from models.payment import PaymentType
 from models.subscription_purchase import SubscriptionPurchaseStatus
@@ -241,6 +242,7 @@ async def list_subscription_plans(
 
 @router.post("/subscription/checkout", response_model=SubscriptionCheckoutResponse)
 async def start_subscription_checkout(
+    request: Request,
     payload: SubscriptionCheckoutRequest,
     user: User = Depends(get_active_user_dependency),
     db: AsyncSession = Depends(get_db),
@@ -267,6 +269,16 @@ async def start_subscription_checkout(
         cancel_url=str(payload.cancel_url),
     )
 
+    await log_action(
+        "PAYMENT_CHECKOUT_STARTED",
+        user_email=user_email_from(user),
+        ip=_get_request_ip(request),
+        type="subscription",
+        plan=payload.plan_code,
+        payment_id=payment.external_id,
+        amount=str(payment.amount),
+        currency=payment.currency,
+    )
     return SubscriptionCheckoutResponse(
         payment_id=payment.external_id,
         status=payment.status,
@@ -279,6 +291,7 @@ async def start_subscription_checkout(
 
 @router.post("/subscription/free", response_model=FreePlanSwitchResponse)
 async def switch_to_free_plan(
+    request: Request,
     user: User = Depends(get_active_user_dependency),
     db: AsyncSession = Depends(get_db),
 ) -> FreePlanSwitchResponse:
@@ -297,11 +310,17 @@ async def switch_to_free_plan(
     db.add(user)
     await db.commit()
     await db.refresh(user)
+    await log_action(
+        "SUBSCRIPTION_SWITCHED_TO_FREE",
+        user_email=user_email_from(user),
+        ip=_get_request_ip(request),
+    )
     return FreePlanSwitchResponse(status="ok", plan_code="free")
 
 
 @router.post("/subscription/manual-checkout", response_model=SubscriptionPurchaseResponse)
 async def start_subscription_manual_checkout(
+    request: Request,
     payload: SubscriptionManualCheckoutRequest,
     user: User = Depends(get_active_user_dependency),
     db: AsyncSession = Depends(get_db),
@@ -330,6 +349,15 @@ async def start_subscription_manual_checkout(
     )
     if not details:
         raise HTTPException(status_code=500, detail="Failed to load purchase details")
+    await log_action(
+        "SUBSCRIPTION_MANUAL_CHECKOUT_STARTED",
+        user_email=user_email_from(user),
+        ip=_get_request_ip(request),
+        plan=payload.plan_code,
+        periods=payload.periods,
+        purchase_id=str(purchase.id),
+        total_amount=details.get("total_amount"),
+    )
     return SubscriptionPurchaseResponse(**details)
 
 
@@ -395,6 +423,7 @@ async def get_subscription_purchase_details(
     response_model=SubscriptionPurchaseResponse,
 )
 async def confirm_subscription_manual_payment(
+    request: Request,
     purchase_id: str = Path(..., min_length=1),
     user: User = Depends(get_active_user_dependency),
     db: AsyncSession = Depends(get_db),
@@ -417,11 +446,20 @@ async def confirm_subscription_manual_payment(
         raise HTTPException(status_code=422, detail=str(exc))
     if not details:
         raise HTTPException(status_code=404, detail="Purchase not found")
+    await log_action(
+        "SUBSCRIPTION_MANUAL_PAYMENT_CONFIRMED_BY_USER",
+        user_email=user_email_from(user),
+        ip=_get_request_ip(request),
+        purchase_id=purchase_id,
+        plan=details.get("plan_code"),
+        total_amount=details.get("total_amount"),
+    )
     return SubscriptionPurchaseResponse(**details)
 
 
 @router.get("/{payment_id}/status", response_model=PaymentStatusResponse)
 async def get_payment_status(
+    request: Request,
     payment_id: str = Path(..., min_length=1),
     user: User = Depends(get_active_user_dependency),
     db: AsyncSession = Depends(get_db),
@@ -443,6 +481,15 @@ async def get_payment_status(
         await payment_service.apply_subscription_for_payment(payment)
         await db.refresh(payment)
 
+    await log_action(
+        "PAYMENT_STATUS_CHECKED",
+        user_email=user_email_from(user),
+        ip=_get_request_ip(request),
+        payment_id=payment.external_id,
+        status=payment.status,
+        type=payment.payment_type,
+        amount=str(payment.amount),
+    )
     return PaymentStatusResponse(
         payment_id=payment.external_id,
         status=payment.status,
@@ -483,6 +530,12 @@ async def handle_payment_webhook(
     payment = await payment_service.process_webhook(payload.model_dump(), signature)
 
     if not payment:
+        await log_action(
+            "WEBHOOK_PAYMENT_NOT_FOUND",
+            ip=_get_request_ip(request),
+            payment_id=payload.payment_id,
+            status=payload.status,
+        )
         return WebhookResponse(
             success=False,
             message="Payment not found",
@@ -491,8 +544,33 @@ async def handle_payment_webhook(
     if payment.status == PaymentStatus.COMPLETED.value:
         if payment.payment_type == PaymentType.EVENT.value:
             await registration_service.confirm_registration(payment.external_id)
+            await log_action(
+                "WEBHOOK_EVENT_PAYMENT_COMPLETED",
+                ip=_get_request_ip(request),
+                payment_id=payment.external_id,
+                type="event",
+                amount=str(payment.amount),
+                user_id=str(payment.user_id),
+            )
         elif payment.payment_type == PaymentType.SUBSCRIPTION.value:
             await payment_service.apply_subscription_for_payment(payment)
+            await log_action(
+                "WEBHOOK_SUBSCRIPTION_PAYMENT_COMPLETED",
+                ip=_get_request_ip(request),
+                payment_id=payment.external_id,
+                type="subscription",
+                amount=str(payment.amount),
+                user_id=str(payment.user_id),
+            )
+    else:
+        await log_action(
+            "WEBHOOK_PAYMENT_STATUS_UPDATED",
+            ip=_get_request_ip(request),
+            payment_id=payment.external_id,
+            status=payment.status,
+            type=payment.payment_type,
+            amount=str(payment.amount),
+        )
 
     return WebhookResponse(
         success=True,

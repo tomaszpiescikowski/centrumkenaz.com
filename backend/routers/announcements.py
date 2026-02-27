@@ -1,12 +1,13 @@
 """Announcements API – public listing and admin CRUD."""
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from pydantic import BaseModel, Field
 from sqlalchemy import select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from database import get_db
+from services.log_service import log_action, _get_request_ip, user_email_from
 from models.announcement import Announcement
 from models.user import User
 from security.guards import AdminUser
@@ -75,6 +76,7 @@ async def list_announcements(db: AsyncSession = Depends(get_db)):
 async def create_announcement(
     body: AnnouncementCreate,
     admin: AdminUser,
+    http_request: Request = None,
     db: AsyncSession = Depends(get_db),
 ):
     """Create a new announcement (admin only)."""
@@ -94,6 +96,13 @@ async def create_announcement(
     )
     announcement = result.scalars().first()
 
+    await log_action(
+        "ANNOUNCEMENT_CREATED",
+        user_email=user_email_from(admin),
+        ip=_get_request_ip(http_request),
+        announcement_id=str(announcement.id),
+        title=announcement.title,
+    )
     return {
         "id": announcement.id,
         "title": announcement.title,
@@ -111,6 +120,7 @@ async def create_announcement(
 async def delete_announcement(
     announcement_id: str,
     admin: AdminUser,
+    http_request: Request = None,
     db: AsyncSession = Depends(get_db),
 ):
     """Delete an announcement (admin only)."""
@@ -123,3 +133,10 @@ async def delete_announcement(
 
     await db.delete(announcement)
     await db.commit()
+    await log_action(
+        "ANNOUNCEMENT_DELETED",
+        user_email=user_email_from(admin),
+        ip=_get_request_ip(http_request),
+        announcement_id=announcement_id,
+        title=announcement.title,
+    )
