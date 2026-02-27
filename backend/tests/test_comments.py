@@ -8,7 +8,7 @@ and concurrent request safety.
 """
 
 import asyncio
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 from uuid import uuid4
 
@@ -19,6 +19,7 @@ from httpx import ASGITransport, AsyncClient
 from database import get_db
 from models.comment import Comment, CommentReaction, ReactionType
 from models.event import Event
+from models.registration import Registration, RegistrationStatus
 from models.user import AccountStatus, User, UserRole
 from routers import comments_router
 from services.auth_service import AuthService
@@ -71,6 +72,17 @@ def _make_event(suffix=None):
     )
 
 
+
+
+def _make_registration(user, event, status=RegistrationStatus.CONFIRMED):
+    """Create a confirmed registration so the user can post in event chat."""
+    return Registration(
+        user_id=user.id,
+        event_id=event.id,
+        occurrence_date=date.today(),
+        status=status.value,
+    )
+
 async def _auth_header(db_session, user):
     token = AuthService(db_session).create_access_token(user)
     return {"Authorization": f"Bearer {token}"}
@@ -88,6 +100,9 @@ async def test_create_comment_returns_201(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
@@ -119,6 +134,9 @@ async def test_list_comments_returns_created(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     await comments_api_client.post(
@@ -149,6 +167,9 @@ async def test_update_own_comment(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
@@ -178,6 +199,9 @@ async def test_delete_own_comment(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
@@ -213,6 +237,9 @@ async def test_reply_to_comment(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     parent_resp = await comments_api_client.post(
@@ -247,6 +274,9 @@ async def test_nested_replies(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
 
@@ -290,6 +320,9 @@ async def test_reply_to_nonexistent_parent_fails(comments_api_client, db_session
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
@@ -311,6 +344,10 @@ async def test_reply_to_comment_from_different_resource_fails(comments_api_clien
     await db_session.refresh(user)
     await db_session.refresh(event1)
     await db_session.refresh(event2)
+    reg1 = _make_registration(user, event1)
+    reg2 = _make_registration(user, event2)
+    db_session.add_all([reg1, reg2])
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     parent_resp = await comments_api_client.post(
@@ -340,6 +377,9 @@ async def test_add_reaction(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
@@ -371,6 +411,9 @@ async def test_toggle_reaction_off(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
@@ -405,6 +448,9 @@ async def test_multiple_reaction_types(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
@@ -439,6 +485,9 @@ async def test_multiple_users_react(comments_api_client, db_session):
     await db_session.refresh(user1)
     await db_session.refresh(user2)
     await db_session.refresh(event)
+    reg1 = _make_registration(user1, event)
+    db_session.add(reg1)
+    await db_session.commit()
 
     h1 = await _auth_header(db_session, user1)
     h2 = await _auth_header(db_session, user2)
@@ -476,6 +525,9 @@ async def test_invalid_reaction_type_rejected(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
@@ -573,6 +625,9 @@ async def test_non_admin_cannot_pin(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
@@ -668,6 +723,9 @@ async def test_cannot_edit_other_users_comment(comments_api_client, db_session):
     await db_session.refresh(user1)
     await db_session.refresh(user2)
     await db_session.refresh(event)
+    reg = _make_registration(user1, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     h1 = await _auth_header(db_session, user1)
     h2 = await _auth_header(db_session, user2)
@@ -698,6 +756,9 @@ async def test_cannot_delete_other_users_comment(comments_api_client, db_session
     await db_session.refresh(user1)
     await db_session.refresh(user2)
     await db_session.refresh(event)
+    reg = _make_registration(user1, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     h1 = await _auth_header(db_session, user1)
     h2 = await _auth_header(db_session, user2)
@@ -727,6 +788,9 @@ async def test_admin_can_delete_any_comment(comments_api_client, db_session):
     await db_session.refresh(user)
     await db_session.refresh(admin)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     user_headers = await _auth_header(db_session, user)
     admin_headers = await _auth_header(db_session, admin)
@@ -757,6 +821,9 @@ async def test_stale_version_rejected(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
@@ -791,6 +858,9 @@ async def test_concurrent_edits_one_wins(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
@@ -827,6 +897,9 @@ async def test_edit_deleted_comment_fails(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
@@ -858,6 +931,9 @@ async def test_empty_content_rejected(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
@@ -877,6 +953,9 @@ async def test_too_long_content_rejected(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
@@ -896,6 +975,9 @@ async def test_max_length_content_accepted(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
@@ -918,6 +1000,9 @@ async def test_pagination_offset_limit(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     for i in range(5):
@@ -946,6 +1031,9 @@ async def test_pagination_beyond_total(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     await comments_api_client.post(
@@ -975,6 +1063,10 @@ async def test_comments_isolated_per_event(comments_api_client, db_session):
     await db_session.refresh(user)
     await db_session.refresh(event1)
     await db_session.refresh(event2)
+    reg1 = _make_registration(user, event1)
+    reg2 = _make_registration(user, event2)
+    db_session.add_all([reg1, reg2])
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
 
@@ -1007,6 +1099,9 @@ async def test_comments_isolated_per_resource_type(comments_api_client, db_sessi
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
 
@@ -1093,6 +1188,9 @@ async def test_comment_author_info_correct(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
@@ -1115,6 +1213,9 @@ async def test_comment_without_user_avatar(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
@@ -1134,6 +1235,9 @@ async def test_created_at_is_present(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
@@ -1170,6 +1274,9 @@ async def test_reply_count_in_response(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     parent_resp = await comments_api_client.post(
@@ -1202,6 +1309,10 @@ async def test_multiple_users_comment_on_same_event(comments_api_client, db_sess
     for u in users:
         await db_session.refresh(u)
     await db_session.refresh(event)
+    for u in users:
+        reg = _make_registration(u, event)
+        db_session.add(reg)
+    await db_session.commit()
 
     for i, u in enumerate(users):
         headers = await _auth_header(db_session, u)
@@ -1228,6 +1339,9 @@ async def test_whitespace_only_content_rejected(comments_api_client, db_session)
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     # Single space passes min_length=1 on Pydantic but is technically content
@@ -1249,6 +1363,9 @@ async def test_special_characters_in_content(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     content = 'He said "hello" & <script>alert("xss")</script> 🎉'
@@ -1270,6 +1387,9 @@ async def test_unicode_content(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     content = "Cześć! 你好 🌍 Привет мир 日本語テスト"
@@ -1314,6 +1434,9 @@ async def test_all_reaction_types_work(comments_api_client, db_session):
     await db_session.commit()
     await db_session.refresh(user)
     await db_session.refresh(event)
+    reg = _make_registration(user, event)
+    db_session.add(reg)
+    await db_session.commit()
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
