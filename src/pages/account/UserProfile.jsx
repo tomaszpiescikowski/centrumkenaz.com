@@ -169,8 +169,8 @@ function UserProfile() {
 
               {/* Section: Account */}
               <AdminSection label="Konto">
-                <AdminRow label="Rola" value={adminDetail.role} />
-                <AdminRow label="Status" value={adminDetail.account_status} />
+                <AdminRow label="Rola" value={t(`admin.usersList.role.${adminDetail.role}`) || adminDetail.role} />
+                <AdminRow label="Status" value={t(`admin.usersList.status.${adminDetail.account_status}`) || adminDetail.account_status} />
                 <AdminRow label="Zarejestrowany" value={formatAdminDate(adminDetail.created_at)} />
                 <AdminRow label="Ostatnia aktywność" value={formatAdminDate(adminDetail.last_active_at)} />
               </AdminSection>
@@ -183,10 +183,10 @@ function UserProfile() {
                   label="Subskrypcja"
                   value={
                     adminDetail.subscription_active
-                      ? `aktywna do ${formatAdminDate(adminDetail.subscription_end_date)}`
+                      ? `${t('account.subscriptionActive')} — do ${formatAdminDate(adminDetail.subscription_end_date)}`
                       : adminDetail.subscription_end_date
-                        ? `wygasła ${formatAdminDate(adminDetail.subscription_end_date)}`
-                        : 'brak'
+                        ? `${t('account.subscriptionInactive')} (do ${formatAdminDate(adminDetail.subscription_end_date)})`
+                        : t('account.subscriptionInactive')
                   }
                   color={adminDetail.subscription_active ? 'green' : null}
                 />
