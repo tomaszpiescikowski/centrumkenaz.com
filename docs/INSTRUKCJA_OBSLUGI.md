@@ -3,8 +3,8 @@
 
 ---
 
-> **Wersja dokumentu:** 1.0  
-> **Data:** luty 2026  
+> **Wersja dokumentu:** 2.0  
+> **Data:** lipiec 2026  
 > **Dotyczy:** aplikacja webowa i PWA Kenaz Centrum
 
 ---
@@ -37,17 +37,16 @@
 
 **Część IV – Pozostałe strony**
 
-16. [Sklep](#16-sklep)
-17. [Wesprzyj nas – darowizny](#17-wesprzyj-nas--darowizny)
-18. [O nas](#18-o-nas)
-19. [Polityka prywatności i Regulamin](#19-polityka-prywatności-i-regulamin)
+16. [Wesprzyj nas – darowizny](#16-wesprzyj-nas--darowizny)
+17. [O nas](#17-o-nas)
+18. [Polityka prywatności i Regulamin](#18-polityka-prywatności-i-regulamin)
 
 **Część V – Panel administratora**
 
 20. [Panel administratora – przegląd](#20-panel-administratora--przegląd)
 21. [Tworzenie i edycja wydarzeń](#21-tworzenie-i-edycja-wydarzeń)
 22. [Zatwierdzanie nowych użytkowników](#22-zatwierdzanie-nowych-użytkowników)
-23. [Lista wszystkich użytkowników (blokowanie kont)](#23-lista-wszystkich-użytkowników-blokowanie-kont)
+23. [Lista wszystkich użytkowników](#23-lista-wszystkich-użytkowników)
 24. [Płatności online](#24-płatności-online)
 25. [Płatności manualne (przelewy)](#25-płatności-manualne-przelewy)
 26. [Bilans finansowy](#26-bilans-finansowy)
@@ -55,14 +54,15 @@
 28. [Opinie i feedback](#28-opinie-i-feedback)
 29. [Zarządzanie ikonkami wydarzeń](#29-zarządzanie-ikonkami-wydarzeń)
 30. [Nadawanie uprawnień administratora](#30-nadawanie-uprawnień-administratora)
+31. [Logi audytowe](#31-logi-audytowe)
 
 **Część VI – Dodatki**
 
-31. [Aplikacja mobilna (PWA)](#31-aplikacja-mobilna-pwa)
-32. [Tryb ciemny i jasny](#32-tryb-ciemny-i-jasny)
-33. [Powiadomienia i komunikaty systemowe](#33-powiadomienia-i-komunikaty-systemowe)
-34. [Często zadawane pytania (FAQ)](#34-często-zadawane-pytania-faq)
-35. [Słownik pojęć](#35-słownik-pojęć)
+32. [Aplikacja mobilna (PWA)](#32-aplikacja-mobilna-pwa)
+33. [Tryb ciemny i jasny](#33-tryb-ciemny-i-jasny)
+34. [Powiadomienia i komunikaty systemowe](#34-powiadomienia-i-komunikaty-systemowe)
+35. [Często zadawane pytania (FAQ)](#35-często-zadawane-pytania-faq)
+36. [Słownik pojęć](#36-słownik-pojęć)
 
 ---
 
@@ -79,15 +79,14 @@
 - przeglądanie i zapisywanie się na **wydarzenia** (treningi, warsztaty, wycieczki i inne aktywności),
 - komunikowanie się z uczestnikami za pomocą **wbudowanego chatu**,
 - zarządzanie własną **subskrypcją** i historią rejestracji,
-- wspieranie centrum poprzez **darowizny**,
-- zakup produktów w **sklepie** organizacji.
+- wspieranie centrum poprzez **darowizny** na stronie „Wesprzyj nas".
 
 ### Dla kogo jest ta instrukcja?
 
 Niniejszy dokument przeznaczony jest dla dwóch grup:
 
-- **Zwykłych użytkowników** – osób, które chcą zapisywać się na wydarzenia, korzystać z chatu, zarządzać swoim profilem i subskrypcją. Zatrzymując się na Części IV (strony 16–19).
-- **Administratorów** – osób zarządzających platformą, które potrzebują zrozumieć panel administracyjny opisany w Części V (strony 20–30).
+- **Zwykłych użytkowników** – osób, które chcą zapisywać się na wydarzenia, korzystać z chatu, zarządzać swoim profilem i subskrypcją. Zatrzymując się na Części IV (strony 16–18).
+- **Administratorów** – osób zarządzających platformą, które potrzebują zrozumieć panel administracyjny opisany w Części V (strony 20–31).
 
 ### Jak używać tej instrukcji?
 
@@ -142,10 +141,11 @@ Po wylogowaniu zostaniesz przekierowany na stronę główną. Twoje dane i rejes
 
 ### 3.1 Co zobaczysz na stronie głównej?
 
-Strona główna to **punkt startowy** aplikacji. Jej układ jest celowo prosty – w centrum ekranu widnieje logo Kenaz Centrum, a poniżej dwa przyciski:
+Strona główna to **punkt startowy** aplikacji. Jej układ jest celowo prosty – w centrum ekranu widnieje logo Kenaz Centrum, a poniżej trzy przyciski:
 
 - **„Zaloguj się"** – prowadzi do strony logowania (`/login`), gdzie możesz zalogować się przez Google.
 - **„O nas"** – prowadzi do strony z informacjami o organizacji (`/about`).
+- **„Wesprzyj nas"** – prowadzi do strony darowizn (`/support`), gdzie możesz wesprzeć finansowo centrum nawet bez posiadania konta.
 
 Strona główna jest zaprojektowana zarówno pod kątem urządzeń mobilnych, jak i desktopowych. Logo i przyciski automatycznie dostosowują swój rozmiar do ekranu.
 
@@ -177,7 +177,7 @@ Podczas oczekiwania na akceptację:
 - **Kalendarz** jest widoczny, ale **zamazany** – nie możesz przeglądać szczegółów wydarzeń.
 - **Panel** (lista twoich rejestracji) jest widoczny, ale również zamazany i niedostępny.
 - **Chat** jest niedostępny.
-- Możesz przeglądać strony ogólne: **O nas**, **Wesprzyj nas**, **Sklep**, **Politykę prywatności** i **Regulamin**.
+- Możesz przeglądać strony ogólne: **O nas**, **Wesprzyj nas**, **Politykę prywatności** i **Regulamin**.
 
 Na ekranie pojawia się informacja, że konto oczekuje na akceptację, oraz prośba o cierpliwość.
 
@@ -744,81 +744,52 @@ Na publicznym profilu **nie są wyświetlane** prywatne dane: adres email, histo
 
 ---
 
-## 16. Sklep
-
-**Adres:** `/shop`  
-**Dostęp:** wszyscy (w tym niezalogowani)
-
-### 16.1 Co to jest sklep?
-
-Sklep umożliwia zakup **produktów Kenaz** – gadżetów, odzieży, akcesoriów i innych produktów oferowanych przez organizację.
-
-### 16.2 Jak korzystać ze sklepu?
-
-1. Przejdź do `/shop` (dostępny z nawigacji).
-2. Przeglądaj listę dostępnych produktów – każdy produkt pokazuje zdjęcie, nazwę, opis i cenę.
-3. Kliknij **„Kup"** przy wybranym produkcie.
-
-> **Uwaga:** Szczegóły procesu zakupu zależą od konfiguracji systemu przez administratora. Sklep może kierować do zewnętrznego systemu płatności lub wymagać kontaktu z organizacją.
-
-### 16.3 Produkty w sklepie
-
-Każda karta produktu zawiera:
-
-- Zdjęcie produktu (jeśli dodane przez administratora).
-- Nazwę i opis produktu.
-- Cenę w złotych.
-- Przycisk zakupu.
-
----
-
-## 17. Wesprzyj nas – darowizny
+## 16. Wesprzyj nas – darowizny
 
 **Adres:** `/support`  
-**Dostęp:** wszyscy (zalogowani mają dodatkowe opcje)
+**Dostęp:** wszyscy (zalogowani i niezalogowani)
 
-### 17.1 Po co ta strona?
+### 16.1 Po co ta strona?
 
-Strona **„Wesprzyj nas"** umożliwia wsparcie finansowe organizacji Kenaz poprzez:
+Strona **„Wesprzyj nas"** umożliwia wsparcie finansowe organizacji Kenaz. Można ją otworzyć bezpośrednio z przycisku na stronie głównej lub z karty na stronie „O nas". Dostęp mają wszyscy – zarówno zalogowani, jak i anonimowi odwiedzający.
 
-- **Darowizny jednorazowe**.
-- **Darowizny cykliczne** (jeśli opcja dostępna).
-
-### 17.2 Metody wsparcia
-
-Dostępne są następujące sposoby wsparcia:
+### 16.2 Metody wsparcia
 
 #### Przelew bankowy
 
-Na stronie zobaczysz **pola do skopiowania danych do przelewu**:
+Na stronie znajdziesz sekcję z danymi do przelewu:
 
-- **Numer konta bankowego** z przyciskiem kopiowania.
-- **Tytuł przelewu** – wpisz go dokładnie.
-- **Dane odbiorcy** (nazwa organizacji).
+- **Numer konta bankowego** – kliknij ikonę kopiowania, aby skopiować numer do schowka jednym tapnięciem.
+- **Tytuł przelewu** – wpisz go dokładnie tak jak podano, aby administrator mógł zidentyfikować wpłatę.
+- **Dane odbiorcy** – pełna nazwa organizacji i adres.
 
-Kliknij ikonę kopiowania przy każdym polu, aby skopiować dane do schowka.
+#### Zewnętrzne platformy wspierania
 
-#### Zewnętrzne platformy
+Jeśli administrator skonfigurował zewnętrzne linki (np. buycoffee.to, Patronite), zobaczysz przyciski prowadzące do tych platform.
 
-Jeśli administrator skonfigurował zewnętrzne linki (np. buycoffee.to), zobaczysz przyciski prowadzące do zewnętrznych platform wspierania.
+### 16.3 Formularz darowizny (dla zalogowanych użytkowników)
 
-### 17.3 Formularz darowizny (dla zalogowanych)
+Zalogowani użytkownicy mogą skorzystać z **formularza darowizny** wbudowanego w aplikację:
 
-Zalogowani użytkownicy mogą skorzystać z **formularza darowizny** w aplikacji:
-
-1. Wybierz kwotę (np. z predefiniowanych opcji: 20, 50, 100 zł) lub wpisz własną.
-2. Opcjonalnie dodaj notatkę.
+1. Wybierz kwotę z predefiniowanych opcji (np. 20, 50, 100 zł) lub wpisz własną kwotę w polu tekstowym.
+2. Opcjonalnie dodaj krótką notatkę dla administratora.
 3. Kliknij **„Wesprzyj"**.
-4. Dane do przelewu zostaną wygenerowane automatycznie.
+4. System generuje potwierdzenie i zapisuje darowiznę w historii.
+
+### 16.4 Punkty za darowiznę
+
+**Każdy zalogowany użytkownik**, który dokonuje darowizny przez formularz, otrzymuje **punkty aktywności** dopisane do swojego profilu. Punkty są przyznawane niezależnie od posiadanego planu – zarówno subskrybenci, jak i użytkownicy bezpłatni mogą je zdobywać.
+
+> **Uwaga:** Darowizny manualne (przelew bankowy bez użycia formularza) wymagają ręcznej weryfikacji przez administratora przed przyznaniem punktów.
 
 ---
 
-## 18. O nas
+## 17. O nas
 
 **Adres:** `/about`  
 **Dostęp:** wszyscy
 
-### 18.1 Co zawiera strona „O nas"?
+### 17.1 Co zawiera strona „O nas"?
 
 Strona **„O nas"** to miejsce, gdzie nowi odwiedzający mogą dowiedzieć się więcej o Kenaz Centrum. Zawiera:
 
@@ -826,20 +797,23 @@ Strona **„O nas"** to miejsce, gdzie nowi odwiedzający mogą dowiedzieć się
 - **Statystyki** – kluczowe liczby (liczba członków, wydarzeń, lat działalności itp.).
 - **Zdjęcia** – galeria zdjęć z życia organizacji.
 - **Przycisk dołączenia** – zachęta dla nowych osób do zalogowania się i dołączenia do społeczności.
-- **Link do sklepu** – dla zainteresowanych zakupem produktów Kenaz.
 
-### 18.2 Nawigacja po stronie
+### 17.2 Nawigacja po stronie
 
 Strona jest podzielona na sekcje wyświetlane w układzie tekstowo-fotograficznym – tekst po lewej, zdjęcie po prawej (lub odwrotnie, alternując). Przewijaj stronę, aby zobaczyć wszystkie rozdziały historii.
 
+### 17.3 Karta „Wesprzyj nas"
+
+Na **dole strony „O nas"** wyświetlana jest karta zachęcająca do wsparcia finansowego organizacji. Karta zawiera krótki opis i przycisk **„Wesprzyj nas"**, który kieruje bezpośrednio do strony darowizn (`/support`).
+
 ---
 
-## 19. Polityka prywatności i Regulamin
+## 18. Polityka prywatności i Regulamin
 
 **Adresy:** `/privacy`, `/terms`  
 **Dostęp:** wszyscy
 
-### 19.1 Polityka prywatności (`/privacy`)
+### 18.1 Polityka prywatności (`/privacy`)
 
 Strona zawiera szczegółowe informacje dotyczące:
 
@@ -849,7 +823,7 @@ Strona zawiera szczegółowe informacje dotyczące:
 - Jakie przysługują Ci prawa (dostęp, usunięcie, sprzeciw).
 - Informacje o cookies i danych analitycznych.
 
-### 19.2 Regulamin (`/terms`)
+### 18.2 Regulamin (`/terms`)
 
 Strona zawiera warunki korzystania z aplikacji, w tym:
 
@@ -869,7 +843,7 @@ Strona zawiera warunki korzystania z aplikacji, w tym:
 ---
 
 > **Dla kogo jest ta część?**  
-> Rozdziały 20–30 są przeznaczone wyłącznie dla administratorów systemu – osób z rolą `admin`. Zwykli użytkownicy nie mają dostępu do panelu administracyjnego i mogą pominąć tę część.
+> Rozdziały 20–31 są przeznaczone wyłącznie dla administratorów systemu – osób z rolą `admin`. Zwykli użytkownicy nie mają dostępu do panelu administracyjnego i mogą pominąć tę część.
 
 ---
 
@@ -1003,33 +977,53 @@ Jeśli brak oczekujących użytkowników, strona wyświetla odpowiedni komunikat
 
 ---
 
-## 23. Lista wszystkich użytkowników (blokowanie kont)
+## 23. Lista wszystkich użytkowników
 
 **Adres:** `/admin/all-users`  
 **Dostęp:** administratorzy
 
 ### 23.1 Cel strony
 
-Strona **„Użytkownicy"** daje administratorom pełny wgląd w **listę wszystkich zarejestrowanych użytkowników** platformy, niezależnie od statusu. Pozwala m.in. **blokować** i **odblokowywać** konta.
+Strona **„Użytkownicy"** daje administratorom pełny wgląd w **listę wszystkich zarejestrowanych użytkowników** platformy, niezależnie od statusu. Pozwala m.in. **blokować** i **odblokowywać** konta, przeglądać profil dowolnego użytkownika i filtrować listę według różnych kryteriów.
 
 ### 23.2 Co widzisz na liście?
 
 Każdy użytkownik na liście pokazuje:
 
-- **Awatar** i **imię i nazwisko**.
+- **Awatar** i **imię i nazwisko** (kliknięcie w wiersz otwiera profil użytkownika).
 - **Adres email**.
 - **Rola** (Admin / Członek / Gość).
 - **Status konta** (Aktywny / Oczekujący / Zablokowany).
 - **Przycisk „Zablokuj"** lub **„Odblokuj"** (zależnie od aktualnego statusu).
 
-### 23.3 Wyszukiwanie i filtrowanie
+### 23.3 Stronicowanie
+
+Lista obsługuje **paginację** – w przypadku dużej liczby użytkowników wyniki są podzielone na strony. Przyciski nawigacji po stronach (`←` / `→`) pojawiają się u dołu listy. Możesz też wybrać konkretny numer strony.
+
+### 23.4 Wyszukiwanie i filtrowanie
 
 Na górze strony dostępne są:
 
 - **Pole wyszukiwania** – filtruje listę po imieniu i nazwisku lub adresie email.
 - **Filtr statusu** – możesz wyświetlić tylko użytkowników aktywnych, oczekujących lub zablokowanych.
+- **Filtr „Tylko subskrybenci"** – przełącznik pokazujący wyłącznie użytkowników z aktywną subskrypcją (planem miesięcznym lub rocznym).
 
-### 23.4 Blokowanie konta
+### 23.5 Przejście do profilu użytkownika
+
+Każdy **wiersz użytkownika jest klikalny** – kliknięcie otwiera jego pełny profil publiczny, gdzie administrator może zobaczyć jego aktywność, historię rejestracji i inne dane.
+
+### 23.6 Kafelek admina na profilu użytkownika
+
+Gdy administrator wejdzie na profil publiczny dowolnego użytkownika, w górnej części strony wyświetla się dodatkowy **kafelek administracyjny** z informacjami niedostępnymi dla zwykłych użytkowników. Kafelek zawiera cztery sekcje:
+
+| Sekcja | Zawartość |
+|--------|-----------|
+| **Konto** | Status konta, rola, data rejestracji, data ostatniego logowania |
+| **Aktywność** | Liczba wydarzeń, w których uczestniczył; punkty aktywności |
+| **Finanse** | Plan subskrypcji, data wygaśnięcia, historia płatności |
+| **Oczekujące akcje** | Niezatwierdzone płatności lub rejestracje wymagające uwagi |
+
+### 23.7 Blokowanie konta
 
 Aby zablokować konto użytkownika:
 
@@ -1043,7 +1037,7 @@ Aby zablokować konto użytkownika:
 - Przy próbie korzystania z aplikacji widzi stronę oczekiwania.
 - Konto wymaga ponownej akceptacji przez administratora (patrz poniżej).
 
-### 23.5 Odblokowanie konta
+### 23.8 Odblokowanie konta
 
 Aby odblokować zablokowane konto:
 
@@ -1120,6 +1114,14 @@ Strona pozwala filtrować płatności według:
 - Statusu (oczekujące na weryfikację / zatwierdzone / odrzucone).
 - Daty.
 - Użytkownika lub wydarzenia.
+
+### 25.5 Historia rozpatrzonych płatności
+
+Każdy widok płatności manualnych zawiera sekcję **„Rozpatrzone"** z historią wcześniej zatwierdzonych lub odrzuconych operacji. Sekcja ta jest domyślnie zwinięta i można ją rozwinąć, aby przeglądać archiwum decyzji. Dzięki temu administrator może:
+
+- Sprawdzić, kto i kiedy zatwierdził daną płatność.
+- Zweryfikować historię refundacji lub anulowań.
+- Odtworzyć ciąg zdarzeń przy rozpatrywaniu spornych przypadków.
 
 ---
 
@@ -1215,35 +1217,52 @@ Na stronie `/admin/feedback` administrator widzi:
 
 ### 29.1 Cel strony
 
-Ikony kategorii to **małe grafiki** przypisywane do wydarzeń, które pomagają użytkownikom szybko rozpoznać typ aktywności na kalendarzu. Administrator może tworzyć własne zestawy ikonek.
+Ikony kategorii to **małe grafiki (emoji lub tekst)** przypisywane do wydarzeń, które pomagają użytkownikom szybko rozpoznać typ aktywności na kalendarzu. System rozróżnia **wbudowane typy** (predefiniowane) oraz **typy niestandardowe** (tworzone przez administratorów).
 
 ### 29.2 Wbudowane typy wydarzeń
 
-Aplikacja posiada zestaw **predefiniowanych typów** z ikoną i nazwą:
+Aplikacja posiada **10 predefiniowanych typów** z przypisaną ikoną i nazwą:
 
-| Typ | Opis |
-|-----|------|
-| Karate | Treningi karate |
-| Morsowanie | Zimowe kąpiele |
-| Yoga | Ćwiczenia yoga |
-| Trening | Ogólne treningi fitness |
-| Warsztaty | Spotkania edukacyjne |
-| Wyjście | Wspólne wyjścia grupowe |
-| … i inne | Konfigurowane przez administratora |
+| Typ | Ikona | Opis |
+|-----|-------|------|
+| Karate | 🥋 | Treningi karate |
+| Morsowanie | 🧊 | Zimowe kąpiele |
+| Yoga | 🧘 | Ćwiczenia yoga |
+| Trening | 💪 | Ogólne treningi fitness |
+| Warsztaty | 📚 | Spotkania edukacyjne |
+| Wyjście | 🚶 | Wspólne wyjścia grupowe |
+| Spacer | 🌿 | Spacery w naturze |
+| Pływanie | 🏊 | Zajęcia pływackie |
+| Rower | 🚴 | Wycieczki rowerowe |
+| Inne | ⭐ | Pozostałe aktywności |
 
-### 29.3 Dodawanie własnych ikon
+Wbudowane typy są zawsze dostępne i nie można ich usunąć. Stanowią bazę, którą administrator może uzupełniać własnymi typami.
+
+### 29.3 Niestandardowe typy wydarzeń
+
+Administratorzy mogą tworzyć **własne typy aktywności**. Typy niestandardowe są przechowywane **w bazie danych** i dostępne na wszystkich urządzeniach – nie giną po wyczyszczeniu cache przeglądarki ani nie są ograniczone do jednego urządzenia.
+
+### 29.4 Dodawanie własnego typu
 
 1. Przejdź do `/admin/icons`.
 2. Kliknij **„Dodaj nową ikonę"**.
-3. Wypełnij:
-   - **Nazwa** – identyfikator ikony.
-   - **Etykieta** – wyświetlana nazwa (może być wielojęzyczna).
-   - **Emoji lub grafika** – wizualna reprezentacja.
-4. Kliknij **„Zapisz"**.
+3. Wypełnij formularz:
+   - **Nazwa** – unikalny identyfikator (np. `nordic-walk`).
+   - **Etykieta** – wyświetlana nazwa widoczna dla użytkowników (może zawierać polskie znaki, np. „Nordic walking").
+   - **Emoji** – wybierz emoji jako ikonę wizualną.
+   - **Kolor** – wybierz kolor tła ikony z palety kolorów.
+4. W trakcie wypełniania formularza **podgląd ikony aktualizuje się na żywo** – widzisz dokładnie, jak ikona będzie wyglądać z wybranym emoji i kolorem, zanim ją zapiszesz.
+5. Kliknij **„Zapisz"**.
 
-### 29.4 Edycja i usuwanie ikon
+### 29.5 Edycja i usuwanie ikon
 
-Istniejące ikony możesz edytować lub usunąć z listy na stronie `/admin/icons`. Pamiętaj, że usunięcie ikony używanej przez istniejące wydarzenia może spowodować wyświetlenie domyślnej ikony lub braku ikony przy tych wydarzeniach.
+Istniejące ikony niestandardowe możesz edytować lub usunąć z listy na stronie `/admin/icons`. Podczas edycji podgląd ikony również działa na żywo.
+
+> **Uwaga:** Usunięcie ikony używanej przez istniejące wydarzenia spowoduje wyświetlenie domyślnej ikony lub braku ikony przy tych wydarzeniach.
+
+### 29.6 Przypisywanie ikony do wydarzenia
+
+Ikona przypisywana jest do wydarzenia w formularzu tworzenia/edycji wydarzenia (patrz [rozdział 21](#21-tworzenie-i-edycja-wydarzeń)). Kliknięcie w pole ikony otwiera picker z dostępnymi ikonami – zarówno wbudowanymi, jak i niestandardowymi.
 
 ---
 
@@ -1288,17 +1307,88 @@ Użytkownik, któremu nadano uprawnienia administratora:
 
 ---
 
+## 31. Logi audytowe
+
+**Lokalizacja:** `logs/DD-MM-YYYY/<email>.log` (na serwerze)  
+**Dostęp:** wyłącznie administratorzy z dostępem do serwera (SSH)
+
+### 31.1 Co to są logi audytowe?
+
+Kenaz prowadzi **szczegółowy dziennik aktywności** dla każdego użytkownika. Każda istotna operacja wykonana przez użytkownika lub przez administratora na koncie użytkownika jest zapisywana w pliku logu. Pozwala to odtworzyć historię zdarzeń w przypadku sporów, problemów technicznych lub weryfikacji bezpieczeństwa.
+
+### 31.2 Struktura plików logów
+
+Logi są organizowane hierarchicznie:
+
+```
+logs/
+└── DD-MM-YYYY/           ← katalog z datą (np. 15-07-2026)
+    └── user@email.com.log  ← oddzielny plik dla każdego użytkownika
+```
+
+Każdy dzień tworzy **nowy katalog**. Każdy użytkownik ma **oddzielny plik logu** w katalogu odpowiadającym dacie zdarzenia. Dzięki temu łatwo przefiltrować logi po dacie i po użytkowniku.
+
+### 31.3 Format wpisów w logu
+
+Każdy wpis zawiera:
+
+```
+[HH:MM:SS] POZIOM  - Treść wpisu
+```
+
+Przykłady:
+```
+[14:23:01] INFO   - Użytkownik zalogował się
+[14:24:15] INFO   - Rejestracja na wydarzenie ID=42 (Karate Katowice)
+[14:25:00] INFO   - Potwierdzenie przelewu dla rejestracji ID=77
+[14:30:02] WARNING - Nieudana próba rejestracji: limit uczestników osiągnięty
+```
+
+### 31.4 Jakie zdarzenia są logowane?
+
+System rejestruje m.in.:
+
+| Kategoria | Rejestrowane zdarzenia |
+|-----------|------------------------|
+| **Uwierzytelnianie** | Logowanie, wylogowanie, odświeżenie tokenu |
+| **Konto** | Zmiana profilu, zmiana planu subskrypcji |
+| **Rejestracje** | Zapis na wydarzenie, anulowanie, przejście z waitlisty |
+| **Płatności** | Potwierdzenie przelewu, zatwierdzenie przez admina, odrzucenie |
+| **Darowizny** | Złożenie formularza, weryfikacja |
+| **Admin** | Zatwierdzenie konta, blokada, zmiana roli |
+
+### 31.5 Jak przeglądać logi?
+
+Logi wymagają dostępu SSH do serwera. Przykładowe polecenia:
+
+```bash
+# Wszystkie zdarzenia użytkownika z danego dnia
+cat logs/15-07-2026/jan.kowalski@gmail.com.log
+
+# Wyszukanie wszystkich błędów z ostatniego tygodnia
+grep -r "WARNING\|ERROR" logs/
+
+# Lista aktywnych plików dzisiaj
+ls logs/$(date +%d-%m-%Y)/
+```
+
+> **Ważne:** Pliki logów mogą zawierać dane osobowe (adresy email, identyfikatory). Przechowuj je zgodnie z polityką prywatności i nie udostępniaj osobom nieupoważnionym.
+
+---
+
+---
+
 # CZĘŚĆ VI – DODATKI
 
 ---
 
-## 31. Aplikacja mobilna (PWA)
+## 32. Aplikacja mobilna (PWA)
 
-### 31.1 Co to jest PWA?
+### 32.1 Co to jest PWA?
 
 Kenaz jest dostępny jako **Progressive Web App (PWA)** – czyli aplikacja webowa, którą można zainstalować na urządzeniu mobilnym jak zwykłą aplikację. Nie wymaga pobierania ze sklepu App Store ani Google Play.
 
-### 31.2 Jak zainstalować aplikację na telefonie?
+### 32.2 Jak zainstalować aplikację na telefonie?
 
 **Na urządzeniach z systemem Android (Chrome):**
 
@@ -1314,7 +1404,7 @@ Kenaz jest dostępny jako **Progressive Web App (PWA)** – czyli aplikacja webo
 3. Wybierz **„Dodaj do ekranu głównego"**.
 4. Nadaj skrótowi nazwę i potwierdź.
 
-### 31.3 Funkcje w trybie PWA
+### 32.3 Funkcje w trybie PWA
 
 Po zainstalowaniu aplikacja:
 
@@ -1323,7 +1413,13 @@ Po zainstalowaniu aplikacja:
 - Dostosowuje układ do małych ekranów.
 - Obsługuje gesty dotykowe (swipe, long press).
 
-### 31.4 Nawigacja mobilna
+### 32.4 Logowanie Google w trybie standalone (iOS)
+
+Na urządzeniach iOS aplikacja zainstalowana jako PWA działa w **trybie standalone** (pełny ekran, bez paska Safari). Logowanie przez Google OAuth jest w pełni obsługiwane w tym trybie – po kliknięciu „Zaloguj się przez Google" system otworzy stronę logowania Google i po uwierzytelnieniu automatycznie powróci do aplikacji.
+
+> **Uwaga:** Jeśli logowanie przez Google nie działa w trybie standalone, upewnij się, że otwierasz aplikację bezpośrednio z ikony na ekranie głównym (a nie przez Safari). W razie problemów spróbuj usunąć aplikację z ekranu głównego i dodać ją ponownie.
+
+### 32.5 Nawigacja mobilna
 
 Na urządzeniach mobilnych zamiast górnego paska nawigacyjnego pojawia się **dolna nawigacja** z przyciskami:
 
@@ -1335,11 +1431,17 @@ Na urządzeniach mobilnych zamiast górnego paska nawigacyjnego pojawia się **d
 | 📋 Panel | `/panel` | Twoje rejestracje |
 | 👤 Konto | `/me` | Profil i ustawienia |
 
+### 32.6 Przycisk feedbacku (żarówka)
+
+Na wszystkich stronach aplikacji – zarówno na desktopie, jak i na urządzeniach mobilnych – dostępna jest **ruchoma ikonka żarówki** w prawym dolnym rogu ekranu. Kliknięcie jej otwiera formularz feedbacku, gdzie można wpisać opinię, sugestię lub zgłoszenie błędu. Więcej o systemie feedbacku w [rozdziale 28](#28-opinie-i-feedback).
+
+Przycisk działa poprawnie na wszystkich urządzeniach, w tym na iPhone'ach korzystających z Safari oraz w trybie standalone PWA.
+
 ---
 
-## 32. Tryb ciemny i jasny
+## 33. Tryb ciemny i jasny
 
-### 32.1 Jak zmienić tryb wyświetlania?
+### 33.1 Jak zmienić tryb wyświetlania?
 
 Kenaz obsługuje dwa motywy kolorystyczne:
 
@@ -1351,19 +1453,19 @@ Możesz zmienić motyw:
 - Klikając **ikonę słońca/księżyca** w górnym pasku nawigacyjnym (desktop).
 - Przez stronę **Moje konto** (`/me`) w sekcji ustawień.
 
-### 32.2 Automatyczne dopasowanie do systemu
+### 33.2 Automatyczne dopasowanie do systemu
 
 Przy pierwszej wizycie aplikacja **automatycznie** wykrywa preferencje motywu ustawione w systemie operacyjnym (Windows, macOS, Android, iOS). Jeśli Twój system działa w trybie ciemnym, Kenaz również uruchomi się w trybie ciemnym.
 
-### 32.3 Zapamiętywanie preferencji
+### 33.3 Zapamiętywanie preferencji
 
 Twój wybór jest zapisywany w przeglądarce (localStorage) i będzie zapamiętany przy kolejnych wizytach.
 
 ---
 
-## 33. Powiadomienia i komunikaty systemowe
+## 34. Powiadomienia i komunikaty systemowe
 
-### 33.1 Rodzaje powiadomień
+### 34.1 Rodzaje powiadomień
 
 Aplikacja wyświetla kilka rodzajów komunikatów:
 
@@ -1374,11 +1476,11 @@ Aplikacja wyświetla kilka rodzajów komunikatów:
 | **Informacja** (niebieski) | Niebieski baner | Ogólna informacja |
 | **Potwierdzenie** | Okno modalne | Wymagane potwierdzenie akcji (anulowanie, usunięcie) |
 
-### 33.2 Banner powiadomień globalnych
+### 34.2 Banner powiadomień globalnych
 
 Administratorzy mogą ustawić **globalny baner informacyjny** pojawiający się u góry strony dla wszystkich użytkowników. Służy do przekazywania ważnych komunikatów (np. przerwa techniczna, zmiana terminów, nowe wydarzenie).
 
-### 33.3 Powiadomienia o nowych wiadomościach
+### 34.3 Powiadomienia o nowych wiadomościach
 
 Jeśli masz nieprzeczytane wiadomości w chacie:
 
@@ -1387,7 +1489,7 @@ Jeśli masz nieprzeczytane wiadomości w chacie:
 
 ---
 
-## 34. Często zadawane pytania (FAQ)
+## 35. Często zadawane pytania (FAQ)
 
 ### Dla użytkowników
 
@@ -1415,15 +1517,33 @@ O: Poczekaj. System automatycznie awansuje Cię, gdy ktoś zwolni miejsce. Spraw
 **P: Jak kontaktować się z innymi uczestnikami?**  
 O: Przez system chatu (`/chat`). Możesz pisać w czacie ogólnym lub w wątku konkretnego wydarzenia.
 
+**P: Jak wesprzeć Kenaz finansowo?**  
+O: Przejdź do `/support` (strona „Wesprzyj nas"). Możesz wykonać przelew na podany numer konta lub skorzystać z zewnętrznych platform wspierania. Zalogowani użytkownicy mogą też skorzystać z formularza darowizny w aplikacji.
+
+**P: Czy mogę wspierać centrum bez zakładania konta?**  
+O: Tak. Strona `/support` jest dostępna publicznie – możesz wykonać przelew na podany numer konta bez logowania się.
+
+**P: Nie mogę się zalogować przez Google w trybie PWA na iPhonie – co robię?**  
+O: Upewnij się, że otwierasz aplikację bezpośrednio z ikony na ekranie głównym (tryb standalone). Jeśli problem nadal występuje, spróbuj usunąć aplikację z ekranu głównego i dodać ją ponownie przez Safari → Udostępnij → Dodaj do ekranu głównego.
+
 ---
 
 ### Dla administratorów
+
+**P: Jak przefiltrować listę użytkowników tylko do subskrybentów?**  
+O: Na stronie `/admin/all-users` użyj przełącznika „Tylko subskrybenci" na górze listy.
+
+**P: Jak zobaczyć szczegóły finansowe konkretnego użytkownika?**  
+O: Kliknij w wiersz użytkownika na liście `/admin/all-users` – zostaniesz przeniesiony na jego profil. Na profilu wyświetla się kafelek admina z czterema sekcjami: Konto, Aktywność, Finanse i Oczekujące akcje.
+
+**P: Jak sprawdzić historię operacji danego użytkownika?**  
+O: Logi audytowe są dostępne na serwerze w katalogu `logs/DD-MM-YYYY/<email>.log`. Wymagają dostępu SSH. Szczegóły w [rozdziale 31](#31-logi-audytowe).
 
 **P: Jak cofnąć zatwierdzenie użytkownika?**  
 O: Przejdź do `/admin/all-users`, znajdź użytkownika i kliknij „Zablokuj". Konto wróci do statusu oczekującego.
 
 **P: Jak sprawdzić, czy użytkownik zapłacił?**  
-O: Przejdź do `/admin/manual-payments`. Widoczne są tam wszystkie deklaracje przelewu do weryfikacji.
+O: Przejdź do `/admin/manual-payments`. Widoczne są tam wszystkie deklaracje przelewu do weryfikacji. Sekcja „Rozpatrzone" zawiera historię wcześniej zatwierdzonych i odrzuconych płatności.
 
 **P: Jak zmienić cenę wydarzenia po jego opublikowaniu?**  
 O: Przejdź do `/event/:id` jako admin i kliknij „Edytuj". Zmień cenę i zapisz. Zmiana dotyczy nowych rejestracji – istniejące rejestracje zachowują oryginalną cenę.
@@ -1434,37 +1554,47 @@ O: Usunięcie wydarzenia z potwierdzonym uczestnikami wymaga ręcznego anulowani
 **P: Jak zmienić numer konta do przelewów?**  
 O: W sekcji `/admin/donations` możesz zaktualizować dane bankowe wyświetlane użytkownikom.
 
+**P: Jak dodać własny typ aktywności?**  
+O: Przejdź do `/admin/icons` i kliknij „Dodaj nową ikonę". Wypełnij formularz z nazwą, etykietą, emoji i kolorem. Podgląd ikony aktualizuje się na żywo. Typ zostanie zapisany w bazie danych i będzie dostępny we wszystkich formularzach tworzenia wydarzeń.
+
 ---
 
-## 35. Słownik pojęć
+## 36. Słownik pojęć
 
 | Pojęcie | Definicja |
 |---------|-----------|
 | **BANNED** | Status konta zablokowanego przez administratora |
 | **Chat ogólny** | Globalny kanał komunikacji dostępny dla wszystkich aktywnych użytkowników |
 | **Darczyńca** | Użytkownik, który przekazał darowiznę na rzecz organizacji |
+| **Feedback** | Opinia lub sugestia wysłana przez użytkownika przez ikonkę żarówki |
 | **Hasło** | Kenaz nie używa haseł – logowanie wyłącznie przez Google |
+| **Kafelek admina** | Sekcja widoczna na profilu użytkownika tylko dla administratorów; zawiera dane konta, aktywności, finanse i oczekujące akcje |
 | **Limit uczestników** | Maksymalna liczba osób, które mogą być zapisane na wydarzenie |
 | **Lista oczekujących** | Kolejka użytkowników czekających na zwolnienie miejsca na wydarzeniu |
+| **Log audytowy** | Plik tekstowy rejestrujący zdarzenia systemowe dla danego użytkownika w danym dniu |
 | **Manualna płatność** | Płatność dokonywana przelewem bankowym, weryfikowana ręcznie przez administratora |
 | **Motyw** | Schemat kolorystyczny aplikacji: jasny (light) lub ciemny (dark) |
 | **PENDING** | Status konta oczekującego na akceptację administratora |
 | **Plan darmowy** | Podstawowy plan bez abonamentu; standardowe ceny wydarzeń |
 | **Plan miesięczny** | Subskrypcja odnawialna co miesiąc; obniżone ceny wydarzeń |
 | **Plan roczny** | Subskrypcja na rok; najniższe ceny wydarzeń |
+| **Podgląd na żywo** | Funkcja formularza ikon: aktualizuje wizualizację ikony w czasie rzeczywistym, gdy zmieniana jest wartość pola |
 | **PWA** | Progressive Web App – aplikacja webowa działająca jak natywna aplikacja mobilna |
 | **Reakcja** | Emoji dodawany do wiadomości w chacie (polubienie, śmiech itd.) |
 | **Rejestracja** | Zapis użytkownika na konkretne wydarzenie |
 | **Rola** | Uprawnienia użytkownika: Guest (gość), Member (członek), Admin (administrator) |
+| **Standalone** | Tryb działania PWA na iOS, w którym aplikacja uruchamia się bez paska adresu Safari |
 | **Status konta** | Stan konta: Active (aktywny), Pending (oczekujący), Banned (zablokowany) |
 | **Subskrypcja** | Płatny plan membership dający dostęp do niższych cen |
 | **Tag zainteresowań** | Etykieta określająca zainteresowania użytkownika (np. yoga, karate) |
 | **Waitlist** | Synonim listy oczekujących |
 | **Wątek** | Zbiór odpowiedzi powiązanych z konkretną wiadomością w chacie |
+| **Wesprzyj nas** | Strona `/support` umożliwiająca wsparcie finansowe centrum |
 
 ---
 
 ---
 
-*Dokument sporządzony dla systemu Kenaz Centrum, wersja 1.0.*  
+*Dokument sporządzony dla systemu Kenaz Centrum, wersja 2.0.*  
+*Zaktualizowano: lipiec 2026. Zmiany względem v1.0: usunięcie rozdziału o sklepie (sklep wycofany), nowy rozdział 31 (logi audytowe), rozbudowa rozdziałów 16 (Wesprzyj nas), 17 (O nas), 23 (lista użytkowników), 25 (płatności manualne), 29 (ikonki), 32 (PWA). Aktualizacja strony głównej (3. przycisk), punktów za darowizny dla wszystkich użytkowników, filtrów subskrypcji, paginacji, kafelka admina na profilu, podglądu ikon na żywo.*  
 *Wszelkie pytania dotyczące działania aplikacji kieruj do administratorów platformy.*
