@@ -12,6 +12,7 @@ from routers.announcements import router as announcements_router
 from routers.comments import router as comments_router
 from routers.donations import router as donations_router
 from routers.event_types import router as event_types_router
+from routers.push import router as push_router
 
 __all__ = [
     "auth_router",
@@ -28,4 +29,5 @@ __all__ = [
     "comments_router",
     "donations_router",
     "event_types_router",
+    "push_router",
 ]

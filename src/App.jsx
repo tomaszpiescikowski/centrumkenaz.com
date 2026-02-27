@@ -36,6 +36,7 @@ import Login from './pages/auth/Login'
 import ResetPassword from './pages/auth/ResetPassword'
 import ChatPage from './pages/chat/ChatPage'
 import ChatPoller from './components/ChatPoller'
+import PushNotificationManager from './components/PushNotificationManager'
 
 function RequireAuth() {
   const { isAuthenticated, loading } = useAuth()
@@ -115,6 +116,7 @@ function App() {
           <CityProvider>
             <ChatProvider>
             <ChatPoller />
+            <PushNotificationManager />
             <Layout darkMode={darkMode} setDarkMode={setDarkMode}>
               <ScrollToTop />
               <div

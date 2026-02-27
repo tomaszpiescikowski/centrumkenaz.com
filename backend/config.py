@@ -63,6 +63,12 @@ class Settings(BaseSettings):
     rate_limit_admin_per_minute: int = 600
     rate_limit_webhook_per_minute: int = 3000
 
+    # Web Push (VAPID) – required for admin push notifications
+    # Generate with: python -c "from py_vapid import Vapid; import base64, cryptography.hazmat.primitives.serialization as s; v=Vapid(); v.generate_keys(); print('VAPID_PRIVATE_KEY=' + base64.urlsafe_b64encode(v.private_key.private_bytes(s.Encoding.DER, s.PrivateFormat.PKCS8, s.NoEncryption())).rstrip(b'=').decode()); print('VAPID_PUBLIC_KEY=' + base64.urlsafe_b64encode(v.public_key.public_bytes(s.Encoding.X962, s.PublicFormat.UncompressedPoint)).rstrip(b'=').decode())"
+    vapid_private_key: str = ""
+    vapid_public_key: str = ""
+    vapid_subject: str = "mailto:admin@kenaz.pl"
+
     model_config = SettingsConfigDict(
         env_file=str(_DIR / ".env"),
         env_file_encoding="utf-8",

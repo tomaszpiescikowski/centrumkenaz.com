@@ -33,3 +33,6 @@ aiosmtplib==3.0.1
 
 # Utils
 python-dotenv==1.0.0
+
+# Web Push notifications
+pywebpush==2.3.0

@@ -15,6 +15,7 @@ from models.announcement import Announcement
 from models.comment import Comment, CommentReaction, ReactionType
 from models.donation import Donation, DonationSetting, DonationStatus
 from models.event_type import EventType
+from models.push_subscription import PushSubscription
 
 __all__ = [
 	"User",
@@ -39,4 +40,5 @@ __all__ = [
 	"DonationSetting",
 	"DonationStatus",
 	"EventType",
+	"PushSubscription",
 ]

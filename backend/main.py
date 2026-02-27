@@ -25,6 +25,7 @@ from routers import (
     comments_router,
     donations_router,
     event_types_router,
+    push_router,
 )
 
 settings = get_settings()
@@ -73,6 +74,7 @@ app.include_router(announcements_router)
 app.include_router(comments_router)
 app.include_router(donations_router)
 app.include_router(event_types_router)
+app.include_router(push_router)
 
 uploads_dir = Path(__file__).resolve().parent / "static" / "uploads"
 uploads_dir.mkdir(parents=True, exist_ok=True)

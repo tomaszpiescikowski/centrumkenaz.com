@@ -20,6 +20,7 @@ from security.guards import get_active_user_dependency
 from services.payment_service import PaymentService
 from services.log_service import log_action, _get_request_ip, user_email_from
 from services.registration_service import RegistrationService
+from services import push_service
 from utils.legacy_ids import legacy_id_eq
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -302,6 +303,17 @@ async def submit_join_request(
         ip=_get_request_ip(http_request),
         full_name=user.full_name,
     )
+
+    # Notify all admins with push subscriptions
+    try:
+        await push_service.send_to_admins(
+            db=db,
+            title="✅ Nowe zgłoszenie do zatwierdzenia",
+            body=f"{user.full_name or user.email} prosi o dołączenie do społeczności.",
+            url="/admin/users/approval",
+        )
+    except Exception:  # noqa: BLE001 – push is non-critical
+        pass
 
     return UserProfileResponse(
         id=user.id,
