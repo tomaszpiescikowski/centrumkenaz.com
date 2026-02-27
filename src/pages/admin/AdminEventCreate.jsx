@@ -68,7 +68,7 @@ function AdminEventCreate() {
     maxParticipants: '',
     requiresSubscription: false,
     cancelCutoffHours: '24',
-    pointsValue: '1',
+    pointsValue: '0',
   })
 
   const [saving, setSaving] = useState(false)
