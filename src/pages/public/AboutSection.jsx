@@ -190,25 +190,65 @@ function StatCard({ value, label }) {
 }
 
 function WideStoryCard({ title, body, image, alt, imagePosition, reverse }) {
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [open])
+
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 items-center p-6 rounded-2xl border border-navy/10 bg-transparent dark:border-cream/15 dark:bg-transparent ${
-      reverse ? 'md:[&>*:first-child]:order-2' : ''
-    }`}>
-      <div>
-        <h2 className="text-2xl md:text-3xl font-black text-navy dark:text-cream">
-          {title}
-        </h2>
-        <p className="mt-4 text-base md:text-lg leading-relaxed text-navy/80 dark:text-cream/80 whitespace-pre-line">
-          {body}
-        </p>
+    <>
+      <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 items-center p-6 rounded-2xl border border-navy/10 bg-transparent dark:border-cream/15 dark:bg-transparent ${
+        reverse ? 'md:[&>*:first-child]:order-2' : ''
+      }`}>
+        <div>
+          <h2 className="text-2xl md:text-3xl font-black text-navy dark:text-cream">
+            {title}
+          </h2>
+          <p className="mt-4 text-base md:text-lg leading-relaxed text-navy/80 dark:text-cream/80 whitespace-pre-line">
+            {body}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="p-0 border-0 bg-transparent cursor-zoom-in focus:outline-none"
+          aria-label="Powiększ zdjęcie"
+        >
+          <img
+            src={image}
+            alt={alt || ''}
+            className={`w-full h-72 rounded-xl object-cover ${imagePosition || 'object-center'}`}
+            loading="lazy"
+          />
+        </button>
       </div>
-      <img
-        src={image}
-        alt={alt || ''}
-        className={`w-full h-72 rounded-xl object-cover ${imagePosition || 'object-center'}`}
-        loading="lazy"
-      />
-    </div>
+
+      {open && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setOpen(false)}
+        >
+          <img
+            src={image}
+            alt={alt || ''}
+            className="max-h-[90vh] max-w-full rounded-2xl object-contain shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            aria-label="Zamknij podgląd"
+            className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-6 w-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+      )}
+    </>
   )
 }
 
