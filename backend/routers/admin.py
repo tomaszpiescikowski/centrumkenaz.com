@@ -1,10 +1,11 @@
 import calendar
 import enum
 import json
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Path, Request
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -23,7 +24,7 @@ from models.donation import Donation, DonationStatus
 from security.guards import get_admin_user_dependency
 from adapters.fake_payment_adapter import get_shared_fake_payment_adapter
 from services.payment_service import PaymentService
-from services.log_service import log_action, _get_request_ip, user_email_from
+from services.log_service import log_action, _get_request_ip, user_email_from, _sanitise_email_for_filename, _LOGS_ROOT
 from services.registration_service import RegistrationService, RegistrationError
 from utils.legacy_ids import legacy_id_eq, optional_str_id
 
@@ -2039,6 +2040,66 @@ async def unblock_user(
         role=target.role.value,
         account_status=target.account_status.value,
         created_at=target.created_at.isoformat() if target.created_at else None,
+    )
+
+
+# ---------------------------------------------------------------------------
+# User log download
+# ---------------------------------------------------------------------------
+
+MAX_LOG_RANGE_DAYS = 30
+
+
+@router.get("/users/{user_id}/logs/download")
+async def download_user_logs(
+    user_id: str = Path(..., min_length=1),
+    date_from: date = Query(..., description="Start date (YYYY-MM-DD)"),
+    date_to: date = Query(..., description="End date, inclusive (YYYY-MM-DD)"),
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(get_admin_user_dependency),
+) -> StreamingResponse:
+    """
+    Download all log entries for a specific user across a date range as a
+    single plain-text file.  The range must not exceed 30 days.
+    """
+    if date_to < date_from:
+        raise HTTPException(status_code=400, detail="date_to must be >= date_from")
+    delta = (date_to - date_from).days + 1
+    if delta > MAX_LOG_RANGE_DAYS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Date range must not exceed {MAX_LOG_RANGE_DAYS} days",
+        )
+
+    result = await db.execute(select(User).where(legacy_id_eq(User.id, user_id)))
+    target = result.scalar_one_or_none()
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    safe_email = _sanitise_email_for_filename(target.email.lower())
+    filename_stem = f"{safe_email}.log"
+
+    lines: list[str] = []
+    current = date_from
+    while current <= date_to:
+        folder_label = current.strftime("%d-%m-%Y")
+        log_path = _LOGS_ROOT / folder_label / filename_stem
+        if log_path.exists():
+            lines.append(f"# ── {folder_label} ─────────────────────────")
+            lines.append(log_path.read_text(encoding="utf-8").rstrip())
+        else:
+            lines.append(f"# ── {folder_label}  (brak wpisów)")
+        current += timedelta(days=1)
+
+    content = "\n".join(lines) + "\n"
+    download_name = (
+        f"logs_{safe_email}_{date_from.strftime('%Y%m%d')}"
+        f"_{date_to.strftime('%Y%m%d')}.txt"
+    )
+    return StreamingResponse(
+        iter([content]),
+        media_type="text/plain; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{download_name}"'},
     )
 
 

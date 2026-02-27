@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
-import { fetchAllUsers, blockUser, unblockUser } from '../../api/admin'
+import { fetchAllUsers, blockUser, unblockUser, downloadUserLogs } from '../../api/admin'
 import AuthGateCard from '../../components/ui/AuthGateCard'
 
 function initials(name) {
@@ -37,6 +37,12 @@ function RoleBadge({ role, t }) {
   )
 }
 
+function toLocalDateString(daysAgo = 0) {
+  const d = new Date()
+  d.setDate(d.getDate() - daysAgo)
+  return d.toISOString().slice(0, 10)
+}
+
 function AdminUsersList() {
   const { user, isAuthenticated, login, authFetch } = useAuth()
   const { t } = useLanguage()
@@ -49,6 +55,10 @@ function AdminUsersList() {
   const [subscriberFilter, setSubscriberFilter] = useState('all')
   const [page, setPage] = useState(1)
   const [pendingId, setPendingId] = useState(null)
+  const [logModal, setLogModal] = useState(null) // userId or null
+  const [logFrom, setLogFrom] = useState(toLocalDateString(6))
+  const [logTo, setLogTo]     = useState(toLocalDateString(0))
+  const [logDownloading, setLogDownloading] = useState(false)
 
   const PAGE_SIZE = 25
 
@@ -96,6 +106,30 @@ function AdminUsersList() {
     () => filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
     [filtered, page, PAGE_SIZE]
   )
+
+  const openLogModal = (userId) => {
+    setLogFrom(toLocalDateString(6))
+    setLogTo(toLocalDateString(0))
+    setLogModal(userId)
+  }
+
+  const handleDownloadLogs = async () => {
+    if (logDownloading || !logModal) return
+    const from = logFrom
+    const to   = logTo
+    if (to < from) { showError('Data „Do" musi być późniejsza niż „Od"'); return }
+    const diffDays = Math.round((new Date(to) - new Date(from)) / 86400000) + 1
+    if (diffDays > 30) { showError('Maksymalny zakres to 30 dni'); return }
+    setLogDownloading(true)
+    try {
+      await downloadUserLogs(authFetch, logModal, from, to)
+      setLogModal(null)
+    } catch (err) {
+      showError(err.message || 'Błąd pobierania logów')
+    } finally {
+      setLogDownloading(false)
+    }
+  }
 
   const handleBlock = async (userId) => {
     setPendingId(userId)
@@ -228,9 +262,21 @@ function AdminUsersList() {
                   </div>
                 </Link>
 
-                {/* Action */}
+                {/* Actions */}
                 {!isSelf && u.role !== 'admin' && (
-                  <div className="shrink-0">
+                  <div className="shrink-0 flex items-center gap-1.5">
+                    {/* Log download button */}
+                    <button
+                      onClick={() => openLogModal(u.id)}
+                      title="Pobierz logi użytkownika"
+                      className="p-1.5 rounded-full text-navy/40 dark:text-cream/40 hover:text-navy dark:hover:text-cream hover:bg-navy/10 dark:hover:bg-cream/10 transition"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+
+                    {/* Ban / unban button */}
                     {isBlocked ? (
                       <button
                         onClick={() => handleUnblock(u.id)}
@@ -281,6 +327,91 @@ function AdminUsersList() {
       <p className="mt-4 text-xs text-navy/40 dark:text-cream/40">
         {t('admin.usersList.count', { count: filtered.length })}
       </p>
+
+      {/* ── Log download modal ─────────────────────────────────────────── */}
+      {logModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setLogModal(null) }}
+        >
+          <div className="w-full max-w-sm rounded-2xl border border-navy/10 dark:border-cream/10 bg-cream dark:bg-navy shadow-xl p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="font-bold text-navy dark:text-cream text-base">Pobierz logi użytkownika</h2>
+              <button
+                onClick={() => setLogModal(null)}
+                className="text-navy/40 dark:text-cream/40 hover:text-navy dark:hover:text-cream transition text-lg leading-none"
+                aria-label="Zamknij"
+              >✕</button>
+            </div>
+
+            <p className="text-xs text-navy/55 dark:text-cream/55">
+              Wybierz zakres dat (maks.&nbsp;30&nbsp;dni). System pobierze jeden plik&nbsp;.txt
+              ze scalonymi logami ze wszystkich wybranych dni.
+            </p>
+
+            <div className="grid grid-cols-2 gap-3">
+              <label className="block">
+                <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-navy/60 dark:text-cream/60">Od</span>
+                <input
+                  type="date"
+                  value={logFrom}
+                  max={logTo}
+                  onChange={(e) => setLogFrom(e.target.value)}
+                  className="ui-input ui-input-compact w-full"
+                />
+              </label>
+              <label className="block">
+                <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-navy/60 dark:text-cream/60">Do</span>
+                <input
+                  type="date"
+                  value={logTo}
+                  min={logFrom}
+                  max={toLocalDateString(0)}
+                  onChange={(e) => setLogTo(e.target.value)}
+                  className="ui-input ui-input-compact w-full"
+                />
+              </label>
+            </div>
+
+            {/* Quick-range buttons */}
+            <div className="flex flex-wrap gap-1.5">
+              {[1, 7, 14, 30].map((days) => (
+                <button
+                  key={days}
+                  type="button"
+                  onClick={() => { setLogFrom(toLocalDateString(days - 1)); setLogTo(toLocalDateString(0)) }}
+                  className="px-2.5 py-1 rounded-full text-xs font-medium bg-navy/8 text-navy/70 dark:bg-cream/8 dark:text-cream/70 hover:bg-navy/15 dark:hover:bg-cream/15 transition"
+                >
+                  {days === 1 ? 'Dziś' : `ostatnie ${days} dni`}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={handleDownloadLogs}
+                disabled={logDownloading}
+                className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-navy px-4 py-2.5 text-sm font-semibold text-cream transition hover:bg-navy/90 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-cream dark:text-navy dark:hover:bg-cream/90"
+              >
+                {logDownloading ? '…' : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                    Pobierz .txt
+                  </>
+                )}
+              </button>
+              <button
+                onClick={() => setLogModal(null)}
+                className="rounded-xl border border-navy/20 dark:border-cream/20 px-4 py-2.5 text-sm text-navy/60 hover:text-navy dark:text-cream/60 dark:hover:text-cream transition"
+              >
+                Anuluj
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

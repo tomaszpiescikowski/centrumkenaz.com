@@ -215,6 +215,25 @@ export async function unblockUser(authFetch, userId) {
   return safeJson(response)
 }
 
+export async function downloadUserLogs(authFetch, userId, dateFrom, dateTo) {
+  const params = new URLSearchParams({ date_from: dateFrom, date_to: dateTo })
+  const response = await authFetch(`${API_URL}/admin/users/${userId}/logs/download?${params}`)
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.detail || 'Failed to download logs')
+  }
+  const blob = await response.blob()
+  const disposition = response.headers.get('Content-Disposition') || ''
+  const match = disposition.match(/filename="([^"]+)"/)
+  const filename = match ? match[1] : `logs_${userId}_${dateFrom}_${dateTo}.txt`
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 export async function fetchAdminUserDetail(authFetch, userId) {
   const response = await authFetch(`${API_URL}/admin/users/${userId}/detail`)
   if (!response.ok) {
