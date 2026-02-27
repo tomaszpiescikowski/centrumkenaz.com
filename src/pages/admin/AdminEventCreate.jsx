@@ -617,18 +617,17 @@ function AdminEventCreate() {
           <button
             type="submit"
             disabled={saving}
-            className={`px-6 py-3 rounded-full font-semibold transition-all
+            className={`w-full sm:w-auto px-6 py-3 rounded-full font-semibold transition-all
               ${saving
                 ? 'bg-navy/40 dark:bg-cream/40 text-cream dark:text-navy cursor-wait'
-                : 'btn-primary hover:scale-[1.02]'
+                : 'bg-accent-red text-white hover:brightness-110 hover:scale-[1.02]'
               }`}
           >
             {saving ? t('admin.saving') : t('admin.createEventButton')}
           </button>
           <Link
             to="/calendar"
-            className="px-6 py-3 rounded-full font-semibold
-              btn-secondary"
+            className="hidden sm:inline-flex px-6 py-3 rounded-full font-semibold btn-secondary"
           >
             {t('common.backToCalendar')}
           </Link>
