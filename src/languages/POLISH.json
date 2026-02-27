@@ -92,6 +92,7 @@
   },
   "pwa": {
     "installCta": "Zainstaluj aplikację na telefonie",
+    "installDesc": "Skrót pojawi się na ekranie głównym – jak normalna aplikacja. Szybszy dostęp, bez otwierania przeglądarki.",
     "installBtn": "Zainstaluj",
     "installHintIos": "1. Otwórz tę stronę w Safari\n2. Kliknij ikonę udostępniania ⤴\n   (pasek na dole ekranu)\n3. Przewiń opcje w dół\n4. Wybierz „Dodaj do ekranu głównego”\n5. Kliknij „Dodaj” w prawym górnym rogu",
     "installHintAndroid": "W Chrome kliknij ⋮ (trzy kropki w prawym górnym rogu) i wybierz „Dodaj do ekranu głównego” lub „Zainstaluj aplikację”."

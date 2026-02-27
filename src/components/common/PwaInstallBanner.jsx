@@ -82,7 +82,10 @@ function PwaInstallBanner() {
               <p className="text-sm font-semibold text-navy dark:text-cream">
                 {t('pwa.installCta')}
               </p>
-              <div className="mt-1.5 space-y-0.5">
+              <p className="mt-1 text-xs text-navy/70 dark:text-cream/70">
+                {t('pwa.installDesc')}
+              </p>
+              <div className="mt-2 space-y-0.5">
                 {hint.split('\n').map((line, i) => (
                   <p key={i} className="text-xs leading-relaxed text-navy/70 dark:text-cream/70">
                     {line}
@@ -106,6 +109,9 @@ function PwaInstallBanner() {
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold text-navy dark:text-cream">
               {t('pwa.installCta')}
+            </p>
+            <p className="mt-1 text-xs text-navy/70 dark:text-cream/70">
+              {t('pwa.installDesc')}
             </p>
 
             {/* Automatic install button – shown when browser supports it */}

@@ -94,6 +94,7 @@
   },
   "pwa": {
     "installCta": "Install the app on your phone",
+    "installDesc": "A shortcut will appear on your home screen – just like a real app. Faster access, no browser needed.",
     "installBtn": "Install",
     "installHintIos": "1. Open this page in Safari\n2. Tap the share icon ⤴\n   (bottom toolbar)\n3. Scroll down the options\n4. Choose \"Add to Home Screen\"\n5. Tap \"Add\" in the top right corner",
     "installHintAndroid": "In Chrome tap ⋮ (three dots in the top right) and choose \"Add to Home screen\" or \"Install app\"."

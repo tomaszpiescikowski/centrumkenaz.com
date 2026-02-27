@@ -94,6 +94,7 @@
   },
   "pwa": {
     "installCta": "Installa l'app sul telefono",
+    "installDesc": "Un collegamento apparirà sulla schermata iniziale – come una normale app. Accesso più veloce, senza aprire il browser.",
     "installBtn": "Installa",
     "installHintIos": "1. Apri questa pagina in Safari\n2. Tocca l'icona di condivisione ⤴\n   (barra in basso)\n3. Scorri le opzioni verso il basso\n4. Seleziona \"Aggiungi alla schermata Home\"\n5. Tocca \"Aggiungi\" in alto a destra",
     "installHintAndroid": "In Chrome tocca ⋮ (tre puntini in alto a destra) e seleziona \"Aggiungi alla schermata Home\" o \"Installa app\"."

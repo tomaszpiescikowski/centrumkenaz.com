@@ -94,6 +94,7 @@
   },
   "pwa": {
     "installCta": "Zainstaluj apka na telefonie",
+    "installDesc": "Skrōt pojawi sie na głōwnym ekranie – jak normalnŏ apka. Chyńdzij dostympny, bez ôtwiyranio przeglodarki.",
     "installBtn": "Zainstaluj",
     "installHintIos": "1. Ôtwōrz ta strōna w Safari\n2. Kliknij ikōna udostympnianio ⤴\n   (pasek na dole ekranu)\n3. Przewiń ôpcyje w dōł\n4. Wybiyrz „Dodŏj do ekranu głōwnego”\n5. Kliknij „Dodŏj” w prawym gōrnym rogu",
     "installHintAndroid": "W Chrome kliknij ⋮ (trzi krōpki w prawym gōrnym rogu) i wybiyrz „Dodŏj do ekranu głōwnego” abo „Zainstaluj apka”."
