@@ -19,6 +19,7 @@ from models.subscription_purchase import SubscriptionPurchase, SubscriptionPurch
 from models.user import AccountStatus, User, UserRole
 from models.subscription import Subscription
 from models.approval_request import ApprovalRequest
+from models.donation import Donation, DonationStatus
 from security.guards import get_admin_user_dependency
 from adapters.fake_payment_adapter import get_shared_fake_payment_adapter
 from services.payment_service import PaymentService
@@ -1970,4 +1971,238 @@ async def unblock_user(
         role=target.role.value,
         account_status=target.account_status.value,
         created_at=target.created_at.isoformat() if target.created_at else None,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Admin user detail
+# ---------------------------------------------------------------------------
+
+
+class PendingActionItem(BaseModel):
+    """A single pending admin action for a user."""
+
+    type: str = Field(description="Action type key.")
+    label: str = Field(description="Human-readable description.")
+    count: int = Field(default=1, description="Number of pending items of this type.")
+
+
+class AdminUserDetailResponse(BaseModel):
+    """
+    Comprehensive profile data for a single user, visible only to admins.
+
+    Aggregates subscription state, payment totals, kenaz points, confirmed
+    event count, last-activity timestamp, and a list of any actions that
+    currently require admin attention.
+    """
+
+    user_id: str
+    full_name: str | None
+    email: str | None
+    picture_url: str | None
+    role: str
+    account_status: str
+    created_at: str | None
+
+    # Activity
+    last_active_at: str | None = Field(
+        default=None,
+        description="Last time the user record was updated (proxy for last activity).",
+    )
+
+    # Subscription
+    subscription_active: bool
+    subscription_end_date: str | None
+    kenaz_points: int
+
+    # Financials
+    event_count: int = Field(description="Number of confirmed event registrations.")
+    total_paid_events: str = Field(description="Total completed event payments in PLN.")
+    total_paid_subscriptions: str = Field(description="Total completed subscription payments in PLN.")
+    total_paid_all: str = Field(description="Grand total of all completed payments in PLN.")
+    total_donations: str = Field(description="Sum of confirmed donation amounts in PLN.")
+
+    # Pending actions
+    pending_actions: list[PendingActionItem] = Field(default_factory=list)
+
+
+@router.get(
+    "/users/{user_id}/detail",
+    response_model=AdminUserDetailResponse,
+    summary="Get comprehensive admin profile for a user",
+)
+async def get_admin_user_detail(
+    user_id: str = Path(..., min_length=1),
+    db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(get_admin_user_dependency),
+) -> AdminUserDetailResponse:
+    """
+    Return aggregated admin-level detail for a single user.
+
+    Combines subscription state, kenaz points, confirmed event count,
+    payment totals, donation totals, and a list of any items currently
+    awaiting admin action (approval, manual payments, subscription
+    purchases, pending donations, waitlist promotions).
+    """
+    # ---- fetch user + subscription in one query ----
+    result = await db.execute(
+        select(User, Subscription)
+        .outerjoin(Subscription, Subscription.user_id == User.id)
+        .where(legacy_id_eq(User.id, user_id))
+    )
+    row = result.first()
+    if not row:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    target_user: User = row[0]
+    subscription: Subscription | None = row[1]
+    uid = target_user.id
+
+    # ---- confirmed event registrations ----
+    event_count_result = await db.execute(
+        select(func.count(Registration.id)).where(
+            Registration.user_id == uid,
+            Registration.status == RegistrationStatus.CONFIRMED.value,
+        )
+    )
+    event_count = int(event_count_result.scalar() or 0)
+
+    # ---- payment totals by type ----
+    payment_totals_result = await db.execute(
+        select(Payment.payment_type, func.coalesce(func.sum(Payment.amount), 0))
+        .where(
+            Payment.user_id == uid,
+            Payment.status == DBPaymentStatus.COMPLETED.value,
+        )
+        .group_by(Payment.payment_type)
+    )
+    paid_by_type: dict[str, Decimal] = {
+        row[0]: Decimal(row[1]) for row in payment_totals_result.all()
+    }
+    total_events = paid_by_type.get("event", Decimal("0"))
+    total_subs = paid_by_type.get("subscription", Decimal("0"))
+    total_all = sum(paid_by_type.values(), Decimal("0"))
+
+    # ---- confirmed donation totals ----
+    donation_total_result = await db.execute(
+        select(func.coalesce(func.sum(Donation.amount), 0)).where(
+            Donation.user_id == uid,
+            Donation.status == DonationStatus.CONFIRMED.value,
+        )
+    )
+    total_donations = Decimal(donation_total_result.scalar() or 0)
+
+    # ---- subscription state ----
+    from datetime import timezone
+    now_utc = datetime.now(timezone.utc)
+    subscription_active = bool(
+        subscription and subscription.end_date and subscription.end_date > now_utc.replace(tzinfo=None)
+    )
+    kenaz_points = int(subscription.points or 0) if subscription else 0
+    sub_end = subscription.end_date.isoformat() if subscription and subscription.end_date else None
+
+    # ---- pending actions ----
+    actions: list[PendingActionItem] = []
+
+    # 1. Account awaiting approval
+    if target_user.account_status == AccountStatus.PENDING:
+        approval_result = await db.execute(
+            select(ApprovalRequest).where(ApprovalRequest.user_id == uid)
+        )
+        if approval_result.scalars().first():
+            actions.append(PendingActionItem(type="approval", label="Oczekuje na zatwierdzenie konta"))
+
+    # 2. Manual event payment registrations awaiting admin verification
+    manual_reg_result = await db.execute(
+        select(func.count(Registration.id)).where(
+            Registration.user_id == uid,
+            Registration.status == RegistrationStatus.MANUAL_PAYMENT_VERIFICATION.value,
+        )
+    )
+    manual_reg_count = int(manual_reg_result.scalar() or 0)
+    if manual_reg_count:
+        actions.append(PendingActionItem(
+            type="manual_payment_event",
+            label="Płatność manualna za wydarzenie do weryfikacji",
+            count=manual_reg_count,
+        ))
+
+    # 3. Subscription purchase awaiting admin verification
+    sub_purchase_result = await db.execute(
+        select(func.count(SubscriptionPurchase.id)).where(
+            SubscriptionPurchase.user_id == uid,
+            SubscriptionPurchase.status == SubscriptionPurchaseStatus.MANUAL_PAYMENT_VERIFICATION.value,
+        )
+    )
+    sub_purchase_count = int(sub_purchase_result.scalar() or 0)
+    if sub_purchase_count:
+        actions.append(PendingActionItem(
+            type="manual_payment_subscription",
+            label="Płatność manualna za subskrypcję do weryfikacji",
+            count=sub_purchase_count,
+        ))
+
+    # 4. Donations awaiting confirmation
+    pending_donation_result = await db.execute(
+        select(func.count(Donation.id)).where(
+            Donation.user_id == uid,
+            Donation.status == DonationStatus.PENDING_VERIFICATION.value,
+        )
+    )
+    pending_donations = int(pending_donation_result.scalar() or 0)
+    if pending_donations:
+        actions.append(PendingActionItem(
+            type="donation_pending",
+            label="Wsparcie (darowizna) oczekuje na potwierdzenie",
+            count=pending_donations,
+        ))
+
+    # 5. Waitlisted registrations
+    waitlist_result = await db.execute(
+        select(func.count(Registration.id)).where(
+            Registration.user_id == uid,
+            Registration.status == RegistrationStatus.WAITLIST.value,
+        )
+    )
+    waitlist_count = int(waitlist_result.scalar() or 0)
+    if waitlist_count:
+        actions.append(PendingActionItem(
+            type="waitlist",
+            label="Na liście oczekujących",
+            count=waitlist_count,
+        ))
+
+    # 6. Registrations with manual payment declared but not verified (by this user)
+    manual_req_result = await db.execute(
+        select(func.count(Registration.id)).where(
+            Registration.user_id == uid,
+            Registration.status == RegistrationStatus.MANUAL_PAYMENT_REQUIRED.value,
+        )
+    )
+    manual_req_count = int(manual_req_result.scalar() or 0)
+    if manual_req_count:
+        actions.append(PendingActionItem(
+            type="manual_payment_required",
+            label="Oczekuje na deklarację płatności manualnej",
+            count=manual_req_count,
+        ))
+
+    return AdminUserDetailResponse(
+        user_id=str(uid),
+        full_name=target_user.full_name,
+        email=target_user.email,
+        picture_url=target_user.picture_url,
+        role=target_user.role.value if target_user.role else "guest",
+        account_status=target_user.account_status.value if target_user.account_status else "pending",
+        created_at=target_user.created_at.isoformat() if target_user.created_at else None,
+        last_active_at=target_user.updated_at.isoformat() if target_user.updated_at else None,
+        subscription_active=subscription_active,
+        subscription_end_date=sub_end,
+        kenaz_points=kenaz_points,
+        event_count=event_count,
+        total_paid_events=f"{total_events:.2f} PLN",
+        total_paid_subscriptions=f"{total_subs:.2f} PLN",
+        total_paid_all=f"{total_all:.2f} PLN",
+        total_donations=f"{total_donations:.2f} PLN",
+        pending_actions=actions,
     )

@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { fetchUserProfileById } from '../../api/user'
+import { fetchAdminUserDetail } from '../../api/admin'
 import { INTEREST_TAGS } from '../../constants/interestTags'
 import EventIcon from '../../components/common/EventIcon'
 import { TAG_COLORS } from '../../constants/interestTags'
@@ -10,10 +11,14 @@ import AuthGateCard from '../../components/ui/AuthGateCard'
 
 function UserProfile() {
   const { userId } = useParams()
-  const { authFetch, isAuthenticated, login } = useAuth()
+  const { authFetch, isAuthenticated, login, user } = useAuth()
   const { t } = useLanguage()
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [adminDetail, setAdminDetail] = useState(null)
+  const [adminLoading, setAdminLoading] = useState(false)
+
+  const isAdmin = user?.role === 'admin'
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -37,6 +42,24 @@ function UserProfile() {
       cancelled = true
     }
   }, [authFetch, isAuthenticated, userId])
+
+  useEffect(() => {
+    if (!isAuthenticated || !isAdmin || !userId) return
+    let cancelled = false
+    const loadAdmin = async () => {
+      setAdminLoading(true)
+      try {
+        const data = await fetchAdminUserDetail(authFetch, userId)
+        if (!cancelled) setAdminDetail(data)
+      } catch (_err) {
+        // silently ignore — admin tile simply won't show
+      } finally {
+        if (!cancelled) setAdminLoading(false)
+      }
+    }
+    loadAdmin()
+    return () => { cancelled = true }
+  }, [authFetch, isAuthenticated, isAdmin, userId])
 
   if (!isAuthenticated) {
     return (
@@ -125,8 +148,112 @@ function UserProfile() {
           )}
         </div>
       </div>
+
+      {/* Admin detail tile */}
+      {isAdmin && (
+        <div className="mt-4 page-card">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="inline-flex items-center rounded-full bg-navy/10 dark:bg-cream/10 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-widest text-navy dark:text-cream">
+              Admin
+            </span>
+            <span className="text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40">
+              Szczegóły użytkownika
+            </span>
+          </div>
+
+          {adminLoading ? (
+            <p className="text-sm text-navy/60 dark:text-cream/60">{t('common.loading')}</p>
+          ) : adminDetail ? (
+            <>
+              {/* Stats grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <AdminStat label="Ostatnia aktywność" value={formatAdminDate(adminDetail.last_active_at)} />
+                <AdminStat label="Konto od" value={formatAdminDate(adminDetail.created_at)} />
+                <AdminStat label="Rola / Status" value={`${adminDetail.role} / ${adminDetail.account_status}`} />
+                <AdminStat label="Punkty Kenaz" value={adminDetail.kenaz_points} accent />
+                <AdminStat label="Zapisanych wydarzeń" value={adminDetail.event_count} />
+                <AdminStat
+                  label="Subskrypcja"
+                  value={
+                    adminDetail.subscription_active
+                      ? `aktywna do ${formatAdminDate(adminDetail.subscription_end_date)}`
+                      : adminDetail.subscription_end_date
+                        ? `wygasła ${formatAdminDate(adminDetail.subscription_end_date)}`
+                        : 'brak'
+                  }
+                  highlight={adminDetail.subscription_active}
+                />
+                <AdminStat label="Wpłacono (wydarzenia)" value={adminDetail.total_paid_events} />
+                <AdminStat label="Wpłacono (subskrypcje)" value={adminDetail.total_paid_subscriptions} />
+                <AdminStat label="Wpłacono łącznie" value={adminDetail.total_paid_all} accent />
+                <AdminStat label="Wsparcia (zatwierdzone)" value={adminDetail.total_donations} />
+              </div>
+
+              {/* Pending actions */}
+              {adminDetail.pending_actions.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40 mb-2">
+                    Oczekujące akcje
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    {adminDetail.pending_actions.map((action) => (
+                      <div
+                        key={action.type}
+                        className="flex items-center justify-between rounded-xl bg-amber-50 dark:bg-amber-900/20 px-3 py-2"
+                      >
+                        <span className="text-sm text-amber-800 dark:text-amber-300 font-medium">
+                          {action.label}
+                        </span>
+                        {action.count > 1 && (
+                          <span className="text-xs font-bold text-amber-700 dark:text-amber-400 bg-amber-200 dark:bg-amber-800/50 rounded-full px-2 py-0.5">
+                            ×{action.count}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : null}
+        </div>
+      )}
     </div>
   )
+}
+
+function AdminStat({ label, value, accent, highlight }) {
+  return (
+    <div className="rounded-xl bg-navy/5 dark:bg-cream/5 px-3 py-2.5">
+      <p className="text-[10px] font-medium uppercase tracking-wide text-navy/40 dark:text-cream/40 mb-0.5">
+        {label}
+      </p>
+      <p
+        className={`text-sm font-semibold truncate ${
+          highlight
+            ? 'text-green-700 dark:text-green-400'
+            : accent
+              ? 'text-navy dark:text-cream'
+              : 'text-navy/80 dark:text-cream/80'
+        }`}
+      >
+        {value ?? '—'}
+      </p>
+    </div>
+  )
+}
+
+function formatAdminDate(iso) {
+  if (!iso) return '—'
+  try {
+    return new Date(iso).toLocaleDateString('pl-PL', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    })
+  } catch {
+    return iso
+  }
 }
 
 export default UserProfile

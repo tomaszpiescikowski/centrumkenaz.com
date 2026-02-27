@@ -214,3 +214,12 @@ export async function unblockUser(authFetch, userId) {
   }
   return safeJson(response)
 }
+
+export async function fetchAdminUserDetail(authFetch, userId) {
+  const response = await authFetch(`${API_URL}/admin/users/${userId}/detail`)
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.detail || 'Failed to fetch admin user detail')
+  }
+  return safeJson(response)
+}
