@@ -12,97 +12,98 @@ export const BUILT_IN_EVENT_ICONS = [
     key: 'mors',
     label: 'Morsowanie',
     color: 'text-blue-400',
-    paths: `<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M3 17c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M12 3v8"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M8 7l4-4 4 4"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M5 13c2-2 4-2 6 0s4 2 6 0"/>`,
+    // head bobbing above two bold waves
+    paths: `<circle cx="12" cy="5" r="2.2" strokeWidth="2.5"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M2 13c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M2 19c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/>`,
   },
   {
     key: 'karate',
     label: 'Karate',
     color: 'text-cyan-500',
-    paths: `<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M12 3L8.5 9l3.5 1.5 3.5-1.5L12 3z"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M8.5 9v7l3.5 4 3.5-4V9"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M6 12h12"/>`,
+    // person throwing a punch: head + body/arm strike + back leg
+    paths: `<circle cx="9" cy="4" r="2" strokeWidth="2.5"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 6v7l-3 7"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 9l5 2 7-3"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 19l-3-6"/>`,
   },
   {
     key: 'spacer',
     label: 'Spacer',
     color: 'text-green-500',
-    paths: `<circle cx="12" cy="4" r="1.8" strokeWidth="2.2"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M9 9l3 2 3-2"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M12 11v5"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M9 22l3-6 3 6"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M6 14l3-3"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M18 14l-3-3"/>`,
+    // walking figure: head + arm swing + body + striding legs
+    paths: `<circle cx="13" cy="4" r="2" strokeWidth="2.5"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8 9l5-2 4 3"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7v6"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M7 21l6-8 4 8"/>`,
   },
   {
     key: 'joga',
     label: 'Joga',
     color: 'text-pink-500',
-    paths: `<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M12 4a2 2 0 100 4 2 2 0 000-4z"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M4 14c0-3.3 3.6-6 8-6s8 2.7 8 6"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M4 14l3 4h10l3-4"/>`,
+    // seated lotus: head + wide arc body + flat seat + arms reaching to knees
+    paths: `<circle cx="12" cy="4" r="2" strokeWidth="2.5"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 14a8 8 0 0116 0"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 14h16"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M2 11l4 3M22 11l-4 3"/>`,
   },
   {
     key: 'wyjazd',
     label: 'Wyjazd',
     color: 'text-amber-500',
-    paths: `<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M20 9l-8-6-8 6"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M4 9v11a1 1 0 001 1h4v-5h6v5h4a1 1 0 001-1V9"/>`,
+    // suitcase with handle top and strap line
+    paths: `<rect x="5" y="9" width="14" height="12" rx="2" strokeWidth="2.5"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 9V7a3 3 0 016 0v2"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 15h6"/>`,
   },
   {
     key: 'bieganie',
     label: 'Bieganie',
     color: 'text-lime-500',
-    paths: `<circle cx="14" cy="4" r="1.8" strokeWidth="2.2"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M10 9.5l4-2 2.5 3-3 2.5"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M6.5 8l3.5 1.5"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M13.5 13L11 20"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M8 16.5l3-3.5"/>`,
+    // running figure: head (offset) + pumping arms + leaning body + legs
+    paths: `<circle cx="15" cy="4" r="2" strokeWidth="2.5"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 9l5-2 6 2"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 20l6-9 4 3"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M11 14l4 6"/>`,
   },
   {
     key: 'planszowki',
     label: 'Planszówki',
     color: 'text-violet-500',
-    paths: `<rect x="3" y="3" width="8" height="8" rx="1.5" strokeWidth="2.2"/>
-            <rect x="13" y="3" width="8" height="8" rx="1.5" strokeWidth="2.2"/>
-            <rect x="3" y="13" width="8" height="8" rx="1.5" strokeWidth="2.2"/>
-            <rect x="13" y="13" width="8" height="8" rx="1.5" strokeWidth="2.2"/>
-            <circle cx="7" cy="7" r="1.2" fill="currentColor" stroke="none"/>
-            <circle cx="17" cy="7" r="1.2" fill="currentColor" stroke="none"/>
-            <circle cx="7" cy="17" r="1.2" fill="currentColor" stroke="none"/>
-            <circle cx="14.5" cy="14.5" r="1" fill="currentColor" stroke="none"/>
-            <circle cx="19.5" cy="14.5" r="1" fill="currentColor" stroke="none"/>
-            <circle cx="14.5" cy="19.5" r="1" fill="currentColor" stroke="none"/>
-            <circle cx="19.5" cy="19.5" r="1" fill="currentColor" stroke="none"/>
-            <circle cx="17" cy="17" r="1" fill="currentColor" stroke="none"/>`,
+    // single die with five pips — clean and instantly readable
+    paths: `<rect x="3" y="3" width="18" height="18" rx="3" strokeWidth="2.5"/>
+            <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/>
+            <circle cx="15.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/>
+            <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+            <circle cx="8.5" cy="15.5" r="1.5" fill="currentColor" stroke="none"/>
+            <circle cx="15.5" cy="15.5" r="1.5" fill="currentColor" stroke="none"/>`,
   },
   {
     key: 'ognisko',
     label: 'Ognisko',
     color: 'text-orange-500',
-    paths: `<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M12 22c-4.4 0-7-3-7-6 0-2.2 1.2-4.2 3-5.5 1-0.7 1.7-1.8 2-3 0.5 1.5 1.5 2.8 3 3.5C14.5 12 16 13.8 16 16c0 3-2.6 6-4 6z"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M12 22c-1.5 0-2.5-1.5-2.5-3.5S10.5 15 12 14c1.5 1 2.5 2.5 2.5 4.5S13.5 22 12 22z"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M8 19h-4M20 19h-4"/>`,
+    // bold teardrop flame + bright inner core
+    paths: `<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 2c0 5-7 7-7 13a7 7 0 0014 0c0-6-7-8-7-13z"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 22c-2 0-3-2-3-4s3-4 3-4 3 2 3 4-1 4-3 4z"/>`,
   },
   {
     key: 'medytacja',
     label: 'Medytacja',
     color: 'text-indigo-400',
-    paths: `<circle cx="12" cy="5" r="2" strokeWidth="2.2"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M5 14c0-4 3-7 7-7s7 3 7 7"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M5 14h14"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M8 14v4l4 3 4-3v-4"/>`,
+    // meditating figure: head + arc seat + flat ground + arms spread to knees
+    paths: `<circle cx="12" cy="4" r="2" strokeWidth="2.5"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 17a6 6 0 0112 0"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 17h12"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 13l5 4M21 13l-5 4"/>`,
   },
   {
     key: 'kajak',
     label: 'Kajaki',
     color: 'text-cyan-400',
-    paths: `<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M12 3v18"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M7 6l5 3 5-3"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M7 18l5-3 5 3"/>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M3 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>`,
+    // double-blade kayak paddle — universally recognizable
+    paths: `<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M2 12h20"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M2 8l4 4-4 4"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M22 8l-4 4 4 4"/>`,
   },
 ]
 
