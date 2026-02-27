@@ -1,67 +1,44 @@
 import { memo } from 'react'
-import styles from '../../styles/modules/components/EventIcon.module.css'
 import { ICON_MAP, EXTRA_ICON_MAP } from '../../constants/eventIcons'
 
-const SIZE_CLASSES = {
-  xs: styles.sizeXs,
-  sm: styles.sizeSm,
-  md: styles.sizeMd,
-  lg: styles.sizeLg,
+const SIZE_MAP = {
+  xs: '0.9rem',
+  sm: '1.1rem',
+  md: '1.4rem',
+  lg: '1.9rem',
 }
 
 /**
- * Renders an event icon.
- * - For built-in types: renders SVG paths from eventIcons catalogue.
- * - For custom types (emoji-based): renders the emoji in a wrapper.
- * - Falls back to a generic circle/dot icon for unknown keys.
+ * Renders an event category icon as an emoji.
+ * - For built-in types: uses the emoji from ICON_MAP.
+ * - For custom types:  looks up EXTRA_ICON_MAP via customTypes[].iconKey.
+ * - Falls back to 📅 for unknown keys.
  *
- * @param {string} type - event_type key
+ * @param {string} type        - event_type key
  * @param {'xs'|'sm'|'md'|'lg'} size
- * @param {Array} customTypes - array from useCustomEventTypes, for emoji lookup
+ * @param {Array}  customTypes - array from useCustomEventTypes, for emoji lookup
  */
 function EventIcon({ type, size = 'md', customTypes = [] }) {
-  const iconClassName = `${styles.icon} ${SIZE_CLASSES[size] || styles.sizeMd}`
+  const fontSize = SIZE_MAP[size] || SIZE_MAP.md
+  const style = { fontSize, lineHeight: 1, display: 'inline-flex', alignItems: 'center' }
 
-  // Built-in SVG icon
+  // Built-in emoji
   const builtIn = ICON_MAP[type]
-  if (builtIn) {
-    return (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        className={iconClassName}
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: builtIn.paths }}
-      />
-    )
+  if (builtIn?.emoji) {
+    return <span role="img" aria-label={builtIn.label} style={style}>{builtIn.emoji}</span>
   }
 
-  // Custom type SVG icon (via EXTRA_ICONS pool)
+  // Custom type emoji (via EXTRA_ICONS pool)
   const custom = customTypes.find((c) => c.key === type)
   if (custom?.iconKey) {
     const extraIcon = EXTRA_ICON_MAP[custom.iconKey]
-    if (extraIcon) {
-      return (
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          className={iconClassName}
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: extraIcon.paths }}
-        />
-      )
+    if (extraIcon?.emoji) {
+      return <span role="img" aria-label={extraIcon.label} style={style}>{extraIcon.emoji}</span>
     }
   }
 
-  // Fallback generic icon
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={iconClassName}>
-      <circle cx="12" cy="12" r="9" strokeWidth="2.2"/>
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M12 8v4M12 16h.01"/>
-    </svg>
-  )
+  // Fallback
+  return <span role="img" aria-label="event" style={style}>📅</span>
 }
 
 export default memo(EventIcon)
