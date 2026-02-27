@@ -1,0 +1,1270 @@
+% ══════════════════════════════════════════════════════════════════════════════
+%  INSTRUKCJA UŻYTKOWNIKA — Kenaz Centrum
+%  Kompilacja: xelatex INSTRUKCJA_UZYTKOWNIKA.tex  (dwukrotnie)
+% ══════════════════════════════════════════════════════════════════════════════
+\documentclass[11pt, a4paper]{article}
+
+% ── Fonty ─────────────────────────────────────────────────────────────────────
+\usepackage{fontspec}
+\setmainfont{Palatino}[Ligatures=TeX, Numbers=OldStyle]
+\setsansfont{Helvetica Neue}[BoldFont={Helvetica Neue Bold}, Scale=MatchLowercase]
+\setmonofont{Courier New}[Scale=0.88]
+
+% ── Język ─────────────────────────────────────────────────────────────────────
+\usepackage{polyglossia}
+\setdefaultlanguage{polish}
+
+% ── Marginesy ─────────────────────────────────────────────────────────────────
+\usepackage[a4paper, top=3cm, bottom=3cm, left=2.8cm, right=2.8cm, headheight=15pt]{geometry}
+
+% ── Kolory ────────────────────────────────────────────────────────────────────
+\usepackage{xcolor}
+\definecolor{kenaznavy}{HTML}{0F174A}
+\definecolor{kenazred}{HTML}{E53935}
+\definecolor{kenazdim}{HTML}{4B5385}
+\definecolor{tableshade}{HTML}{F5F4EF}
+\definecolor{tipbg}{HTML}{EEF0F8}
+\definecolor{partbg}{HTML}{F5F4EF}
+
+% ── Hiperłącza ────────────────────────────────────────────────────────────────
+\usepackage[unicode, colorlinks=true, linkcolor=kenaznavy,
+            urlcolor=kenazred, citecolor=kenazdim,
+            pdftitle={Instrukcja Użytkownika — Kenaz Centrum},
+            pdfauthor={Kenaz Centrum}]{hyperref}
+
+% ── Interlinia / akapity ──────────────────────────────────────────────────────
+\usepackage{setspace}
+\setstretch{1.4}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\parindent}{0pt}
+
+% ── Łamanie stron ─────────────────────────────────────────────────────────────
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
+
+% ── Nagłówki i stopki ─────────────────────────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{kenazdim}\nouppercase{\leftmark}}
+\fancyhead[R]{\small\color{kenazdim}Kenaz Centrum}
+\fancyfoot[C]{\small\color{kenazdim}---\;\thepage\;---}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\headrule}{{\color{kenazdim!40}\hrule width\headwidth height 0.3pt}}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\small\color{kenazdim}---\;\thepage\;---}%
+  \renewcommand{\headrulewidth}{0pt}%
+}
+
+% ── Nagłówki sekcji ───────────────────────────────────────────────────────────
+\usepackage{titlesec}
+\usepackage{needspace}
+\titleformat{\section}
+  {\sffamily\LARGE\bfseries\color{kenaznavy}}{\thesection}{0.8em}{}
+\titleformat{\subsection}
+  {\sffamily\large\bfseries\color{kenaznavy}}{\thesubsection}{0.8em}{}
+\titleformat{\subsubsection}
+  {\sffamily\normalsize\bfseries\color{kenazdim}}{\thesubsubsection}{0.8em}{}
+\titlespacing{\section}     {0pt}{24pt plus 6pt minus 4pt}{8pt}
+\titlespacing{\subsection}  {0pt}{16pt plus 4pt minus 2pt}{5pt}
+\titlespacing{\subsubsection}{0pt}{10pt plus 2pt minus 2pt}{3pt}
+\preto\section{\needspace{5\baselineskip}}
+\preto\subsection{\needspace{4\baselineskip}}
+
+% ── Nagłówki części (CZĘŚĆ I, II, ...) ───────────────────────────────────────
+\newcommand{\czesc}[1]{%
+  \clearpage
+  \thispagestyle{plain}
+  \vspace*{1.2cm}%
+  \noindent
+  \begin{tcolorbox}[colback=kenaznavy, colframe=kenaznavy,
+                    left=16pt, right=16pt, top=14pt, bottom=14pt,
+                    sharp corners, boxrule=0pt]
+    {\sffamily\Huge\bfseries\color{white}#1\par}
+  \end{tcolorbox}
+  \vspace{0.8cm}%
+  \addcontentsline{toc}{part}{#1}%
+  \markboth{#1}{}%
+}
+
+% ── Spis treści ───────────────────────────────────────────────────────────────
+\usepackage{tocloft}
+\renewcommand{\cfttoctitlefont}{\sffamily\Large\bfseries\color{kenaznavy}}
+\renewcommand{\cftsecfont}{\sffamily\bfseries\color{kenaznavy}}
+\renewcommand{\cftsecpagefont}{\sffamily\small\color{kenazdim}}
+\renewcommand{\cftsubsecfont}{\sffamily\small}
+\renewcommand{\cftsubsecpagefont}{\sffamily\small\color{kenazdim}}
+\setlength{\cftbeforesecskip}{2pt}
+% Wpisz "część" w TOC jako grubszy nagłówek
+\renewcommand{\cftpartfont}{\sffamily\bfseries\color{kenaznavy!80}}
+\renewcommand{\cftpartpagefont}{\sffamily\small\color{kenazdim}}
+\setlength{\cftbeforepartskip}{8pt}
+
+% ── Tabele ────────────────────────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{tabularx}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\arrayrulecolor{kenaznavy!20}
+\renewcommand{\arraystretch}{1.3}
+
+% ── Ramki informacyjne ────────────────────────────────────────────────────────
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+\newtcolorbox{tipbox}{
+  breakable,
+  colback=tipbg,
+  colframe=kenaznavy!35,
+  boxrule=0.4pt,
+  left=8pt, right=8pt, top=5pt, bottom=5pt,
+  fontupper=\small,
+  before upper={\setlength{\parskip}{3pt}},
+}
+\newtcolorbox{warnbox}{
+  breakable,
+  colback=kenazred!5,
+  colframe=kenazred!40,
+  boxrule=0.4pt,
+  left=8pt, right=8pt, top=5pt, bottom=5pt,
+  fontupper=\small,
+  before upper={\setlength{\parskip}{3pt}},
+}
+
+% ── Listy ─────────────────────────────────────────────────────────────────────
+\usepackage{enumitem}
+\setlist[itemize]  {leftmargin=1.5em, itemsep=2pt, topsep=3pt, parsep=0pt}
+\setlist[enumerate]{leftmargin=1.5em, itemsep=2pt, topsep=3pt, parsep=0pt}
+
+% ── Mikrotypografia ───────────────────────────────────────────────────────────
+\usepackage{microtype}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ── Strona tytułowa ───────────────────────────────────────────────────────────
+\thispagestyle{empty}
+\begin{center}
+  \vspace*{2.5cm}
+  {\sffamily\fontsize{40}{48}\selectfont\bfseries\color{kenaznavy} Kenaz\par}
+  \vspace{0.3cm}
+  {\color{kenaznavy!25}\rule{\linewidth}{1.5pt}\par}
+  \vspace{0.6cm}
+  {\sffamily\Huge\bfseries\color{kenaznavy} Instrukcja Obsługi\par}
+  \vspace{0.4cm}
+  {\sffamily\Large\color{kenazdim} Przewodnik Użytkownika\par}
+  \vspace{1.2cm}
+  {\color{kenaznavy!25}\rule{0.4\linewidth}{0.5pt}\par}
+  \vspace{0.6cm}
+  {\sffamily\normalsize\color{kenazdim}
+    \textbf{Wersja dokumentu:} 2.0 \quad
+    \textbf{Data:} luty 2026\par}
+  \vspace{0.3cm}
+  {\sffamily\small\color{kenazdim!80}
+    Dotyczy: aplikacja webowa i PWA Kenaz Centrum\par}
+  \vfill
+  {\sffamily\small\color{kenazdim!60} Kenaz Centrum\par}
+\end{center}
+\clearpage
+
+% ── Spis treści ───────────────────────────────────────────────────────────────
+\tableofcontents
+\clearpage
+
+% ══════════════════════════════════════════════════════════════════════════════
+\czesc{CZĘŚĆ I — PIERWSZE KROKI}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Czym jest Kenaz?}
+
+\textbf{Kenaz Centrum} to platforma społecznościowa dla aktywnej społeczności
+lokalnej. Aplikacja umożliwia:
+
+\begin{itemize}
+  \item przeglądanie i zapisywanie się na \textbf{wydarzenia} (treningi,
+        warsztaty, wycieczki i inne aktywności),
+  \item komunikowanie się z uczestnikami za pomocą \textbf{wbudowanego chatu},
+  \item zarządzanie własną \textbf{subskrypcją} i historią rejestracji,
+  \item wspieranie centrum poprzez \textbf{darowizny} na stronie
+        „Wesprzyj nas".
+\end{itemize}
+
+\subsection{Jak używać tej instrukcji?}
+
+Każdy rozdział opisuje \textbf{jedną stronę lub funkcję} aplikacji.
+Przy każdym opisie znajdziesz:
+
+\begin{itemize}
+  \item \textbf{Adres URL} danej strony (np.\ \texttt{/calendar}),
+  \item \textbf{Kto ma dostęp} do tej strony,
+  \item \textbf{Opis funkcji} krok po kroku,
+  \item \textbf{Wskazówki} i \textbf{ważne uwagi}.
+\end{itemize}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Rejestracja i logowanie}
+
+\textbf{Adres:} \texttt{/login} \quad
+\textbf{Dostęp:} wszyscy (w tym niezalogowani)
+
+\subsection{Jak zalogować się do Kenaz?}
+
+Kenaz używa wyłącznie logowania przez \textbf{Google}. Aby skorzystać
+z aplikacji:
+
+\begin{enumerate}
+  \item Otwórz stronę główną aplikacji lub przejdź bezpośrednio pod adres
+        \texttt{/login}.
+  \item Kliknij przycisk \textbf{„Zaloguj się przez Google"}.
+  \item Zostaniesz przekierowany do strony logowania Google. Wybierz swoje
+        konto lub zaloguj się danymi Google.
+  \item Po pierwszym zalogowaniu Twoje konto zostanie automatycznie
+        \textbf{zarejestrowane} w systemie Kenaz.
+  \item Zostaniesz przekierowany z powrotem do aplikacji.
+\end{enumerate}
+
+\begin{warnbox}
+  \textbf{Ważne:} Przy pierwszym logowaniu konto trafia do statusu
+  \textbf{„Oczekujące na akceptację"}. Korzystanie z pełnych funkcji
+  (kalendarza, chatu, rejestracji) będzie możliwe dopiero po zatwierdzeniu
+  konta przez administratora. Więcej na ten temat w rozdziale 4.
+\end{warnbox}
+
+\subsection{Hasła i resetowanie}
+
+Kenaz nie używa haseł — logowanie odbywa się wyłącznie przez Google. Jeśli
+nie pamiętasz hasła do swojego konta Google, skorzystaj z opcji odzyskiwania
+konta dostępnej bezpośrednio na stronie Google.
+
+\subsection{Wylogowanie}
+
+\begin{enumerate}
+  \item Przejdź do strony \textbf{„Moje konto"} (ikona osoby w nawigacji
+        lub adres \texttt{/me}).
+  \item Przewiń stronę na dół.
+  \item Kliknij przycisk \textbf{„Wyloguj się"}.
+\end{enumerate}
+
+Po wylogowaniu zostaniesz przekierowany na stronę główną. Twoje dane
+i rejestracje pozostaną zapisane w systemie.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Strona główna}
+
+\textbf{Adres:} \texttt{/} \quad
+\textbf{Dostęp:} wszyscy (w tym niezalogowani)
+
+\subsection{Co zobaczysz na stronie głównej?}
+
+Strona główna to \textbf{punkt startowy} aplikacji. Jej układ jest celowo
+prosty — w centrum ekranu widnieje logo Kenaz Centrum, a poniżej trzy przyciski:
+
+\begin{itemize}
+  \item \textbf{„Zaloguj się"} — prowadzi do strony logowania (\texttt{/login}).
+  \item \textbf{„O nas"} — prowadzi do strony z informacjami o organizacji
+        (\texttt{/about}).
+  \item \textbf{„Wesprzyj nas"} — prowadzi do strony darowizn
+        (\texttt{/support}).
+\end{itemize}
+
+\subsection{Dla zalogowanych użytkowników}
+
+Zalogowani użytkownicy zazwyczaj nie odwiedzają strony głównej — aplikacja
+automatycznie kieruje ich do \textbf{kalendarza} (\texttt{/calendar})
+po zalogowaniu. Strona główna służy głównie jako landing page dla nowych
+odwiedzających.
+
+\subsection{Tryb ciemny i jasny}
+
+Strona główna obsługuje zarówno tryb jasny, jak i tryb ciemny. Możesz zmienić
+motyw w ustawieniach konta lub klikając odpowiedni przełącznik w pasku
+nawigacyjnym. Szczegóły w rozdziale 20.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Oczekiwanie na akceptację konta}
+
+\textbf{Adres:} \texttt{/pending-approval} \quad
+\textbf{Dostęp:} zalogowani użytkownicy ze statusem „oczekujące"
+
+\subsection{Dlaczego moje konto oczekuje na akceptację?}
+
+Kenaz to \textbf{zamknięta społeczność} — każde nowe konto musi zostać
+zatwierdzone przez administratora. Dzięki temu platforma zachowuje wysoki
+poziom bezpieczeństwa i spójności grupy.
+
+Po pierwszym zalogowaniu przez Google Twoje konto automatycznie trafia
+do kolejki oczekujących. Administrator widzi Twoje imię, adres e-mail
+oraz datę rejestracji.
+
+\subsection{Co widzę w czasie oczekiwania?}
+
+\begin{itemize}
+  \item \textbf{Kalendarz} jest widoczny, ale \textbf{zamazany} — nie możesz
+        przeglądać szczegółów wydarzeń.
+  \item \textbf{Panel} (lista Twoich rejestracji) jest widoczny,
+        ale niedostępny.
+  \item \textbf{Chat} jest niedostępny.
+  \item Możesz przeglądać strony ogólne: \textbf{O nas}, \textbf{Wesprzyj
+        nas}, \textbf{Politykę prywatności} i \textbf{Regulamin}.
+\end{itemize}
+
+\subsection{Jak długo trwa akceptacja?}
+
+Czas akceptacji zależy od dostępności administratora. Zwykle odbywa się to
+w ciągu \textbf{1–2 dni roboczych}. Jeśli po dłuższym czasie konto nadal nie
+zostało zatwierdzone, skontaktuj się z organizacją.
+
+\subsection{Co się dzieje po akceptacji?}
+
+\begin{enumerate}
+  \item Przy kolejnym zalogowaniu zobaczysz \textbf{ekran powitalny}
+        z możliwością wyboru planu subskrypcji.
+  \item Zostaniesz przekierowany do strony \textbf{Plany i subskrypcje}
+        (\texttt{/plans?welcome=1}).
+  \item Możesz od razu wybrać plan lub wrócić do konta i zdecydować później.
+  \item Od tej chwili masz pełny dostęp do wszystkich funkcji aplikacji.
+\end{enumerate}
+
+\subsection{Blokada konta}
+
+Konto może zostać \textbf{zablokowane} przez administratora. W takim
+przypadku zostanie ono cofnięte do statusu „oczekującego" i wymagana
+będzie ponowna akceptacja. Zablokowany użytkownik nie ma dostępu do płatnych
+funkcji aplikacji.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Ustawienia i język interfejsu}
+
+\subsection{Dostępne języki}
+
+\begin{longtable}{@{}C{2cm}L{13cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Kod} & \textbf{Język} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{pl} & Polski (domyślny) \\
+\rowcolor{tableshade}
+\texttt{en} & English \\
+\texttt{zh} & Chiński \\
+\rowcolor{tableshade}
+\texttt{nl} & Nederlands (niderlandzki) \\
+\texttt{it} & Italiano (włoski) \\
+\rowcolor{tableshade}
+\texttt{sl} & Ślōnski (śląski) \\
+\end{longtable}
+
+\subsection{Jak zmienić język?}
+
+Język możesz zmienić na stronie \textbf{Moje konto} (\texttt{/me}):
+
+\begin{enumerate}
+  \item Przejdź do \texttt{/me}.
+  \item W sekcji ustawień znajdź \textbf{selektor języka}.
+  \item Wybierz preferowany język z listy.
+\end{enumerate}
+
+Zmiana języka jest natychmiastowa i obowiązuje przez całą sesję.
+
+\subsection{Jak zmienić miasto?}
+
+Na stronie konta możesz wybrać swoje \textbf{miasto}. Ustawienie to wpływa
+na wyświetlane wydarzenia — filtrując je do relewantnej lokalizacji.
+
+\begin{enumerate}
+  \item Przejdź do \texttt{/me}.
+  \item W sekcji ustawień znajdź \textbf{selektor miasta}.
+  \item Wybierz swoje miasto z listy.
+\end{enumerate}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\czesc{CZĘŚĆ II — GŁÓWNE FUNKCJE APLIKACJI}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Kalendarz wydarzeń}
+
+\textbf{Adres:} \texttt{/calendar} \quad
+\textbf{Dostęp:} wszyscy (pełny dostęp tylko zalogowani i zatwierdzeni)
+
+\subsection{Ogólne informacje}
+
+Kalendarz jest \textbf{głównym centrum aplikacji}. Pokazuje wszystkie nadchodzące
+wydarzenia organizowane przez Kenaz — treningi, warsztaty, wykłady, wyjścia
+i wiele innych aktywności.
+
+Dla użytkowników niezalogowanych lub oczekujących na akceptację kalendarz jest
+\textbf{widoczny, ale zamazany} — można zobaczyć ogólny zarys wydarzeń, ale
+nie można wchodzić w szczegóły ani rejestrować się.
+
+\subsection{Jak wygląda kalendarz?}
+
+Kalendarz wyświetla wydarzenia w widoku \textbf{miesięcznym lub tygodniowym}.
+Każdy dzień z wydarzeniami jest oznaczony. Możesz:
+
+\begin{itemize}
+  \item \textbf{Przeglądać dni} — klikając w datę zobaczysz listę wydarzeń.
+  \item \textbf{Nawigować między miesiącami} — strzałkami góra/dół lub
+        lewo/prawo.
+  \item \textbf{Klikać w wydarzenie} — aby przejść do szczegółów.
+\end{itemize}
+
+\subsection{Oznaczenia wydarzeń na kalendarzu}
+
+Każde wydarzenie może być oznaczone jedną z \textbf{ikon kategorii}. Ikony
+pojawiają się obok nazwy wydarzenia i informują o jego typie (np.\ karate,
+morsowanie, yoga).
+
+\subsection{Filtrowanie według miasta}
+
+Jeśli masz ustawione miasto w profilu, kalendarz może \textbf{automatycznie
+filtrować} wydarzenia do Twojej lokalizacji. Możesz też zmienić filtr
+bezpośrednio na stronie kalendarza.
+
+\subsection{Prywatność i blokada}
+
+Jeśli jesteś \textbf{niezalogowany} lub Twoje konto \textbf{oczekuje
+na akceptację}: kalendarz jest zamazany (blur), kliknięcie w wydarzenie
+nic nie robi, wyświetla się zachęta do zalogowania. Po zatwierdzeniu konta
+uzyskujesz pełny dostęp.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Szczegóły wydarzenia}
+
+\textbf{Adres:} \texttt{/event/:id} \quad
+\textbf{Dostęp:} zalogowani i zatwierdzeni użytkownicy
+
+\subsection{Jak otworzyć szczegóły wydarzenia?}
+
+\begin{enumerate}
+  \item Przejdź do kalendarza (\texttt{/calendar}).
+  \item Kliknij w datę, aby zobaczyć listę wydarzeń danego dnia.
+  \item Kliknij w nazwę wybranego wydarzenia.
+  \item Zostaniesz przekierowany na stronę szczegółów: \texttt{/event/:id}.
+\end{enumerate}
+
+\subsection{Co zawiera strona szczegółów?}
+
+\begin{longtable}{@{}L{4.5cm}L{10.5cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Sekcja} & \textbf{Opis} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Tytuł i ikona}      & Nazwa wydarzenia z ikoną kategorii \\
+\rowcolor{tableshade}
+\textbf{Data i godzina}     & Dokładna data, godzina rozpoczęcia i zakończenia \\
+\textbf{Miasto i lokalizacja} & Miejsce spotkania; przycisk „Otwórz w Google Maps" \\
+\rowcolor{tableshade}
+\textbf{Opis}               & Szczegółowy opis aktywności \\
+\textbf{Cena}               & Cena dla gości lub informacja o bezpłatności \\
+\rowcolor{tableshade}
+\textbf{Dostępność miejsc}  & Liczba wolnych miejsc lub informacja o zapełnieniu \\
+\textbf{Uczestnicy}         & Lista potwierdzonych uczestników \\
+\rowcolor{tableshade}
+\textbf{Lista oczekujących} & Osoby na liście oczekujących \\
+\textbf{Przycisk rejestracji} & Zapis, anulowanie zapisu lub informacja o statusie \\
+\rowcolor{tableshade}
+\textbf{Komentarze}         & Sekcja komentarzy i dyskusji pod wydarzeniem \\
+\textbf{Google Calendar}    & Przycisk dodania do własnego Google Calendar \\
+\end{longtable}
+
+\subsection{Dwie ceny — dla gości i dla członków}
+
+Przy wydarzeniach płatnych możesz zobaczyć \textbf{dwie ceny}:
+
+\begin{itemize}
+  \item \textbf{Cena dla gości} — standardowa cena dla wszystkich uczestników
+        bez subskrypcji.
+  \item \textbf{Cena dla członków} — obniżona cena dla osób z aktywną
+        subskrypcją Kenaz.
+\end{itemize}
+
+\begin{tipbox}
+  \textbf{Wskazówka:} Jeśli regularnie uczestniczysz w wydarzeniach, opłaca
+  się rozważyć wykupienie subskrypcji — ceny dla członków są zazwyczaj
+  znacznie niższe lub zerowe.
+\end{tipbox}
+
+\subsection{Dodanie do Google Calendar}
+
+Na stronie szczegółów wydarzenia znajdziesz przycisk \textbf{„Dodaj do Google
+Calendar"}. Kliknięcie go otworzy nową kartę z formularzem Google Calendar,
+gdzie możesz zapisać wydarzenie z automatycznie uzupełnioną datą, godziną
+i lokalizacją.
+
+\subsection{Komentarze pod wydarzeniem}
+
+Każde wydarzenie posiada \textbf{sekcję komentarzy}, gdzie uczestnicy mogą
+zadawać pytania i rozmawiać. Szczegółowy opis systemu komentarzy znajdziesz
+w rozdziale 11.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Rejestracja na wydarzenie}
+
+\textbf{Adres:} \texttt{/event/:id} \quad
+\textbf{Dostęp:} zalogowani i zatwierdzeni użytkownicy
+
+\subsection{Jak zapisać się na wydarzenie?}
+
+\begin{enumerate}
+  \item Przejdź na stronę szczegółów wybranego wydarzenia.
+  \item Sprawdź dostępność miejsc.
+  \item Kliknij przycisk \textbf{„Zapisz się"}.
+  \item Jeśli wydarzenie jest \textbf{bezpłatne}: rejestracja zostanie
+        potwierdzona natychmiast.
+  \item Jeśli wydarzenie jest \textbf{płatne}: zostaniesz przekierowany
+        do procesu płatności (patrz rozdział 9).
+\end{enumerate}
+
+\subsection{Stany rejestracji}
+
+\begin{longtable}{@{}L{4.5cm}L{10.5cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Status} & \textbf{Znaczenie} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Potwierdzony}          & Jesteś zapisany — masz zagwarantowane miejsce \\
+\rowcolor{tableshade}
+\textbf{Oczekuje na płatność}  & Zarejestrowany, ale płatność jeszcze nie potwierdzona \\
+\textbf{Lista oczekujących}    & Brak miejsc — zostaniesz przeniesiony automatycznie \\
+\rowcolor{tableshade}
+\textbf{Anulowany}             & Rejestracja anulowana przez Ciebie lub administratora \\
+\end{longtable}
+
+\subsection{Jak anulować rejestrację?}
+
+\textbf{Ze strony szczegółów wydarzenia:}
+
+\begin{enumerate}
+  \item Przejdź na \texttt{/event/:id}.
+  \item Kliknij przycisk \textbf{„Anuluj rejestrację"}.
+  \item Potwierdź anulowanie w okienku dialogowym.
+\end{enumerate}
+
+\textbf{Z panelu użytkownika:}
+
+\begin{enumerate}
+  \item Przejdź do \texttt{/panel}.
+  \item Znajdź wydarzenie na liście swoich rejestracji.
+  \item Kliknij przycisk anulowania i potwierdź.
+\end{enumerate}
+
+\begin{tipbox}
+  \textbf{Uwaga przy anulowaniu płatnych rejestracji:} Jeśli zapłaciłeś
+  przelewem, po anulowaniu zostaniesz poinformowany o warunkach ewentualnego
+  zwrotu. Zwroty są procesowane przez administratora.
+\end{tipbox}
+
+\subsection{Limit uczestników i automatyczna kolejka}
+
+Gdy limit zostanie osiągnięty, przycisk rejestracji zmieni się na
+\textbf{„Dołącz do listy oczekujących"}. System \textbf{automatycznie}
+awansuje Cię, gdy ktoś anuluje rejestrację.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Płatność za wydarzenie}
+
+\textbf{Adresy:} \texttt{/event/:id}, \texttt{/manual-payment/:registrationId}
+
+\subsection{Metody płatności}
+
+Kenaz obsługuje \textbf{przelew bankowy (płatność manualna)} — większość
+wydarzeń wymaga dokonania przelewu na podany numer konta i potwierdzenia
+go w aplikacji.
+
+\subsection{Przebieg płatności manualnej}
+
+\begin{enumerate}
+  \item Po kliknięciu \textbf{„Zapisz się"} system tworzy rejestrację
+        ze statusem \textbf{„Oczekuje na potwierdzenie płatności"}.
+  \item Aplikacja pokazuje link do strony płatności
+        (\texttt{/manual-payment/:registrationId}).
+  \item Na stronie płatności zobaczysz: \textbf{numer konta} bankowego,
+        \textbf{tytuł przelewu}, \textbf{kwotę do zapłaty} i
+        \textbf{termin płatności}.
+  \item Wykonaj przelew w swoim banku.
+  \item Wróć do aplikacji i kliknij \textbf{„Potwierdzam wykonanie przelewu"}.
+  \item Administrator weryfikuje wpłatę i akceptuje rejestrację.
+\end{enumerate}
+
+\begin{warnbox}
+  \textbf{Ważne:} Termin płatności jest automatycznie wyliczany przez system.
+  Jeśli nie dokonasz przelewu i nie potwierdzisz go w wyznaczonym czasie,
+  rejestracja może zostać automatycznie anulowana.
+\end{warnbox}
+
+\subsection{Strona potwierdzenia płatności}
+
+Pod adresem \texttt{/manual-payment/:registrationId} znajdziesz stronę
+ze szczegółami płatności: informację o wydarzeniu, dane do przelewu oraz
+przycisk \textbf{„Potwierdzam wykonanie przelewu"}.
+
+\subsection{Subskrypcja a ceny}
+
+Jeśli posiadasz aktywną \textbf{subskrypcję Kenaz}, automatycznie korzystasz
+z niższych cen lub możesz brać udział w bezpłatnych wydarzeniach dla
+subskrybentów. Więcej informacji w rozdziale 14.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Lista oczekujących (waitlist)}
+
+\subsection{Jak działa lista oczekujących?}
+
+Gdy liczba zapisów na wydarzenie osiągnie \textbf{limit miejsc}, kolejne
+osoby automatycznie trafiają na \textbf{listę oczekujących}. Lista jest
+prowadzona w kolejności rejestracji (FIFO — kto pierwszy, ten lepszy).
+
+\subsection{Automatyczne awansowanie}
+
+System automatycznie awansuje pierwszą osobę z listy oczekujących, gdy
+ktoś \textbf{anuluje} swoją rejestrację lub administrator ręcznie bierze
+czyjejś miejsce. Awansowanie jest natychmiastowe — status Twojej rejestracji
+zmienia się na \textbf{„Potwierdzony"} (bezpłatne) lub \textbf{„Oczekuje
+na płatność"} (płatne).
+
+\subsection{Jak sprawdzić swoje miejsce na liście?}
+
+W panelu użytkownika (\texttt{/panel}) widzisz listę swoich rejestracji
+wraz z aktualnym statusem przy każdej z nich.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Chat i komentarze}
+
+\textbf{Adres:} \texttt{/chat} (główny chat), \texttt{/event/:id} (komentarze)\\
+\textbf{Dostęp:} zalogowani i zatwierdzeni użytkownicy
+
+\subsection{Dwa rodzaje komunikacji}
+
+\begin{enumerate}
+  \item \textbf{Chat ogólny i chat przy wydarzeniach} — dostępny pod adresem
+        \texttt{/chat}.
+  \item \textbf{Komentarze pod wydarzeniami} — wbudowane na stronie
+        \texttt{/event/:id}.
+\end{enumerate}
+
+Oba systemy są oparte na tym samym mechanizmie. Chat (\texttt{/chat})
+agreguje wszystkie wątki w jednym miejscu.
+
+\subsection{Strona chatu (\texttt{/chat})}
+
+\subsubsection{Widok: Lista wydarzeń z chatem}
+
+Po wejściu na \texttt{/chat} zobaczysz listę \textbf{wydarzeń, na które
+jesteś zapisany}. Przy każdym wydarzeniu widoczna jest liczba
+\textbf{nieprzeczytanych wiadomości}. Możesz też przejść do
+\textbf{czatu ogólnego} (Kenaz General) — globalnego kanału dla wszystkich.
+
+\subsubsection{Widok: Rozmowa}
+
+Po wybraniu wydarzenia lub kanału ogólnego przechodzisz do widoku rozmowy:
+
+\begin{itemize}
+  \item Lista wiadomości od najstarszej do najnowszej.
+  \item Pole do wpisywania nowej wiadomości na dole ekranu.
+  \item Przyciski dodawania \textbf{reakcji emoji} do wiadomości.
+  \item Możliwość \textbf{odpowiadania} na konkretną wiadomość.
+\end{itemize}
+
+\subsection{Wysyłanie wiadomości}
+
+\begin{enumerate}
+  \item Przejdź do \texttt{/chat} i wybierz wydarzenie lub kanał.
+  \item Wpisz wiadomość w polu na dole ekranu.
+  \item Naciśnij \textbf{Enter} lub przycisk wysłania.
+\end{enumerate}
+
+Maksymalna długość wiadomości: \textbf{1000 znaków}. Nie można wysyłać
+pustych wiadomości ani samych spacji.
+
+\subsection{Odpowiadanie na wiadomości}
+
+\begin{itemize}
+  \item Na \textbf{desktop}: najedź kursorem na wiadomość $\rightarrow$
+        pojawi się opcja „Odpowiedz".
+  \item Na \textbf{mobile}: przytrzymaj wiadomość $\rightarrow$ pojawi się
+        menu z opcją „Odpowiedz".
+\end{itemize}
+
+\subsection{Reakcje emoji}
+
+\begin{itemize}
+  \item Na \textbf{desktop}: najedź na wiadomość $\rightarrow$ kliknij
+        ikonę emoji.
+  \item Na \textbf{mobile}: przytrzymaj wiadomość $\rightarrow$ wybierz
+        emoji z paska.
+\end{itemize}
+
+Kliknięcie ponownie tej samej reakcji \textbf{usuwa} Twoją reakcję.
+
+\subsection{Edycja i usuwanie wiadomości}
+
+Możesz \textbf{edytować} lub \textbf{usuwać} własne wiadomości (najedź
+na wiadomość lub przytrzymaj ją na mobile). Edycja używa mechanizmu
+wersjonowania — jeśli ktoś edytuje tę samą wiadomość równocześnie z Tobą,
+starszy zapis zostanie odrzucony.
+
+\subsection{Komentarze pod wydarzeniem}
+
+Sekcja komentarzy dostępna jest na dole strony każdego wydarzenia
+(\texttt{/event/:id}). Działają identycznie jak chat, ale są
+\textbf{przypisane do konkretnego wydarzenia}.
+
+\subsection{Nieprzeczytane wiadomości}
+
+Ikona chatu w nawigacji pokazuje \textbf{czerwoną kropkę} lub
+\textbf{liczbę} nieprzeczytanych wiadomości. Po wejściu w dany wątek
+wiadomości są automatycznie oznaczane jako przeczytane.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\czesc{CZĘŚĆ III — MOJE KONTO}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Panel — moje aktywności}
+
+\textbf{Adres:} \texttt{/panel} \quad
+\textbf{Dostęp:} zalogowani i zatwierdzeni użytkownicy
+
+\subsection{Co to jest Panel?}
+
+Panel to \textbf{centrum zarządzania Twoją aktywnością} w aplikacji.
+Znajdziesz tu:
+
+\begin{itemize}
+  \item \textbf{Listę Twoich rejestracji} na nadchodzące i minione wydarzenia.
+  \item \textbf{Statusy płatności} dla płatnych wydarzeń.
+  \item \textbf{Linki do płatności manualnej} — jeśli oczekuje na Ciebie
+        płatność.
+  \item Opcję \textbf{anulowania rejestracji}.
+\end{itemize}
+
+\subsection{Lista rejestracji}
+
+Rejestracje wyświetlane są chronologicznie (najbliższe na górze). Każda
+karta rejestracji zawiera: \textbf{nazwę i datę} wydarzenia, \textbf{ikonę
+kategorii}, \textbf{status rejestracji}, \textbf{cenę} i jej status
+(opłacona / nieopłacona) oraz \textbf{przycisk akcji}.
+
+\subsection{Widok dla niezalogowanych i niezatwierdzonych}
+
+Strona panelu wyświetla \textbf{przykładowe, zamazane} karty wydarzeń jako
+podgląd tego, jak będzie wyglądać panel po aktywacji konta.
+
+\subsection{Anulowanie rejestracji z Panelu}
+
+\begin{enumerate}
+  \item Znajdź wydarzenie na liście.
+  \item Kliknij przycisk \textbf{„Anuluj"} przy danej rejestracji.
+  \item Pojawi się okno potwierdzenia — przeczytaj je uważnie.
+  \item Potwierdź anulowanie.
+\end{enumerate}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Profil użytkownika i ustawienia konta}
+
+\textbf{Adres:} \texttt{/me} \quad \textbf{Dostęp:} zalogowani użytkownicy
+
+\subsection{Przegląd strony konta}
+
+Strona \texttt{/me} to Twój \textbf{profil osobisty} i centrum ustawień.
+Podzielona jest na kilka sekcji.
+
+\subsection{Sekcja: Dane podstawowe}
+
+Znajdziesz tu: \textbf{Imię i nazwisko} (z konta Google, nieedytowalne),
+\textbf{adres email}, \textbf{awatar}, \textbf{typ konta / rolę}
+(Member, Admin lub Guest) oraz \textbf{status subskrypcji}.
+
+\subsection{Sekcja: O mnie}
+
+Możesz napisać \textbf{krótkie opisanie siebie}, które będzie widoczne
+dla innych użytkowników na Twoim publicznym profilu.
+
+Aby edytować: kliknij przycisk edycji $\rightarrow$ wpisz tekst $\rightarrow$
+kliknij \textbf{„Zapisz"}.
+
+\subsection{Sekcja: Zainteresowania}
+
+Wybierz \textbf{tagi zainteresowań} — zaznaczone tagi są wyróżnione kolorem.
+Kliknij ponownie, aby odznaczyć. Kliknij \textbf{„Zapisz zainteresowania"}.
+
+\subsection{Sekcja: Ustawienia aplikacji}
+
+Znajdziesz tu: \textbf{wybór języka}, \textbf{wybór miasta} oraz
+\textbf{przełącznik trybu} jasny/ciemny.
+
+\subsection{Sekcja: Subskrypcja}
+
+Wyświetlana jest informacja o aktywnym planie (nazwa, data wygaśnięcia)
+oraz przycisk \textbf{„Zarządzaj planem"} prowadzący do \texttt{/plans}.
+Jeśli masz oczekującą płatność za subskrypcję, zobaczysz baner z linkiem
+do strony płatności.
+
+\subsection{Sekcja: Wylogowanie}
+
+Na dole strony konta znajdziesz przycisk \textbf{„Wyloguj się"}.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Plany i subskrypcje}
+
+\textbf{Adres:} \texttt{/plans} \quad
+\textbf{Dostęp:} zalogowani i zatwierdzeni użytkownicy
+
+\subsection{Co to jest subskrypcja?}
+
+Subskrypcja Kenaz to \textbf{opcjonalny plan membership}, który daje dostęp
+do preferencyjnych cen na wydarzeniach oraz innych benefitów.
+
+\subsection{Dostępne plany}
+
+\begin{longtable}{@{}L{3.5cm}L{7.5cm}L{4cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Plan} & \textbf{Opis} & \textbf{Cena} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Darmowy}    & Podstawowy dostęp; standardowe ceny wydarzeń & 0 zł \\
+\rowcolor{tableshade}
+\textbf{Miesięczny} & Obniżone ceny; wygasa po miesiącu & np.\ 69 zł/mies. \\
+\textbf{Roczny}     & Najlepsza wartość; najniższe ceny na cały rok & np.\ 599 zł/rok \\
+\end{longtable}
+
+\begin{tipbox}
+  Dokładne ceny planów są konfigurowane przez administratorów i mogą się
+  różnić od podanych przykładów.
+\end{tipbox}
+
+\subsection{Jak wybrać lub zmienić plan?}
+
+\begin{enumerate}
+  \item Przejdź do \texttt{/plans}.
+  \item Kliknij kartę z interesującym Cię planem.
+  \item Wybierz długość okresu (dla planów płatnych).
+  \item Kliknij \textbf{„Wybierz plan"} / \textbf{„Przejdź do płatności"}.
+  \item Zostaniesz przekierowany do strony płatności manualnej za subskrypcję.
+\end{enumerate}
+
+\subsection{Płatność za subskrypcję}
+
+Adres: \texttt{/subscription-purchases/:purchaseId/manual-payment}
+
+\begin{enumerate}
+  \item Na stronie zobaczysz dane do przelewu: numer konta, kwotę i tytuł.
+  \item Wykonaj przelew.
+  \item Kliknij \textbf{„Potwierdzam wykonanie przelewu"}.
+  \item Administrator weryfikuje wpłatę i aktywuje subskrypcję.
+\end{enumerate}
+
+\subsection{Rezygnacja z planu}
+
+Przejdź do \texttt{/plans}, wybierz \textbf{„Plan darmowy"} i potwierdź.
+Zmiana jest natychmiastowa.
+
+\subsection{Modal powitalny (po pierwszym zatwierdzeniu konta)}
+
+Gdy administrator zaakceptuje Twoje konto, zobaczysz \textbf{ekran powitalny}
+z przyciskiem „Wybierz plan" i opcją odłożenia decyzji na później.
+
+\subsection{Jak subskrypcja wpływa na ceny wydarzeń?}
+
+Na stronie szczegółów każdego płatnego wydarzenia widoczne są dwie ceny:
+\textbf{cena dla gości} (bez subskrypcji) i \textbf{cena dla członków}
+(z subskrypcją). System automatycznie nalicza odpowiednią cenę.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Publiczny profil użytkownika}
+
+\textbf{Adres:} \texttt{/people/:userId} \quad
+\textbf{Dostęp:} zalogowani i zatwierdzeni użytkownicy
+
+\subsection{Co to jest publiczny profil?}
+
+Każdy użytkownik Kenaz ma \textbf{publiczny profil} obsahující: imię i awatar,
+opis „O mnie" (jeśli uzupełniony) oraz tagi zainteresowań (jeśli wybrane).
+
+\subsection{Jak wejść na profil innego użytkownika?}
+
+Przez kliknięcie w imię autora wiadomości w chacie, lub bezpośrednio pod
+adresem \texttt{/people/:userId}.
+
+\subsection{Prywatność}
+
+Na publicznym profilu \textbf{nie są wyświetlane} prywatne dane: adres email,
+historia płatności, lista rejestracji. Widoczne są tylko te informacje,
+które użytkownik sam udostępnił.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\czesc{CZĘŚĆ IV — POZOSTAŁE STRONY}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Wesprzyj nas — darowizny}
+
+\textbf{Adres:} \texttt{/support} \quad
+\textbf{Dostęp:} wszyscy (zalogowani i niezalogowani)
+
+\subsection{Po co ta strona?}
+
+Strona \textbf{„Wesprzyj nas"} umożliwia wsparcie finansowe organizacji Kenaz.
+Dostęp mają wszyscy — zarówno zalogowani, jak i anonimowi odwiedzający.
+
+\subsection{Przelew bankowy}
+
+Na stronie znajdziesz sekcję z danymi do przelewu:
+
+\begin{itemize}
+  \item \textbf{Numer konta bankowego} — kliknij ikonę kopiowania, aby
+        skopiować numer jednym tapnięciem.
+  \item \textbf{Tytuł przelewu} — wpisz go dokładnie, aby administrator
+        mógł zidentyfikować wpłatę.
+  \item \textbf{Dane odbiorcy} — pełna nazwa organizacji i adres.
+\end{itemize}
+
+\subsection{Zewnętrzne platformy wspierania}
+
+Jeśli administrator skonfigurował zewnętrzne linki (np.\ buycoffee.to,
+Patronite), zobaczysz przyciski prowadzące do tych platform.
+
+\subsection{Formularz darowizny (dla zalogowanych użytkowników)}
+
+\begin{enumerate}
+  \item Wybierz kwotę z predefiniowanych opcji lub wpisz własną kwotę.
+  \item Opcjonalnie dodaj krótką notatkę dla administratora.
+  \item Kliknij \textbf{„Wesprzyj"}.
+\end{enumerate}
+
+\subsection{Punkty za darowiznę}
+
+Każdy zalogowany użytkownik, który dokonuje darowizny przez formularz,
+otrzymuje \textbf{punkty aktywności} dopisane do swojego profilu. Punkty
+są przyznawane niezależnie od posiadanego planu.
+
+\begin{tipbox}
+  \textbf{Uwaga:} Darowizny manualne (przelew bankowy bez użycia formularza)
+  wymagają ręcznej weryfikacji przez administratora przed przyznaniem punktów.
+\end{tipbox}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{O nas}
+
+\textbf{Adres:} \texttt{/about} \quad \textbf{Dostęp:} wszyscy
+
+\subsection{Co zawiera strona „O nas"?}
+
+\begin{itemize}
+  \item \textbf{Historię organizacji} — rozdziały ze zdjęciami i tekstami
+        opisującymi początki i wartości Kenaz.
+  \item \textbf{Statystyki} — kluczowe liczby (liczba członków, wydarzeń itp.).
+  \item \textbf{Zdjęcia} — galeria z życia organizacji.
+  \item \textbf{Przycisk dołączenia} — zachęta do zalogowania i dołączenia.
+\end{itemize}
+
+\subsection{Nawigacja po stronie}
+
+Strona jest podzielona na sekcje w układzie tekstowo-fotograficznym.
+Przewijaj stronę, aby zobaczyć wszystkie rozdziały historii.
+
+\subsection{Karta „Wesprzyj nas"}
+
+Na dole strony „O nas" wyświetlana jest karta z przyciskiem \textbf{„Wesprzyj
+nas"}, który kieruje do strony darowizn (\texttt{/support}).
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Polityka prywatności i Regulamin}
+
+\textbf{Adresy:} \texttt{/privacy}, \texttt{/terms} \quad
+\textbf{Dostęp:} wszyscy
+
+\subsection{Polityka prywatności (\texttt{/privacy})}
+
+Strona zawiera szczegółowe informacje dotyczące: jakie dane osobowe zbiera
+aplikacja, w jakim celu są przetwarzane, jak długo są przechowywane, jakie
+przysługują Ci prawa oraz informacje o cookies.
+
+\subsection{Regulamin (\texttt{/terms})}
+
+Strona zawiera warunki korzystania z aplikacji, m.in.: zasady uczestnictwa
+w wydarzeniach, warunki subskrypcji i politykę zwrotów, zasady korzystania
+z chatu oraz odpowiedzialność stron.
+
+\begin{tipbox}
+  Zalecamy zapoznanie się z obiema stronami przed pierwszym korzystaniem
+  z aplikacji.
+\end{tipbox}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\czesc{CZĘŚĆ V — DODATKI}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Aplikacja mobilna (PWA)}
+
+\subsection{Co to jest PWA?}
+
+Kenaz jest dostępny jako \textbf{Progressive Web App (PWA)} — aplikacja webowa,
+którą można zainstalować jak zwykłą aplikację. Nie wymaga pobierania ze sklepu
+App Store ani Google Play.
+
+\subsection{Jak zainstalować aplikację na telefonie?}
+
+\textbf{Na Android (Chrome):}
+
+\begin{enumerate}
+  \item Otwórz aplikację Kenaz w przeglądarce Chrome.
+  \item Kliknij baner \textbf{„Dodaj do ekranu głównego"}.
+  \item Alternatywnie: trzy kropki w menu Chrome $\rightarrow$
+        \textbf{„Dodaj do ekranu głównego"}.
+  \item Potwierdź instalację.
+\end{enumerate}
+
+\textbf{Na iOS (Safari):}
+
+\begin{enumerate}
+  \item Otwórz aplikację w Safari.
+  \item Kliknij ikonę \textbf{udostępniania} (prostokąt ze strzałką w górę).
+  \item Wybierz \textbf{„Dodaj do ekranu głównego"}.
+  \item Nadaj skrótowi nazwę i potwierdź.
+\end{enumerate}
+
+\subsection{Funkcje w trybie PWA}
+
+Po zainstalowaniu aplikacja otwiera się \textbf{bez paska adresu przeglądarki},
+obsługuje dolną nawigację z ikonami, dostosowuje układ do małych ekranów
+oraz obsługuje gesty dotykowe.
+
+\subsection{Logowanie Google w trybie standalone (iOS)}
+
+Logowanie przez Google OAuth jest w pełni obsługiwane w trybie standalone.
+Po kliknięciu „Zaloguj się przez Google" system otworzy stronę logowania Google
+i po uwierzytelnieniu automatycznie powróci do aplikacji.
+
+\begin{tipbox}
+  \textbf{Uwaga:} Jeśli logowanie przez Google nie działa w trybie standalone,
+  upewnij się, że otwierasz aplikację bezpośrednio z ikony na ekranie głównym.
+  W razie problemów spróbuj usunąć aplikację z ekranu głównego i dodać ją
+  ponownie.
+\end{tipbox}
+
+\subsection{Nawigacja mobilna}
+
+Na urządzeniach mobilnych zamiast górnego paska pojawia się \textbf{dolna
+nawigacja} z przyciskami:
+
+\begin{longtable}{@{}C{2.5cm}C{3.5cm}L{9cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Ikona} & \textbf{Strona} & \textbf{Opis} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Dom       & \texttt{/}        & Strona główna \\
+\rowcolor{tableshade}
+Kalendarz & \texttt{/calendar} & Kalendarz wydarzeń \\
+Chat      & \texttt{/chat}     & Chat i komentarze \\
+\rowcolor{tableshade}
+Panel     & \texttt{/panel}    & Twoje rejestracje \\
+Konto     & \texttt{/me}       & Profil i ustawienia \\
+\end{longtable}
+
+\subsection{Przycisk feedbacku (żarówka)}
+
+Na wszystkich stronach aplikacji dostępna jest \textbf{ruchoma ikonka żarówki}
+w prawym dolnym rogu. Kliknięcie jej otwiera formularz feedbacku — można wpisać
+opinię, sugestię lub zgłoszenie błędu. Działa poprawnie na wszystkich
+urządzeniach.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Tryb ciemny i jasny}
+
+\subsection{Jak zmienić tryb wyświetlania?}
+
+Kenaz obsługuje dwa motywy kolorystyczne:
+
+\begin{itemize}
+  \item \textbf{Tryb jasny} — kremowe tło, granatowy tekst.
+  \item \textbf{Tryb ciemny} — granatowe tło, kremowy tekst.
+\end{itemize}
+
+Możesz zmienić motyw klikając \textbf{ikonę słońca/księżyca} w górnym pasku
+nawigacyjnym lub przez stronę \textbf{Moje konto} (\texttt{/me}).
+
+\subsection{Automatyczne dopasowanie do systemu}
+
+Przy pierwszej wizycie aplikacja \textbf{automatycznie} wykrywa preferencje
+motywu ustawione w systemie operacyjnym.
+
+\subsection{Zapamiętywanie preferencji}
+
+Twój wybór jest zapisywany w przeglądarce (localStorage) i będzie zapamiętany
+przy kolejnych wizytach.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Powiadomienia i komunikaty systemowe}
+
+\subsection{Rodzaje powiadomień}
+
+\begin{longtable}{@{}L{3.5cm}L{3.5cm}L{8cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Typ} & \textbf{Wygląd} & \textbf{Kiedy się pojawia} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Sukces} (zielony)     & Zielony baner u góry   & Operacja zakończona pomyślnie \\
+\rowcolor{tableshade}
+\textbf{Błąd} (czerwony)      & Czerwony baner          & Coś poszło nie tak \\
+\textbf{Informacja} (niebieski) & Niebieski baner        & Ogólna informacja \\
+\rowcolor{tableshade}
+\textbf{Potwierdzenie}        & Okno modalne            & Wymagane potwierdzenie akcji \\
+\end{longtable}
+
+\subsection{Banner powiadomień globalnych}
+
+Administratorzy mogą ustawić \textbf{globalny baner informacyjny} pojawiający
+się u góry strony dla wszystkich użytkowników (np.\ przerwa techniczna,
+zmiana terminów).
+
+\subsection{Powiadomienia o nowych wiadomościach}
+
+Jeśli masz nieprzeczytane wiadomości w chacie, na ikonie chatu pojawia się
+\textbf{czerwona kropka} lub liczba wiadomości. Po wejściu w wątek powiadomienie
+znika.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Często zadawane pytania (FAQ)}
+
+\textbf{P: Dlaczego nie mogę zobaczyć kalendarza?}
+
+O: Musisz być zalogowany i mieć zatwierdzone konto przez administratora.
+Jeśli się dopiero zarejestrowałeś, poczekaj na akceptację (1–2 dni robocze).
+
+\bigskip
+\textbf{P: Jak anulować subskrypcję?}
+
+O: Przejdź do \texttt{/plans} i wybierz plan darmowy. Zmiana następuje
+natychmiastowo.
+
+\bigskip
+\textbf{P: Zapłaciłem za wydarzenie, ale rejestracja nie działa — co robię?}
+
+O: Sprawdź status płatności w panelu (\texttt{/panel}) lub na stronie
+\texttt{/manual-payment/:id}. Upewnij się, że kliknąłeś „Potwierdzam
+wykonanie przelewu". Jeśli problem nadal występuje, skontaktuj się
+z administratorem.
+
+\bigskip
+\textbf{P: Nie mogę się zalogować przez Google — co robię?}
+
+O: Sprawdź, czy Twoje połączenie internetowe działa. Spróbuj wyczyścić
+cache przeglądarki lub użyć trybu prywatnego. Jeśli problem nie ustępuje,
+skontaktuj się z administratorem.
+
+\bigskip
+\textbf{P: Czy mogę zmienić adres email w Kenaz?}
+
+O: Kenaz używa konta Google, więc adres email jest powiązany z Twoim kontem
+Google. Aby zmienić email, musisz użyć innego konta Google.
+
+\bigskip
+\textbf{P: Zapisałem się na listę oczekujących — co teraz?}
+
+O: Poczekaj. System automatycznie awansuje Cię, gdy ktoś zwolni miejsce.
+Sprawdzaj status w panelu (\texttt{/panel}).
+
+\bigskip
+\textbf{P: Jak wesprzeć Kenaz finansowo?}
+
+O: Przejdź do \texttt{/support}. Możesz wykonać przelew na podany numer konta
+lub skorzystać z zewnętrznych platform. Zalogowani użytkownicy mogą też
+skorzystać z formularza darowizny w aplikacji.
+
+\bigskip
+\textbf{P: Czy mogę wspierać centrum bez zakładania konta?}
+
+O: Tak. Strona \texttt{/support} jest dostępna publicznie.
+
+\bigskip
+\textbf{P: Nie mogę się zalogować przez Google w trybie PWA na iPhonie?}
+
+O: Upewnij się, że otwierasz aplikację bezpośrednio z ikony na ekranie
+głównym. Jeśli problem nadal występuje, spróbuj usunąć aplikację z ekranu
+głównego i dodać ją ponownie przez Safari $\rightarrow$ Udostępnij
+$\rightarrow$ Dodaj do ekranu głównego.
+
+\bigskip
+\textbf{P: Co oznacza „zablokowane konto"?}
+
+O: Konto zablokowane przez administratora automatycznie wraca do statusu
+oczekującego. Musisz poczekać, aż administrator ponownie je zatwierdzi.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\clearpage
+\section{Słownik pojęć}
+
+\begin{longtable}{@{}L{4cm}L{11cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Pojęcie} & \textbf{Definicja} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{BANNED}              & Status konta zablokowanego przez administratora \\
+\rowcolor{tableshade}
+\textbf{Chat ogólny}         & Globalny kanał komunikacji dla wszystkich aktywnych użytkowników \\
+\textbf{Darczyńca}           & Użytkownik, który przekazał darowiznę na rzecz organizacji \\
+\rowcolor{tableshade}
+\textbf{Feedback}            & Opinia lub sugestia wysłana przez żarówkę \\
+\textbf{Limit uczestników}   & Maksymalna liczba osób zapisanych na wydarzenie \\
+\rowcolor{tableshade}
+\textbf{Lista oczekujących}  & Kolejka użytkowników czekających na zwolnienie miejsca \\
+\textbf{Manualna płatność}   & Przelew bankowy weryfikowany ręcznie przez administratora \\
+\rowcolor{tableshade}
+\textbf{Motyw}               & Schemat kolorystyczny: jasny (light) lub ciemny (dark) \\
+\textbf{PENDING}             & Status konta oczekującego na akceptację administratora \\
+\rowcolor{tableshade}
+\textbf{Plan darmowy}        & Podstawowy plan bez abonamentu \\
+\textbf{Plan miesięczny}     & Subskrypcja odnawialna co miesiąc \\
+\rowcolor{tableshade}
+\textbf{Plan roczny}         & Subskrypcja na rok; najniższe ceny wydarzeń \\
+\textbf{PWA}                 & Progressive Web App — aplikacja webowa działająca jak natywna \\
+\rowcolor{tableshade}
+\textbf{Reakcja}             & Emoji dodawany do wiadomości w chacie \\
+\textbf{Rejestracja}         & Zapis użytkownika na konkretne wydarzenie \\
+\rowcolor{tableshade}
+\textbf{Rola}                & Uprawnienia: Guest (gość), Member (członek), Admin (administrator) \\
+\textbf{Standalone}          & Tryb działania PWA na iOS bez paska adresu Safari \\
+\rowcolor{tableshade}
+\textbf{Status konta}        & Stan konta: Active, Pending lub Banned \\
+\textbf{Subskrypcja}         & Płatny plan membership; niższe ceny na wydarzeniach \\
+\rowcolor{tableshade}
+\textbf{Tag zainteresowań}   & Etykieta określająca zainteresowania użytkownika \\
+\textbf{Waitlist}            & Synonim listy oczekujących \\
+\rowcolor{tableshade}
+\textbf{Wątek}               & Zbiór odpowiedzi powiązanych z wiadomością w chacie \\
+\textbf{Wesprzyj nas}        & Strona \texttt{/support} umożliwiająca wsparcie centrum \\
+\end{longtable}
+
+\vfill
+\begin{center}
+  {\color{kenaznavy!25}\rule{0.6\linewidth}{0.5pt}\par}
+  \vspace{0.4cm}
+  {\sffamily\small\color{kenazdim!70}
+    Instrukcja Użytkownika — Kenaz Centrum, wersja 2.0, luty 2026.\par
+    Wszelkie pytania kieruj do administratorów platformy.\par}
+\end{center}
+
+\end{document}

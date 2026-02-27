@@ -1,0 +1,1175 @@
+% ══════════════════════════════════════════════════════════════════════════════
+%  INSTRUKCJA ADMINISTRATORA — Kenaz Centrum
+%  Kompilacja: xelatex INSTRUKCJA_ADMINISTRATORA.tex  (dwukrotnie)
+% ══════════════════════════════════════════════════════════════════════════════
+\documentclass[11pt, a4paper]{article}
+
+% ── Fonty ─────────────────────────────────────────────────────────────────────
+\usepackage{fontspec}
+\setmainfont{Palatino}[Ligatures=TeX, Numbers=OldStyle]
+\setsansfont{Helvetica Neue}[BoldFont={Helvetica Neue Bold}, Scale=MatchLowercase]
+\setmonofont{Courier New}[Scale=0.88]
+
+% ── Język ─────────────────────────────────────────────────────────────────────
+\usepackage{polyglossia}
+\setdefaultlanguage{polish}
+
+% ── Marginesy ─────────────────────────────────────────────────────────────────
+\usepackage[a4paper, top=3cm, bottom=3cm, left=2.8cm, right=2.8cm, headheight=15pt]{geometry}
+
+% ── Kolory ────────────────────────────────────────────────────────────────────
+\usepackage{xcolor}
+\definecolor{kenaznavy}{HTML}{0F174A}
+\definecolor{kenazred}{HTML}{E53935}
+\definecolor{kenazdim}{HTML}{4B5385}
+\definecolor{tableshade}{HTML}{F5F4EF}
+\definecolor{codebg}{HTML}{F0EFE8}
+\definecolor{tipbg}{HTML}{EEF0F8}
+
+% ── Hiperłącza ────────────────────────────────────────────────────────────────
+\usepackage[unicode, colorlinks=true, linkcolor=kenaznavy,
+            urlcolor=kenazred, citecolor=kenazdim,
+            pdftitle={Instrukcja Administratora — Kenaz Centrum},
+            pdfauthor={Kenaz Centrum}]{hyperref}
+
+% ── Interlinia / akapity ──────────────────────────────────────────────────────
+\usepackage{setspace}
+\setstretch{1.4}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\parindent}{0pt}
+
+% ── Łamanie stron ─────────────────────────────────────────────────────────────
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
+
+% ── Nagłówki i stopki ─────────────────────────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{kenazdim}\nouppercase{\leftmark}}
+\fancyhead[R]{\small\color{kenazdim}Kenaz Centrum}
+\fancyfoot[C]{\small\color{kenazdim}---\;\thepage\;---}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\headrule}{{\color{kenazdim!40}\hrule width\headwidth height 0.3pt}}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\small\color{kenazdim}---\;\thepage\;---}%
+  \renewcommand{\headrulewidth}{0pt}%
+}
+
+% ── Nagłówki sekcji ───────────────────────────────────────────────────────────
+\usepackage{titlesec}
+\usepackage{needspace}
+\titleformat{\section}
+  {\sffamily\LARGE\bfseries\color{kenaznavy}}{\thesection}{0.8em}{}
+\titleformat{\subsection}
+  {\sffamily\large\bfseries\color{kenaznavy}}{\thesubsection}{0.8em}{}
+\titleformat{\subsubsection}
+  {\sffamily\normalsize\bfseries\color{kenazdim}}{\thesubsubsection}{0.8em}{}
+\titlespacing{\section}     {0pt}{24pt plus 6pt minus 4pt}{8pt}
+\titlespacing{\subsection}  {0pt}{16pt plus 4pt minus 2pt}{5pt}
+\titlespacing{\subsubsection}{0pt}{10pt plus 2pt minus 2pt}{3pt}
+\preto\section{\needspace{5\baselineskip}}
+\preto\subsection{\needspace{4\baselineskip}}
+
+% ── Spis treści ───────────────────────────────────────────────────────────────
+\usepackage{tocloft}
+\renewcommand{\cfttoctitlefont}{\sffamily\Large\bfseries\color{kenaznavy}}
+\renewcommand{\cftsecfont}{\sffamily\bfseries\color{kenaznavy}}
+\renewcommand{\cftsecpagefont}{\sffamily\small\color{kenazdim}}
+\renewcommand{\cftsubsecfont}{\sffamily\small}
+\renewcommand{\cftsubsecpagefont}{\sffamily\small\color{kenazdim}}
+\setlength{\cftbeforesecskip}{3pt}
+
+% ── Tabele ────────────────────────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{tabularx}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\arrayrulecolor{kenaznavy!20}
+\renewcommand{\arraystretch}{1.3}
+
+% ── Bloki kodu ────────────────────────────────────────────────────────────────
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{kenaznavy!20},
+  breaklines=true,
+  breakatwhitespace=false,
+  xleftmargin=10pt, xrightmargin=10pt,
+  aboveskip=8pt, belowskip=8pt,
+  showstringspaces=false,
+}
+
+% ── Ramki informacyjne (ostrzeżenia, wskazówki) ───────────────────────────────
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+\newtcolorbox{tipbox}{
+  breakable,
+  colback=tipbg,
+  colframe=kenaznavy!35,
+  boxrule=0.4pt,
+  left=8pt, right=8pt, top=5pt, bottom=5pt,
+  fontupper=\small,
+  before upper={\setlength{\parskip}{3pt}},
+}
+\newtcolorbox{warnbox}{
+  breakable,
+  colback=kenazred!5,
+  colframe=kenazred!40,
+  boxrule=0.4pt,
+  left=8pt, right=8pt, top=5pt, bottom=5pt,
+  fontupper=\small,
+  before upper={\setlength{\parskip}{3pt}},
+}
+
+% ── Listy ─────────────────────────────────────────────────────────────────────
+\usepackage{enumitem}
+\setlist[itemize]  {leftmargin=1.5em, itemsep=2pt, topsep=3pt, parsep=0pt}
+\setlist[enumerate]{leftmargin=1.5em, itemsep=2pt, topsep=3pt, parsep=0pt}
+
+% ── Mikrotypografia ───────────────────────────────────────────────────────────
+\usepackage{microtype}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ── Strona tytułowa ───────────────────────────────────────────────────────────
+\thispagestyle{empty}
+\begin{center}
+  \vspace*{2.5cm}
+  {\sffamily\fontsize{40}{48}\selectfont\bfseries\color{kenaznavy} Kenaz\par}
+  \vspace{0.3cm}
+  {\color{kenaznavy!25}\rule{\linewidth}{1.5pt}\par}
+  \vspace{0.6cm}
+  {\sffamily\Huge\bfseries\color{kenaznavy} Instrukcja Administratora\par}
+  \vspace{0.4cm}
+  {\sffamily\Large\color{kenazdim} Kompletny przewodnik zarządzania aplikacją\par}
+  \vspace{1.2cm}
+  {\color{kenaznavy!25}\rule{0.4\linewidth}{0.5pt}\par}
+  \vspace{0.6cm}
+  {\sffamily\normalsize\color{kenazdim}
+    \textbf{Wersja dokumentu:} 2.0 \quad
+    \textbf{Data:} luty 2026\par}
+  \vspace{0.3cm}
+  {\sffamily\small\color{kenazdim!80}
+    Dotyczy: panel administracyjny aplikacji Kenaz\par}
+  \vfill
+  \begin{tcolorbox}[colback=kenazred!8, colframe=kenazred!50, boxrule=0.5pt,
+                    left=12pt, right=12pt, top=8pt, bottom=8pt, width=0.9\linewidth]
+    {\sffamily\small\color{kenazred!80}
+      \textbf{Dokument poufny} — przeznaczony wyłącznie dla administratorów
+      systemu. Nie udostępniaj go użytkownikom. Zakłada pełną znajomość
+      aplikacji od strony użytkownika. Szczegółowy opis funkcji użytkownika
+      zawiera osobny dokument: \emph{INSTRUKCJA\_UZYTKOWNIKA}.\par}
+  \end{tcolorbox}
+  \vspace{0.8cm}
+  {\sffamily\small\color{kenazdim!60} Kenaz Centrum\par}
+\end{center}
+\clearpage
+
+% ── Spis treści ───────────────────────────────────────────────────────────────
+\tableofcontents
+\clearpage
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Dashboard administratora}
+\label{sec:dashboard}
+
+\textbf{Adres:} \texttt{/admin} \quad \textbf{Dostęp:} wyłącznie użytkownicy z rolą Admin
+
+\subsection{Ogólne informacje}
+
+Dashboard to \textbf{centralna strona panelu administracyjnego}. Jest to pierwszy
+ekran, który zobaczysz po wejściu pod adres \texttt{/admin}. Na dashboardzie
+wyświetlona jest \textbf{siatka kafelków}, z których każdy prowadzi do konkretnej
+sekcji zarządzania.
+
+\subsection{Siatka kafelków}
+
+Każdy kafelek zawiera ikonę, tytuł i skrócony opis funkcji. Kliknięcie kafelka
+przenosi do odpowiedniej podstrony. Dostępne kafelki:
+
+\begin{longtable}{@{}L{4.5cm}L{5cm}L{5.5cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Kafelek} & \textbf{Adres} & \textbf{Opis} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Utwórz wydarzenie}    & \texttt{/admin/create-event}    & Formularz tworzenia nowego wydarzenia \\
+\rowcolor{tableshade}
+\textbf{Zatwierdź użytkowników} & \texttt{/admin/users}          & Oczekujące konta do akceptacji \\
+\textbf{Wszyscy użytkownicy}  & \texttt{/admin/all-users}       & Lista i zarządzanie wszystkimi kontami \\
+\rowcolor{tableshade}
+\textbf{Płatności online}     & \texttt{/admin/payments}        & Przegląd transakcji TPay \\
+\textbf{Płatności manualne}   & \texttt{/admin/manual-payments} & Weryfikacja przelewów bankowych \\
+\rowcolor{tableshade}
+\textbf{Bilans}               & \texttt{/admin/balance}         & Przegląd finansowy organizacji \\
+\textbf{Darowizny}            & \texttt{/admin/donations}       & Lista darowizn i konfiguracja \\
+\rowcolor{tableshade}
+\textbf{Feedback}             & \texttt{/admin/feedback}        & Opinie nadesłane przez użytkowników \\
+\textbf{Ikonki}               & \texttt{/admin/icons}           & Zarządzanie ikonkami kategorii \\
+\rowcolor{tableshade}
+\textbf{Nadaj admina}         & \texttt{/admin/promote}         & Przyznawanie uprawnień administratora \\
+\end{longtable}
+
+\subsection{Widoczność dashboardu}
+
+Dashboard i wszystkie podstrony \texttt{/admin/*} są dostępne \textbf{wyłącznie}
+dla zalogowanych użytkowników z przypisaną rolą \texttt{Admin}. Próba wejścia na
+te adresy przez zwykłego użytkownika skutkuje przekierowaniem do kalendarza lub
+wyświetleniem komunikatu o braku uprawnień.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Tworzenie i edycja wydarzeń}
+\label{sec:events}
+
+\textbf{Adresy:} \texttt{/admin/create-event}, \texttt{/admin/edit-event/:id}
+\quad \textbf{Dostęp:} wyłącznie Admin
+
+\subsection{Jak utworzyć nowe wydarzenie?}
+
+\begin{enumerate}
+  \item Przejdź do dashboardu (\texttt{/admin}) i kliknij kafelek
+        \textbf{„Utwórz wydarzenie"}, lub bezpośrednio wejdź pod adres
+        \texttt{/admin/create-event}.
+  \item Wypełnij formularz (wszystkie wymagane pola oznaczone gwiazdką \texttt{*}).
+  \item Kliknij przycisk \textbf{„Utwórz wydarzenie"}.
+  \item Wydarzenie od razu pojawia się w kalendarzu.
+\end{enumerate}
+
+\subsection{Pola formularza tworzenia wydarzenia}
+
+\begin{longtable}{@{}L{3.8cm}C{2cm}L{9cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Pole} & \textbf{Wymagane} & \textbf{Opis i uwagi} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Tytuł}             & Tak & Nazwa wyświetlana w kalendarzu i na stronie szczegółów \\
+\rowcolor{tableshade}
+\textbf{Data}              & Tak & Data i godzina rozpoczęcia; picker kalendarza \\
+\textbf{Godzina zakończenia} & Nie & Opcjonalna; wyświetlana na stronie szczegółów \\
+\rowcolor{tableshade}
+\textbf{Miasto}            & Tak & Wybór z listy dostępnych miast; decyduje o filtrowaniu w kalendarzu \\
+\textbf{Lokalizacja}       & Tak & Adres lub nazwa miejsca; wyświetlana z linkiem do Google Maps \\
+\rowcolor{tableshade}
+\textbf{Opis}              & Tak & Pełny opis aktywności; wspiera formatowanie tekstowe \\
+\textbf{Cena (goście)}     & Tak & Cena dla użytkowników bez subskrypcji; wpisz \texttt{0} dla bezpłatnych \\
+\rowcolor{tableshade}
+\textbf{Cena (członkowie)} & Tak & Cena dla subskrybentów; wpisz \texttt{0} dla bezpłatnych \\
+\textbf{Limit uczestników} & Nie & Maksymalna liczba miejsc; zostaw puste dla bez limitu \\
+\rowcolor{tableshade}
+\textbf{Ikona kategorii}   & Nie & Wybór ikony z zarządzanych typów \\
+\textbf{Ogłoszenie}        & Nie & Opcjonalny anons powiązany z wydarzeniem \\
+\end{longtable}
+
+\subsection{Limit wydarzeń dziennie}
+
+System nakłada ograniczenie: \textbf{maksymalnie 4 wydarzenia w jednym dniu
+w tym samym mieście}. Próba przekroczenia limitu wyświetla komunikat błędu
+i uniemożliwia zapisanie.
+
+\subsection{Edycja istniejącego wydarzenia}
+
+\begin{enumerate}
+  \item Wejdź na stronę szczegółów danego wydarzenia (\texttt{/event/:id}).
+  \item Kliknij przycisk \textbf{„Edytuj"} (widoczny tylko dla administratorów).
+  \item Zostaniesz przekierowany do formularza edycji pod adresem
+        \texttt{/admin/edit-event/:id}.
+  \item Zmień wybrane pola i kliknij \textbf{„Zapisz zmiany"}.
+\end{enumerate}
+
+Edycja jest natychmiastowa — zmiany są widoczne dla wszystkich użytkowników
+od razu po zapisaniu.
+
+\subsection{Usuwanie wydarzenia}
+
+Na stronie edycji wydarzenia (\texttt{/admin/edit-event/:id}) dostępny jest
+przycisk \textbf{„Usuń wydarzenie"}. Usunięcie jest \textbf{nieodwracalne}
+i wiąże się z anulowaniem wszystkich rejestracji na to wydarzenie.
+
+\begin{warnbox}
+  \textbf{Ważne:} Przed usunięciem przejrzyj listę uczestników. Jeśli wydarzenie
+  ma zarejestrowanych uczestników, którzy zapłacili, rozważ poinformowanie ich
+  przed usunięciem.
+\end{warnbox}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Zatwierdzanie nowych użytkowników}
+\label{sec:approve}
+
+\textbf{Adres:} \texttt{/admin/users} \quad \textbf{Dostęp:} wyłącznie Admin
+
+\subsection{Co widać na tej stronie?}
+
+Na stronie \texttt{/admin/users} wyświetlana jest \textbf{lista kont oczekujących
+na zatwierdzenie}. Każda karta użytkownika zawiera:
+
+\begin{itemize}
+  \item \textbf{Imię i nazwisko} (z konta Google).
+  \item \textbf{Adres email}.
+  \item \textbf{Awatar} (jeśli dostępny z Google).
+  \item \textbf{Data rejestracji} — kiedy użytkownik zalogował się po raz pierwszy.
+  \item \textbf{Przycisk „Zatwierdź"} i \textbf{przycisk „Odrzuć"}.
+\end{itemize}
+
+\subsection{Jak zatwierdzić konto?}
+
+\begin{enumerate}
+  \item Przejdź do \texttt{/admin/users}.
+  \item Znajdź kartę użytkownika, którego chcesz zatwierdzić.
+  \item Kliknij przycisk \textbf{„Zatwierdź"}.
+  \item Status konta zmienia się z \texttt{PENDING} na \texttt{ACTIVE}.
+  \item Użytkownik przy kolejnym wejściu w aplikację zobaczy ekran powitalny
+        i wybór planu subskrypcji.
+\end{enumerate}
+
+\begin{tipbox}
+  \textbf{Wskazówka:} Rozważ weryfikację tożsamości użytkownika przed
+  zatwierdzeniem (jeśli masz takie procedury). Po zatwierdzeniu użytkownik
+  uzyskuje pełny dostęp do wszystkich funkcji.
+\end{tipbox}
+
+\subsection{Co się dzieje po zatwierdzeniu?}
+
+\begin{itemize}
+  \item Konto zmienia status na \texttt{ACTIVE}.
+  \item Użytkownik zostaje przekierowany do ekranu powitalnego z wyborem planu
+        subskrypcji przy kolejnym logowaniu.
+  \item Zostaje zalogowane zdarzenie w systemie logów audytowych.
+\end{itemize}
+
+\subsection{Jeśli lista jest pusta}
+
+Gdy nie ma oczekujących kont, strona wyświetla komunikat informujący, że nie ma
+nic do zatwierdzenia. Jest to normalna sytuacja — wróć tu, gdy pojawią się
+nowi użytkownicy.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Lista wszystkich użytkowników}
+\label{sec:allusers}
+
+\textbf{Adres:} \texttt{/admin/all-users} \quad \textbf{Dostęp:} wyłącznie Admin
+
+\subsection{Ogólny opis}
+
+Strona \texttt{/admin/all-users} to \textbf{kompletna lista wszystkich kont}
+w systemie Kenaz, bez względu na status. Służy do zarządzania aktywnymi,
+oczekującymi i zablokowanymi użytkownikami.
+
+\subsection{Paginacja}
+
+Użytkownicy są wyświetlani stronicowo. Na dole listy znajdziesz przyciski
+nawigacji \textbf{„Następna strona"} / \textbf{„Poprzednia strona"} oraz
+informację o aktualnej stronie i całkowitej liczbie użytkowników.
+
+\subsection{Filtry}
+
+\begin{longtable}{@{}L{4.5cm}L{10.5cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Filtr} & \textbf{Opis} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Filtr statusu}       & Pokaż wszystkich / tylko aktywnych / tylko oczekujących / tylko zablokowanych \\
+\rowcolor{tableshade}
+\textbf{Filtr subskrybentów} & Pokaż wszystkich / tylko subskrybentów (aktywna subskrypcja płatna) \\
+\textbf{Wyszukiwarka}        & Wyszukaj po imieniu lub adresie email \\
+\end{longtable}
+
+\subsection{Klikalne wiersze}
+
+Każdy wiersz tabeli użytkowników jest \textbf{klikalny}. Kliknięcie otwiera
+\textbf{kafelek admina} — rozszerzony panel informacyjny z pełnymi danymi
+o danym koncie.
+
+\subsection{Kafelek admina — zawartość}
+
+Kafelek admina jest powiększoną kartą informacyjną podzieloną na cztery sekcje:
+
+\subsubsection{Sekcja 1: Konto}
+
+\begin{longtable}{@{}L{4cm}L{11cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Pole} & \textbf{Opis} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Imię i email}    & Dane identyfikacyjne \\
+\rowcolor{tableshade}
+\textbf{Awatar}          & Zdjęcie z Google \\
+\textbf{Rola}            & Guest, Member lub Admin \\
+\rowcolor{tableshade}
+\textbf{Status konta}    & Active, Pending lub Banned \\
+\textbf{Data rejestracji} & Kiedy użytkownik zalogował się po raz pierwszy \\
+\rowcolor{tableshade}
+\textbf{Miasto}          & Wybrane miasto użytkownika \\
+\end{longtable}
+
+\subsubsection{Sekcja 2: Aktywność}
+
+\begin{longtable}{@{}L{4cm}L{11cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Pole} & \textbf{Opis} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Liczba rejestracji} & Ile razy użytkownik zapisał się na wydarzenia \\
+\rowcolor{tableshade}
+\textbf{Ostatnia aktywność} & Data ostatniego logowania lub akcji \\
+\textbf{Aktywny subskrybent} & Tak/Nie; nazwa planu i data wygaśnięcia \\
+\end{longtable}
+
+\subsubsection{Sekcja 3: Finanse}
+
+\begin{longtable}{@{}L{4cm}L{11cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Pole} & \textbf{Opis} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Suma wpłat}        & Łączna kwota zapłacona za wydarzenia \\
+\rowcolor{tableshade}
+\textbf{Suma subskrypcji}  & Łączna kwota zapłacona za subskrypcje \\
+\textbf{Darowizny}         & Łączna kwota darowizn \\
+\rowcolor{tableshade}
+\textbf{Historia transakcji} & Lista ostatnich płatności \\
+\end{longtable}
+
+\subsubsection{Sekcja 4: Oczekujące akcje}
+
+\begin{longtable}{@{}L{4cm}L{11cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Pole} & \textbf{Opis} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Oczekujące płatności}  & Rejestracje, za które użytkownik jeszcze nie zapłacił \\
+\rowcolor{tableshade}
+\textbf{Oczekujące rejestracje} & Rejestracje do potwierdzenia \\
+\end{longtable}
+
+\subsection{Blokowanie i odblokowanie konta}
+
+Z poziomu kafelka admina możesz zarządzać statusem konta.
+
+\textbf{Zablokowanie konta (\texttt{ACTIVE} $\rightarrow$ \texttt{BANNED}):}
+
+\begin{enumerate}
+  \item W kafelku admina kliknij \textbf{„Zablokuj konto"}.
+  \item Pojawi się okno potwierdzenia — kliknij \textbf{„Potwierdź"}.
+  \item Konto zmienia status na \texttt{BANNED}. Użytkownik traci dostęp
+        do pełnych funkcji.
+\end{enumerate}
+
+\textbf{Odblokowanie konta (\texttt{BANNED} $\rightarrow$ \texttt{PENDING} /
+\texttt{ACTIVE}):}
+
+\begin{enumerate}
+  \item W kafelku admina przy zablokowanym koncie kliknij \textbf{„Odblokuj"}.
+  \item Konto wraca do statusu \texttt{PENDING} (wymaga ponownej akceptacji)
+        lub \texttt{ACTIVE} (bezpośrednie odblokowanie), zależnie od konfiguracji.
+\end{enumerate}
+
+\begin{tipbox}
+  \textbf{Uwaga:} Zablokowany użytkownik widzi kalendarz i panel zamazane,
+  identycznie jak przy statusie PENDING. Jego rejestracje i historia pozostają
+  w systemie.
+\end{tipbox}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Płatności online}
+\label{sec:payments-online}
+
+\textbf{Adres:} \texttt{/admin/payments} \quad \textbf{Dostęp:} wyłącznie Admin
+
+\subsection{Co widać na tej stronie?}
+
+Strona \texttt{/admin/payments} wyświetla \textbf{listę transakcji przetwarzanych
+przez bramkę płatności online} (TPay). Każda pozycja na liście zawiera:
+
+\begin{itemize}
+  \item \textbf{ID transakcji} — unikalny identyfikator z systemu płatności.
+  \item \textbf{Użytkownik} — imię i email płacącego.
+  \item \textbf{Kwota} — wartość transakcji.
+  \item \textbf{Status transakcji} — np.\ Opłacona, Oczekująca, Anulowana,
+        Zwrócona.
+  \item \textbf{Data i godzina} transakcji.
+  \item \textbf{Typ płatności} — za wydarzenie, za subskrypcję.
+\end{itemize}
+
+\subsection{Ręczna zmiana statusu transakcji}
+
+W uzasadnionych przypadkach (np.\ bramka nie zaktualizowała statusu automatycznie)
+możesz \textbf{ręcznie zmienić status transakcji}:
+
+\begin{enumerate}
+  \item Kliknij w wybraną transakcję na liście.
+  \item Wybierz nowy status z listy dostępnych opcji.
+  \item Kliknij \textbf{„Zapisz"}.
+\end{enumerate}
+
+\begin{warnbox}
+  \textbf{Ważne:} Ręczna zmiana statusu powinna być stosowana wyłącznie
+  w wyjątkowych sytuacjach — np.\ gdy bramka płatności zgłasza błąd, ale
+  wpłata faktycznie dotarła. Każda zmiana jest odnotowywana w logach
+  audytowych i widoczna przez system.
+\end{warnbox}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Płatności manualne}
+\label{sec:payments-manual}
+
+\textbf{Adres:} \texttt{/admin/manual-payments} \quad \textbf{Dostęp:}
+wyłącznie Admin
+
+\subsection{Co to są płatności manualne?}
+
+Płatności manualne to \textbf{przelewy bankowe} dokonywane przez użytkowników
+za rejestracje na płatne wydarzenia lub zakup subskrypcji. Administrator musi
+ręcznie zweryfikować każdą płatność i ją zatwierdzić lub odrzucić.
+
+\subsection{Główna lista — oczekujące płatności}
+
+Na górze strony wyświetlona jest lista \textbf{oczekujących płatności do
+weryfikacji}. Każda pozycja zawiera:
+
+\begin{itemize}
+  \item \textbf{Imię i email} użytkownika.
+  \item \textbf{Typ płatności} — za wydarzenie lub za subskrypcję.
+  \item \textbf{Kwota} do weryfikacji.
+  \item \textbf{Data} złożenia prośby o potwierdzenie przez użytkownika.
+  \item \textbf{Przycisk „Zweryfikuj"} i \textbf{przycisk „Odrzuć"}.
+\end{itemize}
+
+\subsection{Jak zweryfikować płatność?}
+
+\begin{enumerate}
+  \item Znajdź w banku przelew od danego użytkownika. Zweryfikuj kwotę
+        i tytuł przelewu.
+  \item Na stronie \texttt{/admin/manual-payments} kliknij \textbf{„Zweryfikuj"}
+        przy odpowiedniej pozycji.
+  \item Pojawi się okno potwierdzenia.
+  \item Kliknij \textbf{„Potwierdź"} — rejestracja lub subskrypcja zostaje
+        aktywowana.
+\end{enumerate}
+
+\subsection{Jak odrzucić płatność?}
+
+Jeśli przelew nie dotarł, ma nieprawidłową kwotę lub jest niepoprawny
+z innego powodu:
+
+\begin{enumerate}
+  \item Kliknij \textbf{„Odrzuć"} przy wybranej pozycji.
+  \item Wpisz opcjonalnie powód odrzucenia (wyświetlany użytkownikowi).
+  \item Kliknij \textbf{„Potwierdź odrzucenie"}.
+  \item Rejestracja wraca do statusu \textbf{„Oczekuje na płatność"} —
+        użytkownik musi wykonać przelew ponownie.
+\end{enumerate}
+
+\subsection{Filtry}
+
+\begin{longtable}{@{}L{4cm}L{11cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Filtr} & \textbf{Opis} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Typ}         & Tylko płatności za wydarzenia / tylko za subskrypcje / wszystkie \\
+\rowcolor{tableshade}
+\textbf{Status}      & Oczekujące / Rozpatrzone / Wszystkie \\
+\textbf{Zakres dat}  & Filtruj płatności z wybranego okresu \\
+\end{longtable}
+
+\subsection{Sekcja „Rozpatrzone"}
+
+Pod sekcją oczekujących płatności dostępna jest \textbf{historia rozpatrzonych
+płatności}. Zawiera zarówno zatwierdzone, jak i odrzucone transakcje. Służy do
+audytu i ewentualnego odwołania się do historii decyzji.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Bilans finansowy}
+\label{sec:balance}
+
+\textbf{Adres:} \texttt{/admin/balance} \quad \textbf{Dostęp:} wyłącznie Admin
+
+\subsection{Ogólny przegląd}
+
+Strona \texttt{/admin/balance} to \textbf{centrum analizy finansowej} organizacji.
+Dostarcza zbiorczych informacji o przychodach z różnych źródeł.
+
+\subsection{Sekcje raportu finansowego}
+
+\begin{longtable}{@{}L{5cm}L{10cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Sekcja} & \textbf{Opis} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Subskrypcje}             & Łączny przychód ze sprzedanych planów \\
+\rowcolor{tableshade}
+\textbf{Rejestracje na wydarzenia} & Łączny przychód z płatnych wydarzeń \\
+\textbf{Darowizny}               & Łączna kwota wpłaconych darowizn \\
+\rowcolor{tableshade}
+\textbf{Suma całkowita}          & Łączny przychód ze wszystkich źródeł \\
+\end{longtable}
+
+Każda sekcja wyświetla kwotę za bieżący miesiąc, bieżący rok oraz łącznie
+od początku działania systemu.
+
+\subsection{Eksport danych}
+
+Na stronie dostępny jest przycisk \textbf{„Eksportuj"} umożliwiający pobranie
+danych finansowych w formacie CSV, co umożliwia dalszą analizę w arkuszu
+kalkulacyjnym.
+
+\subsection{Ręczne korekty bilansu}
+
+W sekcji \textbf{„Korekty manualne"} administrator może dodać ręczną pozycję
+finansową:
+
+\begin{enumerate}
+  \item Kliknij \textbf{„Dodaj korektę"}.
+  \item Wpisz \textbf{tytuł korekty}, \textbf{kwotę} (dodatnią lub ujemną)
+        i \textbf{datę}.
+  \item Kliknij \textbf{„Zapisz"}.
+  \item Korekta pojawia się w historii i wpływa na łączne saldo.
+\end{enumerate}
+
+\begin{tipbox}
+  \textbf{Ważne:} Korekty manualne są wyłącznie zapisem ewidencyjnym —
+  nie generują faktycznych transakcji bankowych.
+\end{tipbox}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Darowizny}
+\label{sec:donations}
+
+\textbf{Adres:} \texttt{/admin/donations} \quad \textbf{Dostęp:} wyłącznie Admin
+
+\subsection{Lista darowizn}
+
+Strona \texttt{/admin/donations} wyświetla \textbf{listę wszystkich darowizn}
+zarówno złożonych przez formularz w aplikacji, jak i zweryfikowanych manualnych
+przelewów. Każda pozycja zawiera:
+
+\begin{itemize}
+  \item \textbf{Imię i email} darczyńcy.
+  \item \textbf{Kwotę} darowizny.
+  \item \textbf{Datę} wpłaty.
+  \item \textbf{Status} — Zweryfikowana / Oczekuje na weryfikację.
+  \item \textbf{Notatkę} od darczyńcy (jeśli podana).
+\end{itemize}
+
+\subsection{Konfiguracja konta bankowego}
+
+W sekcji \textbf{„Konfiguracja"} możesz ustawić dane konta bankowego
+wyświetlane użytkownikom na stronie \texttt{/support}:
+
+\begin{enumerate}
+  \item Kliknij \textbf{„Edytuj dane bankowe"}.
+  \item Wpisz lub zaktualizuj \textbf{numer konta (IBAN)}, \textbf{nazwę
+        odbiorcy} i \textbf{tytuł przelewu} — wzorzec tytułu dla darczyńców.
+  \item Kliknij \textbf{„Zapisz"}.
+\end{enumerate}
+
+Zmiany są natychmiastowe — nowe dane pojawią się na stronie \texttt{/support}
+przy kolejnym załadowaniu.
+
+\subsection{Konfiguracja zewnętrznych linków}
+
+W tej samej sekcji możesz zarządzać \textbf{przyciskami do zewnętrznych
+platform} (np.\ buycoffee.to, Patronite):
+
+\begin{enumerate}
+  \item Kliknij \textbf{„Dodaj link zewnętrzny"} lub edytuj istniejący.
+  \item Wpisz \textbf{nazwę platformy} i \textbf{URL} (pełny adres strony
+        profilowej Kenaz).
+  \item Kliknij \textbf{„Zapisz"}.
+\end{enumerate}
+
+Linki pojawią się jako przyciski na stronie \texttt{/support}.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Opinie i feedback}
+\label{sec:feedback}
+
+\textbf{Adres:} \texttt{/admin/feedback} \quad \textbf{Dostęp:} wyłącznie Admin
+
+\subsection{Skąd pochodzi feedback?}
+
+Użytkownicy mogą wysyłać opinie i zgłoszenia przez \textbf{ikonkę żarówki}
+dostępną w prawym dolnym rogu wszystkich stron aplikacji. Każdy feedback trafia
+do panelu \texttt{/admin/feedback}.
+
+\subsection{Zawartość wpisu feedback}
+
+Każda opinia wyświetla:
+
+\begin{itemize}
+  \item \textbf{Treść wiadomości} — pełna treść przesłana przez użytkownika.
+  \item \textbf{Data i godzina} wysłania.
+  \item \textbf{Email użytkownika} (jeśli był zalogowany podczas wysyłania).
+  \item \textbf{URL strony} — z jakiej strony aplikacji wysłano feedback.
+\end{itemize}
+
+\subsection{Zarządzanie feedbackiem}
+
+\begin{longtable}{@{}L{4.5cm}L{10.5cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Akcja} & \textbf{Opis} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Oznacz jako przeczytane} & Ukrywa powiadomienie; feedback pozostaje w historii \\
+\rowcolor{tableshade}
+\textbf{Archiwizuj}              & Przenosi do archiwum (dostępne przez filtr) \\
+\textbf{Usuń}                    & Trwale usuwa feedback z systemu \\
+\end{longtable}
+
+\subsection{Filtry}
+
+\begin{longtable}{@{}L{4cm}L{11cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Filtr} & \textbf{Opis} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Status}      & Nowe / Przeczytane / Zarchiwizowane / Wszystkie \\
+\rowcolor{tableshade}
+\textbf{Zakres dat}  & Filtruj po dacie wysłania \\
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Zarządzanie ikonkami wydarzeń}
+\label{sec:icons}
+
+\textbf{Adres:} \texttt{/admin/icons} \quad \textbf{Dostęp:} wyłącznie Admin
+
+\subsection{Do czego służą ikonki?}
+
+Ikonki to \textbf{kategorie wizualne} przypisywane do wydarzeń. Ułatwiają
+użytkownikom szybkie rozpoznanie rodzaju aktywności na kalendarzu i stronie
+szczegółów.
+
+\subsection{Wbudowane typy ikonek}
+
+System posiada 10 wbudowanych typów ikonek:
+
+\begin{longtable}{@{}L{4cm}L{5cm}L{5cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Nazwa} & \textbf{Symbol} & \textbf{Kolor} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Karate        & karate    & Czerwony    \\
+\rowcolor{tableshade}
+Morsowanie    & lodowiec  & Niebieski   \\
+Basen         & basen     & Niebieski   \\
+\rowcolor{tableshade}
+Board game    & gra       & Zielony     \\
+Yoga          & yoga      & Fioletowy   \\
+\rowcolor{tableshade}
+Nordic Walking & spacer   & Zielony     \\
+Wycieczka     & wycieczka & Brązowy     \\
+\rowcolor{tableshade}
+Siłownia      & siłownia  & Szary       \\
+Gotowanie     & gotowanie & Pomarańczowy \\
+\rowcolor{tableshade}
+Inne          & inne      & Szary       \\
+\end{longtable}
+
+\subsection{Niestandardowe typy ikonek}
+
+Oprócz wbudowanych typów możesz tworzyć \textbf{własne typy ikonek}
+przechowywane w bazie danych. Ikonki te mogą być przypisywane do wydarzeń
+identycznie jak wbudowane.
+
+\subsection{Formularz tworzenia ikonki}
+
+\begin{enumerate}
+  \item Na stronie \texttt{/admin/icons} znajdź formularz \textbf{„Dodaj
+        nową ikonkę"}.
+  \item Wypełnij: \textbf{Nazwa}, \textbf{Emoji} i \textbf{Kolor} (палитра
+        lub wartość HEX).
+  \item Obserwuj \textbf{podgląd na żywo} — na bieżąco pokazuje, jak ikona
+        będzie wyglądać.
+  \item Kliknij \textbf{„Dodaj ikonkę"}.
+\end{enumerate}
+
+\subsection{Edycja i usuwanie ikonek}
+
+Przy każdej niestandardowej ikonki dostępne są przyciski:
+
+\begin{itemize}
+  \item \textbf{Edytuj} — otwiera formularz edycji z aktualnymi danymi.
+  \item \textbf{Usuń} — trwale usuwa ikonkę. Jeśli ikonka jest przypisana
+        do wydarzeń, zostaje z nich usunięta.
+\end{itemize}
+
+\begin{tipbox}
+  \textbf{Uwaga:} Wbudowanych 10 ikonek nie można usunąć — można je
+  tylko wyłączyć (jeśli taka opcja jest dostępna).
+\end{tipbox}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Nadawanie uprawnień administratora}
+\label{sec:promote}
+
+\textbf{Adres:} \texttt{/admin/promote} \quad \textbf{Dostęp:} wyłącznie Admin
+
+\subsection{Jak nadać uprawnienia administratora?}
+
+Dodanie nowego administratora to \textbf{operacja krytyczna} wymagająca
+potwierdzenia kodem.
+
+\textbf{Krok 1: Wpisz email użytkownika}
+
+\begin{enumerate}
+  \item Przejdź do \texttt{/admin/promote}.
+  \item Wpisz \textbf{adres email} użytkownika, któremu chcesz nadać
+        uprawnienia administratora.
+  \item Upewnij się, że użytkownik ma aktywne konto w systemie.
+\end{enumerate}
+
+\textbf{Krok 2: Przeczytaj ostrzeżenie}
+
+System wyświetli \textbf{ostrzeżenie} informujące o konsekwencjach nadania
+uprawnień. Administrator ma pełny dostęp do panelu, danych użytkowników,
+finansów oraz może nadawać uprawnienia innym.
+
+\textbf{Krok 3: Wpisz kod potwierdzający}
+
+Aby potwierdzić operację, wpisz w wyznaczone pole \textbf{kod potwierdzający}
+wyświetlony na ekranie. Kod jest generowany losowo przy każdej próbie nadania
+uprawnień i służy jako zabezpieczenie przed przypadkowym kliknięciem.
+
+\textbf{Krok 4: Potwierdź}
+
+Kliknij przycisk \textbf{„Nadaj uprawnienia"}. Jeśli kod jest poprawny,
+uprawnienia zostaną przyznane.
+
+\subsection{Efekty nadania uprawnień}
+
+\begin{itemize}
+  \item Użytkownik zmienia rolę z \texttt{Member} na \texttt{Admin}.
+  \item Zmiana jest natychmiastowa — przy kolejnym zalogowaniu użytkownik
+        zobaczy panel administracyjny.
+  \item Zdarzenie zostaje zalogowane w systemie logów audytowych.
+\end{itemize}
+
+\subsection{Odbieranie uprawnień administratora}
+
+Odebranie uprawnień administratora \textbf{nie jest dostępne przez interfejs
+graficzny}. W razie potrzeby należy dokonać zmiany bezpośrednio w bazie danych
+lub przez terminal SSH na serwerze.
+
+\begin{warnbox}
+  \textbf{Ważne:} Zachowaj ostrożność przy nadawaniu uprawnień administratora.
+  Każda osoba z tą rolą ma pełny dostęp do danych użytkowników, historii
+  płatności i konfiguracji systemu.
+\end{warnbox}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Logi audytowe}
+\label{sec:logs}
+
+\textbf{Dostęp:} przez SSH na serwer
+
+\subsection{Czym są logi audytowe?}
+
+System logowania automatycznie zapisuje \textbf{kluczowe zdarzenia} w aplikacji
+— logowania, rejestracje, płatności, akcje administratorów i błędy. Logi służą
+do audytu bezpieczeństwa, debugowania i śledzenia aktywności.
+
+\subsection{Lokalizacja logów na serwerze}
+
+Logi są przechowywane na serwerze AWS EC2 w katalogu:
+
+\begin{lstlisting}
+/opt/kenaz/logs/
+\end{lstlisting}
+
+Struktura katalogów:
+
+\begin{lstlisting}
+logs/
++-- DD-MM-YYYY/
+    +-- user@example.com.log
+    +-- admin@kenaz.pl.log
+    +-- system.log
+\end{lstlisting}
+
+Każdy dzień ma \textbf{własny podkatalog} z datą (format \texttt{DD-MM-YYYY}).
+W katalogu danego dnia znajdują się pliki logów podzielone według adresu email
+użytkownika.
+
+\subsection{Format logów}
+
+Każda linia logu ma format:
+
+\begin{lstlisting}
+[HH:MM:SS] POZIOM - tresc komunikatu
+\end{lstlisting}
+
+Przykład:
+
+\begin{lstlisting}
+[14:23:05] INFO    - User jan.kowalski@gmail.com logged in
+[14:25:10] INFO    - Registration created: user=jan.kowalski@gmail.com event_id=42
+[14:26:00] WARNING - Payment verification failed: registration_id=123
+[15:00:00] ERROR   - Database connection timeout
+\end{lstlisting}
+
+\subsection{Poziomy logowania}
+
+\begin{longtable}{@{}L{2.5cm}L{2.5cm}L{10cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Poziom} & \textbf{Kolor} & \textbf{Kiedy używany} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{INFO}    & Biały    & Normalne zdarzenia (logowanie, rejestracja) \\
+\rowcolor{tableshade}
+\texttt{WARNING} & Żółty    & Podejrzane zdarzenia lub nieudane operacje \\
+\texttt{ERROR}   & Czerwony & Krytyczne błędy wymagające uwagi \\
+\rowcolor{tableshade}
+\texttt{DEBUG}   & Szary    & Szczegółowe informacje techniczne (tylko tryb dev) \\
+\end{longtable}
+
+\subsection{Rejestrowane zdarzenia}
+
+\begin{longtable}{@{}L{5.5cm}C{2.5cm}L{7cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Zdarzenie} & \textbf{Poziom} & \textbf{Opis wpisu} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Logowanie użytkownika           & INFO    & Email + timestamp \\
+\rowcolor{tableshade}
+Wylogowanie                     & INFO    & Email + timestamp \\
+Rejestracja na wydarzenie       & INFO    & Email + ID wydarzenia \\
+\rowcolor{tableshade}
+Anulowanie rejestracji          & INFO    & Email + ID rejestracji \\
+Potwierdzenie płatności (użytk.)& INFO    & Email + kwota + ID rejestracji \\
+\rowcolor{tableshade}
+Weryfikacja płatności (admin)   & INFO    & Email admina + email użytk. + ID \\
+Odrzucenie płatności (admin)    & WARNING & Email admina + powód \\
+\rowcolor{tableshade}
+Zablokowanie konta              & WARNING & Email admina + email użytkownika \\
+Nadanie uprawnień admina        & WARNING & Email admina + email promowanego \\
+\rowcolor{tableshade}
+Nieudane logowanie              & WARNING & IP + email \\
+Błąd systemu płatności          & ERROR   & Szczegóły błędu \\
+\rowcolor{tableshade}
+Błąd bazy danych                & ERROR   & Treść błędu SQL \\
+Nieautoryzowany dostęp do panelu& WARNING & IP + URL \\
+\end{longtable}
+
+\subsection{Jak przeglądać logi — polecenia SSH}
+
+Połącz się z serwerem przez SSH:
+
+\begin{lstlisting}[language=bash]
+ssh -i .secrets/KenazKeySSH.pem ec2-user@35.157.165.112
+\end{lstlisting}
+
+Logi z bieżącego dnia:
+
+\begin{lstlisting}[language=bash]
+ls /opt/kenaz/logs/$(date +%d-%m-%Y)/
+\end{lstlisting}
+
+Logi konkretnego użytkownika (bieżący dzień):
+
+\begin{lstlisting}[language=bash]
+cat /opt/kenaz/logs/$(date +%d-%m-%Y)/jan.kowalski@gmail.com.log
+\end{lstlisting}
+
+Logi systemowe z konkretnej daty:
+
+\begin{lstlisting}[language=bash]
+cat /opt/kenaz/logs/15-01-2026/system.log
+\end{lstlisting}
+
+Filtrowanie błędów ze wszystkich plików z bieżącego dnia:
+
+\begin{lstlisting}[language=bash]
+grep "ERROR" /opt/kenaz/logs/$(date +%d-%m-%Y)/*.log
+\end{lstlisting}
+
+Podgląd logów w czasie rzeczywistym:
+
+\begin{lstlisting}[language=bash]
+tail -f /opt/kenaz/logs/$(date +%d-%m-%Y)/system.log
+\end{lstlisting}
+
+Wyszukiwanie po emailu przez wiele dni:
+
+\begin{lstlisting}[language=bash]
+grep "jan.kowalski@gmail.com" /opt/kenaz/logs/**/*.log
+\end{lstlisting}
+
+\subsection{Retencja logów}
+
+Logi są przechowywane bezterminowo, dopóki nie zostaną ręcznie usunięte lub
+nie skończy się miejsce na dysku. Zalecamy \textbf{cykliczne archiwizowanie}
+starszych logów (np.\ starszych niż 90 dni).
+
+\subsection{Uprawnienia do logów}
+
+Pliki logów są własnością użytkownika systemowego \texttt{ec2-user}. Dostęp
+do logów mają wyłącznie osoby posiadające klucz SSH. Logów \textbf{nie można}
+przeglądać przez interfejs webowy aplikacji.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\clearpage
+\section*{Często zadawane pytania (FAQ)}
+\addcontentsline{toc}{section}{Często zadawane pytania (FAQ)}
+\markboth{Często zadawane pytania (FAQ)}{}
+
+\textbf{P: Użytkownik twierdzi, że zapłacił, ale płatność nie widnieje
+w systemie — co robię?}
+
+O: Sprawdź panel płatności manualnych (\texttt{/admin/manual-payments}).
+Upewnij się, że użytkownik kliknął „Potwierdzam wykonanie przelewu"
+w aplikacji. Jeśli nie, poinstruuj go. Następnie sprawdź konto bankowe
+— jeśli wpłata dotarła, zatwierdź manualnie.
+
+\bigskip
+\textbf{P: Jak cofnąć zatwierdzenie konta użytkownika?}
+
+O: Możesz \textbf{zablokować} konto użytkownika z poziomu \texttt{/admin/all-users}
+(kliknij w użytkownika → „Zablokuj konto"). Konto wraca do statusu BANNED
+i wymaga ponownej akceptacji.
+
+\bigskip
+\textbf{P: Admin usunął wydarzenie przez pomyłkę — czy można cofnąć?}
+
+O: Usunięcie wydarzeń jest \textbf{nieodwracalne} przez interfejs graficzny.
+W nagłym przypadku możesz przywrócić wydarzenie bezpośrednio z bazy danych
+przez SSH (brak miękkiego kasowania). Skontaktuj się z dev teamem.
+
+\bigskip
+\textbf{P: Chcę dodać nowe miasto — jak to zrobię?}
+
+O: Dodawanie nowych miast wymaga interwencji na poziomie bazy danych lub
+konfiguracji backendu. Skontaktuj się z developerem aplikacji.
+
+\bigskip
+\textbf{P: Użytkownik prosi o usunięcie jego konta (żądanie RODO)?}
+
+O: Usunięcie konta wymaga interwencji bezpośrednio w bazie danych. Skontaktuj
+się z developerem. Przed usunięciem upewnij się, że użytkownik nie ma aktywnych
+rejestracji ani otwartych płatności.
+
+\bigskip
+\textbf{P: Jak zmienić cenę wydarzenia po tym, jak użytkownicy się już
+zapisali?}
+
+O: Edytuj wydarzenie przez \texttt{/admin/edit-event/:id} i zmień cenę.
+Istniejące rejestracje zachowują cenę z momentu zapisu. Nowe rejestracje
+będą po nowej cenie.
+
+\bigskip
+\textbf{P: Jak wyeksportować listę uczestników danego wydarzenia?}
+
+O: Eksport listy uczestników na poziomie interfejsu nie jest dostępny
+w obecnej wersji. Możesz pobrać dane bezpośrednio z bazy danych przez SSH.
+Skontaktuj się z developerem.
+
+\bigskip
+\textbf{P: Ile miejsca zajmują logi na serwerze?}
+
+O: Sprawdź: \texttt{du -sh /opt/kenaz/logs/} po zalogowaniu przez SSH.
+Jeśli katalog przekracza kilkaset MB, rozważ archiwizację starszych logów.
+
+\bigskip
+\textbf{P: Czy użytkownicy są informowani o weryfikacji lub odrzuceniu
+płatności?}
+
+O: Status płatności jest widoczny w aplikacji — użytkownik widzi aktualny
+status na stronie panelu (\texttt{/panel}) i na stronie płatności
+(\texttt{/manual-payment/:id}). System nie wysyła automatycznych emaili —
+jeśli chcesz poinformować użytkownika, zrób to ręcznie.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\clearpage
+\section*{Słownik pojęć administratora}
+\addcontentsline{toc}{section}{Słownik pojęć administratora}
+\markboth{Słownik pojęć administratora}{}
+
+\begin{longtable}{@{}L{4cm}L{11cm}@{}}
+\toprule
+\rowcolor{kenaznavy!8}
+\textbf{Pojęcie} & \textbf{Definicja} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{BANNED}            & Status konta zablokowanego przez administratora; użytkownik traci dostęp do płatnych funkcji \\
+\rowcolor{tableshade}
+\textbf{Kafelek admina}    & Rozszerzony panel informacyjny po kliknięciu użytkownika na liście \texttt{/admin/all-users}; zawiera dane o koncie, aktywności, finansach i oczekujących akcjach \\
+\textbf{Korekta manualna}  & Ręczny wpis bilansu finansowego dodany przez administratora poza normalnym systemem transakcji \\
+\rowcolor{tableshade}
+\textbf{Log audytowy}      & Plik tekstowy zapisujący zdarzenia systemowe z datą, godziną, poziomem i treścią komunikatu \\
+\textbf{Manualna płatność} & Przelew bankowy wykonany przez użytkownika, wymagający ręcznej weryfikacji przez administratora \\
+\rowcolor{tableshade}
+\textbf{PENDING}           & Status konta oczekującego na akceptację administratora \\
+\textbf{Podgląd na żywo}   & Funkcja formularza tworzenia ikonek — prezentuje wygląd tworzonej ikony w czasie rzeczywistym \\
+\rowcolor{tableshade}
+\textbf{Promote}           & Operacja nadania użytkownikowi uprawnień administratora, dostępna pod adresem \texttt{/admin/promote} \\
+\textbf{Rola}              & Poziom uprawnień: Guest (gość), Member (członek), Admin (pełny dostęp do panelu) \\
+\rowcolor{tableshade}
+\textbf{Standalone}        & Tryb działania PWA na iOS — aplikacja działa bez paska adresu Safari; istotne przy testowaniu OAuth \\
+\textbf{Status konta}      & Stan konta: Active (aktywny), Pending (oczekujący na akceptację), Banned (zablokowany) \\
+\rowcolor{tableshade}
+\textbf{Weryfikacja płatności} & Proces ręcznego potwierdzenia przez administratora, że przelew bankowy dotarł i zgadza się z oczekiwaną kwotą \\
+\end{longtable}
+
+\vfill
+\begin{center}
+  {\color{kenaznavy!25}\rule{0.6\linewidth}{0.5pt}\par}
+  \vspace{0.4cm}
+  {\sffamily\small\color{kenazdim!70}
+    Instrukcja Administratora — Kenaz Centrum, wersja 2.0, luty 2026.\par
+    Dokument przeznaczony wyłącznie dla administratorów systemu.\par}
+\end{center}
+
+\end{document}
