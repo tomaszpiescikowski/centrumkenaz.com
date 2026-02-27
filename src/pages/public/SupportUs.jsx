@@ -238,7 +238,7 @@ function SupportUs() {
 
         {/* ── Member points info ── */}
         {isSubscriber && pointsPerZloty > 0 && (
-          <p className="mb-6 text-sm text-amber-400">
+          <p className="mb-6 text-sm text-accent-red dark:text-amber-400">
             {t('support.memberPointsInfo', { rate: pointsPerZloty })}
           </p>
         )}
