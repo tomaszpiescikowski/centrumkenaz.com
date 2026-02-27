@@ -45,7 +45,12 @@ function AuthCallback() {
             // postMessage failed — fall through to normal flow
           }
         }
-        userData = await handleAuthCallback(accessToken, refreshToken)
+        userData = await handleAuthCallback(accessToken, refreshToken).catch((err) => {
+          // Unexpected error — tokens may still be in localStorage; proceed so
+          // AuthContext can retry the user-fetch on the next page load.
+          console.error('Auth callback error:', err)
+          return null
+        })
       }
 
       const returnTo = consumePostLoginRedirect()

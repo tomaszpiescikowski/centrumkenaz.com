@@ -95,7 +95,7 @@ export function AuthProvider({ children }) {
   }, [logout, storeTokens])
 
   const fetchUser = useCallback(async (token, options = {}) => {
-    const { allowRefresh = true } = options
+    const { allowRefresh = true, logoutOnFailure = true } = options
 
     try {
       const response = await fetch(`${API_URL}/auth/me`, {
@@ -113,11 +113,11 @@ export function AuthProvider({ children }) {
       } else if (response.status === 429) {
         console.warn('Rate limited while fetching user profile')
       } else {
-        logout()
+        if (logoutOnFailure) logout()
       }
     } catch (error) {
       console.error('Failed to fetch user:', error)
-      logout()
+      if (logoutOnFailure) logout()
     } finally {
       setLoading(false)
     }
@@ -140,7 +140,10 @@ export function AuthProvider({ children }) {
 
   const handleAuthCallback = useCallback(async (newAccessToken, newRefreshToken) => {
     storeTokens(newAccessToken, newRefreshToken)
-    return await fetchUser(newAccessToken)
+    // Tokens are freshly issued — don't erase them if the /auth/me request fails
+    // (e.g. transient mobile network error). AuthContext will retry on the next
+    // page load using the stored tokens, so the user will be logged in after redirect.
+    return await fetchUser(newAccessToken, { logoutOnFailure: false })
   }, [storeTokens, fetchUser])
 
   const login = useCallback((options = {}) => {
@@ -176,6 +179,15 @@ export function AuthProvider({ children }) {
       // back here so the PWA receives them without ever leaving the app.
       const popup = window.open(`${API_URL}/auth/google/login`, '_blank')
 
+      if (!popup) {
+        // Popup was blocked by the browser (common on Android Chrome PWA).
+        // Fall back to full-page navigation — works correctly in Android Chrome,
+        // and on iOS the freshly-stored tokens survive the redirect so the user
+        // will be authenticated when AuthContext initialises on the landing page.
+        window.location.href = `${API_URL}/auth/google/login`
+        return
+      }
+
       let pollClosed
       const handler = async (event) => {
         if (event.origin !== window.location.origin) return
@@ -202,7 +214,7 @@ export function AuthProvider({ children }) {
       window.addEventListener('message', handler)
       // Clean up listener when the popup closes without posting a message (user cancelled)
       pollClosed = setInterval(() => {
-        if (popup?.closed) {
+        if (popup.closed) {
           clearInterval(pollClosed)
           window.removeEventListener('message', handler)
         }
