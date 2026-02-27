@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useChat } from '../../context/ChatContext'
 import { fetchRegisteredEvents } from '../../api/events'
 import CommentsSection from '../../components/common/CommentsSection'
+import EventIcon from '../../components/common/EventIcon'
 import { useCustomEventTypes } from '../../hooks/useCustomEventTypes'
 import '../../components/common/CommentsSection.css'
 
@@ -314,7 +315,7 @@ function ChatPage() {
             ) : events.length === 0 ? (
               <div className="cp-empty"><p>{t('comments.noRegisteredEvents')}</p></div>
             ) : (
-              <ul className="cp-event-list">
+              <ul className="cp-ev-list">
                 {sortedEvents.map((ev, idx) => {
                   const chatId = `event:${ev.id}`
                   const unread = hasUnread(chatId)
@@ -332,7 +333,7 @@ function ChatPage() {
                     ? previewMsg.author.split(' ')[0].replace(/^~/, '')
                     : null
                   const previewText = previewMsg?.text
-                    ? (previewMsg.text.length > 50 ? previewMsg.text.slice(0, 50) + '\u2026' : previewMsg.text)
+                    ? (previewMsg.text.length > 55 ? previewMsg.text.slice(0, 55) + '\u2026' : previewMsg.text)
                     : null
                   const timeLabel = previewMsg?.ts
                     ? formatMsgTime(previewMsg.ts)
@@ -350,6 +351,8 @@ function ChatPage() {
                     ? new Date(ev.startDateTime).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
                     : null
 
+                  const authors = previewMsg?.recentAuthors
+
                   return (
                     <li key={ev.id}>
                       {showPastDivider && (
@@ -358,50 +361,53 @@ function ChatPage() {
                         </div>
                       )}
                       <button
-                        className={`cp-event-card${isPast ? ' cp-event-card--past' : ''}${unread ? ' cp-event-card--unread' : ''}`}
+                        className={`cp-ev-row${isPast ? ' cp-ev-row--past' : ''}${unread ? ' cp-ev-row--unread' : ''}`}
+                        style={{ '--ev-color': palette.bg }}
                         onClick={() => handleEventClick(ev)}
                       >
-                        {/* Colored left stripe */}
-                        <span className="cp-card-stripe" style={{ background: palette.bg }} />
+                        {/* Line 1: icon + title + timestamp */}
+                        <span className="cp-ev-top">
+                          <span className="cp-ev-icon" style={{ color: palette.bg }}>
+                            <EventIcon type={ev.type} size="sm" customTypes={customTypes} />
+                          </span>
+                          <span className={`cp-ev-title${unread ? ' cp-ev-title--bold' : ''}`}>{ev.title}</span>
+                          <span className="cp-ev-ts">{timeLabel}</span>
+                        </span>
 
-                          {/* Participant avatar stack */}
-                          {(() => {
-                            const authors = latestMessages[chatId]?.recentAuthors
-                            if (!authors?.length) return null
-                            return (
-                              <span className="cp-card-participants">
-                                {authors.map((a, i) => (
-                                  <span key={a.id} className="cmt-reply-av" style={{ zIndex: authors.length - i }}>
-                                    {a.picture_url
-                                      ? <img src={a.picture_url} alt={a.full_name} />
-                                      : <span>{initials(a.full_name)}</span>
-                                    }
-                                  </span>
-                                ))}
-                              </span>
-                            )
-                          })()}
-                            <span className="cp-card-ts">{timeLabel}</span>
+                        {/* Line 2: meta + today + avatars + unread badge / chevron */}
+                        <span className="cp-ev-bottom">
+                          <span className="cp-ev-meta">
+                            {ev.city}
+                            {ev.city && evTime && <> &middot;</>}
+                            {evTime && <> {isToday ? evTime : formatDate(ev.startDateTime)}</>}
+                            {!ev.city && !evTime && formatDate(ev.startDateTime)}
                           </span>
-                          <span className="cp-card-meta-row">
-                            <span className="cp-card-meta">
-                              {ev.city}
-                              {evTime && <> &middot; {evTime}</>}
-                              {!previewText && <> &middot; {formatDate(ev.startDateTime)}</>}
-                            </span>
-                            {isToday && <span className="cp-card-today-badge">{t('comments.today')}</span>}
-                            {unread
-                              ? <span className="cp-card-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
-                              : <span className="cp-card-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
-                            }
-                          </span>
-                          {previewText && (
-                            <span className={`cp-card-preview${unread ? ' cp-card-preview--unread' : ''}`}>
-                              {authorShort && <span className="cp-card-preview-author">{authorShort}:&nbsp;</span>}
-                              {previewText}
+                          {isToday && <span className="cp-ev-today">{t('comments.today')}</span>}
+                          {authors?.length > 0 && (
+                            <span className="cp-ev-avs">
+                              {authors.slice(0, 3).map((a, i) => (
+                                <span key={a.id} className="cmt-reply-av" style={{ zIndex: 3 - i }}>
+                                  {a.picture_url
+                                    ? <img src={a.picture_url} alt={a.full_name} />
+                                    : <span>{initials(a.full_name)}</span>
+                                  }
+                                </span>
+                              ))}
                             </span>
                           )}
+                          {unread
+                            ? <span className="cp-ev-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
+                            : <span className="cp-ev-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+                          }
                         </span>
+
+                        {/* Line 3 (optional): latest message preview */}
+                        {previewText && (
+                          <span className={`cp-ev-preview${unread ? ' cp-ev-preview--bold' : ''}`}>
+                            {authorShort && <span className="cp-ev-preview-who">{authorShort}:&nbsp;</span>}
+                            {previewText}
+                          </span>
+                        )}
                       </button>
                     </li>
                   )
