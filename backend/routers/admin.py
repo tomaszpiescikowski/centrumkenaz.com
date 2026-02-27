@@ -1522,7 +1522,7 @@ def _parse_period(period: str) -> tuple[datetime, datetime, str]:
     raise ValueError("Invalid period format. Use YYYY-MM, YYYY-QN, or YYYY.")
 
 
-@router.get("/balance", response_model=BalanceResponse)
+@router.get("/stats/balance", response_model=BalanceResponse)
 async def get_balance(
     db: AsyncSession = Depends(get_db),
     _admin: User = Depends(get_admin_user_dependency),
