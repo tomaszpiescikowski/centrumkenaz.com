@@ -220,7 +220,7 @@ function SupportUs() {
             {t('support.subtitle')}
           </p>
           {settings?.message && (
-            <div className="mt-5 rounded-xl border border-rose-200 dark:border-rose-700/40 bg-rose-50/60 dark:bg-rose-900/15 px-5 py-4 text-sm text-navy/80 dark:text-cream/80">
+            <div className="mt-5 rounded-xl border border-green-200 dark:border-green-700/40 bg-green-50/60 dark:bg-green-900/15 px-5 py-4 text-sm text-navy/80 dark:text-cream/80">
               {settings.message}
             </div>
           )}
