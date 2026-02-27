@@ -211,17 +211,17 @@ async def _make_registration(
 class TestBalanceAccessControl:
     @pytest.mark.asyncio
     async def test_anonymous_returns_401(self, anon_client: AsyncClient):
-        resp = await anon_client.get("/admin/balance")
+        resp = await anon_client.get("/admin/stats/balance")
         assert resp.status_code in (401, 403)
 
     @pytest.mark.asyncio
     async def test_guest_returns_403(self, guest_client: AsyncClient):
-        resp = await guest_client.get("/admin/balance")
+        resp = await guest_client.get("/admin/stats/balance")
         assert resp.status_code == 403
 
     @pytest.mark.asyncio
     async def test_admin_returns_200(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/balance")
+        resp = await admin_client.get("/admin/stats/balance")
         assert resp.status_code == 200
 
 
@@ -233,22 +233,22 @@ class TestBalanceAccessControl:
 class TestBalancePeriodParsing:
     @pytest.mark.asyncio
     async def test_invalid_period_format(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/balance?period=bad")
+        resp = await admin_client.get("/admin/stats/balance?period=bad")
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
     async def test_invalid_month_13(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/balance?period=2026-13")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-13")
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
     async def test_invalid_quarter_5(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/balance?period=2026-Q5")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-Q5")
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
     async def test_valid_month(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/balance?period=2026-02")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-02")
         assert resp.status_code == 200
         data = resp.json()
         assert data["period_label"] == "2026-02"
@@ -257,7 +257,7 @@ class TestBalancePeriodParsing:
 
     @pytest.mark.asyncio
     async def test_valid_quarter(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/balance?period=2026-Q1")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-Q1")
         assert resp.status_code == 200
         data = resp.json()
         assert data["period_label"] == "2026 Q1"
@@ -266,7 +266,7 @@ class TestBalancePeriodParsing:
 
     @pytest.mark.asyncio
     async def test_valid_year(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/balance?period=2026")
+        resp = await admin_client.get("/admin/stats/balance?period=2026")
         assert resp.status_code == 200
         data = resp.json()
         assert data["period_label"] == "2026"
@@ -275,7 +275,7 @@ class TestBalancePeriodParsing:
 
     @pytest.mark.asyncio
     async def test_defaults_to_current_month(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/balance")
+        resp = await admin_client.get("/admin/stats/balance")
         assert resp.status_code == 200
         data = resp.json()
         now = datetime.utcnow()
@@ -284,7 +284,7 @@ class TestBalancePeriodParsing:
 
     @pytest.mark.asyncio
     async def test_quarter_case_insensitive(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/balance?period=2026-q2")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-q2")
         assert resp.status_code == 200
         assert resp.json()["period_label"] == "2026 Q2"
 
@@ -297,7 +297,7 @@ class TestBalancePeriodParsing:
 class TestBalanceEmptyState:
     @pytest.mark.asyncio
     async def test_empty_balance(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/balance?period=2026-01")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-01")
         assert resp.status_code == 200
         data = resp.json()
         assert data["total_income"] == "0.00 PLN"
@@ -327,7 +327,7 @@ class TestBalanceIncomeAggregation:
         )
         await _make_registration(db_session, admin_user.id, event.id, payment_id=p.external_id)
 
-        resp = await admin_client.get("/admin/balance?period=2026-01")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-01")
         data = resp.json()
         assert data["total_income"] == "50.00 PLN"
         assert data["total_income_event"] == "50.00 PLN"
@@ -351,7 +351,7 @@ class TestBalanceIncomeAggregation:
         await _make_registration(db_session, admin_user.id, event.id, payment_id=p1.external_id, occurrence_date=datetime(2026, 3, 5).date())
         await _make_registration(db_session, admin_user.id, event.id, payment_id=p2.external_id, occurrence_date=datetime(2026, 3, 20).date())
 
-        resp = await admin_client.get("/admin/balance?period=2026-03")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-03")
         data = resp.json()
         assert data["total_income"] == "100.00 PLN"
         assert data["total_tx_count"] == 2
@@ -365,7 +365,7 @@ class TestBalanceIncomeAggregation:
             extra_data='{"plan_code": "monthly"}',
         )
 
-        resp = await admin_client.get("/admin/balance?period=2026-04")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-04")
         data = resp.json()
         assert data["total_income_subscription"] == "20.00 PLN"
         assert data["total_income_event"] == "0.00 PLN"
@@ -387,7 +387,7 @@ class TestBalanceIncomeAggregation:
             extra_data='{"plan_code": "yearly"}',
         )
 
-        resp = await admin_client.get("/admin/balance?period=2026-05")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-05")
         data = resp.json()
         assert data["total_income"] == "240.00 PLN"
         assert data["total_income_event"] == "40.00 PLN"
@@ -416,7 +416,7 @@ class TestBalanceRefunds:
         )
         await _make_registration(db_session, admin_user.id, event.id, payment_id=p_ref.external_id, occurrence_date=datetime(2026, 6, 3).date())
 
-        resp = await admin_client.get("/admin/balance?period=2026-06")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-06")
         data = resp.json()
         assert data["total_income"] == "100.00 PLN"
         assert data["total_refunds"] == "50.00 PLN"
@@ -431,7 +431,7 @@ class TestBalanceRefunds:
             payment_type="event", created_at=datetime(2026, 7, 10),
         )
 
-        resp = await admin_client.get("/admin/balance?period=2026-07")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-07")
         data = resp.json()
         assert data["total_income"] == "0.00 PLN"
         assert data["total_refunds"] == "80.00 PLN"
@@ -453,7 +453,7 @@ class TestBalanceMonthlyBreakdown:
                 created_at=datetime(2026, m, 15),
             )
 
-        resp = await admin_client.get("/admin/balance?period=2026-Q1")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-Q1")
         data = resp.json()
         assert len(data["months"]) == 3
         assert data["months"][0]["month"] == "2026-01"
@@ -471,7 +471,7 @@ class TestBalanceMonthlyBreakdown:
                 created_at=datetime(2025, m, 5),
             )
 
-        resp = await admin_client.get("/admin/balance?period=2025")
+        resp = await admin_client.get("/admin/stats/balance?period=2025")
         data = resp.json()
         assert len(data["months"]) == 3
         assert data["total_income"] == "300.00 PLN"
@@ -499,7 +499,7 @@ class TestBalanceEventBreakdown:
         await _make_registration(db_session, admin_user.id, ev1.id, payment_id=p1.external_id)
         await _make_registration(db_session, admin_user.id, ev2.id, payment_id=p2.external_id)
 
-        resp = await admin_client.get("/admin/balance?period=2026-08")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-08")
         data = resp.json()
         assert len(data["events"]) == 2
         # sorted by income desc
@@ -523,7 +523,7 @@ class TestBalanceEventBreakdown:
         await _make_registration(db_session, admin_user.id, ev.id, payment_id=p1.external_id, occurrence_date=datetime(2026, 9, 2).date())
         await _make_registration(db_session, admin_user.id, ev.id, payment_id=p2.external_id, occurrence_date=datetime(2026, 9, 3).date())
 
-        resp = await admin_client.get("/admin/balance?period=2026-09")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-09")
         data = resp.json()
         assert len(data["events"]) == 1
         assert data["events"][0]["income"] == "50.00 PLN"
@@ -552,7 +552,7 @@ class TestBalanceSubscriptionBreakdown:
             extra_data='{"plan_code": "yearly"}',
         )
 
-        resp = await admin_client.get("/admin/balance?period=2026-10")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-10")
         data = resp.json()
         plans = {s["plan_code"]: s for s in data["subscriptions"]}
         assert "monthly" in plans
@@ -569,7 +569,7 @@ class TestBalanceSubscriptionBreakdown:
             extra_data="invalid-json",
         )
 
-        resp = await admin_client.get("/admin/balance?period=2026-11")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-11")
         data = resp.json()
         assert len(data["subscriptions"]) == 1
         assert data["subscriptions"][0]["plan_code"] == "unknown"
@@ -589,7 +589,7 @@ class TestBalancePending:
             payment_type="event", created_at=datetime(2026, 1, 20),
         )
 
-        resp = await admin_client.get("/admin/balance?period=2026-01")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-01")
         data = resp.json()
         assert data["pending"]["pending_event"] == "45.00 PLN"
         assert data["pending"]["pending_event_count"] == 1
@@ -603,7 +603,7 @@ class TestBalancePending:
             payment_type="subscription", created_at=datetime(2026, 1, 20),
         )
 
-        resp = await admin_client.get("/admin/balance?period=2026-01")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-01")
         data = resp.json()
         assert data["pending"]["pending_subscription"] == "20.00 PLN"
         assert data["pending"]["pending_subscription_count"] == 1
@@ -616,7 +616,7 @@ class TestBalancePending:
             payment_type="event", created_at=datetime(2026, 2, 10),
         )
 
-        resp = await admin_client.get("/admin/balance?period=2026-02")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-02")
         data = resp.json()
         assert data["pending"]["pending_event"] == "60.00 PLN"
 
@@ -640,7 +640,7 @@ class TestBalancePeriodFiltering:
             created_at=datetime(2026, 2, 1),
         )
 
-        resp = await admin_client.get("/admin/balance?period=2026-01")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-01")
         data = resp.json()
         assert data["total_income"] == "99.00 PLN"
         assert data["total_tx_count"] == 1
@@ -663,7 +663,7 @@ class TestBalancePeriodFiltering:
             created_at=datetime(2026, 4, 1),
         )
 
-        resp = await admin_client.get("/admin/balance?period=2026-Q1")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-Q1")
         data = resp.json()
         assert data["total_income"] == "20.00 PLN"
         assert data["total_tx_count"] == 1
@@ -681,7 +681,7 @@ class TestBalancePeriodFiltering:
             payment_type="event", created_at=datetime(2026, 1, 6),
         )
 
-        resp = await admin_client.get("/admin/balance?period=2026-01")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-01")
         data = resp.json()
         assert data["total_income"] == "0.00 PLN"
         assert data["total_tx_count"] == 0
@@ -696,7 +696,7 @@ class TestBalancePeriodFiltering:
 class TestBalanceResponseStructure:
     @pytest.mark.asyncio
     async def test_response_has_all_fields(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/balance?period=2026-01")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-01")
         assert resp.status_code == 200
         data = resp.json()
 
@@ -710,7 +710,7 @@ class TestBalanceResponseStructure:
 
     @pytest.mark.asyncio
     async def test_pending_has_all_fields(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/balance?period=2026-01")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-01")
         data = resp.json()
         pending_keys = {
             "pending_event", "pending_subscription", "pending_total",
@@ -724,7 +724,7 @@ class TestBalanceResponseStructure:
             db_session, admin_user.id, Decimal("10.00"),
             payment_type="event", created_at=datetime(2026, 1, 1),
         )
-        resp = await admin_client.get("/admin/balance?period=2026-01")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-01")
         data = resp.json()
         assert len(data["months"]) == 1
         row = data["months"][0]
@@ -742,7 +742,7 @@ class TestBalanceResponseStructure:
             payment_type="event", created_at=datetime(2026, 1, 10),
         )
         await _make_registration(db_session, admin_user.id, ev.id, payment_id=p.external_id)
-        resp = await admin_client.get("/admin/balance?period=2026-01")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-01")
         data = resp.json()
         assert len(data["events"]) >= 1
         row = data["events"][0]
@@ -759,7 +759,7 @@ class TestBalanceResponseStructure:
             payment_type="subscription", created_at=datetime(2026, 1, 5),
             extra_data='{"plan_code": "monthly"}',
         )
-        resp = await admin_client.get("/admin/balance?period=2026-01")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-01")
         data = resp.json()
         assert len(data["subscriptions"]) == 1
         row = data["subscriptions"][0]
@@ -778,19 +778,19 @@ class TestBalanceResponseStructure:
 class TestBalanceEdgeCases:
     @pytest.mark.asyncio
     async def test_leap_year_february(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/balance?period=2024-02")
+        resp = await admin_client.get("/admin/stats/balance?period=2024-02")
         assert resp.status_code == 200
         assert resp.json()["date_to"] == "2024-02-29"
 
     @pytest.mark.asyncio
     async def test_non_leap_year_february(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/balance?period=2025-02")
+        resp = await admin_client.get("/admin/stats/balance?period=2025-02")
         assert resp.status_code == 200
         assert resp.json()["date_to"] == "2025-02-28"
 
     @pytest.mark.asyncio
     async def test_q4_dates(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/balance?period=2026-Q4")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-Q4")
         assert resp.status_code == 200
         data = resp.json()
         assert data["date_from"] == "2026-10-01"
@@ -802,7 +802,7 @@ class TestBalanceEdgeCases:
             db_session, admin_user.id, Decimal("0.00"),
             payment_type="event", created_at=datetime(2026, 1, 1),
         )
-        resp = await admin_client.get("/admin/balance?period=2026-01")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-01")
         data = resp.json()
         assert data["total_income"] == "0.00 PLN"
         assert data["total_tx_count"] == 1
@@ -829,7 +829,7 @@ class TestBoundaryTimestamps:
             payment_type="event",
             created_at=datetime(2026, 3, 1, 0, 0, 0),
         )
-        resp = await admin_client.get("/admin/balance?period=2026-03")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-03")
         data = resp.json()
         assert data["total_income"] == "11.11 PLN"
         assert data["total_tx_count"] == 1
@@ -847,7 +847,7 @@ class TestBoundaryTimestamps:
             payment_type="event",
             created_at=datetime(2026, 3, 31, 23, 59, 59, 999999),
         )
-        resp = await admin_client.get("/admin/balance?period=2026-03")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-03")
         data = resp.json()
         assert data["total_income"] == "22.22 PLN"
 
@@ -864,7 +864,7 @@ class TestBoundaryTimestamps:
             payment_type="event",
             created_at=datetime(2026, 2, 28, 23, 59, 59),
         )
-        resp = await admin_client.get("/admin/balance?period=2026-03")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-03")
         data = resp.json()
         assert data["total_income"] == "0.00 PLN"
         assert data["total_tx_count"] == 0
@@ -881,8 +881,8 @@ class TestBoundaryTimestamps:
             payment_type="event",
             created_at=datetime(2026, 3, 31, 23, 59, 59),
         )
-        resp_q1 = await admin_client.get("/admin/balance?period=2026-Q1")
-        resp_q2 = await admin_client.get("/admin/balance?period=2026-Q2")
+        resp_q1 = await admin_client.get("/admin/stats/balance?period=2026-Q1")
+        resp_q2 = await admin_client.get("/admin/stats/balance?period=2026-Q2")
         assert resp_q1.json()["total_income"] == "44.44 PLN"
         assert resp_q2.json()["total_income"] == "0.00 PLN"
 
@@ -904,8 +904,8 @@ class TestBoundaryTimestamps:
             payment_type="event",
             created_at=datetime(2026, 1, 1, 0, 0, 0),
         )
-        resp_2025 = await admin_client.get("/admin/balance?period=2025")
-        resp_2026 = await admin_client.get("/admin/balance?period=2026-01")
+        resp_2025 = await admin_client.get("/admin/stats/balance?period=2025")
+        resp_2026 = await admin_client.get("/admin/stats/balance?period=2026-01")
         assert resp_2025.json()["total_income"] == "100.00 PLN"
         assert resp_2026.json()["total_income"] == "200.00 PLN"
 
@@ -928,7 +928,7 @@ class TestMultiUserAggregation:
                 db_session, user.id, Decimal(amount),
                 payment_type="event", created_at=datetime(2027, 1, 5),
             )
-        resp = await admin_client.get("/admin/balance?period=2027-01")
+        resp = await admin_client.get("/admin/stats/balance?period=2027-01")
         data = resp.json()
         assert data["total_income"] == "60.00 PLN"
         assert data["total_tx_count"] == 3
@@ -954,7 +954,7 @@ class TestMultiUserAggregation:
         await _make_registration(db_session, admin_user.id, ev.id, payment_id=p1.external_id, occurrence_date=date(2027, 2, 5))
         await _make_registration(db_session, user_b.id, ev.id, payment_id=p2.external_id, occurrence_date=date(2027, 2, 6))
 
-        resp = await admin_client.get("/admin/balance?period=2027-02")
+        resp = await admin_client.get("/admin/stats/balance?period=2027-02")
         data = resp.json()
         assert len(data["events"]) == 1
         assert data["events"][0]["income"] == "120.00 PLN"
@@ -972,7 +972,7 @@ class TestPeriodParsingHardcore:
         The format YYYY-MM is syntactically correct, but month 0 does not exist.
         The endpoint must return 400.
         """
-        resp = await admin_client.get("/admin/balance?period=2026-00")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-00")
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
@@ -982,7 +982,7 @@ class TestPeriodParsingHardcore:
 
         Only Q1 through Q4 are valid quarters. The endpoint must return 400.
         """
-        resp = await admin_client.get("/admin/balance?period=2026-Q0")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-Q0")
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
@@ -993,7 +993,7 @@ class TestPeriodParsingHardcore:
         The regex requires exactly four digits, so a leading minus sign does not
         match any accepted pattern.
         """
-        resp = await admin_client.get("/admin/balance?period=-2026")
+        resp = await admin_client.get("/admin/stats/balance?period=-2026")
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
@@ -1004,7 +1004,7 @@ class TestPeriodParsingHardcore:
         The value '2026-01 ' does not match the expected pattern and must
         return 400.
         """
-        resp = await admin_client.get("/admin/balance?period=2026-01 ")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-01 ")
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
@@ -1015,7 +1015,7 @@ class TestPeriodParsingHardcore:
         The regex requires exactly four digits, so '0026' matches. The endpoint
         should return 200 with empty data rather than an internal error.
         """
-        resp = await admin_client.get("/admin/balance?period=0026-01")
+        resp = await admin_client.get("/admin/stats/balance?period=0026-01")
         assert resp.status_code == 200
         assert resp.json()["total_income"] == "0.00 PLN"
 
@@ -1027,7 +1027,7 @@ class TestPeriodParsingHardcore:
         No data should exist, but the endpoint must respond successfully without
         raising an exception.
         """
-        resp = await admin_client.get("/admin/balance?period=9999")
+        resp = await admin_client.get("/admin/stats/balance?period=9999")
         assert resp.status_code == 200
         assert resp.json()["total_income"] == "0.00 PLN"
 
@@ -1038,7 +1038,7 @@ class TestPeriodParsingHardcore:
 
         The regex requires exactly four digits, so five digits must return 400.
         """
-        resp = await admin_client.get("/admin/balance?period=10000")
+        resp = await admin_client.get("/admin/stats/balance?period=10000")
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
@@ -1049,7 +1049,7 @@ class TestPeriodParsingHardcore:
         In Python an empty string is falsy, so the endpoint falls back to the
         current month. The response should be 200 with a valid period_label.
         """
-        resp = await admin_client.get("/admin/balance?period=")
+        resp = await admin_client.get("/admin/stats/balance?period=")
         assert resp.status_code == 200
         assert "period_label" in resp.json()
 
@@ -1061,7 +1061,7 @@ class TestPeriodParsingHardcore:
         The value '2026-01; DROP TABLE payments;--' does not match the expected
         regex and must return 400.
         """
-        resp = await admin_client.get("/admin/balance?period=2026-01; DROP TABLE payments;--")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-01; DROP TABLE payments;--")
         assert resp.status_code == 400
 
     @pytest.mark.asyncio
@@ -1072,7 +1072,7 @@ class TestPeriodParsingHardcore:
         The value '2026-Q①' contains a non-ASCII circled digit and must not
         match the expected regex pattern.
         """
-        resp = await admin_client.get("/admin/balance?period=2026-Q①")
+        resp = await admin_client.get("/admin/stats/balance?period=2026-Q①")
         assert resp.status_code == 400
 
 
@@ -1093,7 +1093,7 @@ class TestDecimalPrecision:
                 payment_type="event",
                 created_at=datetime(2027, 3, 10),
             )
-        resp = await admin_client.get("/admin/balance?period=2027-03")
+        resp = await admin_client.get("/admin/stats/balance?period=2027-03")
         data = resp.json()
         assert data["total_income"] == "99.99 PLN"
 
@@ -1110,7 +1110,7 @@ class TestDecimalPrecision:
             created_at=datetime(2027, 4, 1),
             extra_data='{"plan_code": "trial"}',
         )
-        resp = await admin_client.get("/admin/balance?period=2027-04")
+        resp = await admin_client.get("/admin/stats/balance?period=2027-04")
         data = resp.json()
         assert data["total_income"] == "0.01 PLN"
         assert data["total_income_subscription"] == "0.01 PLN"
@@ -1128,7 +1128,7 @@ class TestDecimalPrecision:
             payment_type="event",
             created_at=datetime(2027, 5, 1),
         )
-        resp = await admin_client.get("/admin/balance?period=2027-05")
+        resp = await admin_client.get("/admin/stats/balance?period=2027-05")
         data = resp.json()
         assert data["total_income"] == "99999999.99 PLN"
 
@@ -1146,7 +1146,7 @@ class TestDecimalPrecision:
                 payment_type="event",
                 created_at=datetime(2027, 6, 15),
             )
-        resp = await admin_client.get("/admin/balance?period=2027-06")
+        resp = await admin_client.get("/admin/stats/balance?period=2027-06")
         data = resp.json()
         assert data["total_income"] == "1.00 PLN"
         assert data["total_tx_count"] == 100
@@ -1170,7 +1170,7 @@ class TestDecimalPrecision:
             payment_type="event",
             created_at=datetime(2027, 7, 2),
         )
-        resp = await admin_client.get("/admin/balance?period=2027-07")
+        resp = await admin_client.get("/admin/stats/balance?period=2027-07")
         data = resp.json()
         assert data["total_net"] == "0.00 PLN"
         assert "-" not in data["total_net"]
@@ -1193,7 +1193,7 @@ class TestSubscriptionExtraDataEdgeCases:
             created_at=datetime(2027, 8, 1),
             extra_data=None,
         )
-        resp = await admin_client.get("/admin/balance?period=2027-08")
+        resp = await admin_client.get("/admin/stats/balance?period=2027-08")
         data = resp.json()
         assert len(data["subscriptions"]) == 1
         assert data["subscriptions"][0]["plan_code"] == "unknown"
@@ -1212,7 +1212,7 @@ class TestSubscriptionExtraDataEdgeCases:
             created_at=datetime(2027, 9, 1),
             extra_data='{}',
         )
-        resp = await admin_client.get("/admin/balance?period=2027-09")
+        resp = await admin_client.get("/admin/stats/balance?period=2027-09")
         data = resp.json()
         assert data["subscriptions"][0]["plan_code"] == "unknown"
 
@@ -1230,7 +1230,7 @@ class TestSubscriptionExtraDataEdgeCases:
             created_at=datetime(2027, 10, 1),
             extra_data='[1, 2, 3]',
         )
-        resp = await admin_client.get("/admin/balance?period=2027-10")
+        resp = await admin_client.get("/admin/stats/balance?period=2027-10")
         data = resp.json()
         assert data["subscriptions"][0]["plan_code"] == "unknown"
 
@@ -1248,7 +1248,7 @@ class TestSubscriptionExtraDataEdgeCases:
             created_at=datetime(2027, 11, 1),
             extra_data='{"plan_code": 42}',
         )
-        resp = await admin_client.get("/admin/balance?period=2027-11")
+        resp = await admin_client.get("/admin/stats/balance?period=2027-11")
         data = resp.json()
         assert data["subscriptions"][0]["plan_code"] == "42"
 
@@ -1266,7 +1266,7 @@ class TestSubscriptionExtraDataEdgeCases:
             created_at=datetime(2027, 12, 1),
             extra_data='{"plan_code": null}',
         )
-        resp = await admin_client.get("/admin/balance?period=2027-12")
+        resp = await admin_client.get("/admin/stats/balance?period=2027-12")
         data = resp.json()
         assert data["subscriptions"][0]["plan_code"] in ("None", "unknown", "none")
 
@@ -1284,7 +1284,7 @@ class TestSubscriptionExtraDataEdgeCases:
             created_at=datetime(2028, 1, 1),
             extra_data='{"subscription": {"plan_code": "monthly"}}',
         )
-        resp = await admin_client.get("/admin/balance?period=2028-01")
+        resp = await admin_client.get("/admin/stats/balance?period=2028-01")
         data = resp.json()
         assert data["subscriptions"][0]["plan_code"] == "unknown"
 
@@ -1302,7 +1302,7 @@ class TestSubscriptionExtraDataEdgeCases:
             created_at=datetime(2028, 2, 1),
             extra_data='{"plan_code": ""}',
         )
-        resp = await admin_client.get("/admin/balance?period=2028-02")
+        resp = await admin_client.get("/admin/stats/balance?period=2028-02")
         data = resp.json()
         assert data["subscriptions"][0]["plan_code"] == ""
 
@@ -1335,7 +1335,7 @@ class TestStatusCombinations:
                 created_at=datetime(2028, 3, 10),
             )
 
-        resp = await admin_client.get("/admin/balance?period=2028-03")
+        resp = await admin_client.get("/admin/stats/balance?period=2028-03")
         data = resp.json()
         assert data["total_income"] == "100.00 PLN"
         assert data["total_refunds"] == "50.00 PLN"
@@ -1362,7 +1362,7 @@ class TestStatusCombinations:
             status=DBPaymentStatus.CANCELLED.value,
             payment_type="event", created_at=datetime(2028, 4, 6),
         )
-        resp = await admin_client.get("/admin/balance?period=2028-04")
+        resp = await admin_client.get("/admin/stats/balance?period=2028-04")
         data = resp.json()
         assert data["total_income"] == "0.00 PLN"
         assert data["total_refunds"] == "0.00 PLN"
@@ -1393,7 +1393,7 @@ class TestStatusCombinations:
             created_at=datetime(2028, 5, 2),
             extra_data='{"plan_code": "monthly"}',
         )
-        resp = await admin_client.get("/admin/balance?period=2028-05")
+        resp = await admin_client.get("/admin/stats/balance?period=2028-05")
         data = resp.json()
         plans = {s["plan_code"]: s for s in data["subscriptions"]}
         assert "monthly" in plans
@@ -1420,7 +1420,7 @@ class TestEventBreakdownHardcore:
             payment_type="event",
             created_at=datetime(2028, 6, 1),
         )
-        resp = await admin_client.get("/admin/balance?period=2028-06")
+        resp = await admin_client.get("/admin/stats/balance?period=2028-06")
         data = resp.json()
         assert data["total_income"] == "50.00 PLN"
         assert data["total_income_event"] == "50.00 PLN"
@@ -1449,7 +1449,7 @@ class TestEventBreakdownHardcore:
             )
             await _make_registration(db_session, user.id, ev.id, payment_id=p.external_id, occurrence_date=date(2028, 7, idx))
 
-        resp = await admin_client.get("/admin/balance?period=2028-07")
+        resp = await admin_client.get("/admin/stats/balance?period=2028-07")
         data = resp.json()
         assert len(data["events"]) == 3
         incomes = [e["income"] for e in data["events"]]
@@ -1471,7 +1471,7 @@ class TestEventBreakdownHardcore:
         )
         await _make_registration(db_session, admin_user.id, ev.id, payment_id=p.external_id, occurrence_date=date(2028, 8, 2))
 
-        resp = await admin_client.get("/admin/balance?period=2028-08")
+        resp = await admin_client.get("/admin/stats/balance?period=2028-08")
         data = resp.json()
         assert len(data["events"]) == 1
         assert data["events"][0]["income"] == "0.00 PLN"
@@ -1493,7 +1493,7 @@ class TestEventBreakdownHardcore:
         )
         await _make_registration(db_session, admin_user.id, ev.id, payment_id=p.external_id, occurrence_date=date(2028, 9, 1))
 
-        resp = await admin_client.get("/admin/balance?period=2028-09")
+        resp = await admin_client.get("/admin/stats/balance?period=2028-09")
         data = resp.json()
         assert data["events"][0]["city"] == ""
 
@@ -1517,7 +1517,7 @@ class TestMonthlyBreakdownHardcore:
             db_session, admin_user.id, Decimal("30.00"),
             payment_type="event", created_at=datetime(2028, 3, 15),
         )
-        resp = await admin_client.get("/admin/balance?period=2028-Q1")
+        resp = await admin_client.get("/admin/stats/balance?period=2028-Q1")
         data = resp.json()
         month_labels = [m["month"] for m in data["months"]]
         assert month_labels == ["2028-01", "2028-03"]
@@ -1543,7 +1543,7 @@ class TestMonthlyBreakdownHardcore:
             payment_type="event",
             created_at=datetime(2028, 2, 15),
         )
-        resp = await admin_client.get("/admin/balance?period=2028-Q1")
+        resp = await admin_client.get("/admin/stats/balance?period=2028-Q1")
         data = resp.json()
         assert data["total_income"] == "100.00 PLN"
         assert data["total_refunds"] == "80.00 PLN"
@@ -1573,7 +1573,7 @@ class TestMonthlyBreakdownHardcore:
             payment_type="subscription", created_at=datetime(2028, 10, 15),
             extra_data='{"plan_code": "monthly"}',
         )
-        resp = await admin_client.get("/admin/balance?period=2028-10")
+        resp = await admin_client.get("/admin/stats/balance?period=2028-10")
         data = resp.json()
         assert len(data["months"]) == 1
         m = data["months"][0]
@@ -1599,7 +1599,7 @@ class TestPendingEdgeCases:
                 status=status, payment_type="event",
                 created_at=datetime(2028, 11, 1),
             )
-        resp = await admin_client.get("/admin/balance?period=2028-11")
+        resp = await admin_client.get("/admin/stats/balance?period=2028-11")
         data = resp.json()
         assert data["pending"]["pending_event"] == "30.00 PLN"
         assert data["pending"]["pending_event_count"] == 3
@@ -1624,7 +1624,7 @@ class TestPendingEdgeCases:
                 status=DBPaymentStatus.PENDING.value,
                 payment_type="event", created_at=datetime(2028, 12, 2),
             )
-        resp = await admin_client.get("/admin/balance?period=2028-12")
+        resp = await admin_client.get("/admin/stats/balance?period=2028-12")
         data = resp.json()
         assert data["total_income"] == "50.00 PLN"
         assert data["pending"]["pending_event"] == "50.00 PLN"
@@ -1647,7 +1647,7 @@ class TestPendingEdgeCases:
             status=DBPaymentStatus.PENDING.value,
             payment_type="subscription", created_at=datetime(2029, 1, 2),
         )
-        resp = await admin_client.get("/admin/balance?period=2029-01")
+        resp = await admin_client.get("/admin/stats/balance?period=2029-01")
         data = resp.json()
         assert data["pending"]["pending_event"] == "30.00 PLN"
         assert data["pending"]["pending_event_count"] == 1
@@ -1675,9 +1675,9 @@ class TestConcurrentPeriodsIsolation:
             db_session, admin_user.id, Decimal("200.00"),
             payment_type="event", created_at=datetime(2029, 2, 15),
         )
-        r_jan = await admin_client.get("/admin/balance?period=2029-01")
-        r_feb = await admin_client.get("/admin/balance?period=2029-02")
-        r_q1 = await admin_client.get("/admin/balance?period=2029-Q1")
+        r_jan = await admin_client.get("/admin/stats/balance?period=2029-01")
+        r_feb = await admin_client.get("/admin/stats/balance?period=2029-02")
+        r_q1 = await admin_client.get("/admin/stats/balance?period=2029-Q1")
 
         assert r_jan.json()["total_income"] == "100.00 PLN"
         assert r_feb.json()["total_income"] == "200.00 PLN"
@@ -1696,9 +1696,9 @@ class TestConcurrentPeriodsIsolation:
                 db_session, admin_user.id, Decimal(amt),
                 payment_type="event", created_at=datetime(2029, m, 10),
             )
-        r_q2 = await admin_client.get("/admin/balance?period=2029-Q2")
-        r_apr = await admin_client.get("/admin/balance?period=2029-04")
-        r_year = await admin_client.get("/admin/balance?period=2029")
+        r_q2 = await admin_client.get("/admin/stats/balance?period=2029-Q2")
+        r_apr = await admin_client.get("/admin/stats/balance?period=2029-04")
+        r_year = await admin_client.get("/admin/stats/balance?period=2029")
         assert r_q2.json()["total_income"] == "60.00 PLN"
         assert r_apr.json()["total_income"] == "10.00 PLN"
         assert r_year.json()["total_income"] == "60.00 PLN"
@@ -1725,7 +1725,7 @@ class TestMixedPaymentTypes:
             payment_type="subscription", created_at=datetime(2029, 3, 2),
             extra_data='{"plan_code": "monthly"}',
         )
-        resp = await admin_client.get("/admin/balance?period=2029-03")
+        resp = await admin_client.get("/admin/stats/balance?period=2029-03")
         data = resp.json()
         assert data["total_income_event"] == "50.00 PLN"
         assert data["total_income_subscription"] == "0.00 PLN"
@@ -1751,7 +1751,7 @@ class TestMixedPaymentTypes:
             payment_type="subscription", created_at=datetime(2029, 4, 2),
             extra_data='{"plan_code": "yearly"}',
         )
-        resp = await admin_client.get("/admin/balance?period=2029-04")
+        resp = await admin_client.get("/admin/stats/balance?period=2029-04")
         data = resp.json()
         assert data["total_income"] == "200.00 PLN"
         assert data["total_income_event"] == "0.00 PLN"
@@ -1776,7 +1776,7 @@ class TestSpecialDates:
             payment_type="event",
             created_at=datetime(2024, 2, 29, 12, 0),
         )
-        resp = await admin_client.get("/admin/balance?period=2024-02")
+        resp = await admin_client.get("/admin/stats/balance?period=2024-02")
         data = resp.json()
         assert data["date_to"] == "2024-02-29"
         assert data["total_income"] == "29.02 PLN"
@@ -1789,7 +1789,7 @@ class TestSpecialDates:
         The year 2000 is divisible by 400, making it a leap year.
         February 2000 must have 29 days.
         """
-        resp = await admin_client.get("/admin/balance?period=2000-02")
+        resp = await admin_client.get("/admin/stats/balance?period=2000-02")
         assert resp.status_code == 200
         assert resp.json()["date_to"] == "2000-02-29"
 
@@ -1801,7 +1801,7 @@ class TestSpecialDates:
         The year 1900 is divisible by 100 but not by 400, so February 1900
         must have only 28 days.
         """
-        resp = await admin_client.get("/admin/balance?period=1900-02")
+        resp = await admin_client.get("/admin/stats/balance?period=1900-02")
         assert resp.status_code == 200
         assert resp.json()["date_to"] == "1900-02-28"
 
@@ -1823,9 +1823,9 @@ class TestSpecialDates:
             payment_type="event",
             created_at=datetime(2030, 1, 1, 0, 0, 0),
         )
-        r_2029 = await admin_client.get("/admin/balance?period=2029")
-        r_q4 = await admin_client.get("/admin/balance?period=2029-Q4")
-        r_q1_2030 = await admin_client.get("/admin/balance?period=2030-Q1")
+        r_2029 = await admin_client.get("/admin/stats/balance?period=2029")
+        r_q4 = await admin_client.get("/admin/stats/balance?period=2029-Q4")
+        r_q1_2030 = await admin_client.get("/admin/stats/balance?period=2030-Q1")
         assert r_2029.json()["total_income"] == "500.00 PLN"
         assert r_q4.json()["total_income"] == "500.00 PLN"
         assert r_q1_2030.json()["total_income"] == "600.00 PLN"
@@ -1848,11 +1848,11 @@ class TestSpecialDates:
 
         q_sum = Decimal("0")
         for q in range(1, 5):
-            r = await admin_client.get(f"/admin/balance?period=2030-Q{q}")
+            r = await admin_client.get(f"/admin/stats/balance?period=2030-Q{q}")
             q_val = Decimal(r.json()["total_income"].replace(" PLN", ""))
             q_sum += q_val
 
-        r_year = await admin_client.get("/admin/balance?period=2030")
+        r_year = await admin_client.get("/admin/stats/balance?period=2030")
         year_val = Decimal(r_year.json()["total_income"].replace(" PLN", ""))
         assert q_sum == year_val == expected_total
 
@@ -1877,7 +1877,7 @@ class TestResponseConsistency:
             payment_type="subscription", created_at=datetime(2030, 2, 2),
             extra_data='{"plan_code": "monthly"}',
         )
-        resp = await admin_client.get("/admin/balance?period=2030-02")
+        resp = await admin_client.get("/admin/stats/balance?period=2030-02")
         d = resp.json()
         total = Decimal(d["total_income"].replace(" PLN", ""))
         ev = Decimal(d["total_income_event"].replace(" PLN", ""))
@@ -1901,7 +1901,7 @@ class TestResponseConsistency:
             status=DBPaymentStatus.REFUNDED.value,
             payment_type="event", created_at=datetime(2030, 3, 15),
         )
-        resp = await admin_client.get("/admin/balance?period=2030-03")
+        resp = await admin_client.get("/admin/stats/balance?period=2030-03")
         d = resp.json()
         income = Decimal(d["total_income"].replace(" PLN", ""))
         refunds = Decimal(d["total_refunds"].replace(" PLN", ""))
@@ -1921,7 +1921,7 @@ class TestResponseConsistency:
                 db_session, admin_user.id, Decimal(amt),
                 payment_type="event", created_at=datetime(2030, m, 10),
             )
-        resp = await admin_client.get("/admin/balance?period=2030-Q1")
+        resp = await admin_client.get("/admin/stats/balance?period=2030-Q1")
         d = resp.json()
         month_sum = sum(Decimal(m["income_total"].replace(" PLN", "")) for m in d["months"])
         total = Decimal(d["total_income"].replace(" PLN", ""))
@@ -1945,7 +1945,7 @@ class TestResponseConsistency:
             status=DBPaymentStatus.PENDING.value,
             payment_type="subscription", created_at=datetime(2030, 4, 2),
         )
-        resp = await admin_client.get("/admin/balance?period=2030-04")
+        resp = await admin_client.get("/admin/stats/balance?period=2030-04")
         d = resp.json()
         pe = Decimal(d["pending"]["pending_event"].replace(" PLN", ""))
         ps = Decimal(d["pending"]["pending_subscription"].replace(" PLN", ""))
@@ -1966,7 +1966,7 @@ class TestResponseConsistency:
                     db_session, admin_user.id, Decimal("1.00"),
                     payment_type="event", created_at=datetime(2030, m, 10),
                 )
-        resp = await admin_client.get("/admin/balance?period=2030-Q2")
+        resp = await admin_client.get("/admin/stats/balance?period=2030-Q2")
         d = resp.json()
         month_tx = sum(m["tx_count"] for m in d["months"])
         assert d["total_tx_count"] == month_tx == 15
@@ -1996,7 +1996,7 @@ class TestHighVolumeData:
             await _make_registration(db_session, user.id, ev.id, payment_id=p.external_id, occurrence_date=date(2030, 5, 15))
             total_expected += amt
 
-        resp = await admin_client.get("/admin/balance?period=2030-05")
+        resp = await admin_client.get("/admin/stats/balance?period=2030-05")
         data = resp.json()
         assert len(data["events"]) == 50
         assert data["total_income"] == f"{total_expected:.2f} PLN"
@@ -2016,7 +2016,7 @@ class TestHighVolumeData:
                 db_session, admin_user.id, Decimal("10.00"),
                 payment_type="event", created_at=datetime(2031, m, 15),
             )
-        resp = await admin_client.get("/admin/balance?period=2031")
+        resp = await admin_client.get("/admin/stats/balance?period=2031")
         data = resp.json()
         assert len(data["months"]) == 12
         assert data["total_income"] == "120.00 PLN"
@@ -2043,7 +2043,7 @@ class TestSubscriptionPlanAggregation:
                 payment_type="subscription", created_at=datetime(2031, 2, 1),
                 extra_data='{"plan_code": "monthly"}',
             )
-        resp = await admin_client.get("/admin/balance?period=2031-02")
+        resp = await admin_client.get("/admin/stats/balance?period=2031-02")
         data = resp.json()
         assert len(data["subscriptions"]) == 1
         s = data["subscriptions"][0]
@@ -2065,7 +2065,7 @@ class TestSubscriptionPlanAggregation:
                 payment_type="subscription", created_at=datetime(2031, 3, 1),
                 extra_data=f'{{"plan_code": "{plan}"}}',
             )
-        resp = await admin_client.get("/admin/balance?period=2031-03")
+        resp = await admin_client.get("/admin/stats/balance?period=2031-03")
         data = resp.json()
         codes = [s["plan_code"] for s in data["subscriptions"]]
         assert codes == sorted(codes)  # alphabetical
@@ -2091,7 +2091,7 @@ class TestSubscriptionPlanAggregation:
             payment_type="subscription", created_at=datetime(2031, 4, 15),
             extra_data='{"plan_code": "yearly"}',
         )
-        resp = await admin_client.get("/admin/balance?period=2031-04")
+        resp = await admin_client.get("/admin/stats/balance?period=2031-04")
         data = resp.json()
         plans = {s["plan_code"]: s for s in data["subscriptions"]}
         assert plans["yearly"]["income"] == "600.00 PLN"
