@@ -186,7 +186,7 @@ function AdminIconManager() {
         <h2 className="text-base font-bold text-navy dark:text-cream mb-4">
           Wbudowane ikony ({BUILT_IN_EVENT_ICONS.length})
         </h2>
-        <div className="grid grid-cols-5 gap-3">
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
           {BUILT_IN_EVENT_ICONS.map((icon) => (
             <div
               key={icon.key}
