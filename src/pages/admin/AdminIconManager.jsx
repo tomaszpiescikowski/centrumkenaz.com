@@ -351,7 +351,7 @@ function AdminIconManager() {
           <button
             type="submit"
             disabled={!form.iconKey || adding}
-            className="btn-primary px-6 py-2.5 rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto btn-primary px-6 py-2.5 rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {adding ? 'Dodawanie…' : 'Dodaj typ aktywności'}
           </button>
