@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import FeedbackModal from '../ui/FeedbackModal'
 import { useLanguage } from '../../context/LanguageContext'
 
-const STORAGE_KEY = 'kenaz.feedbackBtn.pos.v2'
+const STORAGE_KEY = 'kenaz.feedbackBtn.pos.v3'
 const BTN_W = 136 // approximate pill width
 const BTN_H = 48  // pill height + tail
 const MARGIN = 12
@@ -13,7 +13,7 @@ function getDefaultPos() {
   const isMobile = w < 640
   return {
     left: w - BTN_W - MARGIN,
-    top: isMobile ? MARGIN : h - BTN_H - MARGIN * 2,
+    top: isMobile ? Math.round(h * 0.1) : h - BTN_H - MARGIN * 2,
   }
 }
 
