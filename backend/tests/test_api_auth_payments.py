@@ -120,7 +120,7 @@ class TestAuthRouter:
 
         assert response.status_code in (302, 307)
         location = response.headers["location"]
-        assert "/api/auth/callback" in location
+        assert "/auth/callback" in location
         assert "access_token=access123" in location
         assert "refresh_token=refresh123" in location
 
@@ -134,7 +134,7 @@ class TestAuthRouter:
         response = await api_client.get("/api/auth/google/callback?code=abc", follow_redirects=False)
 
         assert response.status_code in (302, 307)
-        assert "/api/auth/error" in response.headers["location"]
+        assert "/auth/error" in response.headers["location"]
         assert "Authentication%20failed" in response.headers["location"] or "Authentication+failed" in response.headers["location"]
 
     @pytest.mark.asyncio

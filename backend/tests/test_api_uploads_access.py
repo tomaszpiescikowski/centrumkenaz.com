@@ -113,7 +113,7 @@ async def test_upload_allows_active_admin(uploads_api_client: AsyncClient, db_se
         files={"file": _image_file()},
     )
     assert response.status_code == 200
-    assert response.json()["url"].startswith("/api/uploads/")
+    assert response.json()["url"].startswith("/uploads/")
 
 
 @pytest.mark.asyncio
