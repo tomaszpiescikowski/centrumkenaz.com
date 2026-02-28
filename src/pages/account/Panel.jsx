@@ -88,7 +88,7 @@ function Panel() {
   // Blurred placeholder for unauthenticated / pending users
   if (!isAuthenticated || isPendingApproval) {
     return (
-      <div className="flex h-full min-h-0 flex-col px-3 py-3 sm:px-4 sm:py-6">
+      <div className="flex flex-col px-3 py-3 sm:px-4 sm:py-6">
         <div className="pointer-events-none select-none blur-[3px]">
           <div className="mx-auto w-full max-w-4xl">
             <h1 className="text-3xl font-black text-navy dark:text-cream md:text-4xl">
@@ -125,7 +125,7 @@ function Panel() {
     : false
 
   return (
-    <div className="page-shell flex h-full min-h-0 flex-col gap-4 sm:gap-6">
+    <div className="page-shell flex flex-col gap-4 sm:h-full sm:min-h-0 sm:gap-6">
       <div className="shrink-0">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl sm:text-3xl font-black text-navy dark:text-cream">
@@ -147,9 +147,9 @@ function Panel() {
         </p>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-6 lg:flex-row">
+      <div className="flex flex-col gap-6 sm:min-h-0 sm:flex-1 lg:flex-row">
         {/* Left tile – My Events */}
-        <section className="panel-tile flex min-h-0 flex-1 flex-col">
+        <section className="panel-tile flex flex-col sm:min-h-0 sm:flex-1">
           <div className="border-b border-navy/10 px-4 py-3 dark:border-cream/15">
             <span className="block text-sm font-bold text-navy dark:text-cream">
               {t('events.myEventsTitle')}
@@ -158,7 +158,7 @@ function Panel() {
               {loading ? '…' : t('events.myEventsTotal', { count: registrations.length })}
             </span>
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="sm:min-h-0 sm:flex-1 sm:overflow-y-auto">
             {loading ? (
               <p className="px-5 py-4 text-navy/60 dark:text-cream/60">{t('common.loading')}</p>
             ) : registrations.length === 0 ? (

@@ -2404,6 +2404,7 @@ img.cmt-av-img {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  touch-action: pan-y;
   padding: 0;
   background: var(--bg, #fffdf5);
   display: flex;
