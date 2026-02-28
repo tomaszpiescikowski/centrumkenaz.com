@@ -45,13 +45,13 @@ SUBSCRIPTION_PLANS: dict[str, SubscriptionPlan] = {
     ),
     PlanCode.MONTHLY: SubscriptionPlan(
         code=PlanCode.MONTHLY.value,
-        amount=Decimal("20.00"),
+        amount=Decimal("33.00"),
         currency=Currency.PLN.value,
         duration_days=30,
     ),
     PlanCode.YEARLY: SubscriptionPlan(
         code=PlanCode.YEARLY.value,
-        amount=Decimal("200.00"),
+        amount=Decimal("333.00"),
         currency=Currency.PLN.value,
         duration_days=365,
     ),
