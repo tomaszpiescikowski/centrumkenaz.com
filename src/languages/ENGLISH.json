@@ -335,7 +335,11 @@
     "cancellationDeadline": "Cancellation possible until",
     "cancellationExpired": "Cancellation period has ended",
     "cancellationTimeLeft": "left to cancel",
-    "cancellationTimeRemaining": "{time} left to cancel."
+    "cancellationTimeRemaining": "{time} left to cancel.",
+    "adminOpenRegistrations": "Open registrations",
+    "adminOpenRegistrationsSuccess": "Notification sent!",
+    "adminOpenRegistrationsError": "Failed to send notification",
+    "registrationOpenBadge": "Registrations open"
   },
   "registration": {
     "noSpots": "No spots left",
@@ -483,7 +487,14 @@
     "googleCalendar": "Google Calendar",
     "connectCalendar": "Connect Google Calendar",
     "calendarConnected": "Connected to Google Calendar",
-    "calendarDescription": "Automatically add your upcoming activities to Google Calendar after registration."
+    "calendarDescription": "Automatically add your upcoming activities to Google Calendar after registration.",
+    "pushNotifications": "Push notifications",
+    "pushNotificationsDesc": "Receive alerts about new events and registrations.",
+    "pushNotSupported": "Your browser does not support push notifications.",
+    "pushDenied": "Notifications are blocked in your browser settings. Unblock them in site settings.",
+    "pushSubscribed": "Notifications enabled",
+    "pushUnsubscribe": "Disable notifications",
+    "pushSubscribe": "Enable push notifications"
   },
   "plans": {
     "backToAccount": "Back to account",

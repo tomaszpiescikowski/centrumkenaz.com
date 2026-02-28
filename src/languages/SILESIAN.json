@@ -335,7 +335,11 @@
     "cancellationDeadline": "Rezygnacyjo możliwŏ do",
     "cancellationExpired": "Czas na rezygnacyjo sie skōńczōł",
     "cancellationTimeLeft": "ôstało na rezygnacyjo",
-    "cancellationTimeRemaining": "Ôstało {time} na rezygnacyjo."
+    "cancellationTimeRemaining": "Ôstało {time} na rezygnacyjo.",
+    "adminOpenRegistrations": "Utw??rz zapiski",
+    "adminOpenRegistrationsSuccess": "Powiadomiyni wys??ane!",
+    "adminOpenRegistrationsError": "Niy uda??o sie wys??a?? powiadomiynia",
+    "registrationOpenBadge": "Zapiski utwarte"
   },
   "registration": {
     "noSpots": "Brak miyjsc",
@@ -483,7 +487,14 @@
     "googleCalendar": "Google Kalyndorz",
     "connectCalendar": "Połōncz Google Kalyndorz",
     "calendarConnected": "Połōnczōno z Google Kalyndorzym",
-    "calendarDescription": "Autōmatycznie dodowoj swoje prziszłe zajyncio do Google Kalyndorza po zapisaniu."
+    "calendarDescription": "Autōmatycznie dodowoj swoje prziszłe zajyncio do Google Kalyndorza po zapisaniu.",
+    "pushNotifications": "Powiadomiynia push",
+    "pushNotificationsDesc": "Dostowuj powiadomiynia o nowych wydarzyn??????ach i zapiskach.",
+    "pushNotSupported": "Twoja przegl??darka niy obs??uguje powiadomiy?? push.",
+    "pushDenied": "Powiadomiynia s?? zablokowane w ustawiy??iach przegl??ndarka.",
+    "pushSubscribed": "Powiadomiynia w????czone",
+    "pushUnsubscribe": "Wy????cz powiadomiynia",
+    "pushSubscribe": "W????cz powiadomiynia push"
   },
   "plans": {
     "backToAccount": "Wroć do kōnta",

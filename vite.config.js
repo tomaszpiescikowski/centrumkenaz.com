@@ -62,6 +62,12 @@ export default defineConfig({
       injectManifest: {
         globPatterns: ['**/*.{js,css,html,woff2}'],
       },
+      devOptions: {
+        // Enable service worker in Vite dev mode so push notification
+        // subscriptions can be created and tested without a full build.
+        enabled: true,
+        type: 'module',
+      },
     }),
   ],
   server: {

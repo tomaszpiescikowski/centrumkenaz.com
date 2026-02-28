@@ -49,6 +49,7 @@ function normalizeEvent(apiEvent) {
     requiresSubscription: Boolean(apiEvent.requires_subscription),
     cancelCutoffHours: Number(apiEvent.cancel_cutoff_hours ?? 24),
     pointsValue: Number(apiEvent.points_value ?? 0),
+    registrationOpen: Boolean(apiEvent.registration_open),
   }
 }
 

@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useNotification } from '../../context/NotificationContext'
 import { fetchMyProfile, updateMyProfile, fetchPendingSubscriptionPurchase } from '../../api/user'
+import { usePushNotifications } from '../../hooks/usePushNotifications'
 import InterestTagsPicker from '../../components/forms/InterestTagsPicker'
 import LanguageSelector from '../../components/controls/LanguageSelector'
 import CitySelector from '../../components/controls/CitySelector'
@@ -15,6 +16,9 @@ function Account({ darkMode, setDarkMode }) {
   const { showError, showSuccess } = useNotification()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+
+  const isActive = isAuthenticated && user?.account_status === 'active'
+  const { supported: pushSupported, permission: pushPermission, subscribed: pushSubscribed, subscribing: pushSubscribing, subscribe: pushSubscribe, unsubscribe: pushUnsubscribe } = usePushNotifications({ authFetch, isActive })
 
   // After calendar connect redirect (?calendar=connected) re-fetch the user
   // so has_google_calendar flips to true, then clean the URL.
@@ -357,6 +361,52 @@ function Account({ darkMode, setDarkMode }) {
               </div>
             </div>
           </div>
+
+          <aside className="flex flex-col rounded-2xl border border-navy/10 bg-[rgba(255,251,235,0.82)] p-4 dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)]">
+            <h3 className="text-lg font-black text-navy dark:text-cream">
+              {t('account.pushNotifications') || 'Powiadomienia push'}
+            </h3>
+            <p className="mt-1 text-sm text-navy/70 dark:text-cream/70">
+              {t('account.pushNotificationsDesc') || 'Otrzymuj powiadomienia o nowych wydarzeniach i zapisach.'}
+            </p>
+
+            <div className="mt-4 space-y-3">
+              {!pushSupported ? (
+                <p className="text-sm text-navy/60 dark:text-cream/50">
+                  {t('account.pushNotSupported') || 'Twoja przeglądarka nie obsługuje powiadomień push.'}
+                </p>
+              ) : pushPermission === 'denied' ? (
+                <div className="rounded-xl border border-red-300/40 bg-red-50/80 px-3 py-2.5 text-sm text-red-800 dark:border-red-500/30 dark:bg-red-900/20 dark:text-red-300">
+                  {t('account.pushDenied') || 'Powiadomienia zostały zablokowane w ustawieniach przeglądarki.'}
+                </div>
+              ) : pushSubscribed ? (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 rounded-xl border border-green-500/30 bg-green-50 px-4 py-2.5 text-sm font-semibold text-green-800 dark:border-green-400/30 dark:bg-green-900/20 dark:text-green-300">
+                    <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {t('account.pushSubscribed') || 'Powiadomienia włączone'}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={pushUnsubscribe}
+                    className="w-full rounded-xl border border-navy/15 bg-cream px-4 py-2 text-sm font-semibold text-navy/70 transition-colors hover:border-navy/25 hover:text-navy dark:border-cream/15 dark:bg-navy dark:text-cream/70 dark:hover:border-cream/25 dark:hover:text-cream"
+                  >
+                    {t('account.pushUnsubscribe') || 'Wyłącz powiadomienia'}
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={pushSubscribe}
+                  disabled={pushSubscribing}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-navy/15 bg-cream px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:border-navy/25 hover:bg-navy/5 disabled:opacity-60 dark:border-cream/15 dark:bg-navy dark:text-cream dark:hover:border-cream/25"
+                >
+                  🔔 {pushSubscribing ? (t('common.loading') || '…') : (t('account.pushSubscribe') || 'Włącz powiadomienia push')}
+                </button>
+              )}
+            </div>
+          </aside>
 
           <aside className="flex flex-col rounded-2xl border border-navy/10 bg-[rgba(255,251,235,0.82)] p-4 dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)]">
             <h3 className="text-lg font-black text-navy dark:text-cream">

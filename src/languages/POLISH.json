@@ -333,7 +333,11 @@
     "cancellationDeadline": "Rezygnacja możliwa do",
     "cancellationExpired": "Okres rezygnacji minął",
     "cancellationTimeLeft": "do zamknięcia okna rezygnacji",
-    "cancellationTimeRemaining": "Pozostało {time} do zamknięcia możliwości rezygnacji."
+    "cancellationTimeRemaining": "Pozostało {time} do zamknięcia możliwości rezygnacji.",
+    "adminOpenRegistrations": "Otw??rz zapisy",
+    "adminOpenRegistrationsSuccess": "Powiadomienie wyslane!",
+    "adminOpenRegistrationsError": "Nie udalo sie wyslac powiadomienia",
+    "registrationOpenBadge": "Zapisy otwarte"
   },
   "registration": {
     "noSpots": "Brak miejsc",
@@ -481,7 +485,14 @@
     "googleCalendar": "Google Calendar",
     "connectCalendar": "Połącz z Google Calendar",
     "calendarConnected": "Połączono z Google Calendar",
-    "calendarDescription": "Automatycznie dodawaj swoje nadchodzące zajęcia do Google Calendar po rejestracji."
+    "calendarDescription": "Automatycznie dodawaj swoje nadchodzące zajęcia do Google Calendar po rejestracji.",
+    "pushNotifications": "Powiadomienia push",
+    "pushNotificationsDesc": "Otrzymuj powiadomienia o nowych wydarzeniach i zapisach.",
+    "pushNotSupported": "Twoja przegl??darka nie obs??uguje powiadomie?? push.",
+    "pushDenied": "Powiadomienia zosta??y zablokowane w ustawieniach przegl??darki. Odblokuj je w ustawieniach witryny.",
+    "pushSubscribed": "Powiadomienia w????czone",
+    "pushUnsubscribe": "Wy????cz powiadomienia",
+    "pushSubscribe": "W????cz powiadomienia push"
   },
   "plans": {
     "backToAccount": "Wróć do konta",

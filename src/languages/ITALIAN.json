@@ -335,7 +335,11 @@
     "cancellationDeadline": "Annullamento possibile fino al",
     "cancellationExpired": "Il periodo di annullamento è scaduto",
     "cancellationTimeLeft": "rimasti per annullare",
-    "cancellationTimeRemaining": "Rimangono {time} per annullare."
+    "cancellationTimeRemaining": "Rimangono {time} per annullare.",
+    "adminOpenRegistrations": "Apri iscrizioni",
+    "adminOpenRegistrationsSuccess": "Notifica inviata!",
+    "adminOpenRegistrationsError": "Invio notifica fallito",
+    "registrationOpenBadge": "Iscrizioni aperte"
   },
   "registration": {
     "noSpots": "Posti esauriti",
@@ -483,7 +487,14 @@
     "googleCalendar": "Google Calendar",
     "connectCalendar": "Collega Google Calendar",
     "calendarConnected": "Collegato a Google Calendar",
-    "calendarDescription": "Aggiungi automaticamente le tue prossime attività a Google Calendar dopo la registrazione."
+    "calendarDescription": "Aggiungi automaticamente le tue prossime attività a Google Calendar dopo la registrazione.",
+    "pushNotifications": "Notifiche push",
+    "pushNotificationsDesc": "Ricevi notifiche su nuovi eventi e iscrizioni.",
+    "pushNotSupported": "Il tuo browser non supporta le notifiche push.",
+    "pushDenied": "Le notifiche sono bloccate nelle impostazioni del browser.",
+    "pushSubscribed": "Notifiche attivate",
+    "pushUnsubscribe": "Disattiva notifiche",
+    "pushSubscribe": "Attiva notifiche push"
   },
   "plans": {
     "backToAccount": "Torna all'account",

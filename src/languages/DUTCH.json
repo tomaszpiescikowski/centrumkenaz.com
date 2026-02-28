@@ -335,7 +335,11 @@
     "cancellationDeadline": "Annulering mogelijk tot",
     "cancellationExpired": "Annuleringsperiode is verlopen",
     "cancellationTimeLeft": "over om te annuleren",
-    "cancellationTimeRemaining": "Nog {time} om te annuleren."
+    "cancellationTimeRemaining": "Nog {time} om te annuleren.",
+    "adminOpenRegistrations": "Inschrijvingen openen",
+    "adminOpenRegistrationsSuccess": "Melding verzonden!",
+    "adminOpenRegistrationsError": "Melding verzenden mislukt",
+    "registrationOpenBadge": "Inschrijvingen open"
   },
   "registration": {
     "noSpots": "Geen plaatsen",
@@ -483,7 +487,14 @@
     "googleCalendar": "Google Agenda",
     "connectCalendar": "Google Agenda koppelen",
     "calendarConnected": "Verbonden met Google Agenda",
-    "calendarDescription": "Voeg je aankomende activiteiten automatisch toe aan Google Agenda na inschrijving."
+    "calendarDescription": "Voeg je aankomende activiteiten automatisch toe aan Google Agenda na inschrijving.",
+    "pushNotifications": "Push-meldingen",
+    "pushNotificationsDesc": "Ontvang meldingen over nieuwe evenementen en inschrijvingen.",
+    "pushNotSupported": "Uw browser ondersteunt geen push-meldingen.",
+    "pushDenied": "Meldingen zijn geblokkeerd in uw browserinstellingen.",
+    "pushSubscribed": "Meldingen ingeschakeld",
+    "pushUnsubscribe": "Meldingen uitschakelen",
+    "pushSubscribe": "Push-meldingen inschakelen"
   },
   "plans": {
     "backToAccount": "Terug naar account",

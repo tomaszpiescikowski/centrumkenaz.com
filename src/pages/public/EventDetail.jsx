@@ -50,6 +50,7 @@ function EventDetail() {
   const [fieldHints, setFieldHints] = useState({})
   const [savingAdmin, setSavingAdmin] = useState(false)
   const [deletingAdmin, setDeletingAdmin] = useState(false)
+  const [openingRegistrations, setOpeningRegistrations] = useState(false)
   const { openChat, setLatestMessageTime, markAsRead } = useChat()
   const { customTypes } = useCustomEventTypes()
   const isAdmin = user?.role === 'admin'
@@ -440,6 +441,20 @@ function EventDetail() {
     })
   }
 
+  const handleOpenRegistrations = async () => {
+    if (!isAdmin || openingRegistrations) return
+    try {
+      setOpeningRegistrations(true)
+      const updated = await updateEvent(authFetch, event.id, { registration_open: true })
+      setEvent(updated)
+      showSuccess(t('event.adminOpenRegistrationsSuccess'))
+    } catch (err) {
+      showError(err.message || t('event.adminOpenRegistrationsError'))
+    } finally {
+      setOpeningRegistrations(false)
+    }
+  }
+
   /* ── helpers for participant rows ──────────────────── */
   const statusRowClass = (s) => {
     if (s === 'confirmed') return 'ev-row-ok'
@@ -517,6 +532,21 @@ function EventDetail() {
                 >
                   {isEditing ? t('event.adminCancelEdit') : t('event.adminEdit')}
                 </button>
+                {!event.registrationOpen && (
+                  <button
+                    onClick={handleOpenRegistrations}
+                    disabled={openingRegistrations}
+                    className="px-4 py-2 rounded-full text-sm font-semibold btn-secondary disabled:opacity-60"
+                    title={t('event.adminOpenRegistrations')}
+                  >
+                    {openingRegistrations ? t('common.loading') : '🔔 ' + t('event.adminOpenRegistrations')}
+                  </button>
+                )}
+                {event.registrationOpen && (
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300">
+                    ✓ {t('event.registrationOpenBadge')}
+                  </span>
+                )}
                 <button
                   onClick={handleAdminDelete}
                   disabled={deletingAdmin}

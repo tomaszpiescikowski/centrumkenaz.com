@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Path, Request
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,12 +9,42 @@ from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field
 from datetime import datetime, timedelta, date
 from decimal import Decimal
 
-from database import get_db
+from database import get_db, AsyncSessionLocal
 from models.event import Event
+
+logger = logging.getLogger(__name__)
 from models.user import User
 from models.registration import Registration, RegistrationStatus
 from services import push_service
 from services.log_service import log_action, _get_request_ip, user_email_from
+
+
+async def _push_event_all_bg(scenario: str, params: dict, url: str) -> None:
+    """
+    Fire-and-forget background push to all subscribers.
+
+    Opens its own DB session so it is independent of the request's
+    session lifecycle (which is closed once the response is sent).
+    """
+    try:
+        async with AsyncSessionLocal() as db:
+            await push_service.send_event_push_to_all(db, scenario, params, url)
+    except Exception:
+        logger.exception("[push] Background push to all failed (scenario=%s)", scenario)
+
+
+async def _push_event_user_bg(user_id: str, scenario: str, params: dict, url: str) -> None:
+    """
+    Fire-and-forget background push to a single user.
+
+    Opens its own DB session so it is independent of the request's
+    session lifecycle.
+    """
+    try:
+        async with AsyncSessionLocal() as db:
+            await push_service.send_event_push_to_user(db, user_id, scenario, params, url)
+    except Exception:
+        logger.exception("[push] Background push to user %s failed (scenario=%s)", user_id, scenario)
 from services.registration_service import (
     RegistrationService,
     RegistrationError,
@@ -487,8 +518,7 @@ async def create_event(
     )
     # Push: notify all active users about the new event (per-user language)
     asyncio.create_task(
-        push_service.send_event_push_to_all(
-            db,
+        _push_event_all_bg(
             "new_event",
             {"title": event.title, "city": event.city, "date": event.start_date.strftime("%d.%m.%Y")},
             f"/events/{event.id}",
@@ -593,8 +623,7 @@ async def update_event(
     # Push: registration opened (per-user language)
     if updates.get("registration_open") is True and not old_registration_open:
         asyncio.create_task(
-            push_service.send_event_push_to_all(
-                db,
+            _push_event_all_bg(
                 "registration_open",
                 {"title": event.title},
                 f"/events/{event.id}",
@@ -619,8 +648,7 @@ async def update_event(
         new_start = event.start_date.strftime("%d.%m.%Y %H:%M")
         for uid in user_ids:
             asyncio.create_task(
-                push_service.send_event_push_to_user(
-                    db,
+                _push_event_user_bg(
                     uid,
                     "date_changed",
                     {"title": event.title, "datetime": new_start},
