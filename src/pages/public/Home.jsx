@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext'
 import { useAuth } from '../../context/AuthContext'
 
@@ -16,11 +16,6 @@ const ABOUT_IMAGES = [
 function Home() {
   const { t } = useLanguage()
   const { isAuthenticated } = useAuth()
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    if (isAuthenticated) navigate('/calendar', { replace: true })
-  }, [isAuthenticated, navigate])
 
   useEffect(() => {
     // Schedule prefetch after a short idle period so it doesn't compete
