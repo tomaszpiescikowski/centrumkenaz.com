@@ -19,7 +19,8 @@ from config import get_settings
 from database import get_db
 from models.push_subscription import PushSubscription
 from models.user import User
-from security.guards import get_active_user_dependency
+from security.guards import get_active_user_dependency, AdminUser
+from services import push_service
 
 router = APIRouter(prefix="/push", tags=["push"])
 
@@ -108,3 +109,23 @@ async def unsubscribe(
     if sub:
         await db.delete(sub)
         await db.commit()
+
+
+@router.post("/test", status_code=204)
+async def test_push(
+    user: AdminUser,
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    """
+    Send a test push notification to the requesting admin's own subscriptions.
+
+    Useful for verifying that VAPID keys, pywebpush, and the browser
+    service worker are all wired up correctly.
+    """
+    await push_service.send_to_user(
+        db,
+        str(user.id),
+        "\U0001f514 Test push",
+        "Je\u015bli to widzisz, push dzia\u0142a poprawnie!",
+        "/admin",
+    )

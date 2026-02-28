@@ -38,6 +38,8 @@ def _get_vapid_claims() -> dict | None:
 def _send_one(subscription_info: dict, payload: dict) -> None:
     """Blocking call – run inside a thread executor."""
     settings = get_settings()
+    endpoint_short = subscription_info.get("endpoint", "?")[:80]
+    logger.info("[push] Sending to endpoint=%s", endpoint_short)
     try:
         webpush(
             subscription_info=subscription_info,
@@ -46,12 +48,17 @@ def _send_one(subscription_info: dict, payload: dict) -> None:
             vapid_claims=_get_vapid_claims(),
             ttl=86400,
         )
+        logger.info("[push] OK endpoint=%s", endpoint_short)
     except WebPushException as exc:
         # 410 Gone / 404 Not Found means the subscription is no longer valid
         status = getattr(exc.response, "status_code", None) if exc.response else None
+        body = getattr(exc.response, "text", "") if exc.response else ""
+        logger.error(
+            "[push] WebPushException endpoint=%s status=%s body=%s",
+            endpoint_short, status, body[:300],
+        )
         if status in (404, 410):
             raise _ExpiredSubscriptionError() from exc
-        logger.warning("WebPushException endpoint=%s status=%s", subscription_info.get("endpoint", "?")[:60], status)
         raise
 
 
@@ -69,7 +76,7 @@ async def send_to_admins(db: AsyncSession, title: str, body: str, url: str = "/a
     """
     settings = get_settings()
     if not settings.vapid_private_key:
-        logger.debug("VAPID not configured – skipping push notification")
+        logger.warning("[push] VAPID_PRIVATE_KEY not set – skipping push notification")
         return
 
     result = await db.execute(
@@ -119,8 +126,9 @@ async def send_to_all_active_users(db: AsyncSession, title: str, body: str, url:
 
 async def _dispatch(db: AsyncSession, subscriptions: list, payload: dict) -> None:
     """Fire-and-forget push to a list of subscriptions, pruning expired ones."""
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     expired_ids: list[str] = []
+    logger.info("[push] Dispatching to %d subscription(s), payload title=%s", len(subscriptions), payload.get("title"))
 
     for sub in subscriptions:
         subscription_info = {
@@ -131,8 +139,8 @@ async def _dispatch(db: AsyncSession, subscriptions: list, payload: dict) -> Non
             await loop.run_in_executor(None, _send_one, subscription_info, payload)
         except _ExpiredSubscriptionError:
             expired_ids.append(sub.id)
-        except Exception as exc:  # noqa: BLE001
-            logger.warning("Failed to send push to sub %s: %s", sub.id, exc)
+        except Exception:  # noqa: BLE001
+            logger.exception("[push] Failed to send push to sub %s", sub.id)
 
     # Clean up expired subscriptions
     for sid in expired_ids:
