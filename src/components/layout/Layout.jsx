@@ -24,10 +24,10 @@ function Layout({ children, darkMode, setDarkMode }) {
   const isMobileHomeRoute = location.pathname === '/'
 
   const mainClassName = isMobileAppShellRoute
-    ? `sm:pt-16 h-[100svh] overflow-hidden overscroll-none ${
-      isMobileHomeRoute ? 'pb-0' : 'pb-[calc(env(safe-area-inset-bottom)+3.5rem)]'
+    ? `sm:pt-16 h-[100svh] overflow-y-auto overscroll-none ${
+      isMobileHomeRoute ? 'pb-0' : 'pb-[calc(env(safe-area-inset-bottom)+3.5rem+40px)]'
     } sm:h-auto sm:overflow-visible sm:pb-0 sm:min-h-[calc(100vh-4rem)] flex-1`
-    : 'sm:pt-16 pb-[calc(env(safe-area-inset-bottom)+3.5rem)] sm:pb-0 sm:min-h-[calc(100vh-4rem)] flex-1'
+    : 'sm:pt-16 pb-[calc(env(safe-area-inset-bottom)+3.5rem+40px)] sm:pb-0 sm:min-h-[calc(100vh-4rem)] flex-1'
 
   return (
     <div className="app-shell theme-transition min-h-[100svh] flex flex-col bg-cream text-navy transition-colors duration-300 dark:bg-navy dark:text-cream sm:min-h-screen">
