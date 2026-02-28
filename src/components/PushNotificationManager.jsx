@@ -25,16 +25,16 @@ function PushNotificationManager() {
 
   useEffect(() => {
     if (!supported || !isActive || attempted.current || subscribing) return
-
-    // If permission was already granted, silently re-register without a prompt.
-    // If permission is 'default' (not yet asked), immediately request it –
-    // this ensures all active members receive important notifications.
     if (permission === 'denied') return
-    if (subscribed) return  // already subscribed this session
 
+    // Always attempt subscribe() regardless of current subscribed state.
+    // subscribe() is idempotent – pushManager.subscribe() returns the existing
+    // subscription when the VAPID key matches, and savePushSubscription() does
+    // an upsert on the backend.  This ensures the backend DB stays in sync even
+    // after a DB reset, a new deployment, or a failed previous attempt.
     attempted.current = true
     subscribe()
-  }, [supported, isActive, permission, subscribed, subscribing, subscribe])
+  }, [supported, isActive, permission, subscribing, subscribe])
 
   return null
 }
