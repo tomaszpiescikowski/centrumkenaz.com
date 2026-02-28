@@ -98,6 +98,9 @@ export default function ChatWSClient() {
   const registerWsSendRef = useRef(registerWsSend)
   useEffect(() => { registerWsSendRef.current = registerWsSend }, [registerWsSend])
 
+  // Exposed so the re-subscribe effect can call it after registeredEvents changes.
+  const subscribeFnRef = useRef(null)
+
   // ── WS connection (rebuilt only on user change) ──────────────────────────
   useEffect(() => {
     if (!user) return
@@ -168,6 +171,8 @@ export default function ChatWSClient() {
         ws.send(JSON.stringify({ type: 'subscribe', chats: chatList() }))
       }
     }
+    // Keep the ref fresh so the re-subscribe effect can call it at any time.
+    subscribeFnRef.current = subscribe
 
     /** Expose the socket send function via ChatContext so CommentsSection can transmit. */
     function registerSend() {
@@ -216,7 +221,11 @@ export default function ChatWSClient() {
             author:        msg.author ?? msg.comment?.author?.full_name ?? null,
             recentAuthors: null,
           })
-          bumpUnreadCountRef.current(msg.chat_id)
+          // Only bump the unread badge for messages from other users — own
+          // messages come back via WS too and must not inflate the counter.
+          if (msg.comment?.author?.id !== user?.id) {
+            bumpUnreadCountRef.current(msg.chat_id)
+          }
           // Dispatch full message to any open CommentsSection
           if (msg.comment) {
             dispatchWsMessageRef.current(msg.chat_id, { type: 'new_message', comment: msg.comment, chat_id: msg.chat_id })
@@ -271,9 +280,11 @@ export default function ChatWSClient() {
   }, [user])
 
   // ── Re-subscribe when registered events list changes ─────────────────────
+  // ChatModal (desktop) calls setRegisteredEvents after fetching the user's
+  // events; we must send a fresh 'subscribe' frame so the server adds the new
+  // event channels to this WS connection.
   useEffect(() => {
-    // No-op if not yet mounted / no WS — the next connect() will pick up the
-    // fresh list from registeredEventsRef automatically.
+    subscribeFnRef.current?.()
   }, [registeredEvents])
 
   return null

@@ -88,6 +88,7 @@ function ChatModal() {
     open, view, eventId, eventTitle, eventData,
     closeChat, navigateChat, markAsRead,
     hasUnread, unreadCounts, setLatestMessageTime, latestMessages,
+    setRegisteredEvents,
   } = useChat()
   const { customTypes } = useCustomEventTypes()
   const navigate = useNavigate()
@@ -140,23 +141,28 @@ function ChatModal() {
     return () => { document.body.style.overflow = '' }
   }, [open])
 
-  // Load registered events when switching to events view
+  // Load registered events and register them in ChatContext so ChatWSClient
+  // knows which event WS channels to subscribe to.
   const loadEvents = useCallback(async () => {
     if (!isAuthenticated) return
     setEventsLoading(true)
     try {
       const data = await fetchRegisteredEvents(authFetch)
       setEvents(data)
+      setRegisteredEvents(data)
     } catch {
       setEvents([])
+      setRegisteredEvents([])
     } finally {
       setEventsLoading(false)
     }
-  }, [isAuthenticated, authFetch])
+  }, [isAuthenticated, authFetch, setRegisteredEvents])
 
+  // Load on every open so WS subscriptions are set up even when the user
+  // navigates directly to general or event chat without visiting the events list.
   useEffect(() => {
-    if (open && view === 'events') loadEvents()
-  }, [open, view, loadEvents])
+    if (open && isAuthenticated) loadEvents()
+  }, [open, isAuthenticated, loadEvents])
 
   // Mark chat as read when entering a specific view
   useEffect(() => {
