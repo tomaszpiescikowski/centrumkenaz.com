@@ -86,7 +86,7 @@ function ChatModal() {
   const { isAuthenticated, authFetch } = useAuth()
   const {
     open, view, eventId, eventTitle, eventData,
-    closeChat, navigateChat,
+    closeChat, navigateChat, markAsRead,
     hasUnread, unreadCounts, setLatestMessageTime, latestMessages,
   } = useChat()
   const { customTypes } = useCustomEventTypes()
@@ -157,6 +157,13 @@ function ChatModal() {
   useEffect(() => {
     if (open && view === 'events') loadEvents()
   }, [open, view, loadEvents])
+
+  // Mark chat as read when entering a specific view
+  useEffect(() => {
+    if (!open) return
+    if (view === 'general') markAsRead('general:global')
+    if (view === 'event' && eventId) markAsRead(`event:${eventId}`)
+  }, [open, view, eventId, markAsRead])
 
   if (!open) return null
 
@@ -323,7 +330,7 @@ function ChatModal() {
                   {sorted.map((ev, idx) => {
                     const chatId = `event:${ev.id}`
                     const unread = hasUnread(chatId)
-                    const unreadCount = unreadCounts[chatId] || 1
+                    const unreadCount = unreadCounts[chatId] || 0
                     const previewMsg = latestMessages[chatId]
                     const isPast = new Date(ev.startDateTime) < new Date()
                     const palette = getTypePalette(ev.type, customTypes)
@@ -406,7 +413,7 @@ function ChatModal() {
                             {isToday && <span className="cp-ev-today">{t('comments.today')}</span>}
                             {isTomorrow && <span className="cp-ev-tomorrow">{t('comments.tomorrow')}</span>}
                             {unread
-                              ? <span className="cp-ev-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
+                              ? <span className="cp-ev-badge">{unreadCount > 9 ? '9+' : unreadCount > 0 ? unreadCount : '•'}</span>
                               : <span className="cp-ev-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
                             }
                           </span>
