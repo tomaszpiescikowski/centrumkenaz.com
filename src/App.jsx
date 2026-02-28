@@ -35,7 +35,7 @@ import Panel from './pages/account/Panel'
 import Login from './pages/auth/Login'
 import ResetPassword from './pages/auth/ResetPassword'
 import ChatPage from './pages/chat/ChatPage'
-import ChatPoller from './components/ChatPoller'
+import ChatWSClient from './components/ChatWSClient'
 import PushNotificationManager from './components/PushNotificationManager'
 
 function RequireAuth() {
@@ -115,7 +115,7 @@ function App() {
         <NotificationProvider>
           <CityProvider>
             <ChatProvider>
-            <ChatPoller />
+            <ChatWSClient />
             <PushNotificationManager />
             <Layout darkMode={darkMode} setDarkMode={setDarkMode}>
               <ScrollToTop />

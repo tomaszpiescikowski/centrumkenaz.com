@@ -97,6 +97,12 @@ function ChatProvider({ children }) {
     setUnreadCounts(unreadCountsRef.current)
   }, [])
 
+  const bumpUnreadCount = useCallback((chatId) => {
+    const current = unreadCountsRef.current[chatId] || 0
+    unreadCountsRef.current = { ...unreadCountsRef.current, [chatId]: current + 1 }
+    setUnreadCounts(unreadCountsRef.current)
+  }, [])
+
   const setLatestMessageTime = useCallback((chatId, timestampOrObj) => {
     if (!timestampOrObj) return
     setLatestMessages((prev) => {
@@ -161,12 +167,12 @@ function ChatProvider({ children }) {
       ...chatState,
       openChat, closeChat, navigateChat,
       markAsRead, setLatestMessageTime,
-      hasUnread, totalUnread, unreadCounts, setUnreadCount,
+      hasUnread, totalUnread, unreadCounts, setUnreadCount, bumpUnreadCount,
       lastReadTimestamps, latestMessages,
       pendingRefresh, addPendingRefresh, clearPendingRefresh,
       registeredEvents, setRegisteredEvents,
     }),
-    [chatState, openChat, closeChat, navigateChat, markAsRead, setLatestMessageTime, hasUnread, totalUnread, unreadCounts, setUnreadCount, lastReadTimestamps, latestMessages, pendingRefresh, addPendingRefresh, clearPendingRefresh, registeredEvents, setRegisteredEvents],
+    [chatState, openChat, closeChat, navigateChat, markAsRead, setLatestMessageTime, hasUnread, totalUnread, unreadCounts, setUnreadCount, bumpUnreadCount, lastReadTimestamps, latestMessages, pendingRefresh, addPendingRefresh, clearPendingRefresh, registeredEvents, setRegisteredEvents],
   )
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>

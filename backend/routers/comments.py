@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from typing import Optional
 import re
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Query
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, WebSocket, WebSocketDisconnect
 from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select, func as sa_func, and_
@@ -20,7 +20,9 @@ from database import get_db
 from models.comment import Comment, CommentReaction, ReactionType
 from models.registration import Registration, RegistrationStatus
 from models.user import User, UserRole
+from models.user import AccountStatus
 from services import push_service
+from services.ws_service import manager as ws_manager
 from security.guards import ActiveUser, OptionalActiveUser
 
 router = APIRouter(prefix="/comments", tags=["comments"])
@@ -452,6 +454,63 @@ async def check_new_messages(
     return result
 
 
+# ── WebSocket endpoint for real-time notifications ──────────────────────────
+
+@router.websocket("/ws")
+async def comments_websocket(
+    websocket: WebSocket,
+    token: str | None = None,
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    """
+    WebSocket endpoint for real-time chat/comment notifications.
+
+    Connection flow:
+      1. Client connects with ?token=<access_jwt> query param.
+      2. Server authenticates and accepts the connection.
+      3. Client sends: {"type": "subscribe", "chats": ["general:global", "event:uuid", ...]}
+      4. Server replies: {"type": "subscribed", "chats": [...]}
+      5. On any new comment the server pushes:
+         {"type": "new_message", "chat_id": "...", "latest": "ISO", "text": "...", "author": "name"}
+      6. Client may send additional {"type": "subscribe"} messages to add channels.
+    """
+    # Authenticate via query-param token (browser WS API doesn't support custom headers)
+    if token:
+        try:
+            from services.auth_service import AuthService
+            auth_service = AuthService(db)
+            payload = auth_service.verify_token(token)
+            if not payload or payload.get("type") != "access":
+                await websocket.close(code=4001)
+                return
+            user = await auth_service.get_user_by_id(payload["sub"])
+            if not user or user.account_status != AccountStatus.ACTIVE:
+                await websocket.close(code=4001)
+                return
+        except Exception:  # noqa: BLE001
+            await websocket.close(code=4001)
+            return
+    # Anonymous connections are allowed (read-only; they just won't receive
+    # event-specific notifications that require registration checks)
+
+    await websocket.accept()
+    try:
+        while True:
+            data = await websocket.receive_json()
+            msg_type = data.get("type")
+            if msg_type == "subscribe":
+                chat_ids = [str(c) for c in data.get("chats", []) if c]
+                await ws_manager.resubscribe(websocket, chat_ids)
+                await websocket.send_json({"type": "subscribed", "chats": chat_ids})
+            # Other message types are silently ignored for forward compatibility
+    except WebSocketDisconnect:
+        pass
+    except Exception:  # noqa: BLE001 – client gone, bad JSON, etc.
+        pass
+    finally:
+        await ws_manager.unsubscribe(websocket)
+
+
 # ── Generic resource routes (MUST come last) ──────────────────────
 
 @router.get(
@@ -598,6 +657,21 @@ async def create_comment(
                         body.content[:120] + ("…" if len(body.content) > 120 else ""),
                         chat_url,
                     )
+    except Exception:  # noqa: BLE001
+        pass
+
+    # ── Broadcast to connected WebSocket clients ───────────────────────────
+    try:
+        await ws_manager.broadcast(
+            f"{resource_type}:{resource_id}",
+            {
+                "type": "new_message",
+                "chat_id": f"{resource_type}:{resource_id}",
+                "latest": comment.created_at.isoformat(),
+                "text": comment.content[:200],
+                "author": user.full_name,
+            },
+        )
     except Exception:  # noqa: BLE001
         pass
 
