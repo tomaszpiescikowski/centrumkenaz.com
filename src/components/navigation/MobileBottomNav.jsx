@@ -122,11 +122,27 @@ function MobileBottomNav() {
     // Capture the full-screen height before any keyboard opens.
     // Math.max handles the case where this fires slightly after a soft
     // keyboard is already up (e.g. hot-reload during development).
-    const fullHeight = Math.max(vv.height, window.innerHeight)
+    let fullHeight = Math.max(vv.height, window.innerHeight)
+    let lastWidth = vv.width
 
     let rafId = null
 
     const apply = () => {
+      // If the viewport WIDTH changed this is a window/DevTools resize, not a
+      // keyboard open. Reset the baseline height so a subsequent real keyboard
+      // open is still detected correctly, clear any lingering kb state, and bail.
+      if (vv.width !== lastWidth) {
+        lastWidth = vv.width
+        fullHeight = Math.max(vv.height, window.innerHeight)
+        if (prevKbOpenRef.current) {
+          prevKbOpenRef.current = false
+          document.documentElement.classList.remove('kb-open')
+          if (rafId !== null) cancelAnimationFrame(rafId)
+          rafId = requestAnimationFrame(() => { rafId = null; el.style.transform = '' })
+        }
+        return
+      }
+
       // Keyboard is open when the visual viewport is significantly shorter
       // than the original full-screen height. 120px threshold avoids false
       // positives from browser chrome resize (address bar hide/show).
