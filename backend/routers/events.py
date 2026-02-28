@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Path, Request
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select, func, cast, String
+from sqlalchemy.orm import selectinload
 from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field
 from datetime import datetime, timedelta, date
 from decimal import Decimal
@@ -685,6 +686,72 @@ async def list_registered_events(
     )
     result = await db.execute(stmt)
     return [EventResponse.model_validate(e) for e in result.scalars().all()]
+
+
+# ── Bulk availability ─────────────────────────────────────────────────────────
+
+class BulkAvailabilityRequest(BaseModel):
+    """List of event IDs to check availability for in one request."""
+    event_ids: list[str] = Field(max_length=100)
+
+
+_OCCUPIES_SPOT = {
+    RegistrationStatus.CONFIRMED.value,
+    RegistrationStatus.PENDING.value,
+    RegistrationStatus.MANUAL_PAYMENT_REQUIRED.value,
+    RegistrationStatus.MANUAL_PAYMENT_VERIFICATION.value,
+}
+
+
+@router.post("/availability/bulk", response_model=dict[str, EventAvailabilityResponse])
+async def bulk_event_availability(
+    body: BulkAvailabilityRequest,
+    _user: User = Depends(get_active_user_dependency),
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, EventAvailabilityResponse]:
+    """
+    Return availability for multiple events in a single request.
+
+    Accepts up to 100 event IDs and returns a {event_id: availability} map.
+    Events not found are silently omitted. Uses one DB round-trip instead of
+    one per event, so the calendar can load all badges in a single call.
+    """
+    if not body.event_ids:
+        return {}
+
+    normalised = [str(eid).strip() for eid in body.event_ids[:100]]
+
+    stmt = (
+        select(Event)
+        .options(selectinload(Event.registrations))
+        .where(cast(Event.id, String).in_(normalised))
+    )
+    result = await db.execute(stmt)
+    events = result.scalars().all()
+
+    out: dict[str, EventAvailabilityResponse] = {}
+    for event in events:
+        regs = event.registrations or []
+        confirmed = sum(1 for r in regs if r.status == RegistrationStatus.CONFIRMED.value)
+        occupied = sum(1 for r in regs if r.status in _OCCUPIES_SPOT)
+        waitlist = sum(1 for r in regs if r.status == RegistrationStatus.WAITLIST.value)
+        occ_date = event.start_date.date().isoformat()
+        event_id_str = str(event.id)
+        out[event_id_str] = EventAvailabilityResponse(
+            event_id=event_id_str,
+            occurrence_date=occ_date,
+            max_participants=event.max_participants,
+            confirmed_count=confirmed,
+            occupied_count=occupied,
+            waitlist_count=waitlist,
+            available_spots=(
+                event.max_participants - occupied if event.max_participants is not None else None
+            ),
+            is_available=(
+                event.max_participants is None or occupied < event.max_participants
+            ),
+        )
+    return out
 
 
 @router.get("/{event_id}", response_model=EventResponse)

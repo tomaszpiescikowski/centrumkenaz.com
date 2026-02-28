@@ -134,6 +134,23 @@ export async function fetchEventAvailability(eventId, authFetch = null) {
   return response.json()
 }
 
+/**
+ * Batch availability check — one request for all event IDs.
+ * @param {string[]} eventIds
+ * @param {Function} authFetch
+ * @returns {Promise<Record<string, object>>} map of eventId → availability object
+ */
+export async function fetchBulkEventAvailability(eventIds, authFetch = null) {
+  if (!eventIds || eventIds.length === 0) return {}
+  const response = await requestWithAuth(authFetch, `${API_URL}/events/availability/bulk`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ event_ids: eventIds }),
+  })
+  if (!response.ok) return {}
+  return response.json()
+}
+
 export async function createEvent(authFetch, payload) {
   const response = await authFetch(`${API_URL}/events/`, {
     method: 'POST',

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext'
-import { fetchEventAvailability, fetchEventsForMonth, fetchRegisteredEventIds } from '../../api/events'
+import { fetchBulkEventAvailability, fetchEventsForMonth, fetchRegisteredEventIds } from '../../api/events'
 import { useAuth } from '../../context/AuthContext'
 import { useCity } from '../../context/CityContext'
 import EventIcon from '../common/EventIcon'
@@ -202,23 +202,13 @@ function Calendar({ className = '' }) {
         return
       }
 
-      const rows = await Promise.all(
-        events.map(async (eventItem) => {
-          try {
-            const availability = await fetchEventAvailability(eventItem.id, authFetchRef.current)
-            return [eventItem.id, availability]
-          } catch (_error) {
-            return [eventItem.id, null]
-          }
-        })
-      )
-
-      if (cancelled) return
-      const next = {}
-      for (const [key, value] of rows) {
-        if (value) next[key] = value
+      try {
+        const eventIds = events.map((e) => e.id)
+        const result = await fetchBulkEventAvailability(eventIds, authFetchRef.current)
+        if (!cancelled) setAvailabilityByEventId(result)
+      } catch {
+        // silent — availability is non-critical
       }
-      setAvailabilityByEventId(next)
     }
 
     loadAvailability()
