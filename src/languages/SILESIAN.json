@@ -1107,6 +1107,7 @@
     "phoneLabel": "Numer telefōnu",
     "phonePlaceholder": "np. 500 600 700",
     "phoneCountryCode": "Kierunkowy",
+    "phoneInvalid": "Podej prawidłowy numer telefōnu (min. 6 cyfr).",
     "submitJoinRequest": "Wyślij prośba ô dołōnczynie",
     "joinRequestSent": "Prośba ô dołōnczynie ôstała wysłano. Poczekej na akceptacyjo admina.",
     "joinRequestError": "Niy idzie wysłać prośby ô dołōnczynie.",

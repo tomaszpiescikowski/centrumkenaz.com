@@ -1,9 +1,10 @@
 .root {
   position: relative;
+  inline-size: 100%;
   min-inline-size: 0;
 
-  --city-selector-height: 2.5rem;
-  --city-selector-padding-inline: 0.75rem;
+  --city-selector-height: 2.25rem;
+  --city-selector-padding-inline: 0.5rem;
   --city-selector-icon-size: 1rem;
   --city-selector-label-max-width: 10rem;
   --city-selector-label-font-size: 0.875rem;

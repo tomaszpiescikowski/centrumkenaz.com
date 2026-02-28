@@ -1103,6 +1103,7 @@
     "phoneLabel": "Numero di telefono",
     "phonePlaceholder": "es. 500 600 700",
     "phoneCountryCode": "Prefisso",
+    "phoneInvalid": "Inserisci un numero di telefono valido (min. 6 cifre).",
     "submitJoinRequest": "Invia richiesta di adesione",
     "joinRequestSent": "Richiesta di adesione inviata. Attendi l'approvazione admin.",
     "joinRequestError": "Impossibile inviare la richiesta di adesione.",

@@ -1,9 +1,10 @@
 .root {
   position: relative;
+  inline-size: 100%;
   min-inline-size: 0;
 
-  --language-selector-height: 2.5rem;
-  --language-selector-padding-inline: 0.75rem;
+  --language-selector-height: 2.25rem;
+  --language-selector-padding-inline: 0.5rem;
   --language-selector-icon-size: 1rem;
   --language-selector-label-max-width: 10rem;
   --language-selector-label-font-size: 0.875rem;

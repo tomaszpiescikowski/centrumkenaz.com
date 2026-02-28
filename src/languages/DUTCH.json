@@ -1103,6 +1103,7 @@
     "phoneLabel": "Telefoonnummer",
     "phonePlaceholder": "bijv. 500 600 700",
     "phoneCountryCode": "Landcode",
+    "phoneInvalid": "Voer een geldig telefoonnummer in (min. 6 cijfers).",
     "submitJoinRequest": "Toetredingsverzoek indienen",
     "joinRequestSent": "Toetredingsverzoek verzonden. Wacht op goedkeuring van admin.",
     "joinRequestError": "Kon toetredingsverzoek niet indienen.",

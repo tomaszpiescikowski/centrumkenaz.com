@@ -69,7 +69,8 @@ function PendingApproval() {
 
   const requestSubmitted = Boolean(user?.approval_request_submitted)
 
-  const canSubmit = aboutMe.trim().length > 0 && interestTags.length > 0
+  const isPhoneValid = phoneNumber.replace(/\D/g, '').length >= 6
+  const canSubmit = aboutMe.trim().length > 0 && interestTags.length > 0 && isPhoneValid
 
   const handleSubmitJoinRequest = async () => {
     if (!canSubmit || sending) return
@@ -141,10 +142,13 @@ function PendingApproval() {
                 value={formatPhoneDisplay(phoneNumber)}
                 onChange={handlePhoneChange}
                 maxLength={20}
-                className="ui-input ui-input-compact flex-1"
+                className={`ui-input ui-input-compact flex-1${phoneNumber && !isPhoneValid ? ' ui-input-invalid' : ''}`}
                 placeholder={t('approval.phonePlaceholder')}
               />
             </div>
+            {phoneNumber && !isPhoneValid && (
+              <p className="ui-field-hint mt-1">{t('approval.phoneInvalid')}</p>
+            )}
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>

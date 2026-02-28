@@ -1010,6 +1010,7 @@
     "phoneLabel": "Numer telefonu",
     "phonePlaceholder": "np. 500 600 700",
     "phoneCountryCode": "Kierunkowy",
+    "phoneInvalid": "Podaj prawidłowy numer telefonu (min. 6 cyfr).",
     "submitJoinRequest": "Wyślij prośbę o dołączenie",
     "joinRequestSent": "Prośba o dołączenie została wysłana. Poczekaj na akceptację administratora.",
     "joinRequestError": "Nie udało się wysłać prośby o dołączenie.",

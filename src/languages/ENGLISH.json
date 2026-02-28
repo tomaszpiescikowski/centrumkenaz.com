@@ -1012,6 +1012,7 @@
     "phoneLabel": "Phone number",
     "phonePlaceholder": "e.g. 500 600 700",
     "phoneCountryCode": "Country code",
+    "phoneInvalid": "Please enter a valid phone number (min. 6 digits).",
     "submitJoinRequest": "Submit join request",
     "joinRequestSent": "Join request sent. Wait for admin approval.",
     "joinRequestError": "Failed to submit join request.",

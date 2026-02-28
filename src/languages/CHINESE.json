@@ -1103,6 +1103,7 @@
     "phoneLabel": "手机号码",
     "phonePlaceholder": "例如 500 600 700",
     "phoneCountryCode": "国际区号",
+    "phoneInvalid": "请输入有效的手机号码（至少6位数字）。",
     "submitJoinRequest": "提交加入申请",
     "joinRequestSent": "加入申请已发送，请等待管理员审核。",
     "joinRequestError": "提交加入申请失败。",
