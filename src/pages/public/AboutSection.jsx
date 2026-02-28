@@ -119,15 +119,6 @@ function AboutSection() {
                 />
               )
               blocks.push(
-                <WideSponsorsCard
-                  key="sponsors"
-                  title={t('about.sponsorsTitle')}
-                  body={t('about.sponsorsBody')}
-                  sponsorLabel={t('about.sponsorsPrimary')}
-                  sponsorHref="https://go.decathlon.pl/profil/d2cbf959-efd9-4a9d-be09-664cbe53fa54"
-                />
-              )
-              blocks.push(
                 <WideSupportCard
                   key="support"
                   title={t('about.supportTitle')}
@@ -366,26 +357,6 @@ function WideSupportCard({ title, body, buttonLabel }) {
         className="shrink-0 px-5 h-11 inline-flex items-center rounded-full font-semibold btn-primary"
       >
         {buttonLabel}
-      </a>
-    </div>
-  )
-}
-
-function WideSponsorsCard({ title, body, sponsorLabel, sponsorHref }) {
-  return (
-    <div className="p-6 rounded-2xl border border-navy/10 bg-transparent dark:border-cream/15 dark:bg-transparent flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-      <div>
-        <div className="text-2xl font-bold text-navy dark:text-cream">{title}</div>
-        <div className="mt-2 text-base text-navy/70 dark:text-cream/70">{body}</div>
-      </div>
-      <a
-        href={sponsorHref}
-        target="_blank"
-        rel="noreferrer"
-        className="px-5 h-11 inline-flex items-center rounded-full font-semibold
-          btn-primary"
-      >
-        {sponsorLabel}
       </a>
     </div>
   )
