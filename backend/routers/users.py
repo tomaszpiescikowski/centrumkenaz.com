@@ -477,3 +477,34 @@ async def get_my_registrations(
         )
 
     return response
+
+
+SUPPORTED_LANGUAGES = {"pl", "en", "zh", "nl", "it", "szl"}
+
+
+class LanguageUpdateRequest(BaseModel):
+    """Set the user's preferred UI / push-notification language."""
+    language: str = Field(min_length=2, max_length=10, description="Language code, e.g. pl, en, zh.")
+
+
+@router.patch("/me/language", status_code=204)
+async def update_my_language(
+    payload: LanguageUpdateRequest,
+    user: User = Depends(get_active_user_dependency),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    """
+    Persist the authenticated user's preferred UI language.
+
+    The value is stored in ``users.preferred_language`` and used by the push
+    notification service to send event alerts in the correct language.
+    Only supported language codes are accepted.
+    """
+    if payload.language not in SUPPORTED_LANGUAGES:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Unsupported language '{payload.language}'. Supported: {sorted(SUPPORTED_LANGUAGES)}",
+        )
+    user.preferred_language = payload.language
+    db.add(user)
+    await db.commit()

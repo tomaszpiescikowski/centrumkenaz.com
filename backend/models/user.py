@@ -100,6 +100,14 @@ class User(Base):
         comment="Approval status of the account.",
     )
 
+    preferred_language = Column(
+        String(10),
+        nullable=False,
+        server_default="pl",
+        default="pl",
+        comment="UI language code used for push notification translations (e.g. pl, en, zh).",
+    )
+
     google_refresh_token = Column(
         String(512),
         nullable=True,

@@ -74,11 +74,11 @@ async def _send_event_reminders() -> None:
             start_str = event.start_date.strftime("%d.%m.%Y %H:%M")
             for uid in user_ids:
                 try:
-                    await push_service.send_to_user(
+                    await push_service.send_event_push_to_user(
                         db,
                         uid,
-                        f"⏰ Jutro: {event.title}",
-                        f"Wydarzenie zaczyna się {start_str} w {event.city}.",
+                        "reminder",
+                        {"title": event.title, "datetime": start_str, "city": event.city},
                         f"/events/{event.id}",
                     )
                 except Exception:

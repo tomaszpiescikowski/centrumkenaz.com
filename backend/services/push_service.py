@@ -6,9 +6,11 @@ first call and cached for the lifetime of the process.
 
 Public API
 ----------
-send_to_admins(db, title, body, url)       – notify all admin subscriptions
-send_to_user(db, user_id, title, body, url)   – notify one specific user
-send_to_all_active_users(db, title, body, url) – notify every subscriber
+send_to_admins(db, title, body, url)                              – notify all admin subscriptions
+send_to_user(db, user_id, title, body, url)                       – notify one specific user (fixed text)
+send_to_all_active_users(db, title, body, url)                    – notify every subscriber (fixed text)
+send_event_push_to_all(db, scenario, params, url)                 – per-user translated event push to all
+send_event_push_to_user(db, user_id, scenario, params, url)       – per-user translated event push to one
 """
 import asyncio
 import json
@@ -22,6 +24,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from config import get_settings
 from models.push_subscription import PushSubscription
 from models.user import User, UserRole
+from services.push_translations import get_push_strings
 
 logger = logging.getLogger(__name__)
 
@@ -122,6 +125,118 @@ async def send_to_all_active_users(db: AsyncSession, title: str, body: str, url:
 
     payload = {"title": title, "body": body, "url": url, "tag": "kenaz-announcement"}
     await _dispatch(db, subscriptions, payload)
+
+
+async def send_event_push_to_all(
+    db: AsyncSession,
+    scenario: str,
+    params: dict[str, str],
+    url: str = "/",
+) -> None:
+    """
+    Send a translated event push notification to every subscriber.
+
+    Each subscription is paired with its owning user's ``preferred_language``
+    so every recipient gets the message in their chosen UI language.
+    """
+    settings = get_settings()
+    if not settings.vapid_private_key:
+        return
+
+    # Fetch subscriptions joined with owner's language preference
+    result = await db.execute(
+        select(PushSubscription, User.preferred_language)
+        .join(User, PushSubscription.user_id == User.id)
+    )
+    rows = result.all()
+    if not rows:
+        return
+
+    loop = asyncio.get_running_loop()
+    expired_ids: list[str] = []
+    logger.info("[push] event push '%s' dispatching to %d subscription(s)", scenario, len(rows))
+
+    for sub, lang in rows:
+        title_str, body_str = get_push_strings(scenario, lang or "pl", params)
+        payload = {
+            "title": title_str,
+            "body": body_str,
+            "url": url,
+            "tag": f"kenaz-event-{scenario}",
+        }
+        subscription_info = {
+            "endpoint": sub.endpoint,
+            "keys": {"p256dh": sub.keys_p256dh, "auth": sub.keys_auth},
+        }
+        try:
+            await loop.run_in_executor(None, _send_one, subscription_info, payload)
+        except _ExpiredSubscriptionError:
+            expired_ids.append(sub.id)
+        except Exception:  # noqa: BLE001
+            logger.exception("[push] Failed to send event push to sub %s", sub.id)
+
+    for sid in expired_ids:
+        sub_obj = await db.get(PushSubscription, sid)
+        if sub_obj:
+            await db.delete(sub_obj)
+    if expired_ids:
+        await db.commit()
+        logger.info("[push] Removed %d expired subscriptions", len(expired_ids))
+
+
+async def send_event_push_to_user(
+    db: AsyncSession,
+    user_id: str,
+    scenario: str,
+    params: dict[str, str],
+    url: str = "/",
+) -> None:
+    """
+    Send a translated event push notification to a single user.
+
+    Uses the user's ``preferred_language`` to pick the correct strings.
+    """
+    settings = get_settings()
+    if not settings.vapid_private_key:
+        return
+
+    result = await db.execute(
+        select(PushSubscription, User.preferred_language)
+        .join(User, PushSubscription.user_id == User.id)
+        .where(PushSubscription.user_id == user_id)
+    )
+    rows = result.all()
+    if not rows:
+        return
+
+    loop = asyncio.get_running_loop()
+    expired_ids: list[str] = []
+
+    for sub, lang in rows:
+        title_str, body_str = get_push_strings(scenario, lang or "pl", params)
+        payload = {
+            "title": title_str,
+            "body": body_str,
+            "url": url,
+            "tag": f"kenaz-event-{scenario}-{user_id}",
+        }
+        subscription_info = {
+            "endpoint": sub.endpoint,
+            "keys": {"p256dh": sub.keys_p256dh, "auth": sub.keys_auth},
+        }
+        try:
+            await loop.run_in_executor(None, _send_one, subscription_info, payload)
+        except _ExpiredSubscriptionError:
+            expired_ids.append(sub.id)
+        except Exception:  # noqa: BLE001
+            logger.exception("[push] Failed to send event push to sub %s", sub.id)
+
+    for sid in expired_ids:
+        sub_obj = await db.get(PushSubscription, sid)
+        if sub_obj:
+            await db.delete(sub_obj)
+    if expired_ids:
+        await db.commit()
 
 
 async def _dispatch(db: AsyncSession, subscriptions: list, payload: dict) -> None:

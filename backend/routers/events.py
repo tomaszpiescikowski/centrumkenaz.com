@@ -485,12 +485,12 @@ async def create_event(
         city=event.city,
         start_date=str(event.start_date),
     )
-    # Push: notify all active users about the new event
+    # Push: notify all active users about the new event (per-user language)
     asyncio.create_task(
-        push_service.send_to_all_active_users(
+        push_service.send_event_push_to_all(
             db,
-            f"📅 Nowe wydarzenie: {event.title}",
-            f"{event.city} · {event.start_date.strftime('%d.%m.%Y')}",
+            "new_event",
+            {"title": event.title, "city": event.city, "date": event.start_date.strftime("%d.%m.%Y")},
             f"/events/{event.id}",
         )
     )
@@ -590,17 +590,17 @@ async def update_event(
         title=event.title,
         fields_changed=list(updates.keys()),
     )
-    # Push: registration opened
+    # Push: registration opened (per-user language)
     if updates.get("registration_open") is True and not old_registration_open:
         asyncio.create_task(
-            push_service.send_to_all_active_users(
+            push_service.send_event_push_to_all(
                 db,
-                f"🚀 Zapisy otwarte: {event.title}",
-                f"Rejestracja na wydarzenie jest już dostępna!",
+                "registration_open",
+                {"title": event.title},
                 f"/events/{event.id}",
             )
         )
-    # Push: date/time changed – notify confirmed + waitlisted registrants
+    # Push: date/time changed – notify confirmed + waitlisted registrants (per-user language)
     if date_changed:
         result2 = await db.execute(
             select(Registration.user_id)
@@ -619,11 +619,11 @@ async def update_event(
         new_start = event.start_date.strftime("%d.%m.%Y %H:%M")
         for uid in user_ids:
             asyncio.create_task(
-                push_service.send_to_user(
+                push_service.send_event_push_to_user(
                     db,
                     uid,
-                    f"⏰ Zmiana terminu: {event.title}",
-                    f"Nowy termin: {new_start}",
+                    "date_changed",
+                    {"title": event.title, "datetime": new_start},
                     f"/events/{event.id}",
                 )
             )

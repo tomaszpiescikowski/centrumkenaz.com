@@ -1,6 +1,6 @@
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { useState, useEffect, useLayoutEffect } from 'react'
-import { LanguageProvider } from './context/LanguageContext'
+import { LanguageProvider, useLanguage } from './context/LanguageContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { CityProvider } from './context/CityContext'
 import { NotificationProvider } from './context/NotificationContext'
@@ -46,6 +46,29 @@ import ResetPassword from './pages/auth/ResetPassword'
 import ChatPage from './pages/chat/ChatPage'
 import ChatWSClient from './components/ChatWSClient'
 import PushNotificationManager from './components/PushNotificationManager'
+import { API_URL } from './api/config'
+
+/**
+ * Silently persists the user's preferred language to the backend so that
+ * push notifications can be sent in the correct language.  Runs once on
+ * mount (to handle the initial stored preference) and again whenever the
+ * user switches languages.  Errors are swallowed – this is purely cosmetic.
+ */
+function LanguageSyncer() {
+  const { currentLanguage } = useLanguage()
+  const { isAuthenticated, user, authFetch } = useAuth()
+
+  useEffect(() => {
+    if (!isAuthenticated || user?.account_status !== 'active' || !authFetch) return
+    authFetch(`${API_URL}/users/me/language`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ language: currentLanguage }),
+    }).catch(() => {}) // non-critical
+  }, [currentLanguage, isAuthenticated, user?.account_status]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  return null
+}
 
 function RequireAuth() {
   const { isAuthenticated, loading } = useAuth()
@@ -126,6 +149,7 @@ function App() {
             <ChatProvider>
             <ChatWSClient />
             <PushNotificationManager />
+            <LanguageSyncer />
             <Layout darkMode={darkMode} setDarkMode={setDarkMode}>
               <ScrollToTop />
               <div
