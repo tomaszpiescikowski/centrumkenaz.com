@@ -104,7 +104,6 @@ export default function ChatWSClient() {
 
     let ws = null
     let dead = false
-    let wsReady = false
     let reconnectDelay = RECONNECT_INITIAL_MS
     let reconnectTimer = null
     let fallbackTimer = null
@@ -205,7 +204,6 @@ export default function ChatWSClient() {
         try { msg = JSON.parse(evt.data) } catch { return }
 
         if (msg.type === 'subscribed') {
-          wsReady = true
           stopFallback()
           // Catch up on any messages that arrived while WS was disconnected
           doPoll()
@@ -238,18 +236,14 @@ export default function ChatWSClient() {
             dispatchWsMessageRef.current(msg.chat_id, { type: 'message_deleted', comment_id: msg.comment_id, chat_id: msg.chat_id })
           }
 
-        } else if (msg.type === 'message_sent') {
-          // Acknowledgement for our own send — forward to handler in CommentsSection
-          if (msg.comment && msg.chat_id) {
-            dispatchWsMessageRef.current(msg.chat_id, { type: 'message_sent', comment: msg.comment, temp_id: msg.temp_id ?? null, chat_id: msg.chat_id })
-          }
         }
+        // message_sent is a server ack (no payload needed client-side);
+        // the matching new_message broadcast delivers the full comment to CommentsSection.
       }
 
-      ws.onerror = () => { wsReady = false }
+      ws.onerror = () => { /* connection error — onclose will fire next and handle reconnect */ }
 
       ws.onclose = () => {
-        wsReady = false
         ws = null
         clearSend()
         if (dead) return
