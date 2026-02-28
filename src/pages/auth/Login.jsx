@@ -158,15 +158,14 @@ function Login() {
           {t('auth.loginWithGoogle')}
         </button>
 
-        {/* ── Separator ────────────────────────────────────────────────────── */}
-        <div className="relative my-1 mb-4 flex items-center gap-3 text-xs text-navy/35 dark:text-cream/30">
+        {/* ── Separator + E-mail/hasło – tymczasowo ukryte (tylko Google) ── */}
+        {false && <div className="relative my-1 mb-4 flex items-center gap-3 text-xs text-navy/35 dark:text-cream/30">
           <div className="h-px flex-1 bg-navy/10 dark:bg-cream/10" />
           lub
           <div className="h-px flex-1 bg-navy/10 dark:bg-cream/10" />
-        </div>
+        </div>}
 
-        {/* ── E-mail / hasło – tymczasowo wyszarzone ───────────────────────── */}
-        <div className="group/nonGoogle relative">
+        {false && <div className="group/nonGoogle relative">
           {/* Warstwa blokująca kliknięcia i wyświetlająca tooltip */}
           <div
             className="absolute inset-0 z-10 cursor-not-allowed rounded-2xl"
@@ -367,7 +366,7 @@ function Login() {
           </button>
         </form>
           </div>{/* /opacity-40 */}
-        </div>{/* /group/nonGoogle */}
+        </div>}{/* /group/nonGoogle */}
       </div>
     </div>
   )
