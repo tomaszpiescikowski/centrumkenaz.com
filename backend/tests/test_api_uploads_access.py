@@ -38,7 +38,7 @@ def _image_file():
 @pytest.mark.asyncio
 async def test_upload_requires_auth(uploads_api_client: AsyncClient):
     response = await uploads_api_client.post(
-        "/uploads/image",
+        "/api/uploads/image",
         files={"file": _image_file()},
     )
     assert response.status_code == 401
@@ -60,7 +60,7 @@ async def test_upload_requires_admin_role(uploads_api_client: AsyncClient, db_se
 
     token = AuthService(db_session).create_access_token(user)
     response = await uploads_api_client.post(
-        "/uploads/image",
+        "/api/uploads/image",
         headers={"Authorization": f"Bearer {token}"},
         files={"file": _image_file()},
     )
@@ -83,7 +83,7 @@ async def test_upload_rejects_pending_admin(uploads_api_client: AsyncClient, db_
 
     token = AuthService(db_session).create_access_token(user)
     response = await uploads_api_client.post(
-        "/uploads/image",
+        "/api/uploads/image",
         headers={"Authorization": f"Bearer {token}"},
         files={"file": _image_file()},
     )
@@ -106,12 +106,12 @@ async def test_upload_allows_active_admin(uploads_api_client: AsyncClient, db_se
 
     token = AuthService(db_session).create_access_token(user)
     response = await uploads_api_client.post(
-        "/uploads/image",
+        "/api/uploads/image",
         headers={"Authorization": f"Bearer {token}"},
         files={"file": _image_file()},
     )
     assert response.status_code == 200
-    assert response.json()["url"].startswith("/uploads/")
+    assert response.json()["url"].startswith("/api/uploads/")
 
 
 @pytest.mark.asyncio
@@ -130,7 +130,7 @@ async def test_upload_rejects_too_large_file(uploads_api_client: AsyncClient, db
     token = AuthService(db_session).create_access_token(user)
     oversized = b"a" * (uploads_module.MAX_UPLOAD_BYTES + 1)
     response = await uploads_api_client.post(
-        "/uploads/image",
+        "/api/uploads/image",
         headers={"Authorization": f"Bearer {token}"},
         files={"file": ("large.jpg", oversized, "image/jpeg")},
     )
@@ -153,7 +153,7 @@ async def test_upload_rejects_unsupported_image_mime(uploads_api_client: AsyncCl
 
     token = AuthService(db_session).create_access_token(user)
     response = await uploads_api_client.post(
-        "/uploads/image",
+        "/api/uploads/image",
         headers={"Authorization": f"Bearer {token}"},
         files={"file": ("bad.svg", b"<svg></svg>", "image/svg+xml")},
     )

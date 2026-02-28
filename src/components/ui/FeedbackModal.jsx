@@ -64,7 +64,7 @@ function FeedbackModal({ open, onClose }) {
     setError(false)
 
     try {
-      const res = await fetch(`${API_URL}/api/feedback`, {
+      const res = await fetch(`${API_URL}/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user?.email || null, comment }),

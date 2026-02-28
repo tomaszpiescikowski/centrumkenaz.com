@@ -33,7 +33,7 @@ function AdminFeedback() {
     const load = async () => {
       setLoading(true)
       try {
-        const res = await authFetch(`${API_URL}/api/feedback`)
+        const res = await authFetch(`${API_URL}/feedback`)
         if (!res.ok) throw new Error('Failed to load feedback')
         const data = await res.json()
         if (!cancelled) setItems(data)

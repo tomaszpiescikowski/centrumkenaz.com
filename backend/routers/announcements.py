@@ -13,7 +13,7 @@ from models.announcement import Announcement
 from models.user import User
 from security.guards import AdminUser
 
-router = APIRouter(prefix="/api/announcements", tags=["announcements"])
+router = APIRouter(prefix="/announcements", tags=["announcements"])
 
 
 # ── Schemas ──────────────────────────────────────────────────────────

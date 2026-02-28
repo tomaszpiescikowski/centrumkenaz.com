@@ -51,9 +51,9 @@ async def test_authenticated_rate_limit_blocks_after_threshold(secured_client: A
     headers = {"Authorization": f"Bearer {token}"}
 
     try:
-        first = await secured_client.get("/users/me/registrations", headers=headers)
-        second = await secured_client.get("/users/me/registrations", headers=headers)
-        third = await secured_client.get("/users/me/registrations", headers=headers)
+        first = await secured_client.get("/api/users/me/registrations", headers=headers)
+        second = await secured_client.get("/api/users/me/registrations", headers=headers)
+        third = await secured_client.get("/api/users/me/registrations", headers=headers)
     finally:
         settings.rate_limit_authenticated_per_minute = previous_limit
         clear_rate_limiter_state()
@@ -86,9 +86,9 @@ async def test_admin_rate_limit_blocks_after_threshold(secured_client: AsyncClie
     headers = {"Authorization": f"Bearer {token}"}
 
     try:
-        first = await secured_client.get("/admin/stats/users", headers=headers)
-        second = await secured_client.get("/admin/stats/users", headers=headers)
-        third = await secured_client.get("/admin/stats/users", headers=headers)
+        first = await secured_client.get("/api/admin/stats/users", headers=headers)
+        second = await secured_client.get("/api/admin/stats/users", headers=headers)
+        third = await secured_client.get("/api/admin/stats/users", headers=headers)
     finally:
         settings.rate_limit_admin_per_minute = previous_admin_limit
         clear_rate_limiter_state()

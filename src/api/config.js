@@ -11,8 +11,8 @@ const getDevApiUrl = () => {
 export const API_URL = explicitApiUrl
   ? explicitApiUrl.replace(/\/+$/, '')
   : import.meta.env.DEV
-    ? getDevApiUrl()
-    : ''
+    ? `${getDevApiUrl()}/api`
+    : '/api'
 
 /**
  * Safely parse a JSON response, detecting HTML responses that indicate

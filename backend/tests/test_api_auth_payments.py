@@ -67,7 +67,7 @@ class TestAuthRouter:
 
         monkeypatch.setattr(AuthService, "get_google_auth_url", fake_auth_url)
 
-        response = await api_client.get("/auth/google/login", follow_redirects=False)
+        response = await api_client.get("/api/auth/google/login", follow_redirects=False)
 
         assert response.status_code in (302, 307)
         assert response.headers["location"] == "https://accounts.example.com/auth"
@@ -79,7 +79,7 @@ class TestAuthRouter:
 
         monkeypatch.setattr(AuthService, "get_google_auth_url", fake_auth_url)
 
-        response = await api_client.get("/auth/google/login")
+        response = await api_client.get("/api/auth/google/login")
 
         assert response.status_code == 500
         assert response.json()["detail"] == "GOOGLE_CLIENT_ID is not configured"
@@ -114,11 +114,11 @@ class TestAuthRouter:
         monkeypatch.setattr(AuthService, "create_access_token", lambda self, user: "access123")
         monkeypatch.setattr(AuthService, "create_refresh_token", lambda self, user: "refresh123")
 
-        response = await api_client.get("/auth/google/callback?code=abc", follow_redirects=False)
+        response = await api_client.get("/api/auth/google/callback?code=abc", follow_redirects=False)
 
         assert response.status_code in (302, 307)
         location = response.headers["location"]
-        assert "/auth/callback" in location
+        assert "/api/auth/callback" in location
         assert "access_token=access123" in location
         assert "refresh_token=refresh123" in location
 
@@ -129,17 +129,17 @@ class TestAuthRouter:
 
         monkeypatch.setattr(AuthService, "exchange_code_for_tokens", fake_exchange)
 
-        response = await api_client.get("/auth/google/callback?code=abc", follow_redirects=False)
+        response = await api_client.get("/api/auth/google/callback?code=abc", follow_redirects=False)
 
         assert response.status_code in (302, 307)
-        assert "/auth/error" in response.headers["location"]
+        assert "/api/auth/error" in response.headers["location"]
         assert "Authentication%20failed" in response.headers["location"] or "Authentication+failed" in response.headers["location"]
 
     @pytest.mark.asyncio
     async def test_password_register_issues_tokens_and_creates_pending_user(self, api_client: AsyncClient):
         suffix = uuid4().hex[:12]
         response = await api_client.post(
-            "/auth/password/register",
+            "/api/auth/password/register",
             json={
                 "username": f"tester-{suffix}",
                 "email": f"tester-{suffix}@example.com",
@@ -154,7 +154,7 @@ class TestAuthRouter:
         assert payload["refresh_token"]
 
         me = await api_client.get(
-            "/auth/me",
+            "/api/auth/me",
             headers={"Authorization": f"Bearer {payload['access_token']}"},
         )
         assert me.status_code == 200
@@ -179,7 +179,7 @@ class TestAuthRouter:
         await db_session.commit()
 
         response = await api_client.post(
-            "/auth/password/register",
+            "/api/auth/password/register",
             json={
                 "username": f"taken-{suffix}",
                 "email": f"new-{suffix}@example.com",
@@ -194,7 +194,7 @@ class TestAuthRouter:
     @pytest.mark.asyncio
     async def test_password_register_rejects_allowlisted_admin_email(self, api_client: AsyncClient):
         response = await api_client.post(
-            "/auth/password/register",
+            "/api/auth/password/register",
             json={
                 "username": f"reserved-{uuid4().hex[:12]}",
                 "email": "tomek.piescikowski@gmail.com",
@@ -223,7 +223,7 @@ class TestAuthRouter:
         await db_session.refresh(user)
 
         response = await api_client.post(
-            "/auth/password/login",
+            "/api/auth/password/login",
             json={
                 "login": user.username.upper(),
                 "password": "StrongPass#123",
@@ -233,7 +233,7 @@ class TestAuthRouter:
         assert response.status_code == 200
         payload = response.json()
         me = await api_client.get(
-            "/auth/me",
+            "/api/auth/me",
             headers={"Authorization": f"Bearer {payload['access_token']}"},
         )
         assert me.status_code == 200
@@ -259,7 +259,7 @@ class TestAuthRouter:
         await db_session.commit()
 
         response = await api_client.post(
-            "/auth/password/login",
+            "/api/auth/password/login",
             json={
                 "login": user.email,
                 "password": "admin",
@@ -284,7 +284,7 @@ class TestAuthRouter:
         await db_session.commit()
 
         response = await api_client.post(
-            "/auth/password/login",
+            "/api/auth/password/login",
             json={
                 "login": user.email,
                 "password": "wrong-password",
@@ -309,7 +309,7 @@ class TestAuthRouter:
         await db_session.commit()
 
         response = await api_client.post(
-            "/auth/password/login",
+            "/api/auth/password/login",
             json={
                 "login": user.email,
                 "password": "StrongPass#123",
@@ -321,7 +321,7 @@ class TestAuthRouter:
 
     @pytest.mark.asyncio
     async def test_refresh_requires_authorization_header(self, api_client: AsyncClient):
-        response = await api_client.post("/auth/refresh")
+        response = await api_client.post("/api/auth/refresh")
 
         assert response.status_code == 401
         assert response.json()["detail"] == "Missing refresh token"
@@ -334,7 +334,7 @@ class TestAuthRouter:
         monkeypatch.setattr(AuthService, "refresh_access_token", fake_refresh)
 
         response = await api_client.post(
-            "/auth/refresh",
+            "/api/auth/refresh",
             headers={"Authorization": "Bearer invalid"},
         )
 
@@ -349,7 +349,7 @@ class TestAuthRouter:
         monkeypatch.setattr(AuthService, "refresh_access_token", fake_refresh)
 
         response = await api_client.post(
-            "/auth/refresh",
+            "/api/auth/refresh",
             headers={"Authorization": "Bearer valid"},
         )
 
@@ -378,11 +378,11 @@ class TestAuthRouter:
 
         try:
             first = await api_client.post(
-                "/auth/refresh",
+                "/api/auth/refresh",
                 headers={"Authorization": "Bearer valid"},
             )
             second = await api_client.post(
-                "/auth/refresh",
+                "/api/auth/refresh",
                 headers={"Authorization": "Bearer valid"},
             )
         finally:
@@ -395,7 +395,7 @@ class TestAuthRouter:
 
     @pytest.mark.asyncio
     async def test_me_requires_authorization_header(self, api_client: AsyncClient):
-        response = await api_client.get("/auth/me")
+        response = await api_client.get("/api/auth/me")
 
         assert response.status_code == 401
         assert response.json()["detail"] == "Not authenticated"
@@ -404,7 +404,7 @@ class TestAuthRouter:
     async def test_me_rejects_invalid_token(self, api_client: AsyncClient, monkeypatch):
         monkeypatch.setattr(AuthService, "verify_token", lambda self, token: None)
 
-        response = await api_client.get("/auth/me", headers={"Authorization": "Bearer bad"})
+        response = await api_client.get("/api/auth/me", headers={"Authorization": "Bearer bad"})
 
         assert response.status_code == 401
         assert response.json()["detail"] == "Invalid token"
@@ -422,7 +422,7 @@ class TestAuthRouter:
 
         monkeypatch.setattr(AuthService, "get_user_by_id", fake_get_user)
 
-        response = await api_client.get("/auth/me", headers={"Authorization": "Bearer any"})
+        response = await api_client.get("/api/auth/me", headers={"Authorization": "Bearer any"})
 
         assert response.status_code == 404
         assert response.json()["detail"] == "User not found"
@@ -440,7 +440,7 @@ class TestAuthRouter:
 
         monkeypatch.setattr(AuthService, "get_user_by_id", fake_get_user)
 
-        response = await api_client.get("/auth/me", headers={"Authorization": "Bearer good"})
+        response = await api_client.get("/api/auth/me", headers={"Authorization": "Bearer good"})
 
         assert response.status_code == 200
         assert response.json()["id"] == auth_user.id
@@ -472,8 +472,8 @@ class TestAuthRouter:
         monkeypatch.setattr(AuthService, "get_user_by_id", fake_get_user)
 
         try:
-            first = await api_client.get("/auth/me", headers={"Authorization": "Bearer good"})
-            second = await api_client.get("/auth/me", headers={"Authorization": "Bearer good"})
+            first = await api_client.get("/api/auth/me", headers={"Authorization": "Bearer good"})
+            second = await api_client.get("/api/auth/me", headers={"Authorization": "Bearer good"})
         finally:
             settings.rate_limit_public_per_minute = previous_public_limit
             settings.rate_limit_authenticated_per_minute = previous_authenticated_limit
@@ -508,7 +508,7 @@ class TestAuthRouter:
 
         monkeypatch.setattr(AuthService, "get_user_by_id", fake_get_user)
 
-        response = await api_client.get("/auth/me", headers={"Authorization": "Bearer good"})
+        response = await api_client.get("/api/auth/me", headers={"Authorization": "Bearer good"})
 
         assert response.status_code == 200
         payload = response.json()
@@ -555,7 +555,7 @@ class TestAuthRouter:
 
         token = AuthService(db_session).create_access_token(auth_user)
         response = await api_client.get(
-            "/auth/me",
+            "/api/auth/me",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -581,7 +581,7 @@ class TestPaymentsRouter:
 
         token = AuthService(db_session).create_access_token(auth_user)
         response = await api_client.get(
-            "/payments/UNKNOWN/status",
+            "/api/payments/UNKNOWN/status",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -621,7 +621,7 @@ class TestPaymentsRouter:
 
         token = AuthService(db_session).create_access_token(auth_user)
         response = await api_client.get(
-            f"/payments/{gateway_payment.payment_id}/status",
+            f"/api/payments/{gateway_payment.payment_id}/status",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -679,7 +679,7 @@ class TestPaymentsRouter:
 
         intruder_token = AuthService(db_session).create_access_token(intruder)
         response = await api_client.get(
-            f"/payments/{owner_payment.payment_id}/status",
+            f"/api/payments/{owner_payment.payment_id}/status",
             headers={"Authorization": f"Bearer {intruder_token}"},
         )
 
@@ -689,7 +689,7 @@ class TestPaymentsRouter:
     @pytest.mark.asyncio
     async def test_webhook_rejects_invalid_json(self, api_client: AsyncClient):
         response = await api_client.post(
-            "/payments/webhook",
+            "/api/payments/webhook",
             content="not-json",
             headers={"content-type": "application/json"},
         )
@@ -700,7 +700,7 @@ class TestPaymentsRouter:
     @pytest.mark.asyncio
     async def test_webhook_rejects_invalid_payload_shape(self, api_client: AsyncClient):
         response = await api_client.post(
-            "/payments/webhook",
+            "/api/payments/webhook",
             json={"payment_id": "", "status": "unknown"},
         )
 
@@ -714,7 +714,7 @@ class TestPaymentsRouter:
         monkeypatch.setattr(payments_module, "get_payment_gateway", lambda: gateway)
 
         response = await api_client.post(
-            "/payments/webhook",
+            "/api/payments/webhook",
             json={"payment_id": "DOES_NOT_EXIST", "status": "completed"},
         )
 
@@ -761,7 +761,7 @@ class TestPaymentsRouter:
         monkeypatch.setattr("services.registration_service.RegistrationService.confirm_registration", fake_confirm)
 
         response = await api_client.post(
-            "/payments/webhook",
+            "/api/payments/webhook",
             json={"payment_id": gateway_payment.payment_id, "status": "completed"},
         )
 
@@ -775,7 +775,7 @@ class TestPaymentsRouter:
         gateway.clear_payments()
         monkeypatch.setattr(payments_module, "get_payment_gateway", lambda: gateway)
 
-        response = await api_client.get("/payments/fake/MISSING?token=invalidtoken")
+        response = await api_client.get("/api/payments/fake/MISSING?token=invalidtoken")
 
         assert response.status_code == 404
         assert response.json()["detail"] == "Payment not found"
@@ -821,10 +821,10 @@ class TestPaymentsRouter:
         token = fake_payment.dev_token
 
         complete_response = await api_client.post(
-            f"/payments/fake/{gateway_payment.payment_id}/complete?token={token}"
+            f"/api/payments/fake/{gateway_payment.payment_id}/complete?token={token}"
         )
         fail_response = await api_client.post(
-            f"/payments/fake/{gateway_payment.payment_id}/fail?token={token}"
+            f"/api/payments/fake/{gateway_payment.payment_id}/fail?token={token}"
         )
 
         assert complete_response.status_code == 200
@@ -840,13 +840,13 @@ class TestPaymentsRouter:
     ):
         monkeypatch.setattr(payments_module.settings, "debug", False)
 
-        response = await api_client.get("/payments/fake/anything?token=validtoken")
+        response = await api_client.get("/api/payments/fake/anything?token=validtoken")
         assert response.status_code == 404
         assert response.json()["detail"] == "Not found"
 
     @pytest.mark.asyncio
     async def test_subscription_plans_requires_authentication(self, api_client: AsyncClient):
-        response = await api_client.get("/payments/subscription/plans")
+        response = await api_client.get("/api/payments/subscription/plans")
 
         assert response.status_code == 401
         assert response.json()["detail"] == "Not authenticated"
@@ -854,7 +854,7 @@ class TestPaymentsRouter:
     @pytest.mark.asyncio
     async def test_subscription_checkout_requires_authentication(self, api_client: AsyncClient):
         response = await api_client.post(
-            "/payments/subscription/checkout",
+            "/api/payments/subscription/checkout",
             json={
                 "plan_code": "monthly",
                 "return_url": "http://test/plans?payment=success",
@@ -874,7 +874,7 @@ class TestPaymentsRouter:
     ):
         token = AuthService(db_session).create_access_token(auth_user)
         response = await api_client.get(
-            "/payments/subscription/plans",
+            "/api/payments/subscription/plans",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -907,7 +907,7 @@ class TestPaymentsRouter:
 
         token = AuthService(db_session).create_access_token(pending)
         response = await api_client.post(
-            "/payments/subscription/checkout",
+            "/api/payments/subscription/checkout",
             headers={"Authorization": f"Bearer {token}"},
             json={
                 "plan_code": "monthly",
@@ -931,7 +931,7 @@ class TestPaymentsRouter:
         token = AuthService(db_session).create_access_token(auth_user)
 
         response = await api_client.post(
-            "/payments/subscription/checkout",
+            "/api/payments/subscription/checkout",
             headers={"Authorization": f"Bearer {token}"},
             json={
                 "plan_code": "monthly",
@@ -968,7 +968,7 @@ class TestPaymentsRouter:
 
         token = AuthService(db_session).create_access_token(subscriber)
         response = await api_client.post(
-            "/payments/subscription/checkout",
+            "/api/payments/subscription/checkout",
             headers={"Authorization": f"Bearer {token}"},
             json={
                 "plan_code": "monthly",
@@ -1025,7 +1025,7 @@ class TestPaymentsRouter:
 
         token = AuthService(db_session).create_access_token(subscriber)
         response = await api_client.post(
-            "/payments/subscription/checkout",
+            "/api/payments/subscription/checkout",
             headers={"Authorization": f"Bearer {token}"},
             json={
                 "plan_code": "monthly",
@@ -1041,7 +1041,7 @@ class TestPaymentsRouter:
 
         fake_payment = gateway.get_payment(payment_id)
         assert fake_payment is not None
-        replay = await api_client.post(f"/payments/fake/{payment_id}/complete?token={fake_payment.dev_token}")
+        replay = await api_client.post(f"/api/payments/fake/{payment_id}/complete?token={fake_payment.dev_token}")
         assert replay.status_code == 200
         assert replay.json()["success"] is True
 
@@ -1072,7 +1072,7 @@ class TestPaymentsRouter:
 
         token = AuthService(db_session).create_access_token(subscriber)
         response = await api_client.post(
-            "/payments/subscription/free",
+            "/api/payments/subscription/free",
             headers={"Authorization": f"Bearer {token}"},
         )
 

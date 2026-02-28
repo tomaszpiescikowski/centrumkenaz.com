@@ -186,7 +186,7 @@ async def test_scenario_waitlist_cancellation_promotion_manual_payment_and_stats
     try:
         # A registers (manual payment required)
         res = await client_a.post(
-            f"/events/{event.id}/register",
+            f"/api/events/{event.id}/register",
             json={"return_url": "http://localhost:5173/return", "cancel_url": "http://localhost:5173/cancel"},
         )
         assert res.status_code == 200
@@ -200,7 +200,7 @@ async def test_scenario_waitlist_cancellation_promotion_manual_payment_and_stats
 
         # B registers (manual payment required)
         res = await client_b.post(
-            f"/events/{event.id}/register",
+            f"/api/events/{event.id}/register",
             json={"return_url": "http://localhost:5173/return", "cancel_url": "http://localhost:5173/cancel"},
         )
         assert res.status_code == 200
@@ -211,7 +211,7 @@ async def test_scenario_waitlist_cancellation_promotion_manual_payment_and_stats
 
         # C registers -> waitlist
         res = await client_c.post(
-            f"/events/{event.id}/register",
+            f"/api/events/{event.id}/register",
             json={"return_url": "http://localhost:5173/return", "cancel_url": "http://localhost:5173/cancel"},
         )
         assert res.status_code == 200
@@ -221,7 +221,7 @@ async def test_scenario_waitlist_cancellation_promotion_manual_payment_and_stats
         reg_c_id = reg_c["registration_id"]
 
         # Availability: spots are occupied by manual_payment_required
-        res = await client_a.get(f"/events/{event.id}/availability")
+        res = await client_a.get(f"/api/events/{event.id}/availability")
         assert res.status_code == 200
         avail = res.json()
         assert avail["max_participants"] == 2
@@ -231,7 +231,7 @@ async def test_scenario_waitlist_cancellation_promotion_manual_payment_and_stats
         assert avail["is_available"] is False
 
         # A confirms manual payment -> verification
-        res = await client_a.post(f"/registrations/{reg_a_id}/manual-payment/confirm")
+        res = await client_a.post(f"/api/registrations/{reg_a_id}/manual-payment/confirm")
         assert res.status_code == 200
         details_a = res.json()
         assert details_a["registration_id"] == reg_a_id
@@ -239,13 +239,13 @@ async def test_scenario_waitlist_cancellation_promotion_manual_payment_and_stats
         assert details_a["can_confirm"] is False
 
         # Admin sees A in pending manual payments
-        res = await admin_client.get("/admin/manual-payments/pending")
+        res = await admin_client.get("/api/admin/manual-payments/pending")
         assert res.status_code == 200
         pending = res.json()
         assert any(item["registration_id"] == reg_a_id for item in pending)
 
         # Admin approves A
-        res = await admin_client.post(f"/admin/manual-payments/{reg_a_id}/approve")
+        res = await admin_client.post(f"/api/admin/manual-payments/{reg_a_id}/approve")
         assert res.status_code == 200
         approved_a = res.json()
         assert approved_a["registration_id"] == reg_a_id
@@ -253,7 +253,7 @@ async def test_scenario_waitlist_cancellation_promotion_manual_payment_and_stats
         assert approved_a["payment_id"]
 
         # B cancels before cutoff -> should succeed, refund not processed automatically (manual event)
-        res = await client_b.post(f"/registrations/{reg_b_id}/cancel")
+        res = await client_b.post(f"/api/registrations/{reg_b_id}/cancel")
         assert res.status_code == 200
         cancel_b = res.json()
         assert cancel_b["success"] is True
@@ -262,7 +262,7 @@ async def test_scenario_waitlist_cancellation_promotion_manual_payment_and_stats
         assert cancel_b["refund_task_id"]
 
         # C should now be promoted from waitlist to manual_payment_required
-        res = await client_c.get(f"/registrations/{reg_c_id}/manual-payment")
+        res = await client_c.get(f"/api/registrations/{reg_c_id}/manual-payment")
         assert res.status_code == 200
         details_c = res.json()
         assert details_c["registration_id"] == reg_c_id
@@ -272,13 +272,13 @@ async def test_scenario_waitlist_cancellation_promotion_manual_payment_and_stats
         assert details_c["can_confirm"] is True
 
         # C confirms manual payment -> verification
-        res = await client_c.post(f"/registrations/{reg_c_id}/manual-payment/confirm")
+        res = await client_c.post(f"/api/registrations/{reg_c_id}/manual-payment/confirm")
         assert res.status_code == 200
         details_c_confirm = res.json()
         assert details_c_confirm["status"] == "manual_payment_verification"
 
         # Admin approves C
-        res = await admin_client.post(f"/admin/manual-payments/{reg_c_id}/approve")
+        res = await admin_client.post(f"/api/admin/manual-payments/{reg_c_id}/approve")
         assert res.status_code == 200
         approved_c = res.json()
         assert approved_c["registration_id"] == reg_c_id
@@ -286,14 +286,14 @@ async def test_scenario_waitlist_cancellation_promotion_manual_payment_and_stats
         assert approved_c["payment_id"]
 
         # Final participants: A and C
-        res = await client_a.get(f"/events/{event.id}/participants")
+        res = await client_a.get(f"/api/events/{event.id}/participants")
         assert res.status_code == 200
         participants = res.json()
         participant_user_ids = {p["user_id"] for p in participants}
         assert participant_user_ids == {str(user_a.id), str(user_c.id)}
 
         # Refund tasks include B, but recommended refund is false because B has no payment_id
-        res = await admin_client.get("/admin/manual-payments/refunds")
+        res = await admin_client.get("/api/admin/manual-payments/refunds")
         assert res.status_code == 200
         tasks = res.json()
         b_task = next((t for t in tasks if t["registration_id"] == reg_b_id), None)
@@ -304,7 +304,7 @@ async def test_scenario_waitlist_cancellation_promotion_manual_payment_and_stats
         assert b_task["payment_id"] is None
 
         # Payment stats reflect two completed manual payments
-        res = await admin_client.get("/admin/stats/payments")
+        res = await admin_client.get("/api/admin/stats/payments")
         assert res.status_code == 200
         stats = res.json()
         assert stats["completed_count"] == 2
@@ -312,7 +312,7 @@ async def test_scenario_waitlist_cancellation_promotion_manual_payment_and_stats
         assert stats["completed_amount"] == "100.00 PLN"
 
         # Event stats total_paid reflects only completed payments
-        res = await admin_client.get("/admin/stats/events")
+        res = await admin_client.get("/api/admin/stats/events")
         assert res.status_code == 200
         events_stats = res.json()
         this = next((e for e in events_stats if e["event_id"] == str(event.id)), None)
@@ -382,7 +382,7 @@ async def test_scenario_manual_payment_then_cancel_then_admin_marks_refund_paid(
     try:
         # Register -> manual payment required
         res = await client.post(
-            f"/events/{event.id}/register",
+            f"/api/events/{event.id}/register",
             json={"return_url": "http://localhost:5173/return", "cancel_url": "http://localhost:5173/cancel"},
         )
         assert res.status_code == 200
@@ -391,12 +391,12 @@ async def test_scenario_manual_payment_then_cancel_then_admin_marks_refund_paid(
         reg_id = payload["registration_id"]
 
         # Confirm manual payment -> verification + creates Payment record
-        res = await client.post(f"/registrations/{reg_id}/manual-payment/confirm")
+        res = await client.post(f"/api/registrations/{reg_id}/manual-payment/confirm")
         assert res.status_code == 200
         assert res.json()["status"] == "manual_payment_verification"
 
         # Admin approves -> payment completed + registration confirmed
-        res = await admin_client.post(f"/admin/manual-payments/{reg_id}/approve")
+        res = await admin_client.post(f"/api/admin/manual-payments/{reg_id}/approve")
         assert res.status_code == 200
         approved = res.json()
         assert approved["status"] == "confirmed"
@@ -404,7 +404,7 @@ async def test_scenario_manual_payment_then_cancel_then_admin_marks_refund_paid(
         assert isinstance(payment_id, str) and payment_id
 
         # Cancel registration -> should create refund task; no auto-refund (manual mode)
-        res = await client.post(f"/registrations/{reg_id}/cancel")
+        res = await client.post(f"/api/registrations/{reg_id}/cancel")
         assert res.status_code == 200
         cancel = res.json()
         assert cancel["success"] is True
@@ -412,7 +412,7 @@ async def test_scenario_manual_payment_then_cancel_then_admin_marks_refund_paid(
         assert cancel["refund_processed"] is False
 
         # Locate refund task
-        res = await admin_client.get("/admin/manual-payments/refunds")
+        res = await admin_client.get("/api/admin/manual-payments/refunds")
         assert res.status_code == 200
         tasks = res.json()
         task = next((t for t in tasks if t["registration_id"] == reg_id), None)
@@ -424,7 +424,7 @@ async def test_scenario_manual_payment_then_cancel_then_admin_marks_refund_paid(
 
         # Admin marks refund paid -> payment becomes refunded, registration becomes refunded
         res = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task_id}",
+            f"/api/admin/manual-payments/refunds/{task_id}",
             json={"refund_marked_paid": True},
         )
         assert res.status_code == 200
@@ -433,7 +433,7 @@ async def test_scenario_manual_payment_then_cancel_then_admin_marks_refund_paid(
         assert updated["payment_id"] == payment_id
 
         # Stats: refunded_amount reflects the one payment, completed_amount goes to 0
-        res = await admin_client.get("/admin/stats/payments")
+        res = await admin_client.get("/api/admin/stats/payments")
         assert res.status_code == 200
         stats = res.json()
         assert stats["refunded_count"] == 1
@@ -442,7 +442,7 @@ async def test_scenario_manual_payment_then_cancel_then_admin_marks_refund_paid(
         assert stats["completed_amount"] == "0.00 PLN"
 
         # Event stats: total_paid should now be 0.00 PLN (since only completed payments are counted)
-        res = await admin_client.get("/admin/stats/events")
+        res = await admin_client.get("/api/admin/stats/events")
         assert res.status_code == 200
         events_stats = res.json()
         this = next((e for e in events_stats if e["event_id"] == str(event.id)), None)

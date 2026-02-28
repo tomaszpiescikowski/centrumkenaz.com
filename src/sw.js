@@ -19,7 +19,7 @@ precacheAndRoute(self.__WB_MANIFEST)
 cleanupOutdatedCaches()
 
 // ── SPA navigation fallback (serve index.html for unknown paths) ──────────────
-const BACKEND_PATHS = /^\/(auth\/|events\/|payments\/|users\/|registrations\/|products\/|uploads\/|cities\/|comments\/|donations\/|event-types|push\/|admin\/stats|admin\/users\/|admin\/manual|admin\/subscription|admin\/promote|health|docs|redoc|openapi)/
+const BACKEND_PATHS = /^\/(api\/|uploads\/|health|docs|redoc|openapi)/
 
 registerRoute(
   new NavigationRoute(createHandlerBoundToURL('index.html'), {

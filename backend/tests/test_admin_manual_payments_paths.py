@@ -118,7 +118,7 @@ async def _make_user(db_session, *, role=UserRole.GUEST) -> User:
 class TestPendingManualPayments:
     @pytest.mark.asyncio
     async def test_list_empty(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/manual-payments/pending")
+        resp = await admin_client.get("/api/admin/manual-payments/pending")
         assert resp.status_code == 200
         assert resp.json() == []
 
@@ -146,7 +146,7 @@ class TestPendingManualPayments:
         db_session.add_all([payment, reg])
         await db_session.commit()
 
-        resp = await admin_client.get("/admin/manual-payments/pending")
+        resp = await admin_client.get("/api/admin/manual-payments/pending")
         assert resp.status_code == 200
         rows = resp.json()
         assert len(rows) >= 1
@@ -180,7 +180,7 @@ class TestPendingManualPayments:
         await db_session.commit()
         await db_session.refresh(reg)
 
-        resp = await admin_client.post(f"/admin/manual-payments/{reg.id}/approve")
+        resp = await admin_client.post(f"/api/admin/manual-payments/{reg.id}/approve")
         assert resp.status_code == 200
         body = resp.json()
         assert body["status"] == RegistrationStatus.CONFIRMED.value
@@ -192,7 +192,7 @@ class TestPendingManualPayments:
 
     @pytest.mark.asyncio
     async def test_approve_nonexistent_registration_404(self, admin_client: AsyncClient):
-        resp = await admin_client.post("/admin/manual-payments/nonexistent-id/approve")
+        resp = await admin_client.post("/api/admin/manual-payments/nonexistent-id/approve")
         assert resp.status_code in (404, 409)
 
 
@@ -244,14 +244,14 @@ class TestRefundTasks:
 
     @pytest.mark.asyncio
     async def test_list_refunds_empty(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/manual-payments/refunds")
+        resp = await admin_client.get("/api/admin/manual-payments/refunds")
         assert resp.status_code == 200
         assert resp.json() == []
 
     @pytest.mark.asyncio
     async def test_list_refunds_returns_new_fields(self, db_session, admin_client: AsyncClient):
         task, reg, user, event = await self._make_refund_task(db_session)
-        resp = await admin_client.get("/admin/manual-payments/refunds")
+        resp = await admin_client.get("/api/admin/manual-payments/refunds")
         assert resp.status_code == 200
         rows = resp.json()
         row = next(r for r in rows if r["task_id"] == task.id)
@@ -268,7 +268,7 @@ class TestRefundTasks:
         task, *_ = await self._make_refund_task(
             db_session, eligible=True, recommended=True, should_refund=True, refund_paid=False,
         )
-        resp = await admin_client.get("/admin/manual-payments/refunds")
+        resp = await admin_client.get("/api/admin/manual-payments/refunds")
         row = next(r for r in resp.json() if r["task_id"] == task.id)
         assert row["recommendation_code"] == "REFUND_CANCELLED_BEFORE_CUTOFF"
         assert row["is_resolved"] is False
@@ -281,7 +281,7 @@ class TestRefundTasks:
         task, *_ = await self._make_refund_task(
             db_session, eligible=False, recommended=False, should_refund=False, refund_paid=False,
         )
-        resp = await admin_client.get("/admin/manual-payments/refunds")
+        resp = await admin_client.get("/api/admin/manual-payments/refunds")
         row = next(r for r in resp.json() if r["task_id"] == task.id)
         assert row["recommendation_code"] == "NO_REFUND_CANCELLED_AFTER_CUTOFF"
         assert row["is_resolved"] is False
@@ -294,7 +294,7 @@ class TestRefundTasks:
         task, *_ = await self._make_refund_task(
             db_session, eligible=True, recommended=False, should_refund=False, refund_paid=False,
         )
-        resp = await admin_client.get("/admin/manual-payments/refunds")
+        resp = await admin_client.get("/api/admin/manual-payments/refunds")
         row = next(r for r in resp.json() if r["task_id"] == task.id)
         assert row["recommendation_code"] == "NO_REFUND_NO_PAYMENT"
 
@@ -306,7 +306,7 @@ class TestRefundTasks:
         task, *_ = await self._make_refund_task(
             db_session, eligible=True, recommended=True, should_refund=True, refund_paid=True,
         )
-        resp = await admin_client.get("/admin/manual-payments/refunds")
+        resp = await admin_client.get("/api/admin/manual-payments/refunds")
         row = next(r for r in resp.json() if r["task_id"] == task.id)
         assert row["recommendation_code"] == "REFUND_COMPLETED"
         assert row["is_resolved"] is True
@@ -326,7 +326,7 @@ class TestRefundTasks:
             refund_paid=False,
             reviewed_by=admin_user.id,
         )
-        resp = await admin_client.get("/admin/manual-payments/refunds")
+        resp = await admin_client.get("/api/admin/manual-payments/refunds")
         row = next(r for r in resp.json() if r["task_id"] == task.id)
         assert row["recommendation_code"] == "REFUND_ADMIN_OVERRIDE"
         # reviewed but should_refund=True → not resolved (waiting for payout)
@@ -347,7 +347,7 @@ class TestRefundTasks:
             refund_paid=False,
             reviewed_by=admin_user.id,
         )
-        resp = await admin_client.get("/admin/manual-payments/refunds")
+        resp = await admin_client.get("/api/admin/manual-payments/refunds")
         row = next(r for r in resp.json() if r["task_id"] == task.id)
         assert row["recommendation_code"] == "NO_REFUND_ADMIN_OVERRIDE"
         # reviewed + should_refund=False → resolved
@@ -361,7 +361,7 @@ class TestRefundTasks:
         task, *_ = await self._make_refund_task(
             db_session, eligible=True, recommended=True, should_refund=True, refund_paid=False,
         )
-        resp = await admin_client.get("/admin/manual-payments/refunds")
+        resp = await admin_client.get("/api/admin/manual-payments/refunds")
         row = next(r for r in resp.json() if r["task_id"] == task.id)
         assert row["is_resolved"] is False
 
@@ -384,7 +384,7 @@ class TestRefundTasks:
         await db_session.commit()
 
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"refund_marked_paid": True},
         )
         assert resp.status_code == 200
@@ -402,7 +402,7 @@ class TestRefundTasks:
             db_session, eligible=True, recommended=True, should_refund=True,
         )
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"should_refund": False},
         )
         assert resp.status_code == 422
@@ -414,7 +414,7 @@ class TestRefundTasks:
             db_session, eligible=True, recommended=True, should_refund=True,
         )
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"should_refund": False, "override_reason": "short"},
         )
         assert resp.status_code == 422
@@ -426,7 +426,7 @@ class TestRefundTasks:
             db_session, eligible=True, recommended=True, should_refund=True,
         )
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"should_refund": False, "override_reason": "Event was actually free for this user"},
         )
         assert resp.status_code == 200
@@ -444,7 +444,7 @@ class TestRefundTasks:
             db_session, eligible=False, recommended=False, should_refund=False,
         )
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"should_refund": True, "override_reason": "Special case compassionate refund"},
         )
         assert resp.status_code == 200
@@ -460,7 +460,7 @@ class TestRefundTasks:
             db_session, eligible=True, recommended=True, should_refund=False,
         )
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"refund_marked_paid": True},
         )
         assert resp.status_code == 422
@@ -468,7 +468,7 @@ class TestRefundTasks:
     @pytest.mark.asyncio
     async def test_update_nonexistent_refund_task_404(self, admin_client: AsyncClient):
         resp = await admin_client.patch(
-            "/admin/manual-payments/refunds/nonexistent-id",
+            "/api/admin/manual-payments/refunds/nonexistent-id",
             json={"should_refund": True},
         )
         assert resp.status_code == 404
@@ -480,7 +480,7 @@ class TestRefundTasks:
             db_session, eligible=True, recommended=True, should_refund=True,
         )
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"should_refund": True},
         )
         assert resp.status_code == 200
@@ -525,7 +525,7 @@ class TestRefundTasks:
         await db_session.refresh(task)
 
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"refund_marked_paid": True},
         )
         assert resp.status_code == 200
@@ -541,7 +541,7 @@ class TestRefundTasks:
 class TestWaitlistPromotions:
     @pytest.mark.asyncio
     async def test_list_promotions_empty(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/manual-payments/promotions")
+        resp = await admin_client.get("/api/admin/manual-payments/promotions")
         assert resp.status_code == 200
         assert resp.json() == []
 
@@ -562,7 +562,7 @@ class TestWaitlistPromotions:
         await db_session.commit()
         await db_session.refresh(reg)
 
-        resp = await admin_client.get("/admin/manual-payments/promotions")
+        resp = await admin_client.get("/api/admin/manual-payments/promotions")
         assert resp.status_code == 200
         rows = resp.json()
         row = next(r for r in rows if r["registration_id"] == reg.id)
@@ -587,7 +587,7 @@ class TestWaitlistPromotions:
         await db_session.refresh(reg)
 
         resp = await admin_client.patch(
-            f"/admin/manual-payments/promotions/{reg.id}",
+            f"/api/admin/manual-payments/promotions/{reg.id}",
             json={"waitlist_notification_sent": True},
         )
         assert resp.status_code == 200
@@ -616,7 +616,7 @@ class TestWaitlistPromotions:
         await db_session.refresh(reg)
 
         resp = await admin_client.patch(
-            f"/admin/manual-payments/promotions/{reg.id}",
+            f"/api/admin/manual-payments/promotions/{reg.id}",
             json={"waitlist_notification_sent": False},
         )
         assert resp.status_code == 200
@@ -629,7 +629,7 @@ class TestWaitlistPromotions:
     @pytest.mark.asyncio
     async def test_toggle_nonexistent_promotion_404(self, admin_client: AsyncClient):
         resp = await admin_client.patch(
-            "/admin/manual-payments/promotions/nonexistent-id",
+            "/api/admin/manual-payments/promotions/nonexistent-id",
             json={"waitlist_notification_sent": True},
         )
         assert resp.status_code == 404
@@ -641,7 +641,7 @@ class TestWaitlistPromotions:
 class TestSubscriptionPurchases:
     @pytest.mark.asyncio
     async def test_list_pending_subs_empty(self, admin_client: AsyncClient):
-        resp = await admin_client.get("/admin/subscription-purchases/pending")
+        resp = await admin_client.get("/api/admin/subscription-purchases/pending")
         assert resp.status_code == 200
         assert resp.json() == []
 
@@ -661,7 +661,7 @@ class TestSubscriptionPurchases:
         await db_session.commit()
         await db_session.refresh(purchase)
 
-        resp = await admin_client.get("/admin/subscription-purchases/pending")
+        resp = await admin_client.get("/api/admin/subscription-purchases/pending")
         assert resp.status_code == 200
         rows = resp.json()
         row = next(r for r in rows if r["purchase_id"] == purchase.id)
@@ -704,14 +704,14 @@ class TestSubscriptionPurchases:
         await db_session.commit()
         await db_session.refresh(purchase)
 
-        resp = await admin_client.post(f"/admin/subscription-purchases/{purchase.id}/approve")
+        resp = await admin_client.post(f"/api/admin/subscription-purchases/{purchase.id}/approve")
         assert resp.status_code == 200
         body = resp.json()
         assert body["status"] == SubscriptionPurchaseStatus.CONFIRMED.value
 
     @pytest.mark.asyncio
     async def test_approve_nonexistent_sub_purchase_404(self, admin_client: AsyncClient):
-        resp = await admin_client.post("/admin/subscription-purchases/nonexistent/approve")
+        resp = await admin_client.post("/api/admin/subscription-purchases/nonexistent/approve")
         assert resp.status_code in (404, 409)
 
     @pytest.mark.asyncio
@@ -734,7 +734,7 @@ class TestSubscriptionPurchases:
         await db_session.commit()
         await db_session.refresh(purchase)
 
-        resp = await admin_client.post(f"/admin/subscription-purchases/{purchase.id}/approve")
+        resp = await admin_client.post(f"/api/admin/subscription-purchases/{purchase.id}/approve")
         assert resp.status_code in (404, 409)
 
 
@@ -782,14 +782,14 @@ class TestRefundFullLifecycle:
         await db_session.refresh(task)
 
         # Step 1: starts as NO_REFUND_CANCELLED_AFTER_CUTOFF, not resolved
-        resp = await admin_client.get("/admin/manual-payments/refunds")
+        resp = await admin_client.get("/api/admin/manual-payments/refunds")
         row = next(r for r in resp.json() if r["task_id"] == task.id)
         assert row["recommendation_code"] == "NO_REFUND_CANCELLED_AFTER_CUTOFF"
         assert row["is_resolved"] is False
 
         # Step 2: admin overrides to refund
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"should_refund": True, "override_reason": "Customer was misinformed about cutoff dates"},
         )
         assert resp.status_code == 200
@@ -799,7 +799,7 @@ class TestRefundFullLifecycle:
 
         # Step 3: admin marks refund as paid
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"refund_marked_paid": True},
         )
         assert resp.status_code == 200
@@ -844,7 +844,7 @@ class TestRefundFullLifecycle:
 
         # Override to no-refund
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"should_refund": False, "override_reason": "Duplicate registration, user agreed no refund"},
         )
         assert resp.status_code == 200
@@ -919,7 +919,7 @@ class TestMultiUserRefundMatrix:
             tasks.append(task)
 
         # Verify initial list shows all three with correct codes
-        resp = await admin_client.get("/admin/manual-payments/refunds")
+        resp = await admin_client.get("/api/admin/manual-payments/refunds")
         assert resp.status_code == 200
         rows = resp.json()
         for task_obj, cfg in zip(tasks, configs):
@@ -931,14 +931,14 @@ class TestMultiUserRefundMatrix:
 
         # Override User B (index=1) → compassionate refund
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{tasks[1].id}",
+            f"/api/admin/manual-payments/refunds/{tasks[1].id}",
             json={"should_refund": True, "override_reason": "Compassionate override for late cancellation"},
         )
         assert resp.status_code == 200
         assert resp.json()["recommendation_code"] == "REFUND_ADMIN_OVERRIDE"
 
         # Re-fetch list: only User B's code should have changed
-        resp = await admin_client.get("/admin/manual-payments/refunds")
+        resp = await admin_client.get("/api/admin/manual-payments/refunds")
         rows = resp.json()
         for i, task_obj in enumerate(tasks):
             row = next(r for r in rows if r["task_id"] == task_obj.id)
@@ -1020,7 +1020,7 @@ class TestSameUserMultipleEvents:
             await db_session.refresh(task)
             task_objs.append(task)
 
-        resp = await admin_client.get("/admin/manual-payments/refunds")
+        resp = await admin_client.get("/api/admin/manual-payments/refunds")
         rows = resp.json()
 
         row_a = next(r for r in rows if r["task_id"] == task_objs[0].id)
@@ -1037,14 +1037,14 @@ class TestSameUserMultipleEvents:
 
         # Mark Event C refund as paid
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task_objs[2].id}",
+            f"/api/admin/manual-payments/refunds/{task_objs[2].id}",
             json={"refund_marked_paid": True},
         )
         assert resp.status_code == 200
         assert resp.json()["recommendation_code"] == "REFUND_COMPLETED"
 
         # Verify Events A and B are unchanged
-        resp = await admin_client.get("/admin/manual-payments/refunds")
+        resp = await admin_client.get("/api/admin/manual-payments/refunds")
         rows = resp.json()
         assert next(r for r in rows if r["task_id"] == task_objs[0].id)["recommendation_code"] == "REFUND_COMPLETED"
         assert next(r for r in rows if r["task_id"] == task_objs[1].id)["recommendation_code"] == "NO_REFUND_ADMIN_OVERRIDE"
@@ -1116,7 +1116,7 @@ class TestOverrideFlipFlop:
 
         # Flip 1: refund → no-refund (diverges from recommendation)
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"should_refund": False, "override_reason": "Reason Alpha: no grounds for refund"},
         )
         assert resp.status_code == 200
@@ -1132,7 +1132,7 @@ class TestOverrideFlipFlop:
         # when should_refund != recommended_should_refund).  We still pass
         # a reason which gets stored via the elif branch.
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"should_refund": True, "override_reason": "Reason Beta: manager approved exception"},
         )
         assert resp.status_code == 200
@@ -1143,7 +1143,7 @@ class TestOverrideFlipFlop:
 
         # Flip 3: refund → no-refund again (diverges from recommendation)
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"should_refund": False, "override_reason": "Reason Gamma: final decision after escalation"},
         )
         assert resp.status_code == 200
@@ -1225,7 +1225,7 @@ class TestConcurrentPendingAndSubscription:
         await db_session.refresh(sub_purchase)
 
         # Step 1: approve subscription
-        resp = await admin_client.post(f"/admin/subscription-purchases/{sub_purchase.id}/approve")
+        resp = await admin_client.post(f"/api/admin/subscription-purchases/{sub_purchase.id}/approve")
         assert resp.status_code == 200
         assert resp.json()["status"] == SubscriptionPurchaseStatus.CONFIRMED.value
 
@@ -1242,7 +1242,7 @@ class TestConcurrentPendingAndSubscription:
         assert sub.end_date is not None
 
         # Step 2: approve event payment
-        resp = await admin_client.post(f"/admin/manual-payments/{evt_reg.id}/approve")
+        resp = await admin_client.post(f"/api/admin/manual-payments/{evt_reg.id}/approve")
         assert resp.status_code == 200
         assert resp.json()["status"] == RegistrationStatus.CONFIRMED.value
 
@@ -1292,7 +1292,7 @@ class TestMultiUserWaitlistPromotions:
 
         # Toggle notification only for the second user
         resp = await admin_client.patch(
-            f"/admin/manual-payments/promotions/{regs[1].id}",
+            f"/api/admin/manual-payments/promotions/{regs[1].id}",
             json={"waitlist_notification_sent": True},
         )
         assert resp.status_code == 200
@@ -1300,7 +1300,7 @@ class TestMultiUserWaitlistPromotions:
         assert resp.json()["waitlist_notified_at"] is not None
 
         # Verify isolation: fetch full list
-        resp = await admin_client.get("/admin/manual-payments/promotions")
+        resp = await admin_client.get("/api/admin/manual-payments/promotions")
         rows = resp.json()
         for i, reg in enumerate(regs):
             row = next(r for r in rows if r["registration_id"] == reg.id)
@@ -1351,10 +1351,10 @@ class TestDoubleApproveIdempotency:
         await db_session.commit()
         await db_session.refresh(reg)
 
-        resp1 = await admin_client.post(f"/admin/manual-payments/{reg.id}/approve")
+        resp1 = await admin_client.post(f"/api/admin/manual-payments/{reg.id}/approve")
         assert resp1.status_code == 200
 
-        resp2 = await admin_client.post(f"/admin/manual-payments/{reg.id}/approve")
+        resp2 = await admin_client.post(f"/api/admin/manual-payments/{reg.id}/approve")
         assert resp2.status_code == 409
 
     @pytest.mark.asyncio
@@ -1390,10 +1390,10 @@ class TestDoubleApproveIdempotency:
         await db_session.commit()
         await db_session.refresh(purchase)
 
-        resp1 = await admin_client.post(f"/admin/subscription-purchases/{purchase.id}/approve")
+        resp1 = await admin_client.post(f"/api/admin/subscription-purchases/{purchase.id}/approve")
         assert resp1.status_code == 200
 
-        resp2 = await admin_client.post(f"/admin/subscription-purchases/{purchase.id}/approve")
+        resp2 = await admin_client.post(f"/api/admin/subscription-purchases/{purchase.id}/approve")
         assert resp2.status_code == 409
 
 
@@ -1445,7 +1445,7 @@ class TestPendingPaymentListOrdering:
             await db_session.refresh(reg)
             reg_ids.append(reg.id)
 
-        resp = await admin_client.get("/admin/manual-payments/pending")
+        resp = await admin_client.get("/api/admin/manual-payments/pending")
         assert resp.status_code == 200
         rows = resp.json()
         # Filter to only our test registrations
@@ -1498,7 +1498,7 @@ class TestRefundListOrdering:
             await db_session.refresh(task)
             task_ids.append(task.id)
 
-        resp = await admin_client.get("/admin/manual-payments/refunds")
+        resp = await admin_client.get("/api/admin/manual-payments/refunds")
         assert resp.status_code == 200
         rows = resp.json()
         our_rows = [r for r in rows if r["task_id"] in task_ids]
@@ -1558,7 +1558,7 @@ class TestDoubleMarkRefundPaid:
 
         # First mark
         resp1 = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"refund_marked_paid": True},
         )
         assert resp1.status_code == 200
@@ -1569,7 +1569,7 @@ class TestDoubleMarkRefundPaid:
 
         # Second mark — idempotent
         resp2 = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"refund_marked_paid": True},
         )
         assert resp2.status_code == 200
@@ -1630,7 +1630,7 @@ class TestSubscriptionApprovalGuestPromotion:
 
         assert user.role == UserRole.GUEST
 
-        resp = await admin_client.post(f"/admin/subscription-purchases/{purchase.id}/approve")
+        resp = await admin_client.post(f"/api/admin/subscription-purchases/{purchase.id}/approve")
         assert resp.status_code == 200
         assert resp.json()["status"] == SubscriptionPurchaseStatus.CONFIRMED.value
 
@@ -1698,7 +1698,7 @@ class TestBatchSubscriptionApprovals:
 
         for i, purchase in enumerate(purchases):
             resp = await admin_client.post(
-                f"/admin/subscription-purchases/{purchase.id}/approve"
+                f"/api/admin/subscription-purchases/{purchase.id}/approve"
             )
             assert resp.status_code == 200
             assert resp.json()["status"] == SubscriptionPurchaseStatus.CONFIRMED.value
@@ -1774,7 +1774,7 @@ class TestRefundOverrideThenUnmarkPaid:
 
         # Step 1: mark paid
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"refund_marked_paid": True},
         )
         assert resp.status_code == 200
@@ -1786,7 +1786,7 @@ class TestRefundOverrideThenUnmarkPaid:
 
         # Step 2: un-mark paid
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"refund_marked_paid": False},
         )
         assert resp.status_code == 200
@@ -1865,7 +1865,7 @@ class TestMultiUserPendingPaymentApprovalIsolation:
 
         # Approve A (index 0) and C (index 2)
         for idx in (0, 2):
-            resp = await admin_client.post(f"/admin/manual-payments/{reg_ids[idx]}/approve")
+            resp = await admin_client.post(f"/api/admin/manual-payments/{reg_ids[idx]}/approve")
             assert resp.status_code == 200
             assert resp.json()["status"] == RegistrationStatus.CONFIRMED.value
 
@@ -1881,7 +1881,7 @@ class TestMultiUserPendingPaymentApprovalIsolation:
                 assert reg.status == RegistrationStatus.MANUAL_PAYMENT_VERIFICATION.value
 
         # Pending list should contain only B and D
-        resp = await admin_client.get("/admin/manual-payments/pending")
+        resp = await admin_client.get("/api/admin/manual-payments/pending")
         rows = resp.json()
         pending_ids = {r["registration_id"] for r in rows if r["registration_id"] in reg_ids}
         assert pending_ids == {reg_ids[1], reg_ids[3]}
@@ -1940,7 +1940,7 @@ class TestRefundPaymentStatusTransition:
         await db_session.refresh(task)
 
         resp = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"refund_marked_paid": True},
         )
         assert resp.status_code == 200

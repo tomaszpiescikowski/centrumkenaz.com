@@ -49,7 +49,7 @@ async def test_pending_user_cannot_list_own_registrations(guarded_api_client: As
 
     token = AuthService(db_session).create_access_token(pending_user)
     response = await guarded_api_client.get(
-        "/users/me/registrations",
+        "/api/users/me/registrations",
         headers={"Authorization": f"Bearer {token}"},
     )
 
@@ -72,7 +72,7 @@ async def test_pending_user_cannot_cancel_registration(guarded_api_client: Async
 
     token = AuthService(db_session).create_access_token(pending_user)
     response = await guarded_api_client.post(
-        "/registrations/999/cancel",
+        "/api/registrations/999/cancel",
         headers={"Authorization": f"Bearer {token}"},
         json={},
     )
@@ -96,7 +96,7 @@ async def test_active_user_can_update_and_read_own_profile(guarded_api_client: A
 
     token = AuthService(db_session).create_access_token(active_user)
     update_response = await guarded_api_client.put(
-        "/users/me/profile",
+        "/api/users/me/profile",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "about_me": "Lubię ruch i wspólne eventy.",
@@ -109,7 +109,7 @@ async def test_active_user_can_update_and_read_own_profile(guarded_api_client: A
     assert updated["interest_tags"] == ["mors", "joga"]
 
     get_response = await guarded_api_client.get(
-        "/users/me/profile",
+        "/api/users/me/profile",
         headers={"Authorization": f"Bearer {token}"},
     )
     assert get_response.status_code == 200
@@ -133,7 +133,7 @@ async def test_pending_user_cannot_update_own_profile(guarded_api_client: AsyncC
 
     token = AuthService(db_session).create_access_token(pending_user)
     response = await guarded_api_client.put(
-        "/users/me/profile",
+        "/api/users/me/profile",
         headers={"Authorization": f"Bearer {token}"},
         json={"about_me": "test", "interest_tags": ["mors"]},
     )
@@ -156,7 +156,7 @@ async def test_pending_user_can_submit_join_request_with_required_fields(guarded
 
     token = AuthService(db_session).create_access_token(pending_user)
     response = await guarded_api_client.post(
-        "/users/me/join-request",
+        "/api/users/me/join-request",
         headers={"Authorization": f"Bearer {token}"},
         json={"about_me": "  Lubię aktywności grupowe.  ", "interest_tags": ["mors", "joga", "mors"]},
     )
@@ -189,7 +189,7 @@ async def test_pending_user_join_request_requires_at_least_one_interest(guarded_
 
     token = AuthService(db_session).create_access_token(pending_user)
     response = await guarded_api_client.post(
-        "/users/me/join-request",
+        "/api/users/me/join-request",
         headers={"Authorization": f"Bearer {token}"},
         json={"about_me": "Mam opis", "interest_tags": []},
     )
@@ -211,7 +211,7 @@ async def test_active_user_cannot_submit_join_request(guarded_api_client: AsyncC
 
     token = AuthService(db_session).create_access_token(active_user)
     response = await guarded_api_client.post(
-        "/users/me/join-request",
+        "/api/users/me/join-request",
         headers={"Authorization": f"Bearer {token}"},
         json={"about_me": "Mam opis", "interest_tags": ["mors"]},
     )
@@ -248,7 +248,7 @@ async def test_active_user_can_open_active_public_profile(guarded_api_client: As
 
     token = AuthService(db_session).create_access_token(viewer)
     response = await guarded_api_client.get(
-        f"/users/{target.id}/profile",
+        f"/api/users/{target.id}/profile",
         headers={"Authorization": f"Bearer {token}"},
     )
 
@@ -283,7 +283,7 @@ async def test_active_user_gets_404_for_pending_public_profile(guarded_api_clien
 
     token = AuthService(db_session).create_access_token(viewer)
     response = await guarded_api_client.get(
-        f"/users/{pending_target.id}/profile",
+        f"/api/users/{pending_target.id}/profile",
         headers={"Authorization": f"Bearer {token}"},
     )
 
@@ -340,7 +340,7 @@ async def test_manual_payment_details_is_owner_scoped(guarded_api_client: AsyncC
     intruder_token = AuthService(db_session).create_access_token(intruder)
 
     owner_response = await guarded_api_client.get(
-        f"/registrations/{registration.id}/manual-payment",
+        f"/api/registrations/{registration.id}/manual-payment",
         headers={"Authorization": f"Bearer {owner_token}"},
     )
     assert owner_response.status_code == 200
@@ -349,7 +349,7 @@ async def test_manual_payment_details_is_owner_scoped(guarded_api_client: AsyncC
     assert owner_payload["transfer_reference"] == event.id
 
     intruder_response = await guarded_api_client.get(
-        f"/registrations/{registration.id}/manual-payment",
+        f"/api/registrations/{registration.id}/manual-payment",
         headers={"Authorization": f"Bearer {intruder_token}"},
     )
     assert intruder_response.status_code == 404
@@ -395,7 +395,7 @@ async def test_manual_payment_confirm_changes_status_to_verification(guarded_api
 
     owner_token = AuthService(db_session).create_access_token(owner)
     confirm_response = await guarded_api_client.post(
-        f"/registrations/{registration.id}/manual-payment/confirm",
+        f"/api/registrations/{registration.id}/manual-payment/confirm",
         headers={"Authorization": f"Bearer {owner_token}"},
     )
     assert confirm_response.status_code == 200
@@ -423,7 +423,7 @@ async def test_pending_user_cannot_access_manual_payment_endpoints(guarded_api_c
 
     token = AuthService(db_session).create_access_token(pending_user)
     response = await guarded_api_client.get(
-        "/registrations/any/manual-payment",
+        "/api/registrations/any/manual-payment",
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 403

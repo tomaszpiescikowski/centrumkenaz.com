@@ -58,7 +58,7 @@ async def test_pending_user_cannot_register_for_event(events_api_client: AsyncCl
 
     token = AuthService(db_session).create_access_token(pending_user)
     response = await events_api_client.post(
-        f"/events/{event.id}/register",
+        f"/api/events/{event.id}/register",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "return_url": "http://localhost/success",
@@ -86,7 +86,7 @@ async def test_anonymous_user_cannot_open_event_details(events_api_client: Async
     await db_session.commit()
     await db_session.refresh(event)
 
-    response = await events_api_client.get(f"/events/{event.id}")
+    response = await events_api_client.get(f"/api/events/{event.id}")
 
     assert response.status_code == 401
     assert response.json()["detail"] == "Not authenticated"
@@ -119,7 +119,7 @@ async def test_pending_user_cannot_open_event_details(events_api_client: AsyncCl
 
     token = AuthService(db_session).create_access_token(pending_user)
     response = await events_api_client.get(
-        f"/events/{event.id}",
+        f"/api/events/{event.id}",
         headers={"Authorization": f"Bearer {token}"},
     )
 
@@ -154,7 +154,7 @@ async def test_active_user_can_register_for_event(events_api_client: AsyncClient
 
     token = AuthService(db_session).create_access_token(active_user)
     response = await events_api_client.post(
-        f"/events/{event.id}/register",
+        f"/api/events/{event.id}/register",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "return_url": "http://localhost/success",
@@ -198,7 +198,7 @@ async def test_manual_payment_event_registration_returns_manual_flow(events_api_
 
     token = AuthService(db_session).create_access_token(active_user)
     response = await events_api_client.post(
-        f"/events/{event.id}/register",
+        f"/api/events/{event.id}/register",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "return_url": "http://localhost/success",
@@ -260,7 +260,7 @@ async def test_full_event_registration_goes_to_waitlist(events_api_client: Async
 
     token = AuthService(db_session).create_access_token(newcomer)
     response = await events_api_client.post(
-        f"/events/{event.id}/register",
+        f"/api/events/{event.id}/register",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "return_url": "http://localhost/success",
@@ -274,7 +274,7 @@ async def test_full_event_registration_goes_to_waitlist(events_api_client: Async
     assert payload["is_waitlisted"] is True
 
     registered = await events_api_client.get(
-        "/events/registered",
+        "/api/events/registered",
         headers={"Authorization": f"Bearer {token}"},
     )
     assert registered.status_code == 200
@@ -308,7 +308,7 @@ async def test_register_rejects_event_that_already_started(events_api_client: As
 
     token = AuthService(db_session).create_access_token(active_user)
     response = await events_api_client.post(
-        f"/events/{event.id}/register",
+        f"/api/events/{event.id}/register",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "return_url": "http://localhost/success",
@@ -347,7 +347,7 @@ async def test_active_user_can_open_event_details(events_api_client: AsyncClient
 
     token = AuthService(db_session).create_access_token(active_user)
     response = await events_api_client.get(
-        f"/events/{event.id}",
+        f"/api/events/{event.id}",
         headers={"Authorization": f"Bearer {token}"},
     )
 
@@ -414,7 +414,7 @@ async def test_active_user_can_get_event_waitlist(events_api_client: AsyncClient
 
     token = AuthService(db_session).create_access_token(active_user)
     response = await events_api_client.get(
-        f"/events/{event.id}/waitlist",
+        f"/api/events/{event.id}/waitlist",
         headers={"Authorization": f"Bearer {token}"},
     )
 
@@ -441,7 +441,7 @@ async def test_anonymous_user_cannot_get_event_waitlist(events_api_client: Async
     await db_session.commit()
     await db_session.refresh(event)
 
-    response = await events_api_client.get(f"/events/{event.id}/waitlist")
+    response = await events_api_client.get(f"/api/events/{event.id}/waitlist")
 
     assert response.status_code == 401
     assert response.json()["detail"] == "Not authenticated"
@@ -474,7 +474,7 @@ async def test_register_rejects_invalid_return_url(events_api_client: AsyncClien
 
     token = AuthService(db_session).create_access_token(active_user)
     response = await events_api_client.post(
-        f"/events/{event.id}/register",
+        f"/api/events/{event.id}/register",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "return_url": "javascript:alert(1)",
@@ -514,7 +514,7 @@ async def test_registered_events_returns_event_ids(events_api_client: AsyncClien
 
     token = AuthService(db_session).create_access_token(active_user)
     response = await events_api_client.post(
-        f"/events/{event.id}/register",
+        f"/api/events/{event.id}/register",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "return_url": "http://localhost/success",
@@ -524,7 +524,7 @@ async def test_registered_events_returns_event_ids(events_api_client: AsyncClien
     assert response.status_code == 200
 
     registered = await events_api_client.get(
-        "/events/registered",
+        "/api/events/registered",
         headers={"Authorization": f"Bearer {token}"},
     )
     assert registered.status_code == 200

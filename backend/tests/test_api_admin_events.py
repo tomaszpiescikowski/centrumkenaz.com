@@ -171,7 +171,7 @@ class TestAdminEventStats:
         self,
         admin_client: AsyncClient,
     ):
-        response = await admin_client.get("/admin/stats/events?month=2026/02")
+        response = await admin_client.get("/api/admin/stats/events?month=2026/02")
 
         assert response.status_code == 400
         assert response.json()["detail"] == "Invalid month format"
@@ -181,7 +181,7 @@ class TestAdminEventStats:
         self,
         guest_client: AsyncClient,
     ):
-        response = await guest_client.get("/admin/manual-payments/pending")
+        response = await guest_client.get("/api/admin/manual-payments/pending")
 
         assert response.status_code == 403
         assert response.json()["detail"] == "Admin access required"
@@ -203,7 +203,7 @@ class TestAdminEventStats:
             start_date=datetime(2026, 2, 12),
         )
 
-        response = await admin_client.get("/admin/stats/events?month=2026-02")
+        response = await admin_client.get("/api/admin/stats/events?month=2026-02")
 
         assert response.status_code == 200
         payload = response.json()
@@ -218,7 +218,7 @@ class TestEventsList:
         self,
         admin_client: AsyncClient,
     ):
-        response = await admin_client.get("/events/?month=2026-99")
+        response = await admin_client.get("/api/events/?month=2026-99")
 
         assert response.status_code == 400
         assert response.json()["detail"] == "Invalid month format, expected YYYY-MM"
@@ -229,7 +229,7 @@ class TestEventsList:
         admin_client: AsyncClient,
     ):
         response = await admin_client.get(
-            "/events/?month=2026-02&start_from=2026-02-01T00:00:00"
+            "/api/events/?month=2026-02&start_from=2026-02-01T00:00:00"
         )
 
         assert response.status_code == 400
@@ -240,7 +240,7 @@ class TestEventsList:
         self,
         admin_client: AsyncClient,
     ):
-        response = await admin_client.get("/events/?event_type=unknown_type")
+        response = await admin_client.get("/api/events/?event_type=unknown_type")
         assert response.status_code == 422
 
     @pytest.mark.asyncio
@@ -268,7 +268,7 @@ class TestEventsList:
             city="Poznań",
         )
 
-        response = await admin_client.get("/events/?month=2026-02&city=Poznań&limit=100")
+        response = await admin_client.get("/api/events/?month=2026-02&city=Poznań&limit=100")
 
         assert response.status_code == 200
         payload = response.json()
@@ -293,7 +293,7 @@ class TestCities:
         )
         await db_session.commit()
 
-        response = await admin_client.get("/cities/")
+        response = await admin_client.get("/api/cities/")
 
         assert response.status_code == 200
         payload = response.json()
@@ -307,7 +307,7 @@ class TestEventCreateValidation:
         anonymous_client: AsyncClient,
     ):
         response = await anonymous_client.post(
-            "/events/",
+            "/api/events/",
             json=_event_create_payload(),
         )
 
@@ -320,7 +320,7 @@ class TestEventCreateValidation:
         guest_client: AsyncClient,
     ):
         response = await guest_client.post(
-            "/events/",
+            "/api/events/",
             json=_event_create_payload(),
         )
 
@@ -333,7 +333,7 @@ class TestEventCreateValidation:
         pending_client: AsyncClient,
     ):
         response = await pending_client.post(
-            "/events/",
+            "/api/events/",
             json=_event_create_payload(),
         )
 
@@ -346,7 +346,7 @@ class TestEventCreateValidation:
         admin_client: AsyncClient,
     ):
         response = await admin_client.post(
-            "/events/",
+            "/api/events/",
             json=_event_create_payload(price_guest="-10.00", price_member="-1.00"),
         )
 
@@ -358,7 +358,7 @@ class TestEventCreateValidation:
         admin_client: AsyncClient,
     ):
         response = await admin_client.post(
-            "/events/",
+            "/api/events/",
             json=_event_create_payload(
                 cancel_cutoff_hours=-1,
                 points_value=-3,
@@ -373,7 +373,7 @@ class TestEventCreateValidation:
         admin_client: AsyncClient,
     ):
         response = await admin_client.post(
-            "/events/",
+            "/api/events/",
             json=_event_create_payload(max_participants=0),
         )
 
@@ -398,7 +398,7 @@ class TestEventCreateValidation:
 
         fourth_start = target_day.replace(hour=18).strftime("%Y-%m-%dT%H:%M:%SZ")
         response = await admin_client.post(
-            "/events/",
+            "/api/events/",
             json=_event_create_payload(
                 title="Fourth allowed",
                 start_date=fourth_start,
@@ -427,7 +427,7 @@ class TestEventCreateValidation:
         fifth_start = target_day.replace(hour=17).strftime("%Y-%m-%dT%H:%M:%SZ")
         expected_day = target_day.date().isoformat()
         response = await admin_client.post(
-            "/events/",
+            "/api/events/",
             json=_event_create_payload(
                 title="Fifth blocked",
                 start_date=fifth_start,
@@ -443,7 +443,7 @@ class TestEventCreateValidation:
         admin_client: AsyncClient,
     ):
         response = await admin_client.post(
-            "/events/",
+            "/api/events/",
             json=_event_create_payload(
                 manual_payment_verification=False,
                 manual_payment_url=None,
@@ -472,7 +472,7 @@ class TestEventAdminManage:
         )
 
         response = await admin_client.put(
-            f"/events/{event.id}",
+            f"/api/events/{event.id}",
             json={
                 "title": "Edited title",
                 "city": "Warszawa",
@@ -499,7 +499,7 @@ class TestEventAdminManage:
         )
 
         response = await guest_client.put(
-            f"/events/{event.id}",
+            f"/api/events/{event.id}",
             json={"title": "Should not work"},
         )
         assert response.status_code == 403
@@ -531,7 +531,7 @@ class TestEventAdminManage:
 
         move_to = target_day.replace(hour=20).strftime("%Y-%m-%dT%H:%M:%SZ")
         response = await admin_client.put(
-            f"/events/{movable_event.id}",
+            f"/api/events/{movable_event.id}",
             json={"start_date": move_to},
         )
 
@@ -551,7 +551,7 @@ class TestEventAdminManage:
         )
 
         response = await admin_client.put(
-            f"/events/{event.id}",
+            f"/api/events/{event.id}",
             json={"start_date": (datetime.now() - timedelta(days=1)).isoformat()},
         )
 
@@ -570,7 +570,7 @@ class TestEventAdminManage:
             start_date=datetime(2026, 2, 22),
         )
 
-        response = await admin_client.delete(f"/events/{event.id}")
+        response = await admin_client.delete(f"/api/events/{event.id}")
         assert response.status_code == 200
         assert response.json() == {"status": "deleted"}
 
@@ -599,7 +599,7 @@ class TestEventAdminManage:
         )
         await db_session.commit()
 
-        response = await admin_client.delete(f"/events/{event.id}")
+        response = await admin_client.delete(f"/api/events/{event.id}")
         assert response.status_code == 409
         assert response.json()["detail"] == "Event has registrations and cannot be deleted"
 
@@ -616,7 +616,7 @@ class TestEventAdminManage:
         )
 
         response = await admin_client.put(
-            f"/events/{event.id}",
+            f"/api/events/{event.id}",
             json={
                 "title": "Manual lock event edited",
                 "manual_payment_verification": False,

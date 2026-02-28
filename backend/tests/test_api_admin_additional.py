@@ -76,7 +76,7 @@ async def _create_event(db_session, title: str, start_date: datetime) -> Event:
 class TestAdminUserStats:
     @pytest.mark.asyncio
     async def test_user_stats_returns_admin_when_only_admin_exists(self, admin_client: AsyncClient, admin_user: User):
-        response = await admin_client.get("/admin/stats/users")
+        response = await admin_client.get("/api/admin/stats/users")
 
         assert response.status_code == 200
         payload = response.json()
@@ -171,7 +171,7 @@ class TestAdminUserStats:
         )
         await db_session.commit()
 
-        response = await admin_client.get("/admin/stats/users")
+        response = await admin_client.get("/api/admin/stats/users")
 
         assert response.status_code == 200
         payload = response.json()
@@ -208,7 +208,7 @@ class TestAdminPendingUsersAndApprove:
         db_session.add(ApprovalRequest(user_id=pending.id))
         await db_session.commit()
 
-        response = await admin_client.get("/admin/users/pending")
+        response = await admin_client.get("/api/admin/users/pending")
 
         assert response.status_code == 200
         emails = [item["email"] for item in response.json()]
@@ -218,7 +218,7 @@ class TestAdminPendingUsersAndApprove:
 
     @pytest.mark.asyncio
     async def test_approve_user_returns_404_for_missing_user(self, admin_client: AsyncClient):
-        response = await admin_client.post("/admin/users/999999/approve")
+        response = await admin_client.post("/api/admin/users/999999/approve")
 
         assert response.status_code == 404
         assert response.json()["detail"] == "User not found"
@@ -238,7 +238,7 @@ class TestAdminPendingUsersAndApprove:
         db_session.add(ApprovalRequest(user_id=user.id))
         await db_session.commit()
 
-        response = await admin_client.post(f"/admin/users/{user.id}/approve")
+        response = await admin_client.post(f"/api/admin/users/{user.id}/approve")
 
         assert response.status_code == 200
         assert response.json()["account_status"] == AccountStatus.ACTIVE.value
@@ -256,7 +256,7 @@ class TestAdminPendingUsersAndApprove:
         await db_session.commit()
         await db_session.refresh(user)
 
-        response = await admin_client.post(f"/admin/users/{user.id}/approve")
+        response = await admin_client.post(f"/api/admin/users/{user.id}/approve")
 
         assert response.status_code == 409
         assert response.json()["detail"] == "User has not submitted join request"
@@ -274,7 +274,7 @@ class TestAdminPendingUsersAndApprove:
         await db_session.commit()
         await db_session.refresh(user)
 
-        response = await admin_client.post(f"/admin/users/{user.id}/approve")
+        response = await admin_client.post(f"/api/admin/users/{user.id}/approve")
 
         assert response.status_code == 200
         assert response.json()["account_status"] == AccountStatus.ACTIVE.value
@@ -327,7 +327,7 @@ class TestAdminPaymentStats:
         )
         await db_session.commit()
 
-        response = await admin_client.get("/admin/stats/payments?month=2026-02")
+        response = await admin_client.get("/api/admin/stats/payments?month=2026-02")
 
         assert response.status_code == 200
         payload = response.json()
@@ -381,7 +381,7 @@ class TestAdminManualPaymentQueues:
         await db_session.commit()
         await db_session.refresh(registration)
 
-        response = await admin_client.get("/admin/manual-payments/pending")
+        response = await admin_client.get("/api/admin/manual-payments/pending")
         assert response.status_code == 200
         payload = response.json()
         assert len(payload) == 1
@@ -428,7 +428,7 @@ class TestAdminManualPaymentQueues:
         await db_session.commit()
         await db_session.refresh(registration)
 
-        response = await admin_client.post(f"/admin/manual-payments/{registration.id}/approve")
+        response = await admin_client.post(f"/api/admin/manual-payments/{registration.id}/approve")
         assert response.status_code == 200
         assert response.json()["status"] == RegistrationStatus.CONFIRMED.value
 
@@ -478,13 +478,13 @@ class TestAdminManualPaymentQueues:
         await db_session.refresh(task)
 
         invalid = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"should_refund": False},
         )
         assert invalid.status_code == 422
 
         valid = await admin_client.patch(
-            f"/admin/manual-payments/refunds/{task.id}",
+            f"/api/admin/manual-payments/refunds/{task.id}",
             json={"should_refund": False, "override_reason": "Manual exception approved"},
         )
         assert valid.status_code == 200
@@ -522,12 +522,12 @@ class TestAdminManualPaymentQueues:
         await db_session.commit()
         await db_session.refresh(registration)
 
-        list_response = await admin_client.get("/admin/manual-payments/promotions")
+        list_response = await admin_client.get("/api/admin/manual-payments/promotions")
         assert list_response.status_code == 200
         assert any(row["registration_id"] == registration.id for row in list_response.json())
 
         update_response = await admin_client.patch(
-            f"/admin/manual-payments/promotions/{registration.id}",
+            f"/api/admin/manual-payments/promotions/{registration.id}",
             json={"waitlist_notification_sent": True},
         )
         assert update_response.status_code == 200
@@ -593,7 +593,7 @@ class TestAdminRegistrationStats:
         )
         await db_session.commit()
 
-        response = await admin_client.get("/admin/stats/registrations?month=2026-02")
+        response = await admin_client.get("/api/admin/stats/registrations?month=2026-02")
 
         assert response.status_code == 200
         payload = response.json()

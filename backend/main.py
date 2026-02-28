@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import logging
@@ -60,21 +60,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth_router)
-app.include_router(events_router)
-app.include_router(payments_router)
-app.include_router(admin_router)
-app.include_router(users_router)
-app.include_router(registrations_router)
-app.include_router(products_router)
-app.include_router(uploads_router)
-app.include_router(cities_router)
-app.include_router(feedback_router)
-app.include_router(announcements_router)
-app.include_router(comments_router)
-app.include_router(donations_router)
-app.include_router(event_types_router)
-app.include_router(push_router)
+api_router = APIRouter(prefix="/api")
+api_router.include_router(auth_router)
+api_router.include_router(events_router)
+api_router.include_router(payments_router)
+api_router.include_router(admin_router)
+api_router.include_router(users_router)
+api_router.include_router(registrations_router)
+api_router.include_router(products_router)
+api_router.include_router(uploads_router)
+api_router.include_router(cities_router)
+api_router.include_router(feedback_router)
+api_router.include_router(announcements_router)
+api_router.include_router(comments_router)
+api_router.include_router(donations_router)
+api_router.include_router(event_types_router)
+api_router.include_router(push_router)
+app.include_router(api_router)
 
 uploads_dir = Path(__file__).resolve().parent / "static" / "uploads"
 uploads_dir.mkdir(parents=True, exist_ok=True)

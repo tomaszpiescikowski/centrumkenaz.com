@@ -106,7 +106,7 @@ async def test_create_comment_returns_201(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "Great event!"},
         headers=headers,
     )
@@ -140,17 +140,17 @@ async def test_list_comments_returns_created(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "Hello"},
         headers=headers,
     )
     await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "World"},
         headers=headers,
     )
 
-    resp = await comments_api_client.get(f"/comments/event/{event.id}", headers=headers)
+    resp = await comments_api_client.get(f"/api/comments/event/{event.id}", headers=headers)
     assert resp.status_code == 200
     data = resp.json()
     assert len(data) == 2
@@ -173,7 +173,7 @@ async def test_update_own_comment(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "original"},
         headers=headers,
     )
@@ -181,7 +181,7 @@ async def test_update_own_comment(comments_api_client, db_session):
     version = create_resp.json()["version"]
 
     update_resp = await comments_api_client.put(
-        f"/comments/{comment_id}",
+        f"/api/comments/{comment_id}",
         json={"content": "edited", "version": version},
         headers=headers,
     )
@@ -205,20 +205,20 @@ async def test_delete_own_comment(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "to delete"},
         headers=headers,
     )
     comment_id = create_resp.json()["id"]
 
     del_resp = await comments_api_client.delete(
-        f"/comments/{comment_id}",
+        f"/api/comments/{comment_id}",
         headers=headers,
     )
     assert del_resp.status_code == 204
 
     # Verify content is replaced with [deleted]
-    list_resp = await comments_api_client.get(f"/comments/event/{event.id}", headers=headers)
+    list_resp = await comments_api_client.get(f"/api/comments/event/{event.id}", headers=headers)
     comments = list_resp.json()
     deleted_comment = [c for c in comments if c["id"] == comment_id][0]
     assert deleted_comment["is_deleted"] is True
@@ -243,14 +243,14 @@ async def test_reply_to_comment(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     parent_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "parent comment"},
         headers=headers,
     )
     parent_id = parent_resp.json()["id"]
 
     reply_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "reply text", "parent_id": parent_id},
         headers=headers,
     )
@@ -258,7 +258,7 @@ async def test_reply_to_comment(comments_api_client, db_session):
     assert reply_resp.json()["parent_id"] == parent_id
 
     # Listing returns parent with nested reply
-    list_resp = await comments_api_client.get(f"/comments/event/{event.id}", headers=headers)
+    list_resp = await comments_api_client.get(f"/api/comments/event/{event.id}", headers=headers)
     data = list_resp.json()
     assert len(data) == 1  # Only top-level
     assert len(data[0]["replies"]) == 1
@@ -282,7 +282,7 @@ async def test_nested_replies(comments_api_client, db_session):
 
     # Level 0
     r0 = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "level 0"},
         headers=headers,
     )
@@ -290,7 +290,7 @@ async def test_nested_replies(comments_api_client, db_session):
 
     # Level 1
     r1 = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "level 1", "parent_id": id0},
         headers=headers,
     )
@@ -298,14 +298,14 @@ async def test_nested_replies(comments_api_client, db_session):
 
     # Level 2
     r2 = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "level 2", "parent_id": id1},
         headers=headers,
     )
     assert r2.status_code == 201
 
     # Verify nesting in list response
-    list_resp = await comments_api_client.get(f"/comments/event/{event.id}", headers=headers)
+    list_resp = await comments_api_client.get(f"/api/comments/event/{event.id}", headers=headers)
     data = list_resp.json()
     assert len(data) == 1
     assert data[0]["replies"][0]["replies"][0]["content"] == "level 2"
@@ -326,7 +326,7 @@ async def test_reply_to_nonexistent_parent_fails(comments_api_client, db_session
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "orphan reply", "parent_id": "nonexistent-id"},
         headers=headers,
     )
@@ -351,14 +351,14 @@ async def test_reply_to_comment_from_different_resource_fails(comments_api_clien
 
     headers = await _auth_header(db_session, user)
     parent_resp = await comments_api_client.post(
-        f"/comments/event/{event1.id}",
+        f"/api/comments/event/{event1.id}",
         json={"content": "on event 1"},
         headers=headers,
     )
     parent_id = parent_resp.json()["id"]
 
     resp = await comments_api_client.post(
-        f"/comments/event/{event2.id}",
+        f"/api/comments/event/{event2.id}",
         json={"content": "cross-resource reply", "parent_id": parent_id},
         headers=headers,
     )
@@ -383,14 +383,14 @@ async def test_add_reaction(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "react to me"},
         headers=headers,
     )
     comment_id = create_resp.json()["id"]
 
     react_resp = await comments_api_client.post(
-        f"/comments/{comment_id}/reactions",
+        f"/api/comments/{comment_id}/reactions",
         json={"reaction_type": "like"},
         headers=headers,
     )
@@ -417,7 +417,7 @@ async def test_toggle_reaction_off(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "toggle me"},
         headers=headers,
     )
@@ -425,13 +425,13 @@ async def test_toggle_reaction_off(comments_api_client, db_session):
 
     # Add
     await comments_api_client.post(
-        f"/comments/{comment_id}/reactions",
+        f"/api/comments/{comment_id}/reactions",
         json={"reaction_type": "heart"},
         headers=headers,
     )
     # Remove (toggle)
     resp = await comments_api_client.post(
-        f"/comments/{comment_id}/reactions",
+        f"/api/comments/{comment_id}/reactions",
         json={"reaction_type": "heart"},
         headers=headers,
     )
@@ -454,7 +454,7 @@ async def test_multiple_reaction_types(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "multi-react"},
         headers=headers,
     )
@@ -462,12 +462,12 @@ async def test_multiple_reaction_types(comments_api_client, db_session):
 
     for rtype in ["like", "heart", "fire"]:
         await comments_api_client.post(
-            f"/comments/{comment_id}/reactions",
+            f"/api/comments/{comment_id}/reactions",
             json={"reaction_type": rtype},
             headers=headers,
         )
 
-    list_resp = await comments_api_client.get(f"/comments/event/{event.id}", headers=headers)
+    list_resp = await comments_api_client.get(f"/api/comments/event/{event.id}", headers=headers)
     reactions = list_resp.json()[0]["reactions"]
     types = {r["reaction_type"] for r in reactions}
     # Only the last reaction should remain
@@ -493,19 +493,19 @@ async def test_multiple_users_react(comments_api_client, db_session):
     h2 = await _auth_header(db_session, user2)
 
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "popular"},
         headers=h1,
     )
     comment_id = create_resp.json()["id"]
 
     await comments_api_client.post(
-        f"/comments/{comment_id}/reactions",
+        f"/api/comments/{comment_id}/reactions",
         json={"reaction_type": "like"},
         headers=h1,
     )
     resp = await comments_api_client.post(
-        f"/comments/{comment_id}/reactions",
+        f"/api/comments/{comment_id}/reactions",
         json={"reaction_type": "like"},
         headers=h2,
     )
@@ -531,14 +531,14 @@ async def test_invalid_reaction_type_rejected(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "bad react"},
         headers=headers,
     )
     comment_id = create_resp.json()["id"]
 
     resp = await comments_api_client.post(
-        f"/comments/{comment_id}/reactions",
+        f"/api/comments/{comment_id}/reactions",
         json={"reaction_type": "invalid_emoji"},
         headers=headers,
     )
@@ -555,7 +555,7 @@ async def test_react_to_nonexistent_comment_returns_404(comments_api_client, db_
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
-        "/comments/nonexistent-id/reactions",
+        "/api/comments/nonexistent-id/reactions",
         json={"reaction_type": "like"},
         headers=headers,
     )
@@ -577,14 +577,14 @@ async def test_admin_can_pin_comment(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, admin)
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "pin me"},
         headers=headers,
     )
     comment_id = create_resp.json()["id"]
 
     pin_resp = await comments_api_client.post(
-        f"/comments/{comment_id}/pin",
+        f"/api/comments/{comment_id}/pin",
         headers=headers,
     )
     assert pin_resp.status_code == 200
@@ -603,16 +603,16 @@ async def test_admin_can_unpin_comment(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, admin)
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "toggle pin"},
         headers=headers,
     )
     comment_id = create_resp.json()["id"]
 
     # Pin
-    await comments_api_client.post(f"/comments/{comment_id}/pin", headers=headers)
+    await comments_api_client.post(f"/api/comments/{comment_id}/pin", headers=headers)
     # Unpin
-    resp = await comments_api_client.post(f"/comments/{comment_id}/pin", headers=headers)
+    resp = await comments_api_client.post(f"/api/comments/{comment_id}/pin", headers=headers)
     assert resp.json()["is_pinned"] is False
 
 
@@ -631,14 +631,14 @@ async def test_non_admin_cannot_pin(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "cant pin"},
         headers=headers,
     )
     comment_id = create_resp.json()["id"]
 
     pin_resp = await comments_api_client.post(
-        f"/comments/{comment_id}/pin",
+        f"/api/comments/{comment_id}/pin",
         headers=headers,
     )
     assert pin_resp.status_code == 403
@@ -660,16 +660,16 @@ async def test_pinned_comments_appear_first(comments_api_client, db_session):
     ids = []
     for text in ["first", "second", "third"]:
         r = await comments_api_client.post(
-            f"/comments/event/{event.id}",
+            f"/api/comments/event/{event.id}",
             json={"content": text},
             headers=headers,
         )
         ids.append(r.json()["id"])
 
     # Pin the third comment
-    await comments_api_client.post(f"/comments/{ids[2]}/pin", headers=headers)
+    await comments_api_client.post(f"/api/comments/{ids[2]}/pin", headers=headers)
 
-    resp = await comments_api_client.get(f"/comments/event/{event.id}", headers=headers)
+    resp = await comments_api_client.get(f"/api/comments/event/{event.id}", headers=headers)
     data = resp.json()
     assert data[0]["content"] == "third"
     assert data[0]["is_pinned"] is True
@@ -682,7 +682,7 @@ async def test_pinned_comments_appear_first(comments_api_client, db_session):
 async def test_unauthenticated_user_cannot_create_comment(comments_api_client, db_session):
     """Anonymous users should receive 401."""
     resp = await comments_api_client.post(
-        "/comments/event/some-id",
+        "/api/comments/event/some-id",
         json={"content": "anon comment"},
     )
     assert resp.status_code == 401
@@ -691,7 +691,7 @@ async def test_unauthenticated_user_cannot_create_comment(comments_api_client, d
 @pytest.mark.asyncio
 async def test_unauthenticated_user_can_list_comments(comments_api_client, db_session):
     """Anonymous users should be able to read comments (200)."""
-    resp = await comments_api_client.get("/comments/event/some-id")
+    resp = await comments_api_client.get("/api/comments/event/some-id")
     assert resp.status_code == 200
 
 
@@ -705,7 +705,7 @@ async def test_pending_user_cannot_comment(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
-        "/comments/event/some-event-id",
+        "/api/comments/event/some-event-id",
         json={"content": "pending comment"},
         headers=headers,
     )
@@ -731,14 +731,14 @@ async def test_cannot_edit_other_users_comment(comments_api_client, db_session):
     h2 = await _auth_header(db_session, user2)
 
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "my comment"},
         headers=h1,
     )
     comment_id = create_resp.json()["id"]
 
     resp = await comments_api_client.put(
-        f"/comments/{comment_id}",
+        f"/api/comments/{comment_id}",
         json={"content": "hacked", "version": 1},
         headers=h2,
     )
@@ -764,14 +764,14 @@ async def test_cannot_delete_other_users_comment(comments_api_client, db_session
     h2 = await _auth_header(db_session, user2)
 
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "dont delete me"},
         headers=h1,
     )
     comment_id = create_resp.json()["id"]
 
     resp = await comments_api_client.delete(
-        f"/comments/{comment_id}",
+        f"/api/comments/{comment_id}",
         headers=h2,
     )
     assert resp.status_code == 403
@@ -796,14 +796,14 @@ async def test_admin_cannot_delete_other_users_comment(comments_api_client, db_s
     admin_headers = await _auth_header(db_session, admin)
 
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "only owner can delete this"},
         headers=user_headers,
     )
     comment_id = create_resp.json()["id"]
 
     resp = await comments_api_client.delete(
-        f"/comments/{comment_id}",
+        f"/api/comments/{comment_id}",
         headers=admin_headers,
     )
     assert resp.status_code == 403
@@ -827,7 +827,7 @@ async def test_stale_version_rejected(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "v1"},
         headers=headers,
     )
@@ -835,14 +835,14 @@ async def test_stale_version_rejected(comments_api_client, db_session):
 
     # First edit succeeds
     await comments_api_client.put(
-        f"/comments/{comment_id}",
+        f"/api/comments/{comment_id}",
         json={"content": "v2", "version": 1},
         headers=headers,
     )
 
     # Second edit with stale version fails
     resp = await comments_api_client.put(
-        f"/comments/{comment_id}",
+        f"/api/comments/{comment_id}",
         json={"content": "v2-conflict", "version": 1},
         headers=headers,
     )
@@ -864,7 +864,7 @@ async def test_concurrent_edits_one_wins(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "original"},
         headers=headers,
     )
@@ -872,12 +872,12 @@ async def test_concurrent_edits_one_wins(comments_api_client, db_session):
 
     # Submit two edits with the same version
     r1 = await comments_api_client.put(
-        f"/comments/{comment_id}",
+        f"/api/comments/{comment_id}",
         json={"content": "edit A", "version": 1},
         headers=headers,
     )
     r2 = await comments_api_client.put(
-        f"/comments/{comment_id}",
+        f"/api/comments/{comment_id}",
         json={"content": "edit B", "version": 1},
         headers=headers,
     )
@@ -903,16 +903,16 @@ async def test_edit_deleted_comment_fails(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "soon deleted"},
         headers=headers,
     )
     comment_id = create_resp.json()["id"]
 
-    await comments_api_client.delete(f"/comments/{comment_id}", headers=headers)
+    await comments_api_client.delete(f"/api/comments/{comment_id}", headers=headers)
 
     resp = await comments_api_client.put(
-        f"/comments/{comment_id}",
+        f"/api/comments/{comment_id}",
         json={"content": "zombie edit", "version": 1},
         headers=headers,
     )
@@ -937,7 +937,7 @@ async def test_empty_content_rejected(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": ""},
         headers=headers,
     )
@@ -959,7 +959,7 @@ async def test_too_long_content_rejected(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "x" * 2001},
         headers=headers,
     )
@@ -981,7 +981,7 @@ async def test_max_length_content_accepted(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "x" * 2000},
         headers=headers,
     )
@@ -1007,13 +1007,13 @@ async def test_pagination_offset_limit(comments_api_client, db_session):
     headers = await _auth_header(db_session, user)
     for i in range(5):
         await comments_api_client.post(
-            f"/comments/event/{event.id}",
+            f"/api/comments/event/{event.id}",
             json={"content": f"comment {i}"},
             headers=headers,
         )
 
     resp = await comments_api_client.get(
-        f"/comments/event/{event.id}?offset=2&limit=2",
+        f"/api/comments/event/{event.id}?offset=2&limit=2",
         headers=headers,
     )
     data = resp.json()
@@ -1037,13 +1037,13 @@ async def test_pagination_beyond_total(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "only comment"},
         headers=headers,
     )
 
     resp = await comments_api_client.get(
-        f"/comments/event/{event.id}?offset=100",
+        f"/api/comments/event/{event.id}?offset=100",
         headers=headers,
     )
     assert resp.json() == []
@@ -1071,18 +1071,18 @@ async def test_comments_isolated_per_event(comments_api_client, db_session):
     headers = await _auth_header(db_session, user)
 
     await comments_api_client.post(
-        f"/comments/event/{event1.id}",
+        f"/api/comments/event/{event1.id}",
         json={"content": "on event1"},
         headers=headers,
     )
     await comments_api_client.post(
-        f"/comments/event/{event2.id}",
+        f"/api/comments/event/{event2.id}",
         json={"content": "on event2"},
         headers=headers,
     )
 
-    r1 = await comments_api_client.get(f"/comments/event/{event1.id}", headers=headers)
-    r2 = await comments_api_client.get(f"/comments/event/{event2.id}", headers=headers)
+    r1 = await comments_api_client.get(f"/api/comments/event/{event1.id}", headers=headers)
+    r2 = await comments_api_client.get(f"/api/comments/event/{event2.id}", headers=headers)
 
     assert len(r1.json()) == 1
     assert r1.json()[0]["content"] == "on event1"
@@ -1106,18 +1106,18 @@ async def test_comments_isolated_per_resource_type(comments_api_client, db_sessi
     headers = await _auth_header(db_session, user)
 
     await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "event comment"},
         headers=headers,
     )
     await comments_api_client.post(
-        f"/comments/announcement/{event.id}",
+        f"/api/comments/announcement/{event.id}",
         json={"content": "announcement comment"},
         headers=headers,
     )
 
-    ev_resp = await comments_api_client.get(f"/comments/event/{event.id}", headers=headers)
-    ann_resp = await comments_api_client.get(f"/comments/announcement/{event.id}", headers=headers)
+    ev_resp = await comments_api_client.get(f"/api/comments/event/{event.id}", headers=headers)
+    ann_resp = await comments_api_client.get(f"/api/comments/announcement/{event.id}", headers=headers)
 
     assert len(ev_resp.json()) == 1
     assert ev_resp.json()[0]["content"] == "event comment"
@@ -1138,7 +1138,7 @@ async def test_edit_nonexistent_comment_returns_404(comments_api_client, db_sess
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.put(
-        "/comments/nonexistent-id",
+        "/api/comments/nonexistent-id",
         json={"content": "edited", "version": 1},
         headers=headers,
     )
@@ -1155,7 +1155,7 @@ async def test_delete_nonexistent_comment_returns_404(comments_api_client, db_se
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.delete(
-        "/comments/nonexistent-id",
+        "/api/comments/nonexistent-id",
         headers=headers,
     )
     assert resp.status_code == 404
@@ -1171,7 +1171,7 @@ async def test_pin_nonexistent_comment_returns_404(comments_api_client, db_sessi
 
     headers = await _auth_header(db_session, admin)
     resp = await comments_api_client.post(
-        "/comments/nonexistent-id/pin",
+        "/api/comments/nonexistent-id/pin",
         headers=headers,
     )
     assert resp.status_code == 404
@@ -1194,7 +1194,7 @@ async def test_comment_author_info_correct(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "check author"},
         headers=headers,
     )
@@ -1219,7 +1219,7 @@ async def test_comment_without_user_avatar(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "no avatar"},
         headers=headers,
     )
@@ -1241,7 +1241,7 @@ async def test_created_at_is_present(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "timestamp test"},
         headers=headers,
     )
@@ -1258,7 +1258,7 @@ async def test_list_empty_resource(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.get(
-        "/comments/event/no-such-event-id",
+        "/api/comments/event/no-such-event-id",
         headers=headers,
     )
     assert resp.status_code == 200
@@ -1280,7 +1280,7 @@ async def test_reply_count_in_response(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     parent_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "parent"},
         headers=headers,
     )
@@ -1288,12 +1288,12 @@ async def test_reply_count_in_response(comments_api_client, db_session):
 
     for i in range(3):
         await comments_api_client.post(
-            f"/comments/event/{event.id}",
+            f"/api/comments/event/{event.id}",
             json={"content": f"reply {i}", "parent_id": parent_id},
             headers=headers,
         )
 
-    resp = await comments_api_client.get(f"/comments/event/{event.id}", headers=headers)
+    resp = await comments_api_client.get(f"/api/comments/event/{event.id}", headers=headers)
     data = resp.json()
     assert data[0]["reply_count"] == 3
     assert len(data[0]["replies"]) == 3
@@ -1317,13 +1317,13 @@ async def test_multiple_users_comment_on_same_event(comments_api_client, db_sess
     for i, u in enumerate(users):
         headers = await _auth_header(db_session, u)
         await comments_api_client.post(
-            f"/comments/event/{event.id}",
+            f"/api/comments/event/{event.id}",
             json={"content": f"comment from user {i}"},
             headers=headers,
         )
 
     headers = await _auth_header(db_session, users[0])
-    resp = await comments_api_client.get(f"/comments/event/{event.id}", headers=headers)
+    resp = await comments_api_client.get(f"/api/comments/event/{event.id}", headers=headers)
     data = resp.json()
     assert len(data) == 4
     authors = {c["author"]["id"] for c in data}
@@ -1346,7 +1346,7 @@ async def test_whitespace_only_content_rejected(comments_api_client, db_session)
     headers = await _auth_header(db_session, user)
     # Single space passes min_length=1 on Pydantic but is technically content
     resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": " "},
         headers=headers,
     )
@@ -1370,7 +1370,7 @@ async def test_special_characters_in_content(comments_api_client, db_session):
     headers = await _auth_header(db_session, user)
     content = 'He said "hello" & <script>alert("xss")</script> 🎉'
     resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": content},
         headers=headers,
     )
@@ -1394,7 +1394,7 @@ async def test_unicode_content(comments_api_client, db_session):
     headers = await _auth_header(db_session, user)
     content = "Cześć! 你好 🌍 Привет мир 日本語テスト"
     resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": content},
         headers=headers,
     )
@@ -1415,7 +1415,7 @@ async def test_banned_user_cannot_comment(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     resp = await comments_api_client.post(
-        "/comments/event/some-id",
+        "/api/comments/event/some-id",
         json={"content": "banned comment"},
         headers=headers,
     )
@@ -1440,7 +1440,7 @@ async def test_all_reaction_types_work(comments_api_client, db_session):
 
     headers = await _auth_header(db_session, user)
     create_resp = await comments_api_client.post(
-        f"/comments/event/{event.id}",
+        f"/api/comments/event/{event.id}",
         json={"content": "test all reactions"},
         headers=headers,
     )
@@ -1448,13 +1448,13 @@ async def test_all_reaction_types_work(comments_api_client, db_session):
 
     for rtype in ReactionType:
         resp = await comments_api_client.post(
-            f"/comments/{comment_id}/reactions",
+            f"/api/comments/{comment_id}/reactions",
             json={"reaction_type": rtype.value},
             headers=headers,
         )
         assert resp.status_code == 200, f"Failed for reaction type: {rtype.value}"
 
-    list_resp = await comments_api_client.get(f"/comments/event/{event.id}", headers=headers)
+    list_resp = await comments_api_client.get(f"/api/comments/event/{event.id}", headers=headers)
     reactions = list_resp.json()[0]["reactions"]
     # Only one reaction per user — the last one applied should remain
     assert len(reactions) == 1

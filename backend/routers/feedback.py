@@ -11,7 +11,7 @@ from models.feedback import Feedback
 from models.user import User
 from security.guards import get_admin_user_dependency
 
-router = APIRouter(prefix="/api/feedback", tags=["feedback"])
+router = APIRouter(prefix="/feedback", tags=["feedback"])
 
 
 class FeedbackCreate(BaseModel):
