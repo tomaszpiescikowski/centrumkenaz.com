@@ -1,13 +1,19 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
+from datetime import datetime, timedelta
 
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import logging
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from sqlalchemy import select
 
 from config import get_settings
-from database import ensure_db_schema
+from database import ensure_db_schema, AsyncSessionLocal
+from models.event import Event
+from models.registration import Registration, RegistrationStatus
+from services import push_service
 
 logger = logging.getLogger(__name__)
 from routers import (
@@ -31,6 +37,61 @@ from routers import (
 settings = get_settings()
 
 
+async def _send_event_reminders() -> None:
+    """
+    Hourly job: find events starting in 23–25 hours that haven't had a reminder sent,
+    push a notification to every confirmed/waitlisted registrant, then mark reminder_sent.
+    """
+    now = datetime.utcnow()
+    window_start = now + timedelta(hours=23)
+    window_end = now + timedelta(hours=25)
+
+    async with AsyncSessionLocal() as db:
+        result = await db.execute(
+            select(Event).where(
+                Event.start_date >= window_start,
+                Event.start_date <= window_end,
+                Event.reminder_sent.is_(False),
+            )
+        )
+        events = result.scalars().all()
+
+        for event in events:
+            reg_result = await db.execute(
+                select(Registration.user_id)
+                .where(
+                    Registration.event_id == event.id,
+                    Registration.status.in_([
+                        RegistrationStatus.CONFIRMED.value,
+                        RegistrationStatus.WAITLIST.value,
+                        RegistrationStatus.MANUAL_PAYMENT_REQUIRED.value,
+                        RegistrationStatus.MANUAL_PAYMENT_VERIFICATION.value,
+                    ]),
+                )
+                .distinct()
+            )
+            user_ids = [str(row[0]) for row in reg_result.all()]
+            start_str = event.start_date.strftime("%d.%m.%Y %H:%M")
+            for uid in user_ids:
+                try:
+                    await push_service.send_to_user(
+                        db,
+                        uid,
+                        f"⏰ Jutro: {event.title}",
+                        f"Wydarzenie zaczyna się {start_str} w {event.city}.",
+                        f"/events/{event.id}",
+                    )
+                except Exception:
+                    logger.exception("[reminder] Failed to push reminder for event %s to user %s", event.id, uid)
+
+            event.reminder_sent = True
+            db.add(event)
+
+        if events:
+            await db.commit()
+            logger.info("[reminder] Sent reminders for %d event(s)", len(events))
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
@@ -41,8 +102,16 @@ async def lifespan(app: FastAPI):
     by the deployment pipeline before the process starts.
     """
     await ensure_db_schema()
-    logger.info("Application startup complete")
+
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(_send_event_reminders, "interval", hours=1, id="event_reminders")
+    scheduler.start()
+    logger.info("Application startup complete – reminder scheduler started")
+
     yield
+
+    scheduler.shutdown(wait=False)
+    logger.info("Application shutdown – reminder scheduler stopped")
 
 
 app = FastAPI(

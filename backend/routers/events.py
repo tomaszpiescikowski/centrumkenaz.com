@@ -1,3 +1,5 @@
+import asyncio
+
 from fastapi import APIRouter, Depends, HTTPException, Query, Path, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, cast, String
@@ -10,6 +12,7 @@ from database import get_db
 from models.event import Event
 from models.user import User
 from models.registration import Registration, RegistrationStatus
+from services import push_service
 from services.log_service import log_action, _get_request_ip, user_email_from
 from services.registration_service import (
     RegistrationService,
@@ -64,6 +67,7 @@ class EventResponse(BaseModel):
     requires_subscription: bool = Field(description="Whether subscription is required to register.")
     cancel_cutoff_hours: int = Field(description="Cancellation cutoff in hours.")
     points_value: int = Field(description="Points awarded for attendance.")
+    registration_open: bool = Field(default=False, description="Whether registrations are open.")
 
 class EventAvailabilityResponse(BaseModel):
     """
@@ -150,6 +154,7 @@ class EventCreateRequest(BaseModel):
     requires_subscription: bool = Field(default=False, description="Whether subscription is required.")
     cancel_cutoff_hours: int = Field(default=24, ge=0, description="Cancellation cutoff in hours.")
     points_value: int = Field(default=1, ge=0, description="Points awarded for attendance.")
+    registration_open: bool = Field(default=False, description="Whether registrations are open. Set to True to notify all active users.")
 
 
 class RegistrationResponse(BaseModel):
@@ -210,6 +215,7 @@ class EventUpdateRequest(BaseModel):
     requires_subscription: bool | None = Field(default=None, description="Whether subscription is required.")
     cancel_cutoff_hours: int | None = Field(default=None, ge=0, description="Cancellation cutoff in hours.")
     points_value: int | None = Field(default=None, ge=0, description="Points awarded for attendance.")
+    registration_open: bool | None = Field(default=None, description="Toggle registrations open. Set to True to push notification to all active users.")
 
 
 def get_payment_gateway():
@@ -464,6 +470,7 @@ async def create_event(
         requires_subscription=payload.requires_subscription,
         cancel_cutoff_hours=payload.cancel_cutoff_hours,
         points_value=payload.points_value,
+        registration_open=payload.registration_open,
     )
     db.add(event)
 
@@ -477,6 +484,15 @@ async def create_event(
         title=event.title,
         city=event.city,
         start_date=str(event.start_date),
+    )
+    # Push: notify all active users about the new event
+    asyncio.create_task(
+        push_service.send_to_all_active_users(
+            db,
+            f"📅 Nowe wydarzenie: {event.title}",
+            f"{event.city} · {event.start_date.strftime('%d.%m.%Y')}",
+            f"/events/{event.id}",
+        )
     )
     return EventResponse.model_validate(event)
 
@@ -550,6 +566,13 @@ async def update_event(
 
     updates["manual_payment_verification"] = True
 
+    # Capture pre-update state for push notification logic
+    old_registration_open: bool = bool(event.registration_open)
+    date_changed: bool = (
+        ("start_date" in updates and updates["start_date"] != event.start_date)
+        or ("end_date" in updates and updates["end_date"] != event.end_date)
+    )
+
     for key, value in updates.items():
         setattr(event, key, value)
 
@@ -567,6 +590,43 @@ async def update_event(
         title=event.title,
         fields_changed=list(updates.keys()),
     )
+    # Push: registration opened
+    if updates.get("registration_open") is True and not old_registration_open:
+        asyncio.create_task(
+            push_service.send_to_all_active_users(
+                db,
+                f"🚀 Zapisy otwarte: {event.title}",
+                f"Rejestracja na wydarzenie jest już dostępna!",
+                f"/events/{event.id}",
+            )
+        )
+    # Push: date/time changed – notify confirmed + waitlisted registrants
+    if date_changed:
+        result2 = await db.execute(
+            select(Registration.user_id)
+            .where(
+                legacy_id_eq(Registration.event_id, event.id),
+                Registration.status.in_([
+                    RegistrationStatus.CONFIRMED.value,
+                    RegistrationStatus.WAITLIST.value,
+                    RegistrationStatus.MANUAL_PAYMENT_REQUIRED.value,
+                    RegistrationStatus.MANUAL_PAYMENT_VERIFICATION.value,
+                ]),
+            )
+            .distinct()
+        )
+        user_ids = [str(row[0]) for row in result2.all()]
+        new_start = event.start_date.strftime("%d.%m.%Y %H:%M")
+        for uid in user_ids:
+            asyncio.create_task(
+                push_service.send_to_user(
+                    db,
+                    uid,
+                    f"⏰ Zmiana terminu: {event.title}",
+                    f"Nowy termin: {new_start}",
+                    f"/events/{event.id}",
+                )
+            )
     return EventResponse.model_validate(event)
 
 

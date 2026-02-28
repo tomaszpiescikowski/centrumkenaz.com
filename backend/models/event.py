@@ -158,6 +158,19 @@ class Event(Base):
         comment="Points awarded for confirmed participation.",
     )
 
+    registration_open = Column(
+        Boolean,
+        default=False,
+        nullable=False,
+        comment="Whether registrations are open. Toggling True triggers a push to all active users.",
+    )
+    reminder_sent = Column(
+        Boolean,
+        default=False,
+        nullable=False,
+        comment="Whether the 24-hour pre-event reminder push has been sent.",
+    )
+
     # Version for optimistic locking
     version = Column(
         Integer,

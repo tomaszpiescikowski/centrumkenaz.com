@@ -36,3 +36,6 @@ python-dotenv==1.0.0
 
 # Web Push notifications
 pywebpush==2.3.0
+
+# Background scheduling (event reminders)
+apscheduler==3.10.4
