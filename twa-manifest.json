@@ -1,0 +1,46 @@
+{
+  "packageId": "com.centrumkenaz.app",
+  "host": "centrumkenaz.com",
+  "name": "Kenaz Centrum",
+  "launcherName": "Kenaz",
+  "display": "standalone",
+  "orientation": "portrait",
+  "themeColor": "#0f172a",
+  "themeColorDark": "#0f172a",
+  "navigationColor": "#0f172a",
+  "navigationColorDark": "#0f172a",
+  "navigationDividerColor": "#0f172a",
+  "navigationDividerColorDark": "#0f172a",
+  "backgroundColor": "#f8f6ef",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://centrumkenaz.com/static/pwa-512.png",
+  "maskableIconUrl": "https://centrumkenaz.com/static/pwa-512-maskable.png",
+  "monochromeIconUrl": "https://centrumkenaz.com/static/pwa-512.png",
+  "appVersion": "1.0.0",
+  "appVersionCode": 1,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "kenaz"
+  },
+  "splashScreenFadeOutDuration": 300,
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://centrumkenaz.com/",
+  "minSdkVersion": 24,
+  "targetSdkVersion": 34,
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://centrumkenaz.com/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": {
+      "enabled": false
+    },
+    "playBilling": {
+      "enabled": false
+    }
+  },
+  "enableSideNavigation": false,
+  "shortcuts": []
+}
