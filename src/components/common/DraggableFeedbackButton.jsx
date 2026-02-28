@@ -2,12 +2,10 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import FeedbackModal from '../ui/FeedbackModal'
 import { useLanguage } from '../../context/LanguageContext'
 
-const STORAGE_KEY = 'kenaz.feedbackBtn.pos'
+const STORAGE_KEY = 'kenaz.feedbackBtn.pos.v2'
 const BTN_W = 136 // approximate pill width
 const BTN_H = 48  // pill height + tail
 const MARGIN = 12
-// Mobile bottom nav height: 3.5rem (56px) + safe area (~34px on modern iPhones)
-const MOBILE_NAV_H = 96
 
 function getDefaultPos() {
   const w = window.innerWidth
@@ -15,7 +13,7 @@ function getDefaultPos() {
   const isMobile = w < 640
   return {
     left: w - BTN_W - MARGIN,
-    top: h - BTN_H - MARGIN - (isMobile ? MOBILE_NAV_H : MARGIN),
+    top: isMobile ? MARGIN : h - BTN_H - MARGIN * 2,
   }
 }
 
@@ -161,10 +159,21 @@ function DraggableFeedbackButton() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
           </svg>
           <span className="text-xs font-semibold leading-none">{t('feedback.button')}</span>
-          {/* Speech bubble tail pointing downward */}
+          {/* Speech bubble tail — points UP on mobile (button at top), DOWN on desktop (button at bottom) */}
+          {/* Mobile: tail at top pointing up */}
           <span
             aria-hidden="true"
-            className="absolute -bottom-[7px] left-4 h-0 w-0"
+            className="absolute sm:hidden -top-[7px] right-4 h-0 w-0"
+            style={{
+              borderLeft: '6px solid transparent',
+              borderRight: '6px solid transparent',
+              borderBottom: '7px solid #f59e0b',
+            }}
+          />
+          {/* Desktop: tail at bottom pointing down */}
+          <span
+            aria-hidden="true"
+            className="hidden sm:block absolute -bottom-[7px] left-4 h-0 w-0"
             style={{
               borderLeft: '6px solid transparent',
               borderRight: '6px solid transparent',
