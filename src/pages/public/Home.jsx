@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext'
+import { useAuth } from '../../context/AuthContext'
 
 // Images used by /about — prefetch them while user is on the home page
 const ABOUT_IMAGES = [
@@ -14,6 +15,12 @@ const ABOUT_IMAGES = [
 
 function Home() {
   const { t } = useLanguage()
+  const { isAuthenticated } = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (isAuthenticated) navigate('/calendar', { replace: true })
+  }, [isAuthenticated, navigate])
 
   useEffect(() => {
     // Schedule prefetch after a short idle period so it doesn't compete
@@ -48,12 +55,14 @@ function Home() {
 
       {/* Action buttons */}
       <div className="w-full max-w-xs flex-none space-y-4 px-8">
-        <Link
-          to="/login"
-          className="block w-full rounded-full bg-navy px-6 py-3 text-center text-sm font-black text-cream shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl dark:bg-cream dark:text-navy"
-        >
-          {t('auth.openLogin')}
-        </Link>
+        {!isAuthenticated && (
+          <Link
+            to="/login"
+            className="block w-full rounded-full bg-navy px-6 py-3 text-center text-sm font-black text-cream shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl dark:bg-cream dark:text-navy"
+          >
+            {t('auth.openLogin')}
+          </Link>
+        )}
         <Link
           to="/about"
           className="group flex w-full items-center justify-center gap-2 rounded-full bg-navy px-6 py-3 text-sm font-black text-cream shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl dark:bg-cream dark:text-navy"
