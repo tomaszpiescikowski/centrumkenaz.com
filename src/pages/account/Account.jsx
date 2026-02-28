@@ -18,7 +18,7 @@ function Account({ darkMode, setDarkMode }) {
   const [searchParams] = useSearchParams()
 
   const isActive = isAuthenticated && user?.account_status === 'active'
-  const { supported: pushSupported, permission: pushPermission, subscribed: pushSubscribed, subscribing: pushSubscribing, subscribe: pushSubscribe, unsubscribe: pushUnsubscribe } = usePushNotifications({ authFetch, isActive })
+  const { supported: pushSupported, permission: pushPermission, subscribed: pushSubscribed, subscribing: pushSubscribing, subscribe: pushSubscribe, unsubscribe: pushUnsubscribe, error: pushError } = usePushNotifications({ authFetch, isActive })
 
   // After calendar connect redirect (?calendar=connected) re-fetch the user
   // so has_google_calendar flips to true, then clean the URL.
@@ -396,14 +396,21 @@ function Account({ darkMode, setDarkMode }) {
                   </button>
                 </div>
               ) : (
-                <button
-                  type="button"
-                  onClick={pushSubscribe}
-                  disabled={pushSubscribing}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-navy/15 bg-cream px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:border-navy/25 hover:bg-navy/5 disabled:opacity-60 dark:border-cream/15 dark:bg-navy dark:text-cream dark:hover:border-cream/25"
-                >
-                  🔔 {pushSubscribing ? (t('common.loading') || '…') : (t('account.pushSubscribe') || 'Włącz powiadomienia push')}
-                </button>
+                <div className="space-y-2">
+                  {pushError && (
+                    <div className="rounded-xl border border-red-300/40 bg-red-50/80 px-3 py-2.5 text-xs text-red-800 dark:border-red-500/30 dark:bg-red-900/20 dark:text-red-300">
+                      <span className="font-semibold">Błąd: </span>{pushError}
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={pushSubscribe}
+                    disabled={pushSubscribing}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-navy/15 bg-cream px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:border-navy/25 hover:bg-navy/5 disabled:opacity-60 dark:border-cream/15 dark:bg-navy dark:text-cream dark:hover:border-cream/25"
+                  >
+                    🔔 {pushSubscribing ? (t('common.loading') || '…') : (t('account.pushSubscribe') || 'Włącz powiadomienia push')}
+                  </button>
+                </div>
               )}
             </div>
           </aside>

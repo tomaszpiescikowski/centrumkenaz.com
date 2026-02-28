@@ -34,6 +34,7 @@ export function usePushNotifications({ authFetch, isActive } = {}) {
   )
   const [subscribed, setSubscribed] = useState(false)
   const [subscribing, setSubscribing] = useState(false)
+  const [error, setError] = useState(null)
 
   // Check existing subscription state on mount
   useEffect(() => {
@@ -48,13 +49,21 @@ export function usePushNotifications({ authFetch, isActive } = {}) {
   const subscribe = useCallback(async () => {
     if (!supported || !isActive || subscribing) return
     setSubscribing(true)
+    setError(null)
     try {
       const perm = await Notification.requestPermission()
       setPermission(perm)
       if (perm !== 'granted') return
 
+      // Wait up to 8 s for the service worker to become active
+      const reg = await Promise.race([
+        navigator.serviceWorker.ready,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Service worker not ready after 8s – try refreshing the page')), 8000)
+        ),
+      ])
+
       const vapidKey = await fetchVapidPublicKey()
-      const reg = await navigator.serviceWorker.ready
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(vapidKey),
@@ -64,7 +73,9 @@ export function usePushNotifications({ authFetch, isActive } = {}) {
       setSubscribed(true)
     } catch (err) {
       setPermission(typeof Notification !== 'undefined' ? Notification.permission : 'denied')
+      const msg = err?.message || String(err)
       console.error('[PushNotifications] subscribe error:', err)
+      setError(msg)
     } finally {
       setSubscribing(false)
     }
@@ -85,5 +96,5 @@ export function usePushNotifications({ authFetch, isActive } = {}) {
     }
   }, [supported, isActive, authFetch])
 
-  return { supported, permission, subscribed, subscribing, subscribe, unsubscribe }
+  return { supported, permission, subscribed, subscribing, subscribe, unsubscribe, error }
 }
