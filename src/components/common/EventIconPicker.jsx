@@ -45,10 +45,19 @@ function EventIconPicker({ value, onChange, customTypes = [], compact = false })
                   : 'border-transparent hover:border-navy/30 dark:hover:border-cream/30 hover:bg-navy/5 dark:hover:bg-cream/5'
                 }`}
             >
-              <span role="img" className="text-2xl leading-none">
-                {opt.iconKey
-                  ? (EXTRA_ICON_MAP[opt.iconKey]?.emoji || '📅')
-                  : (ICON_MAP[opt.key]?.emoji || '📅')}
+              <span className={`${opt.color}`}>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  className="h-7 w-7"
+                  // eslint-disable-next-line react/no-danger
+                  dangerouslySetInnerHTML={{
+                    __html: opt.iconKey
+                      ? (EXTRA_ICON_MAP[opt.iconKey]?.paths || '')
+                      : (ICON_MAP[opt.key]?.paths || '')
+                  }}
+                />
               </span>
               <span className="text-[9px] leading-tight text-navy/60 dark:text-cream/60 break-words w-full">{opt.label}</span>
             </button>

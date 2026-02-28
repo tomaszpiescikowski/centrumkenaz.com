@@ -7,10 +7,19 @@ import { useCustomEventTypes } from '../../hooks/useCustomEventTypes'
 import { BUILT_IN_EVENT_ICONS, ICON_MAP, EXTRA_ICONS, EXTRA_ICON_MAP } from '../../constants/eventIcons'
 import AuthGateCard from '../../components/ui/AuthGateCard'
 
-function IconPreviewEmoji({ iconKey, className = '' }) {
-  const emoji = ICON_MAP[iconKey]?.emoji || EXTRA_ICON_MAP[iconKey]?.emoji || '📅'
+function IconPreviewSvg({ iconKey, color = '', paths = '', className = '' }) {
+  const resolvedPaths = paths || ICON_MAP[iconKey]?.paths || EXTRA_ICON_MAP[iconKey]?.paths || ''
+  const resolvedColor = color || ICON_MAP[iconKey]?.color || ''
+  if (!resolvedPaths) return null
   return (
-    <span role="img" className={`text-2xl leading-none ${className}`}>{emoji}</span>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      className={`h-6 w-6 ${resolvedColor} ${className}`}
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{ __html: resolvedPaths }}
+    />
   )
 }
 
@@ -50,7 +59,14 @@ function ExtraIconPicker({ value, onChange }) {
                   : 'border-transparent hover:border-navy/30 dark:hover:border-cream/30 hover:bg-navy/5 dark:hover:bg-cream/5'
                 }`}
             >
-              <span role="img" className="text-xl leading-none">{icon.emoji}</span>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                className="h-6 w-6"
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: icon.paths }}
+              />
             </button>
           )
         })}
@@ -175,7 +191,9 @@ function AdminIconManager() {
               key={icon.key}
               className="flex flex-col items-center gap-2 rounded-2xl border border-navy/10 dark:border-cream/10 bg-navy/5 dark:bg-cream/5 p-4 text-center"
             >
-              <IconPreviewEmoji iconKey={icon.key} className="text-3xl" />
+              <span className={icon.color}>
+                <IconPreviewSvg iconKey={icon.key} className="h-8 w-8" />
+              </span>
               <span className="text-xs font-medium text-navy/80 dark:text-cream/80 leading-snug break-words w-full">
                 {icon.label}
               </span>
@@ -190,7 +208,7 @@ function AdminIconManager() {
           Własne kategorie ({customTypes.length})
         </h2>
         <p className="text-xs text-navy/50 dark:text-cream/50 mb-4">
-          Zapisane w bazie danych — widoczne dla wszystkich adminów. Ikona emoji wybrana z puli 128 wzorów.
+          Zapisane w bazie danych — widoczne dla wszystkich adminów. Ikona SVG wybrana z puli 128 wzorów.
         </p>
 
         {loading ? (
@@ -210,8 +228,21 @@ function AdminIconManager() {
                   key={ct.key}
                   className="relative flex flex-col items-center gap-2 rounded-2xl border border-navy/10 dark:border-cream/10 bg-navy/5 dark:bg-cream/5 p-4 text-center group"
                 >
-                  <span role="img" className="text-3xl leading-none">
-                    {extraIcon?.emoji || '📅'}
+                  <span className={ct.color}>
+                    {extraIcon ? (
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        className="h-8 w-8"
+                        // eslint-disable-next-line react/no-danger
+                        dangerouslySetInnerHTML={{ __html: extraIcon.paths }}
+                      />
+                    ) : (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-8 w-8">
+                        <circle cx="12" cy="12" r="9" strokeWidth="2.2"/>
+                      </svg>
+                    )}
                   </span>
                   <span className="text-xs font-medium text-navy/80 dark:text-cream/80 leading-snug break-words w-full">
                     {ct.label}
@@ -291,8 +322,14 @@ function AdminIconManager() {
               {/* Live preview */}
               {form.iconKey && (
                 <div className="ml-3 flex flex-col items-center gap-1.5 rounded-2xl border border-navy/10 dark:border-cream/10 bg-navy/5 dark:bg-cream/5 px-4 py-3 min-w-[72px]">
-                  <span role="img" className="text-3xl leading-none">
-                    {EXTRA_ICON_MAP[form.iconKey]?.emoji || '📅'}
+                  <span className={form.color}>
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      className="h-8 w-8"
+                      dangerouslySetInnerHTML={{ __html: EXTRA_ICON_MAP[form.iconKey]?.paths || '' }}
+                    />
                   </span>
                   {form.label && (
                   <span className="text-xs font-medium text-navy/80 dark:text-cream/80 leading-snug text-center max-w-[72px] break-words">
