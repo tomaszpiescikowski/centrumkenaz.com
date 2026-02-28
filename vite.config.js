@@ -38,6 +38,36 @@ export default defineConfig({
         dir: 'ltr',
         categories: ['lifestyle', 'social'],
         prefer_related_applications: false,
+        screenshots: [
+          {
+            src: 'static/motyw.jpg',
+            sizes: '1080x1350',
+            type: 'image/jpeg',
+            form_factor: 'narrow',
+            label: 'Kenaz – ekran główny',
+          },
+          {
+            src: 'static/motyw_kalendarz.jpg',
+            sizes: '1080x1350',
+            type: 'image/jpeg',
+            form_factor: 'narrow',
+            label: 'Kenaz – kalendarz wydarzeń',
+          },
+          {
+            src: 'static/motyw_cennik.jpg',
+            sizes: '1080x1350',
+            type: 'image/jpeg',
+            form_factor: 'narrow',
+            label: 'Kenaz – cennik subskrypcji',
+          },
+          {
+            src: 'static/motyw_dark_mode.jpg',
+            sizes: '1080x1350',
+            type: 'image/jpeg',
+            form_factor: 'narrow',
+            label: 'Kenaz – tryb ciemny',
+          },
+        ],
         icons: [
           {
             src: 'static/pwa-192.png',
