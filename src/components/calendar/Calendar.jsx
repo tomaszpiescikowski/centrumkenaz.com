@@ -345,6 +345,24 @@ function Calendar({ className = '' }) {
     setCurrentDate(new Date(year, month + 1, 1))
   }
 
+  // Swipe left/right to navigate months
+  const swipeTouchStart = useRef(null)
+  const handleTouchStart = (e) => {
+    const t = e.touches[0]
+    swipeTouchStart.current = { x: t.clientX, y: t.clientY }
+  }
+  const handleTouchEnd = (e) => {
+    if (!swipeTouchStart.current) return
+    const t = e.changedTouches[0]
+    const dx = t.clientX - swipeTouchStart.current.x
+    const dy = t.clientY - swipeTouchStart.current.y
+    swipeTouchStart.current = null
+    // Only trigger if horizontal movement dominates and exceeds threshold
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return
+    if (dx < 0) nextMonth()
+    else prevMonth()
+  }
+
   const renderDayMarkers = (dayEvents) => {
     if (!dayEvents.length) return null
     return (
@@ -384,7 +402,11 @@ function Calendar({ className = '' }) {
 
 
   return (
-    <div className={`w-full max-w-4xl mx-auto overflow-x-hidden ${className}`}>
+    <div
+      className={`w-full max-w-4xl mx-auto overflow-x-hidden ${className}`}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className="mb-4 flex items-center justify-between gap-2">
         <button
           onClick={prevMonth}
