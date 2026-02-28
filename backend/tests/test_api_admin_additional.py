@@ -3,7 +3,7 @@ from decimal import Decimal
 from uuid import uuid4
 
 import pytest
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from httpx import ASGITransport, AsyncClient
 
 from database import get_db
@@ -36,7 +36,9 @@ async def admin_user(db_session) -> User:
 @pytest.fixture
 async def admin_client(db_session, admin_user: User):
     app = FastAPI()
-    app.include_router(admin_router)
+    _api = APIRouter(prefix="/api")
+    _api.include_router(admin_router)
+    app.include_router(_api)
 
     async def override_get_db():
         yield db_session

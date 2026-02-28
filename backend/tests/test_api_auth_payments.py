@@ -4,7 +4,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from httpx import ASGITransport, AsyncClient
 
 import routers.payments as payments_module
@@ -25,8 +25,10 @@ from services.payment_service import PaymentService
 @pytest.fixture
 async def api_client(db_session):
     app = FastAPI()
-    app.include_router(auth_router)
-    app.include_router(payments_router)
+    _api = APIRouter(prefix="/api")
+    _api.include_router(auth_router)
+    _api.include_router(payments_router)
+    app.include_router(_api)
 
     async def override_get_db():
         yield db_session

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 
 import pytest
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import select
 
@@ -63,9 +63,11 @@ async def pending_user(db_session) -> User:
 
 async def _build_client(db_session, current_user: User | None = None) -> AsyncClient:
     app = FastAPI()
-    app.include_router(admin_router)
-    app.include_router(events_router)
-    app.include_router(cities_router)
+    _api = APIRouter(prefix="/api")
+    _api.include_router(admin_router)
+    _api.include_router(events_router)
+    _api.include_router(cities_router)
+    app.include_router(_api)
 
     async def override_get_db():
         yield db_session

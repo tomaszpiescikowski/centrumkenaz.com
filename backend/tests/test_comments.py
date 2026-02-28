@@ -13,7 +13,7 @@ from decimal import Decimal
 from uuid import uuid4
 
 import pytest
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from httpx import ASGITransport, AsyncClient
 
 from database import get_db
@@ -32,7 +32,9 @@ from services.auth_service import AuthService
 async def comments_api_client(db_session):
     """HTTP test client with the comments router mounted."""
     app = FastAPI()
-    app.include_router(comments_router)
+    _api = APIRouter(prefix="/api")
+    _api.include_router(comments_router)
+    app.include_router(_api)
 
     async def override_get_db():
         yield db_session

@@ -14,7 +14,7 @@ from decimal import Decimal
 from uuid import uuid4
 
 import pytest
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from httpx import ASGITransport, AsyncClient
 
 from database import get_db
@@ -27,10 +27,12 @@ from routers.auth import get_current_user_dependency
 async def _build_client(db_session, *, current_user: User | None) -> AsyncClient:
     """Build an ASGI client with DB overridden and optionally an authenticated user."""
     app = FastAPI()
-    app.include_router(events_router)
-    app.include_router(registrations_router)
-    app.include_router(users_router)
-    app.include_router(admin_router)
+    _api = APIRouter(prefix="/api")
+    _api.include_router(events_router)
+    _api.include_router(registrations_router)
+    _api.include_router(users_router)
+    _api.include_router(admin_router)
+    app.include_router(_api)
 
     async def override_get_db():
         yield db_session
