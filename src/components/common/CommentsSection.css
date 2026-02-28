@@ -2894,7 +2894,7 @@ img.cmt-av-img {
   color: rgba(15,23,74,0.80);
 }
 .dark .cp-ev-preview-name {
-  color: rgba(255,253,245,0.72);
+  color: rgba(255,253,245,0.92);
 }
 /* Verb "napisał wiadomość:" — italic and muted, visually secondary */
 .cp-ev-preview-verb {
@@ -2911,6 +2911,9 @@ img.cmt-av-img {
 }
 .cp-ev-preview--bold .cp-ev-preview-name {
   color: rgba(15,23,74,0.92);
+}
+.dark .cp-ev-preview--bold .cp-ev-preview-name {
+  color: rgba(255,253,245,0.96);
 }
 .cp-ev-preview--bold .cp-ev-preview-text {
   font-weight: 600;
