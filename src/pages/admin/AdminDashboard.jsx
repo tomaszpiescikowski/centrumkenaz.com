@@ -1,11 +1,28 @@
+import { useState, useCallback } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
+import { useNotification } from '../../context/NotificationContext'
 import AuthGateCard from '../../components/ui/AuthGateCard'
 import ViewCard from '../../components/ui/ViewCard'
+import { sendTestPush } from '../../api/push'
 
 function AdminDashboard() {
-  const { user, isAuthenticated, login } = useAuth()
+  const { user, isAuthenticated, login, authFetch } = useAuth()
   const { t } = useLanguage()
+  const { showSuccess, showError } = useNotification()
+  const [sending, setSending] = useState(false)
+
+  const handleTestPush = useCallback(async () => {
+    setSending(true)
+    try {
+      await sendTestPush(authFetch)
+      showSuccess('🔔 Test push wysłany! Sprawdź powiadomienie w przeglądarce.')
+    } catch (err) {
+      showError('Nie udało się wysłać testu. Sprawdź czy masz aktywną subskrypcję push.')
+    } finally {
+      setSending(false)
+    }
+  }, [authFetch, showSuccess, showError])
 
   const isAdmin = user?.role === 'admin'
 
@@ -40,6 +57,17 @@ function AdminDashboard() {
         <p className="text-navy/60 dark:text-cream/60">
           {t('admin.dashboardSubtitle')}
         </p>
+      </div>
+
+      <div className="mb-6">
+        <button
+          onClick={handleTestPush}
+          disabled={sending}
+          className="inline-flex items-center gap-2 rounded-xl border border-navy/20 dark:border-cream/20 bg-navy/5 dark:bg-cream/5 px-4 py-2.5 text-sm font-semibold text-navy dark:text-cream hover:bg-navy/10 dark:hover:bg-cream/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          <span>{sending ? '⏳' : '🔔'}</span>
+          {sending ? 'Wysyłanie…' : 'Wyślij testowe powiadomienie push'}
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
