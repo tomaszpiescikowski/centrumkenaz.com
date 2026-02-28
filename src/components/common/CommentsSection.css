@@ -2669,12 +2669,24 @@ img.cmt-av-img {
   text-align: left;
   cursor: pointer;
   border: none;
-  border-left: 3px solid var(--ev-color, rgba(15,23,74,0.2));
-  border-radius: 0 0.75rem 0.75rem 0;
+  border-radius: 0.75rem;
   background: rgba(255,253,245,0.88);
-  padding: 0.625rem 0.875rem 0.625rem 0.75rem;
+  padding: 0.625rem 0.875rem 0.625rem 1.175rem;
   transition: background 0.12s, transform 0.1s;
   -webkit-tap-highlight-color: transparent;
+}
+/* Short rounded pill — matches calendar event row stripe (h-10 w-1.5 rounded-full) */
+.cp-ev-row::before {
+  content: '';
+  position: absolute;
+  left: 0.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.3125rem; /* 5px — thick like calendar's w-1.5 */
+  height: 2rem;     /* short, not full-height */
+  border-radius: 9999px;
+  background: var(--ev-color, rgba(15,23,74,0.2));
+  flex-shrink: 0;
 }
 .dark .cp-ev-row {
   background: rgba(255,253,245,0.055);
