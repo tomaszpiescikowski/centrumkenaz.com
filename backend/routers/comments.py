@@ -403,7 +403,7 @@ async def check_new_messages(
             # Fetch the single latest message (text + author) for preview
             latest_msg_stmt = (
                 select(Comment.content, User.full_name)
-                .join(User, Comment.author_id == User.id)
+                .join(User, Comment.user_id == User.id)
                 .where(and_(
                     Comment.resource_type == resource_type,
                     Comment.resource_id == resource_id,
@@ -419,7 +419,7 @@ async def check_new_messages(
             # Fetch up to 3 recent unique message authors for this chat
             authors_stmt = (
                 select(User.id, User.full_name, User.picture_url)
-                .join(Comment, Comment.author_id == User.id)
+                .join(Comment, Comment.user_id == User.id)
                 .where(and_(
                     Comment.resource_type == resource_type,
                     Comment.resource_id == resource_id,
