@@ -301,7 +301,7 @@ function Plans() {
         />
       )}
 
-      <div className="page-shell flex h-full min-h-0 flex-col pt-2">
+      <div className="page-shell flex h-full min-h-0 flex-col pt-2 sm:h-auto sm:overflow-visible">
         <div className="shrink-0">
           <Link
             to="/me"
@@ -354,7 +354,7 @@ function Plans() {
         {loading ? (
           <p className="mt-6 text-navy/60 dark:text-cream/60">{t('common.loading')}</p>
         ) : (
-          <div className="mt-6 min-h-0 flex-1 overflow-y-auto pb-2">
+          <div className="mt-6 min-h-0 flex-1 overflow-y-auto pb-2 sm:overflow-visible sm:flex-none">
             <div className="flex flex-col items-stretch gap-6 md:flex-row md:items-stretch md:py-4">
               {cards.map((plan) => {
                 const code = plan.code
