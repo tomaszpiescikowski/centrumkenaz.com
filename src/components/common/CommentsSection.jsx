@@ -151,6 +151,9 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const knownEventIdsRef = useRef(new Set())     // known IDs for the event chat
   const knownGeneralIdsRef = useRef(new Set())   // known IDs for the general/announcements channel
   const isPollRefreshRef = useRef(false)         // set true before poll-triggered reload
+  // Guards: block poll-triggered calls until the first full load has finished
+  const isEventInitializedRef = useRef(false)
+  const isGeneralInitializedRef = useRef(false)
 
   // Stable ref to loadOlderMessages for the scroll listener (avoids stale closure + infinite recreate)
   const loadOlderRef = useRef(null)
@@ -167,6 +170,9 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const loadComments = useCallback(async () => {
     const wasPollRefresh = isPollRefreshRef.current
     isPollRefreshRef.current = false
+    // Drop poll refresh if the initial full load hasn't completed yet — it will
+    // capture the latest state on its own.
+    if (wasPollRefresh && !isEventInitializedRef.current) return
     try {
       if (wasPollRefresh && eventNewestTsRef.current) {
         // ── Incremental poll-append ──────────────────────────────────────
@@ -207,6 +213,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
       const ordered = [...data].reverse()
       knownEventIdsRef.current = collectCommentIds(ordered)
       eventNewestTsRef.current = ordered.length > 0 ? ordered[ordered.length - 1].created_at : null
+      isEventInitializedRef.current = true
       setComments(ordered)
       setEventPage({
         oldestTs: ordered.length > 0 ? ordered[0].created_at : null,
@@ -252,6 +259,8 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const loadGeneralComments = useCallback(async () => {
     const wasPollRefresh = isPollRefreshRef.current
     isPollRefreshRef.current = false
+    // Drop poll refresh if the initial full load hasn't completed yet.
+    if (wasPollRefresh && !isGeneralInitializedRef.current) return
     try {
       if (wasPollRefresh && generalNewestTsRef.current) {
         // ── Incremental poll-append for general/announcements ──────────
@@ -288,6 +297,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
       const orderedGeneral = [...data].reverse()
       knownGeneralIdsRef.current = collectCommentIds(orderedGeneral)
       generalNewestTsRef.current = orderedGeneral.length > 0 ? orderedGeneral[orderedGeneral.length - 1].created_at : null
+      isGeneralInitializedRef.current = true
       setGeneralComments(orderedGeneral)
       setGeneralPage({
         oldestTs: orderedGeneral.length > 0 ? orderedGeneral[0].created_at : null,
