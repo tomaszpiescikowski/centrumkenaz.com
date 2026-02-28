@@ -11,6 +11,19 @@ function saveLastRead(data) {
   try { localStorage.setItem(LS_KEY, JSON.stringify(data)) } catch { /* ignore */ }
 }
 
+const LS_KEY_MSGS = 'kenaz.chat.latestMessages'
+function loadLatestMessages() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY_MSGS) || '{}') } catch { return {} }
+}
+// Debounced save — avoid thrashing localStorage on every poll tick
+let _saveMsgsTimer = null
+function saveLatestMessages(data) {
+  clearTimeout(_saveMsgsTimer)
+  _saveMsgsTimer = setTimeout(() => {
+    try { localStorage.setItem(LS_KEY_MSGS, JSON.stringify(data)) } catch { /* ignore */ }
+  }, 800)
+}
+
 /**
  * Global chat state provider.
  *
@@ -30,7 +43,7 @@ function ChatProvider({ children }) {
   })
 
   const [lastReadTimestamps, setLastReadTimestamps] = useState(loadLastRead)
-  const [latestMessages, setLatestMessages] = useState({})
+  const [latestMessages, setLatestMessages] = useState(loadLatestMessages)
   // pendingRefresh tracks chatIds that have new messages detected by polling
   const [pendingRefresh, setPendingRefresh] = useState({})
   // registeredEvents — kept in sync by ChatPage so ChatPoller can poll all chats
@@ -102,12 +115,17 @@ function ChatProvider({ children }) {
         let changed = false
         if (incoming.recentAuthors?.length) { updated.recentAuthors = incoming.recentAuthors; changed = true }
         if (incoming.text && !current.text) { updated.text = incoming.text; updated.author = incoming.author; changed = true }
-        return changed ? { ...prev, [chatId]: updated } : prev
+        if (!changed) return prev
+        const next = { ...prev, [chatId]: updated }
+        saveLatestMessages(next)
+        return next
       }
       // Newer message — preserve fields that incoming lacks
       if (!incoming.recentAuthors && current?.recentAuthors) incoming.recentAuthors = current.recentAuthors
       if (!incoming.text && current?.text) { incoming.text = current.text; incoming.author = current.author }
-      return { ...prev, [chatId]: incoming }
+      const next = { ...prev, [chatId]: incoming }
+      saveLatestMessages(next)
+      return next
     })
   }, [])
 
