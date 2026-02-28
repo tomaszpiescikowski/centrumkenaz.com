@@ -354,56 +354,50 @@ function ChatModal() {
                           style={{ '--ev-color': palette.bg }}
                           onClick={() => handleEventClick(ev)}
                         >
-                          {/* Colored vertical pill bar — like calendar */}
-                          <span className="cp-ev-bar" style={{ background: palette.bg }} />
-
-                          {/* Content column */}
-                          <span className="cp-ev-content">
-                            {/* Line 1: icon + title + timestamp */}
-                            <span className="cp-ev-top">
-                              <span className="cp-ev-icon" style={{ color: palette.bg }}>
-                                <EventIcon type={ev.type} size="sm" customTypes={customTypes} />
-                              </span>
-                              <span className={`cp-ev-title${unread ? ' cp-ev-title--bold' : ''}`}>{ev.title}</span>
-                              <span className="cp-ev-ts">{timeLabel}</span>
+                          {/* Line 1: icon + title + timestamp */}
+                          <span className="cp-ev-top">
+                            <span className="cp-ev-icon" style={{ color: palette.bg }}>
+                              <EventIcon type={ev.type} size="sm" customTypes={customTypes} />
                             </span>
+                            <span className={`cp-ev-title${unread ? ' cp-ev-title--bold' : ''}`}>{ev.title}</span>
+                            <span className="cp-ev-ts">{timeLabel}</span>
+                          </span>
 
-                            {/* Line 2: meta + today + avatars + badge / chevron */}
-                            <span className="cp-ev-bottom">
-                              <span className="cp-ev-meta">
-                                {ev.city}
-                                {ev.city && evTime && <> &middot;</>}
-                                {evTime && <> {isToday ? evTime : formatDate(ev.startDateTime)}</>}
-                                {!ev.city && !evTime && formatDate(ev.startDateTime)}
-                              </span>
-                              {isToday && <span className="cp-ev-today">{t('comments.today')}</span>}
-                              {isTomorrow && <span className="cp-ev-tomorrow">{t('comments.tomorrow')}</span>}
-                              {authors?.length > 0 && (
-                                <span className="cp-ev-avs">
-                                  {authors.slice(0, 3).map((a, i) => (
-                                    <span key={a.id} className="cmt-reply-av" style={{ zIndex: 3 - i }}>
-                                      {a.picture_url
-                                        ? <img src={a.picture_url} alt={a.full_name} />
-                                        : <span>{initials(a.full_name)}</span>
-                                      }
-                                    </span>
-                                  ))}
-                                </span>
-                              )}
-                              {unread
-                                ? <span className="cp-ev-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
-                                : <span className="cp-ev-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
-                              }
+                          {/* Line 2: meta + today + avatars + badge / chevron */}
+                          <span className="cp-ev-bottom">
+                            <span className="cp-ev-meta">
+                              {ev.city}
+                              {ev.city && evTime && <> &middot;</>}
+                              {evTime && <> {isToday ? evTime : formatDate(ev.startDateTime)}</>}
+                              {!ev.city && !evTime && formatDate(ev.startDateTime)}
                             </span>
-
-                            {/* Line 3 (optional): latest message preview */}
-                            {previewText && (
-                              <span className={`cp-ev-preview${unread ? ' cp-ev-preview--bold' : ''}`}>
-                                {authorShort && <span className="cp-ev-preview-who">{authorShort}:&nbsp;</span>}
-                                {previewText}
+                            {isToday && <span className="cp-ev-today">{t('comments.today')}</span>}
+                            {isTomorrow && <span className="cp-ev-tomorrow">{t('comments.tomorrow')}</span>}
+                            {authors?.length > 0 && (
+                              <span className="cp-ev-avs">
+                                {authors.slice(0, 3).map((a, i) => (
+                                  <span key={a.id} className="cmt-reply-av" style={{ zIndex: 3 - i }}>
+                                    {a.picture_url
+                                      ? <img src={a.picture_url} alt={a.full_name} />
+                                      : <span>{initials(a.full_name)}</span>
+                                    }
+                                  </span>
+                                ))}
                               </span>
                             )}
+                            {unread
+                              ? <span className="cp-ev-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
+                              : <span className="cp-ev-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+                            }
                           </span>
+
+                          {/* Line 3 (optional): latest message preview */}
+                          {previewText && (
+                            <span className={`cp-ev-preview${unread ? ' cp-ev-preview--bold' : ''}`}>
+                              {authorShort && <span className="cp-ev-preview-who">{authorShort}:&nbsp;</span>}
+                              {previewText}
+                            </span>
+                          )}
                         </button>
                       </li>
                     )

@@ -807,11 +807,9 @@ img.cmt-av-img {
   border-radius: 1rem;
   display: flex;
   flex-direction: column;
-  background: var(--bg, rgba(255, 245, 225, 0.82));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(15, 23, 74, 0.12);
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+  background: var(--bg, rgba(255, 253, 245, 1));
+  border: 1px solid rgba(15, 23, 74, 0.10);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
   overflow: hidden;
 }
 
@@ -839,10 +837,8 @@ img.cmt-av-img {
 }
 
 .dark .chat-modal-panel {
-  background: var(--bg-dark, rgba(26, 26, 78, 0.85));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-color: rgba(255, 253, 245, 0.10);
+  background: var(--bg-dark, rgba(26, 26, 78, 1));
+  border-color: rgba(255, 253, 245, 0.08);
 
   --b:    rgba(255, 253, 245, 0.10);
   --surf: rgba(26, 26, 78, 0.68);
@@ -1975,14 +1971,10 @@ img.cmt-av-img {
   --txt:   rgba(26, 26, 78, 0.92);
   --muted: rgba(26, 26, 78, 0.50);
   --b:     rgba(26, 26, 78, 0.09);
-  background: rgba(255, 245, 225, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: #FFF5E1;
 }
 .dark .cp-root {
-  background: rgba(26, 26, 78, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: #1a1a4e;
   --txt:   rgba(255, 245, 225, 0.92);
   --muted: rgba(255, 245, 225, 0.44);
   --b:     rgba(255, 245, 225, 0.09);
@@ -1991,14 +1983,10 @@ img.cmt-av-img {
   --txt:   rgba(26, 26, 78, 0.92);
   --muted: rgba(26, 26, 78, 0.50);
   --b:     rgba(26, 26, 78, 0.09);
-  background: rgba(255, 245, 225, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: #FFF5E1;
 }
 .dark .chat-page-root {
-  background: rgba(26, 26, 78, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: #1a1a4e;
   --txt:   rgba(255, 245, 225, 0.92);
   --muted: rgba(255, 245, 225, 0.44);
   --b:     rgba(255, 245, 225, 0.09);
@@ -2658,85 +2646,55 @@ img.cmt-av-img {
 }
 
 /* ════════════════════════════════════════════════════════════
-   Chat event list — calendar-style redesign (cp-ev-*)
-   Matches the /calendar "Events" panel design
+   Chat event list — panel-row style redesign (cp-ev-*)
+   Mirrors panel-row-clickable aesthetic from /panel page
    ════════════════════════════════════════════════════════════ */
 
-/* Container list — items grouped in a rounded card (like calendar panel) */
 .cp-ev-list {
   list-style: none;
-  margin: 0.75rem;
-  padding: 0;
+  margin: 0;
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0;
-  border-radius: 1rem;
-  overflow: hidden;
-  border: 1px solid rgba(15,23,74,0.10);
-  background: rgba(255,251,235,0.82);
-}
-.dark .cp-ev-list {
-  border-color: rgba(255,253,245,0.10);
-  background: rgba(15,23,74,0.65);
-}
-.cp-ev-list > li + li {
-  border-top: 1px solid rgba(15,23,74,0.08);
-}
-.dark .cp-ev-list > li + li {
-  border-top-color: rgba(255,253,245,0.08);
+  gap: 0.3rem;
 }
 
 /* ── Row button ── */
 .cp-ev-row {
+  position: relative;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.75rem;
+  flex-direction: column;
+  gap: 0.18rem;
   width: 100%;
   text-align: left;
   cursor: pointer;
   border: none;
-  background: transparent;
-  padding: 0.75rem 1rem 0.75rem 0.75rem;
-  transition: background 0.12s;
+  border-left: 3px solid var(--ev-color, rgba(15,23,74,0.2));
+  border-radius: 0 0.75rem 0.75rem 0;
+  background: rgba(255,253,245,0.88);
+  padding: 0.625rem 0.875rem 0.625rem 0.75rem;
+  transition: background 0.12s, transform 0.1s;
   -webkit-tap-highlight-color: transparent;
 }
-.cp-ev-row:hover {
-  background: rgba(15,23,74,0.04);
-}
-.dark .cp-ev-row:hover {
-  background: rgba(255,253,245,0.05);
+.dark .cp-ev-row {
+  background: rgba(255,253,245,0.055);
 }
 .cp-ev-row:active {
-  background: rgba(15,23,74,0.08);
+  transform: scale(0.988);
+  background: rgba(15,23,74,0.06);
 }
 .dark .cp-ev-row:active {
-  background: rgba(255,253,245,0.09);
+  background: rgba(255,253,245,0.1);
 }
 .cp-ev-row--unread {
-  /* Bold text signals unread — no extra background needed */
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(15,23,74,0.08);
+}
+.dark .cp-ev-row--unread {
+  background: rgba(255,253,245,0.1);
 }
 .cp-ev-row--past {
   opacity: 0.5;
-}
-
-/* ── Colored vertical pill bar (like calendar left line) ── */
-.cp-ev-bar {
-  display: block;
-  width: 5px;
-  align-self: stretch;
-  min-height: 2.25rem;
-  border-radius: 999px;
-  flex-shrink: 0;
-}
-
-/* ── Content column ── */
-.cp-ev-content {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
 }
 
 /* ── Top row: icon + title + time ── */
@@ -2788,7 +2746,7 @@ img.cmt-av-img {
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  padding-left: 1.4rem; /* align under title (skip icon + gap) */
+  padding-left: 1.4rem; /* align with title (skip icon width + gap) */
 }
 .cp-ev-meta {
   flex: 1;
@@ -2926,7 +2884,7 @@ img.cmt-av-img {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-left: 1.4rem; /* align under title (skip icon + gap) */
+  padding-left: 1.4rem; /* align under title */
   line-height: 1.35;
 }
 .cp-ev-preview--bold {
