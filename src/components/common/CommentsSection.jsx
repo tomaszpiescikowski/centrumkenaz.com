@@ -77,11 +77,43 @@ function collectCommentIds(comments) {
   return ids
 }
 
+// ── Tree mutation helpers (for WS-driven in-place updates) ────────────────
+
+/** Deeply replace a comment that matches updated.id — preserves tree shape. */
+function replaceInTree(list, updated) {
+  return list.map((c) => {
+    if (c.id === updated.id) return { ...updated, replies: c.replies || [] }
+    if (c.replies?.length) return { ...c, replies: replaceInTree(c.replies, updated) }
+    return c
+  })
+}
+
+/** Mark a comment as soft-deleted in place. */
+function deleteInTree(list, commentId) {
+  return list.map((c) => {
+    if (c.id === commentId) return { ...c, is_deleted: true, content: '[deleted]' }
+    if (c.replies?.length) return { ...c, replies: deleteInTree(c.replies, commentId) }
+    return c
+  })
+}
+
+/** Append a reply to its parent in the tree, or append as top-level if no parent. */
+function insertComment(list, comment) {
+  if (!comment.parent_id) return [...list, comment]
+  return list.map((c) => {
+    if (c.id === comment.parent_id) {
+      return { ...c, replies: [...(c.replies || []), comment] }
+    }
+    if (c.replies?.length) return { ...c, replies: insertComment(c.replies, comment) }
+    return c
+  })
+}
+
 function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onTabChange, hideHeader, hideTabs, messengerLayout, chatId, onLatestMessage, onMarkRead, isRegistered }) {
   const { user, authFetch } = useAuth()
   const { t } = useLanguage()
   const isAdmin = user?.role === 'admin'
-  const { pendingRefresh, clearPendingRefresh } = useChat()
+  const { pendingRefresh, clearPendingRefresh, subscribeWsMessages, wsSend } = useChat()
 
   // Use a ref so inline arrow-function props (onLatestMessage, onMarkRead) don't
   // appear in useCallback dep arrays and cause infinite fetch loops.
@@ -349,6 +381,84 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pendingRefresh])
 
+  // ── WebSocket real-time updates ──────────────────────────────────────────
+  // Subscribe to WS events for both the event chat channel and general:global.
+  // Incoming events mutate local state directly — no HTTP refetch needed.
+  useEffect(() => {
+    if (!subscribeWsMessages) return
+
+    /**
+     * Handle a single WS event dispatched by ChatWSClient.
+     * msg.type is one of: new_message | message_updated | message_deleted | reaction_updated
+     */
+    function handleWsEvent(msg) {
+      const isGeneral = msg.chat_id === 'general:global'
+
+      if (msg.type === 'new_message' && msg.comment) {
+        const comment = msg.comment
+        // Deduplicate — ignore if we already have this id (own sends come back via WS too)
+        if (isGeneral) {
+          if (knownGeneralIdsRef.current.has(comment.id)) return
+          knownGeneralIdsRef.current.add(comment.id)
+          if (comment.created_at > (generalNewestTsRef.current || '')) {
+            generalNewestTsRef.current = comment.created_at
+          }
+          setGeneralComments((prev) => insertComment(prev, comment))
+        } else {
+          if (knownEventIdsRef.current.has(comment.id)) return
+          knownEventIdsRef.current.add(comment.id)
+          if (comment.created_at > (eventNewestTsRef.current || '')) {
+            eventNewestTsRef.current = comment.created_at
+          }
+          setComments((prev) => insertComment(prev, comment))
+        }
+        // Sound + highlight for foreign messages
+        if (comment.author?.id !== user?.id) {
+          setNewMessageIds((prev) => new Set([...prev, comment.id]))
+          playReceiveSound()
+          setTimeout(() => setNewMessageIds((prev) => {
+            const n = new Set(prev); n.delete(comment.id); return n
+          }), 3000)
+        }
+        // Update latest-message preview
+        if (onLatestMessageRef.current) {
+          onLatestMessageRef.current({ ts: comment.created_at, text: comment.content, author: comment.author?.full_name ?? null })
+        }
+        // Scroll to bottom when a new top-level message arrives in the active tab
+        if (!comment.parent_id && (isGeneral === isGeneralTab)) {
+          requestAnimationFrame(scrollToBottom)
+        }
+
+      } else if (msg.type === 'message_updated' || msg.type === 'reaction_updated') {
+        if (!msg.comment) return
+        if (isGeneral) {
+          setGeneralComments((prev) => replaceInTree(prev, msg.comment))
+        } else {
+          setComments((prev) => replaceInTree(prev, msg.comment))
+        }
+
+      } else if (msg.type === 'message_deleted') {
+        if (!msg.comment_id) return
+        if (isGeneral) {
+          setGeneralComments((prev) => deleteInTree(prev, msg.comment_id))
+        } else {
+          setComments((prev) => deleteInTree(prev, msg.comment_id))
+        }
+      }
+    }
+
+    const unsub1 = chatId ? subscribeWsMessages(chatId, handleWsEvent) : null
+    const unsub2 = subscribeWsMessages('general:global', handleWsEvent)
+
+    return () => {
+      unsub1?.()
+      unsub2?.()
+    }
+  // subscribeWsMessages is stable (useCallback, no deps).
+  // chatId changes are handled by re-subscribing.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatId, subscribeWsMessages])
+
   // Auto-scroll to newest message when comments load / change; flash newest reply
   useEffect(() => {
     // Skip scroll-to-bottom when we're prepending older messages (scroll-anchor handles it instead)
@@ -483,20 +593,32 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     if (!newContent.trim() || submitting) return
     setSubmitting(true)
     setError(null)
+    const content = convertMentions(newContent.trim())
+    const replyParentId = messengerReplyTo?.parentId ?? null
     try {
-      const payload = { content: convertMentions(newContent.trim()) }
-      const replyParentId = messengerReplyTo?.parentId ?? null
-      if (replyParentId) payload.parentId = replyParentId
-      await createComment(currentResourceType, currentResourceId, authFetch, payload)
+      const sent = wsSend({
+        type: 'send_message',
+        chat_id: isGeneralTab ? 'general:global' : chatId,
+        content,
+        parent_id: replyParentId ?? undefined,
+        temp_id: `tmp-${Date.now()}`,
+      })
+
+      if (!sent) {
+        // WS not available — fall back to HTTP
+        const payload = { content }
+        if (replyParentId) payload.parentId = replyParentId
+        await createComment(currentResourceType, currentResourceId, authFetch, payload)
+        await reloadCurrent()
+      }
+
       setNewContent('')
       mentionMapRef.current = {}
       setMessengerReplyTo(null)
       setReplyHighlightId(null)
       if (replyParentId) pendingReplyParentRef.current = replyParentId
-      // Play send chime — own messages are filtered in poll-refresh by author check, no suppress needed
       playSendSound()
-      await reloadCurrent()
-      requestAnimationFrame(scrollToBottom)
+      if (sent) requestAnimationFrame(scrollToBottom)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -509,15 +631,24 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     if (!replyContent.trim() || submitting) return
     setSubmitting(true)
     setError(null)
+    const content = replyContent.trim()
     try {
-      await createComment(currentResourceType, currentResourceId, authFetch, {
-        content: replyContent.trim(),
-        parentId,
+      const sent = wsSend({
+        type: 'send_message',
+        chat_id: isGeneralTab ? 'general:global' : chatId,
+        content,
+        parent_id: parentId,
+        temp_id: `tmp-${Date.now()}`,
       })
+
+      if (!sent) {
+        await createComment(currentResourceType, currentResourceId, authFetch, { content, parentId })
+        await reloadCurrent()
+      }
+
       setReplyContent('')
       setReplyingTo(null)
-      await reloadCurrent()
-      requestAnimationFrame(scrollToBottom)
+      if (sent) requestAnimationFrame(scrollToBottom)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -530,12 +661,16 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     if (!editContent.trim() || submitting) return
     setSubmitting(true)
     setError(null)
+    const content = editContent.trim()
     try {
-      await updateComment(commentId, authFetch, { content: editContent.trim(), version: editVersion })
+      const sent = wsSend({ type: 'edit_message', comment_id: commentId, content, version: editVersion })
+      if (!sent) {
+        await updateComment(commentId, authFetch, { content, version: editVersion })
+        await reloadCurrent()
+      }
       setEditingId(null)
       setEditContent('')
       setEditVersion(null)
-      await reloadCurrent()
     } catch (err) {
       setError(err.message)
     } finally {
@@ -548,8 +683,11 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     setSubmitting(true)
     setError(null)
     try {
-      await deleteComment(commentId, authFetch)
-      await reloadCurrent()
+      const sent = wsSend({ type: 'delete_message', comment_id: commentId })
+      if (!sent) {
+        await deleteComment(commentId, authFetch)
+        await reloadCurrent()
+      }
     } catch (err) {
       setError(err.message)
     } finally {
@@ -568,8 +706,11 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const handleReaction = async (commentId, reactionType) => {
     setError(null)
     try {
-      await toggleReaction(commentId, authFetch, reactionType)
-      await reloadCurrent()
+      const sent = wsSend({ type: 'toggle_reaction', comment_id: commentId, reaction_type: reactionType })
+      if (!sent) {
+        await toggleReaction(commentId, authFetch, reactionType)
+        await reloadCurrent()
+      }
       setFlashId(commentId)
       setTimeout(() => setFlashId(id => id === commentId ? null : id), 3000)
     } catch (err) {

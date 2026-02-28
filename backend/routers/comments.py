@@ -236,7 +236,20 @@ async def update_comment(
     await db.commit()
 
     comment = await _refetch_comment(db, comment_id)
-    return _build_comment_response(comment, user.id)
+    response = _build_comment_response(comment, user.id)
+
+    # Broadcast the edit to all open WS connections in this chat
+    try:
+        chat_id = f"{comment.resource_type}:{comment.resource_id}"
+        await ws_manager.broadcast(chat_id, {
+            "type": "message_updated",
+            "chat_id": chat_id,
+            "comment": response.model_dump(mode="json"),
+        })
+    except Exception:  # noqa: BLE001
+        pass
+
+    return response
 
 
 @router.delete(
@@ -261,10 +274,21 @@ async def delete_comment(
     if comment.user_id != user.id:
         raise HTTPException(status_code=403, detail="Cannot delete another user's comment")
 
+    chat_id = f"{comment.resource_type}:{comment.resource_id}"
     comment.is_deleted = True
     comment.content = "[deleted]"
     comment.version += 1
     await db.commit()
+
+    # Broadcast deletion to all open WS connections in this chat
+    try:
+        await ws_manager.broadcast(chat_id, {
+            "type": "message_deleted",
+            "chat_id": chat_id,
+            "comment_id": comment_id,
+        })
+    except Exception:  # noqa: BLE001
+        pass
 
 
 @router.post(
@@ -319,7 +343,20 @@ async def toggle_reaction(
 
     # Re-fetch to get updated reactions
     comment = await _refetch_comment(db, comment_id)
-    return _build_comment_response(comment, user.id)
+    response = _build_comment_response(comment, user.id)
+
+    # Broadcast reaction change to all WS subscribers
+    try:
+        chat_id = f"{comment.resource_type}:{comment.resource_id}"
+        await ws_manager.broadcast(chat_id, {
+            "type": "reaction_updated",
+            "chat_id": chat_id,
+            "comment": response.model_dump(mode="json"),
+        })
+    except Exception:  # noqa: BLE001
+        pass
+
+    return response
 
 
 # ── Pin / unpin endpoint ──────────────────────────────────────────
@@ -347,7 +384,20 @@ async def toggle_pin(
     await db.commit()
 
     comment = await _refetch_comment(db, comment_id)
-    return _build_comment_response(comment, user.id)
+    response = _build_comment_response(comment, user.id)
+
+    # Broadcast pin state change
+    try:
+        chat_id = f"{comment.resource_type}:{comment.resource_id}"
+        await ws_manager.broadcast(chat_id, {
+            "type": "message_updated",
+            "chat_id": chat_id,
+            "comment": response.model_dump(mode="json"),
+        })
+    except Exception:  # noqa: BLE001
+        pass
+
+    return response
 
 
 # ── Polling check endpoint ────────────────────────────────────────
@@ -456,6 +506,248 @@ async def check_new_messages(
 
 # ── WebSocket endpoint for real-time notifications ──────────────────────────
 
+# ─────────────────────────────────────────────────────────────────────────────
+# WS helper: per-operation DB sessions are obtained via a raw sessionmaker so
+# we are not forced to reuse the single injected session for the full WS
+# lifetime.  Each helper opens, commits/rolls-back, and closes cleanly.
+# ─────────────────────────────────────────────────────────────────────────────
+
+async def _ws_error(ws, code: str, message: str) -> None:
+    await ws_manager.send_to(ws, {"type": "error", "code": code, "message": message})
+
+
+async def _ws_send_message(ws, user, db, data: dict) -> None:
+    """Handle 'send_message' WS frame: create a comment and broadcast it."""
+    from models.registration import Registration, RegistrationStatus  # local to avoid circular
+
+    if not user:
+        await _ws_error(ws, "unauthorized", "Authentication required")
+        return
+
+    chat_id = str(data.get("chat_id", "")).strip()
+    content = str(data.get("content", "")).strip()
+    parent_id = data.get("parent_id") or None
+    temp_id = data.get("temp_id") or None
+
+    if not content or len(content) > 2000:
+        await _ws_error(ws, "invalid_content", "Content must be 1–2000 characters")
+        return
+
+    parts = chat_id.split(":", 1)
+    if len(parts) != 2:
+        await _ws_error(ws, "invalid_chat_id", "Invalid chat_id format (expected type:id)")
+        return
+    resource_type, resource_id = parts
+
+    # ── Permission checks ───────────────────────────────────────────────────
+    if resource_type == "general" and user.role != UserRole.ADMIN:
+        await _ws_error(ws, "forbidden", "Only admins can post to announcements")
+        return
+
+    if resource_type == "event" and user.role != UserRole.ADMIN:
+        reg_stmt = select(Registration).where(
+            Registration.event_id == resource_id,
+            Registration.user_id == user.id,
+            Registration.status.notin_([
+                RegistrationStatus.CANCELLED.value,
+                RegistrationStatus.REFUNDED.value,
+            ]),
+        )
+        reg_result = await db.execute(reg_stmt)
+        if reg_result.scalar_one_or_none() is None:
+            await _ws_error(ws, "forbidden", "Must be registered for this event to chat")
+            return
+
+    # ── Validate parent ─────────────────────────────────────────────────────
+    if parent_id:
+        parent_stmt = select(Comment).where(
+            Comment.id == parent_id,
+            Comment.resource_type == resource_type,
+            Comment.resource_id == resource_id,
+        )
+        parent_result = await db.execute(parent_stmt)
+        if parent_result.scalar_one_or_none() is None:
+            await _ws_error(ws, "not_found", "Parent comment not found")
+            return
+
+    # ── Create ──────────────────────────────────────────────────────────────
+    comment = Comment(
+        resource_type=resource_type,
+        resource_id=resource_id,
+        user_id=user.id,
+        content=content,
+        parent_id=parent_id,
+    )
+    db.add(comment)
+    await db.commit()
+    comment = await _refetch_comment(db, comment.id)
+
+    comment_data = _build_comment_response(comment, user.id).model_dump(mode="json")
+
+    # Acknowledge sender (lets CommentsSection clear submitting state immediately)
+    ack: dict = {"type": "message_sent", "chat_id": chat_id, "latest": comment.created_at.isoformat()}
+    if temp_id is not None:
+        ack["temp_id"] = temp_id
+    await ws_manager.send_to(ws, ack)
+
+    # Broadcast full comment to ALL subscribers (including sender — they receive it
+    # via new_message just like any other client, ensuring consistent state).
+    await ws_manager.broadcast(
+        chat_id,
+        {
+            "type": "new_message",
+            "chat_id": chat_id,
+            "comment": comment_data,
+            "latest": comment.created_at.isoformat(),
+            "text": comment.content[:200],
+            "author": user.full_name,
+        },
+    )
+
+    # Push notifications for @mentions (best-effort)
+    try:
+        mentioned = _extract_mention_candidates(content)
+        if mentioned and user.full_name:
+            chat_url = "/chat" if resource_type == "general" else f"/events/{resource_id}"
+            for candidate in mentioned:
+                if candidate.lower() == user.full_name.lower():
+                    continue
+                res = await db.execute(select(User).where(User.full_name.ilike(candidate)))
+                target = res.scalar_one_or_none()
+                if target and str(target.id) != str(user.id):
+                    await push_service.send_to_user(
+                        db, str(target.id),
+                        f"💬 {user.full_name} wspomniał(a) o Tobie",
+                        content[:120] + ("…" if len(content) > 120 else ""),
+                        chat_url,
+                    )
+    except Exception:  # noqa: BLE001
+        pass
+
+
+async def _ws_edit_message(ws, user, db, data: dict) -> None:
+    """Handle 'edit_message' WS frame: update a comment and broadcast the change."""
+    if not user:
+        await _ws_error(ws, "unauthorized", "Authentication required")
+        return
+
+    comment_id = str(data.get("comment_id", "")).strip()
+    content = str(data.get("content", "")).strip()
+    version = data.get("version")
+
+    if not comment_id or not content or len(content) > 2000:
+        await _ws_error(ws, "invalid_input", "comment_id, content (1-2000 chars) and version are required")
+        return
+    if version is None:
+        await _ws_error(ws, "invalid_input", "version is required")
+        return
+
+    comment = await _refetch_comment(db, comment_id)
+    if not comment:
+        await _ws_error(ws, "not_found", "Comment not found")
+        return
+    if comment.user_id != user.id and user.role != UserRole.ADMIN:
+        await _ws_error(ws, "forbidden", "Cannot edit another user's comment")
+        return
+    if comment.is_deleted:
+        await _ws_error(ws, "gone", "Comment has been deleted")
+        return
+    if comment.version != version:
+        await _ws_error(ws, "conflict", "Comment was modified concurrently — refresh and retry")
+        return
+
+    comment.content = content
+    comment.version += 1
+    await db.commit()
+    comment = await _refetch_comment(db, comment_id)
+
+    comment_data = _build_comment_response(comment, user.id).model_dump(mode="json")
+    chat_id = f"{comment.resource_type}:{comment.resource_id}"
+
+    await ws_manager.broadcast(chat_id, {"type": "message_updated", "chat_id": chat_id, "comment": comment_data})
+
+
+async def _ws_delete_message(ws, user, db, data: dict) -> None:
+    """Handle 'delete_message' WS frame: soft-delete a comment and notify all."""
+    if not user:
+        await _ws_error(ws, "unauthorized", "Authentication required")
+        return
+
+    comment_id = str(data.get("comment_id", "")).strip()
+    if not comment_id:
+        await _ws_error(ws, "invalid_input", "comment_id is required")
+        return
+
+    stmt = select(Comment).where(Comment.id == comment_id)
+    result = await db.execute(stmt)
+    comment = result.scalar_one_or_none()
+    if not comment:
+        await _ws_error(ws, "not_found", "Comment not found")
+        return
+    if comment.user_id != user.id and user.role != UserRole.ADMIN:
+        await _ws_error(ws, "forbidden", "Cannot delete another user's comment")
+        return
+
+    chat_id = f"{comment.resource_type}:{comment.resource_id}"
+    comment.is_deleted = True
+    comment.content = "[deleted]"
+    comment.version += 1
+    await db.commit()
+
+    await ws_manager.broadcast(chat_id, {"type": "message_deleted", "chat_id": chat_id, "comment_id": comment_id})
+
+
+async def _ws_toggle_reaction(ws, user, db, data: dict) -> None:
+    """Handle 'toggle_reaction' WS frame: add/remove a reaction and broadcast the update."""
+    if not user:
+        await _ws_error(ws, "unauthorized", "Authentication required")
+        return
+
+    comment_id = str(data.get("comment_id", "")).strip()
+    reaction_type_raw = data.get("reaction_type", "")
+
+    if not comment_id or not reaction_type_raw:
+        await _ws_error(ws, "invalid_input", "comment_id and reaction_type are required")
+        return
+
+    try:
+        reaction_type = ReactionType(reaction_type_raw)
+    except ValueError:
+        await _ws_error(ws, "invalid_input", f"Unknown reaction_type: {reaction_type_raw}")
+        return
+
+    comment = await _refetch_comment(db, comment_id)
+    if not comment:
+        await _ws_error(ws, "not_found", "Comment not found")
+        return
+
+    existing_stmt = select(CommentReaction).where(
+        CommentReaction.comment_id == comment_id,
+        CommentReaction.user_id == user.id,
+        CommentReaction.reaction_type == reaction_type,
+    )
+    existing = (await db.execute(existing_stmt)).scalar_one_or_none()
+
+    if existing:
+        await db.delete(existing)
+    else:
+        other_stmt = select(CommentReaction).where(
+            CommentReaction.comment_id == comment_id,
+            CommentReaction.user_id == user.id,
+        )
+        for old in (await db.execute(other_stmt)).scalars().all():
+            await db.delete(old)
+        db.add(CommentReaction(comment_id=comment_id, user_id=user.id, reaction_type=reaction_type))
+
+    await db.commit()
+    comment = await _refetch_comment(db, comment_id)
+
+    comment_data = _build_comment_response(comment, user.id).model_dump(mode="json")
+    chat_id = f"{comment.resource_type}:{comment.resource_id}"
+
+    await ws_manager.broadcast(chat_id, {"type": "reaction_updated", "chat_id": chat_id, "comment": comment_data})
+
+
 @router.websocket("/ws")
 async def comments_websocket(
     websocket: WebSocket,
@@ -463,46 +755,66 @@ async def comments_websocket(
     db: AsyncSession = Depends(get_db),
 ) -> None:
     """
-    WebSocket endpoint for real-time chat/comment notifications.
+    WebSocket endpoint – full real-time chat protocol.
 
     Connection flow:
       1. Client connects with ?token=<access_jwt> query param.
       2. Server authenticates and accepts the connection.
       3. Client sends: {"type": "subscribe", "chats": ["general:global", "event:uuid", ...]}
       4. Server replies: {"type": "subscribed", "chats": [...]}
-      5. On any new comment the server pushes:
-         {"type": "new_message", "chat_id": "...", "latest": "ISO", "text": "...", "author": "name"}
-      6. Client may send additional {"type": "subscribe"} messages to add channels.
+
+    Client-to-server message types:
+      send_message    – create a comment
+      edit_message    – edit own comment
+      delete_message  – soft-delete own comment
+      toggle_reaction – add/remove a reaction
+
+    Server-to-client push types:
+      new_message      – new comment (full object) published to a subscribed channel
+      message_updated  – comment was edited (full updated object)
+      message_deleted  – comment was soft-deleted
+      reaction_updated – reactions on a comment changed (full updated object)
+      message_sent     – acknowledgement sent to the originating connection after send_message
+      error            – something went wrong (code + message fields)
     """
     # Authenticate via query-param token (browser WS API doesn't support custom headers)
+    auth_user = None
     if token:
         try:
             from services.auth_service import AuthService
             auth_service = AuthService(db)
             payload = auth_service.verify_token(token)
-            if not payload or payload.get("type") != "access":
-                await websocket.close(code=4001)
-                return
-            user = await auth_service.get_user_by_id(payload["sub"])
-            if not user or user.account_status != AccountStatus.ACTIVE:
-                await websocket.close(code=4001)
-                return
+            if payload and payload.get("type") == "access":
+                u = await auth_service.get_user_by_id(payload["sub"])
+                if u and u.account_status == AccountStatus.ACTIVE:
+                    auth_user = u
         except Exception:  # noqa: BLE001
-            await websocket.close(code=4001)
-            return
-    # Anonymous connections are allowed (read-only; they just won't receive
-    # event-specific notifications that require registration checks)
+            pass
 
     await websocket.accept()
     try:
         while True:
             data = await websocket.receive_json()
             msg_type = data.get("type")
+
             if msg_type == "subscribe":
                 chat_ids = [str(c) for c in data.get("chats", []) if c]
                 await ws_manager.resubscribe(websocket, chat_ids)
                 await websocket.send_json({"type": "subscribed", "chats": chat_ids})
-            # Other message types are silently ignored for forward compatibility
+
+            elif msg_type == "send_message":
+                await _ws_send_message(websocket, auth_user, db, data)
+
+            elif msg_type == "edit_message":
+                await _ws_edit_message(websocket, auth_user, db, data)
+
+            elif msg_type == "delete_message":
+                await _ws_delete_message(websocket, auth_user, db, data)
+
+            elif msg_type == "toggle_reaction":
+                await _ws_toggle_reaction(websocket, auth_user, db, data)
+            # Other message types silently ignored for forward compatibility
+
     except WebSocketDisconnect:
         pass
     except Exception:  # noqa: BLE001 – client gone, bad JSON, etc.
@@ -662,11 +974,13 @@ async def create_comment(
 
     # ── Broadcast to connected WebSocket clients ───────────────────────────
     try:
+        comment_data = _build_comment_response(comment, user.id).model_dump(mode="json")
         await ws_manager.broadcast(
             f"{resource_type}:{resource_id}",
             {
                 "type": "new_message",
                 "chat_id": f"{resource_type}:{resource_id}",
+                "comment": comment_data,
                 "latest": comment.created_at.isoformat(),
                 "text": comment.content[:200],
                 "author": user.full_name,

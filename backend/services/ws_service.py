@@ -47,8 +47,18 @@ class ConnectionManager:
         await self.unsubscribe(ws)
         await self.subscribe(ws, chat_ids)
 
-    async def broadcast(self, chat_id: str, data: dict) -> None:
+    async def send_to(self, ws: WebSocket, data: dict) -> None:
+        """Send *data* to a single specific WebSocket connection."""
+        try:
+            await ws.send_json(data)
+        except Exception:  # noqa: BLE001 – stale connection
+            pass
+
+    async def broadcast(self, chat_id: str, data: dict, exclude: WebSocket | None = None) -> None:
         """Send *data* as JSON to every client subscribed to *chat_id*.
+
+        Pass *exclude* to skip one specific connection (e.g. the sender when
+        a separate ``message_sent`` acknowledgement is already sent directly).
 
         Dead connections are silently removed so they do not accumulate.
         """
@@ -58,6 +68,8 @@ class ConnectionManager:
 
         dead: set[WebSocket] = set()
         for ws in conns:
+            if ws is exclude:
+                continue
             try:
                 await ws.send_json(data)
             except Exception:  # noqa: BLE001 – stale connection

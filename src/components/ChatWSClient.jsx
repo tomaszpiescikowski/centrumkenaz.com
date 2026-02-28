@@ -1,18 +1,32 @@
 /**
- * ChatWSClient – replaces ChatPoller.
+ * ChatWSClient – singleton WebSocket bridge for the full chat protocol.
  *
- * Opens a WebSocket connection to /api/comments/ws and subscribes to
- * all relevant chat channels (general + registered events). The server
- * pushes a `new_message` event whenever a comment is created, so the
- * client receives instant notifications without any polling latency.
+ * Opens one WebSocket to /api/comments/ws and maintains it for the full
+ * session.  All real-time chat traffic flows through this connection:
  *
- * Fallback: if the WebSocket connection drops or is unavailable
- * (e.g. older proxy without WS support), the component falls back to
- * polling /api/comments/check every 30 s — same as before but much
- * less frequent since WS handles the hot path.
+ *   Receiving (server → client):
+ *     new_message      – full CommentResponse pushed when a message is created
+ *     message_updated  – full CommentResponse when a comment is edited
+ *     message_deleted  – comment_id when a comment is soft-deleted
+ *     reaction_updated – full CommentResponse when reactions change
  *
- * Re-subscription: when registeredEvents changes (user joins a new
- * event), a fresh `subscribe` message is sent over the existing socket.
+ *   Sending (client → server):
+ *     send_message    – create a new comment
+ *     edit_message    – edit an existing comment
+ *     delete_message  – soft-delete a comment
+ *     toggle_reaction – add/remove a reaction
+ *
+ * All incoming events are dispatched to ChatContext.dispatchWsMessage so that
+ * CommentsSection components can subscribe and update their state in-place
+ * without issuing any HTTP requests.
+ *
+ * Fallback: if WS is unavailable/disconnected, the component falls back to
+ * polling /api/comments/check every 30 s for unread-badge bookkeeping only
+ * (not for fetching full message content).
+ *
+ * wsSend registration: exposes the active socket's send function via
+ * ChatContext.registerWsSend so CommentsSection (and any other component) can
+ * send frames without holding a direct reference to the WebSocket object.
  */
 
 import { useEffect, useRef } from 'react'
@@ -49,6 +63,8 @@ export default function ChatWSClient() {
     lastReadTimestamps,
     setUnreadCount,
     bumpUnreadCount,
+    dispatchWsMessage,
+    registerWsSend,
   } = useChat()
 
   // ── Stable refs so WS callbacks always read the freshest data ───────────
@@ -75,6 +91,12 @@ export default function ChatWSClient() {
 
   const bumpUnreadCountRef = useRef(bumpUnreadCount)
   useEffect(() => { bumpUnreadCountRef.current = bumpUnreadCount }, [bumpUnreadCount])
+
+  const dispatchWsMessageRef = useRef(dispatchWsMessage)
+  useEffect(() => { dispatchWsMessageRef.current = dispatchWsMessage }, [dispatchWsMessage])
+
+  const registerWsSendRef = useRef(registerWsSend)
+  useEffect(() => { registerWsSendRef.current = registerWsSend }, [registerWsSend])
 
   // ── WS connection (rebuilt only on user change) ──────────────────────────
   useEffect(() => {
@@ -126,6 +148,8 @@ export default function ChatWSClient() {
           const author  = typeof data === 'object' ? (data.author ?? null) : null
           setLatestMessageTimeRef.current(chatId, { ts, text, author, recentAuthors: authors })
           setUnreadCountRef.current(chatId, count)
+          // Also trigger a pendingRefresh so CommentsSection can catch up
+          // (only needed when WS was disconnected and we bridged the gap via poll)
           addPendingRefreshRef.current(chatId)
         }
       } catch { /* silent */ }
@@ -146,6 +170,21 @@ export default function ChatWSClient() {
       }
     }
 
+    /** Expose the socket send function via ChatContext so CommentsSection can transmit. */
+    function registerSend() {
+      registerWsSendRef.current((msg) => {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify(msg))
+        } else {
+          throw new Error('WebSocket not connected')
+        }
+      })
+    }
+
+    function clearSend() {
+      registerWsSendRef.current(null)
+    }
+
     function connect() {
       if (dead) return
       const token = localStorage.getItem('accessToken')
@@ -158,6 +197,7 @@ export default function ChatWSClient() {
       ws.onopen = () => {
         reconnectDelay = RECONNECT_INITIAL_MS
         subscribe()
+        registerSend()
       }
 
       ws.onmessage = (evt) => {
@@ -171,14 +211,38 @@ export default function ChatWSClient() {
           doPoll()
 
         } else if (msg.type === 'new_message') {
+          // Update the global unread / latest-message bookkeeping
           setLatestMessageTimeRef.current(msg.chat_id, {
-            ts:            msg.latest,
-            text:          msg.text   ?? null,
-            author:        msg.author ?? null,
+            ts:            msg.latest ?? msg.comment?.created_at ?? null,
+            text:          msg.text   ?? msg.comment?.content ?? null,
+            author:        msg.author ?? msg.comment?.author?.full_name ?? null,
             recentAuthors: null,
           })
           bumpUnreadCountRef.current(msg.chat_id)
-          addPendingRefreshRef.current(msg.chat_id)
+          // Dispatch full message to any open CommentsSection
+          if (msg.comment) {
+            dispatchWsMessageRef.current(msg.chat_id, { type: 'new_message', comment: msg.comment, chat_id: msg.chat_id })
+          } else {
+            // Lightweight notification from an external source (e.g. another server
+            // instance) — fall back to HTTP fetch via pendingRefresh
+            addPendingRefreshRef.current(msg.chat_id)
+          }
+
+        } else if (msg.type === 'message_updated' || msg.type === 'reaction_updated') {
+          if (msg.comment && msg.chat_id) {
+            dispatchWsMessageRef.current(msg.chat_id, { type: msg.type, comment: msg.comment, chat_id: msg.chat_id })
+          }
+
+        } else if (msg.type === 'message_deleted') {
+          if (msg.comment_id && msg.chat_id) {
+            dispatchWsMessageRef.current(msg.chat_id, { type: 'message_deleted', comment_id: msg.comment_id, chat_id: msg.chat_id })
+          }
+
+        } else if (msg.type === 'message_sent') {
+          // Acknowledgement for our own send — forward to handler in CommentsSection
+          if (msg.comment && msg.chat_id) {
+            dispatchWsMessageRef.current(msg.chat_id, { type: 'message_sent', comment: msg.comment, temp_id: msg.temp_id ?? null, chat_id: msg.chat_id })
+          }
         }
       }
 
@@ -187,6 +251,7 @@ export default function ChatWSClient() {
       ws.onclose = () => {
         wsReady = false
         ws = null
+        clearSend()
         if (dead) return
         startFallback()
         reconnectTimer = setTimeout(() => {
@@ -203,6 +268,7 @@ export default function ChatWSClient() {
 
     return () => {
       dead = true
+      clearSend()
       stopFallback()
       if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null }
       if (ws) { ws.close(); ws = null }
