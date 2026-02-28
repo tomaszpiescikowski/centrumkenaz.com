@@ -1190,7 +1190,8 @@
     "loadOlder": "Oudere berichten laden",
     "today": "Vandaag",
     "tomorrow": "Morgen",
-    "pastEvents": "Afgelopen evenementen"
+    "pastEvents": "Afgelopen evenementen",
+    "wroteMessage": "schreef"
   },
   "panel": {
     "loginRequiredTitle": "Log in om het dashboard te gebruiken",

@@ -1190,7 +1190,8 @@
     "loadOlder": "Carica messaggi precedenti",
     "today": "Oggi",
     "tomorrow": "Domani",
-    "pastEvents": "Eventi passati"
+    "pastEvents": "Eventi passati",
+    "wroteMessage": "ha scritto"
   },
   "panel": {
     "loginRequiredTitle": "Accedi per accedere al pannello",

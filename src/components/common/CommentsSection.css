@@ -2894,6 +2894,13 @@ img.cmt-av-img {
 .cp-ev-preview-who {
   font-weight: 700;
 }
+.cp-ev-preview-text {
+  /* inline — inherits ellipsis from parent */
+}
+.cp-ev-preview-time {
+  font-size: 0.7rem;
+  opacity: 0.75;
+}
 .dark .cp-ev-preview {
   color: rgba(255,253,245,0.42);
 }

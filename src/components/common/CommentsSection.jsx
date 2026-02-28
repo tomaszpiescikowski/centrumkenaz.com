@@ -189,7 +189,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
             }
             if (onLatestMessage) {
               const latest = genuinelyNew[genuinelyNew.length - 1]
-              onLatestMessage({ ts: latest.created_at, text: latest.content, author: latest.author?.full_name ?? null })
+              onLatestMessage({ ts: latest.created_at, text: latest.content, author: latest.author?.full_name ?? null, recentAuthors: null })
             }
           }
         }
@@ -210,6 +210,8 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
       if (onLatestMessage && ordered.length > 0) {
         let latestTs = null
         let latestMsg = null
+        // Collect recent unique authors (up to 3) from most-recent comments first
+        const recentAuthorsMap = new Map()
         const scanDates = (items) => {
           for (const c of items) {
             if (!latestTs || c.created_at > latestTs) {
@@ -220,7 +222,20 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           }
         }
         scanDates(ordered)
-        if (latestMsg) onLatestMessage(latestMsg)
+        // Collect authors from newest to oldest (ordered is asc, so iterate reversed)
+        for (let i = ordered.length - 1; i >= 0 && recentAuthorsMap.size < 3; i--) {
+          const c = ordered[i]
+          if (c.author?.id && !recentAuthorsMap.has(String(c.author.id))) {
+            recentAuthorsMap.set(String(c.author.id), {
+              id: String(c.author.id),
+              full_name: c.author.full_name,
+              picture_url: c.author.picture_url ?? null,
+            })
+          }
+        }
+        if (latestMsg) {
+          onLatestMessage({ ...latestMsg, recentAuthors: recentAuthorsMap.size ? [...recentAuthorsMap.values()] : null })
+        }
       }
     } catch {
       setError(t('comments.loadError'))

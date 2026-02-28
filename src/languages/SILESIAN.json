@@ -1195,7 +1195,8 @@
     "loadOlder": "Załaduj starsze wiadomości",
     "today": "Dzisiej",
     "tomorrow": "Jutro",
-    "pastEvents": "Przeszłe wydarzynio"
+    "pastEvents": "Przeszłe wydarzynio",
+    "wroteMessage": "napisoł wiadōmość"
   },
   "panel": {
     "loginRequiredTitle": "Zaloguj sie, coby używać panelu",

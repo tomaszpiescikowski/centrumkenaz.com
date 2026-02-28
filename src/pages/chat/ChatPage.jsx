@@ -162,6 +162,27 @@ function ChatPage() {
     return d.toLocaleDateString(locale, { day: 'numeric', month: 'short' })
   }
 
+  // Relative time: "5 minut temu", "2 godziny temu", "wczoraj", etc.
+  const formatRelativeTime = (ts) => {
+    if (!ts) return ''
+    const diffMs = Date.now() - new Date(ts).getTime()
+    const diffSec = Math.floor(diffMs / 1000)
+    const diffMin = Math.floor(diffSec / 60)
+    const diffH = Math.floor(diffMin / 60)
+    const diffD = Math.floor(diffH / 24)
+    try {
+      const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' })
+      if (diffSec < 60) return rtf.format(-diffSec, 'second')
+      if (diffMin < 60) return rtf.format(-diffMin, 'minute')
+      if (diffH < 24) return rtf.format(-diffH, 'hour')
+      return rtf.format(-diffD, 'day')
+    } catch {
+      if (diffMin < 60) return `${diffMin} min`
+      if (diffH < 24) return `${diffH} h`
+      return `${diffD} d`
+    }
+  }
+
   const sortedEvents = events ? (() => {
     const now = new Date()
     const upcoming = events.filter(ev => new Date(ev.startDateTime) >= now)
@@ -435,8 +456,13 @@ function ChatPage() {
                         {/* Line 3 (optional): latest message preview */}
                         {previewText && (
                           <span className={`cp-ev-preview${unread ? ' cp-ev-preview--bold' : ''}`}>
-                            {authorShort && <span className="cp-ev-preview-who">{authorShort}:&nbsp;</span>}
-                            {previewText}
+                            {authorShort && (
+                              <span className="cp-ev-preview-who">{authorShort}&nbsp;{t('comments.wroteMessage')}:&nbsp;</span>
+                            )}
+                            <span className="cp-ev-preview-text">{previewText}</span>
+                            {previewMsg?.ts && (
+                              <span className="cp-ev-preview-time">&nbsp;&middot;&nbsp;{formatRelativeTime(previewMsg.ts)}</span>
+                            )}
                           </span>
                         )}
                       </button>

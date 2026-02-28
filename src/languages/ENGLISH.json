@@ -1195,7 +1195,8 @@
     "loadOlder": "Load older messages",
     "today": "Today",
     "tomorrow": "Tomorrow",
-    "pastEvents": "Past events"
+    "pastEvents": "Past events",
+    "wroteMessage": "wrote"
   },
   "panel": {
     "loginRequiredTitle": "Log in to use the panel",

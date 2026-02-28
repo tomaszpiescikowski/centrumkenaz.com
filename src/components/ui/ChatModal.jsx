@@ -49,6 +49,26 @@ function formatMsgTime(isoStr) {
   return d.toLocaleDateString([], { day: 'numeric', month: 'short' })
 }
 
+function formatRelativeTime(isoStr, locale) {
+  if (!isoStr) return ''
+  const diffMs = Date.now() - new Date(isoStr).getTime()
+  const diffSec = Math.floor(diffMs / 1000)
+  const diffMin = Math.floor(diffSec / 60)
+  const diffH = Math.floor(diffMin / 60)
+  const diffD = Math.floor(diffH / 24)
+  try {
+    const rtf = new Intl.RelativeTimeFormat(locale || 'pl-PL', { numeric: 'auto' })
+    if (diffSec < 60) return rtf.format(-diffSec, 'second')
+    if (diffMin < 60) return rtf.format(-diffMin, 'minute')
+    if (diffH < 24) return rtf.format(-diffH, 'hour')
+    return rtf.format(-diffD, 'day')
+  } catch {
+    if (diffMin < 60) return `${diffMin} min`
+    if (diffH < 24) return `${diffH} h`
+    return `${diffD} d`
+  }
+}
+
 function initials(name) {
   return (name || '').split(' ').map(w => w[0]).filter(Boolean).join('').slice(0, 2).toUpperCase()
 }
@@ -394,8 +414,13 @@ function ChatModal() {
                           {/* Line 3 (optional): latest message preview */}
                           {previewText && (
                             <span className={`cp-ev-preview${unread ? ' cp-ev-preview--bold' : ''}`}>
-                              {authorShort && <span className="cp-ev-preview-who">{authorShort}:&nbsp;</span>}
-                              {previewText}
+                              {authorShort && (
+                                <span className="cp-ev-preview-who">{authorShort}&nbsp;{t('comments.wroteMessage')}:&nbsp;</span>
+                              )}
+                              <span className="cp-ev-preview-text">{previewText}</span>
+                              {previewMsg?.ts && (
+                                <span className="cp-ev-preview-time">&nbsp;&middot;&nbsp;{formatRelativeTime(previewMsg.ts, locale)}</span>
+                              )}
                             </span>
                           )}
                         </button>

@@ -1190,7 +1190,8 @@
     "loadOlder": "加载更早的消息",
     "today": "今天",
     "tomorrow": "明天",
-    "pastEvents": "过去的活动"
+    "pastEvents": "过去的活动",
+    "wroteMessage": "发消息"
   },
   "panel": {
     "loginRequiredTitle": "登录以访问面板",

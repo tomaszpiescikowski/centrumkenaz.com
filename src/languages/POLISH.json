@@ -1193,7 +1193,8 @@
     "loadOlder": "Załaduj starsze wiadomości",
     "today": "Dziś",
     "tomorrow": "Jutro",
-    "pastEvents": "Minione wydarzenia"
+    "pastEvents": "Minione wydarzenia",
+    "wroteMessage": "napisał wiadomość"
   },
   "panel": {
     "loginRequiredTitle": "Zaloguj się, aby otworzyć panel",

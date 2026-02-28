@@ -58,6 +58,17 @@ export default function ChatPoller() {
 
       if (Object.keys(sinceMap).length === 0) return
 
+      // For chats that have a ts but are missing recentAuthors, override since to
+      // EPOCH_FALLBACK so the server always returns data (and authors) for them.
+      // Track these chatIds so we don't falsely mark them as having new messages.
+      const authorOnlyChats = new Set()
+      for (const [chatId, msg] of Object.entries(snapshot)) {
+        if (msg && typeof msg === 'object' && msg.ts && !msg.recentAuthors?.length) {
+          sinceMap[chatId] = EPOCH_FALLBACK
+          authorOnlyChats.add(chatId)
+        }
+      }
+
       try {
         const result = await checkNewMessages(authFetchRef.current, sinceMap)
         for (const [chatId, data] of Object.entries(result)) {
@@ -65,9 +76,16 @@ export default function ChatPoller() {
           const latestTs = typeof data === 'string' ? data : data.latest
           const count = typeof data === 'object' ? (data.count || 0) : 0
           const recentAuthors = typeof data === 'object' ? (data.authors || []) : []
-          setLatestMessageTime(chatId, { ts: latestTs, text: null, author: null, recentAuthors })
-          setUnreadCount(chatId, count)
-          addPendingRefresh(chatId)
+          if (authorOnlyChats.has(chatId)) {
+            // Only update authors — don't update ts/count/pending for author-only fetches
+            if (recentAuthors.length) {
+              setLatestMessageTime(chatId, { ts: snapshot[chatId]?.ts ?? latestTs, text: snapshot[chatId]?.text ?? null, author: snapshot[chatId]?.author ?? null, recentAuthors })
+            }
+          } else {
+            setLatestMessageTime(chatId, { ts: latestTs, text: null, author: null, recentAuthors })
+            setUnreadCount(chatId, count)
+            addPendingRefresh(chatId)
+          }
         }
       } catch {
         // Polling failures are silent — next tick will retry
