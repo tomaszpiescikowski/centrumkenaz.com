@@ -175,7 +175,7 @@ export function AuthProvider({ children }) {
     if (returnTo) {
       setPostLoginRedirect(returnTo)
     } else if (!existingRedirect) {
-      setPostLoginRedirect('/')
+      setPostLoginRedirect('/calendar')
     }
 
     const isPwa = window.navigator.standalone === true ||
@@ -217,7 +217,7 @@ export function AuthProvider({ children }) {
             navigate(`/manual-payment/${nextManualPayment.registration_id}?from=waitlist`)
             return
           }
-          navigate(redirectTo || '/')
+          navigate(redirectTo || '/calendar')
         }
       }
 

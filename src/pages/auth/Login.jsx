@@ -62,7 +62,7 @@ function Login() {
     }
 
     const returnTo = consumePostLoginRedirect()
-    window.location.href = returnTo || '/'
+    window.location.href = returnTo || '/calendar'
   }
 
   const handleGoogleLogin = () => {

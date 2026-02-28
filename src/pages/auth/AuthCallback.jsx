@@ -63,7 +63,7 @@ function AuthCallback() {
         window.location.href = `/manual-payment/${nextManualPayment.registration_id}?from=waitlist`
         return
       }
-      window.location.href = returnTo || '/'
+      window.location.href = returnTo || '/calendar'
     }
 
     run()
