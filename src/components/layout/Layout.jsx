@@ -43,7 +43,7 @@ function Layout({ children, darkMode, setDarkMode }) {
       <MobileBottomNav />
       <ChatModal />
       <PendingApprovalOverlay />
-      <DraggableFeedbackButton />
+      {isMobileHomeRoute && <DraggableFeedbackButton />}
     </div>
   )
 }
