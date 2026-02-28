@@ -97,16 +97,16 @@ function ChatProvider({ children }) {
           }
       const current = prev[chatId]
       if (current && current.ts >= incoming.ts) {
-        // Not newer – but always update authors when incoming has fresher data
-        if (incoming.recentAuthors?.length) {
-          return { ...prev, [chatId]: { ...current, recentAuthors: incoming.recentAuthors } }
-        }
-        return prev
+        // Not newer — but update authors/text if incoming has fresher data
+        const updated = { ...current }
+        let changed = false
+        if (incoming.recentAuthors?.length) { updated.recentAuthors = incoming.recentAuthors; changed = true }
+        if (incoming.text && !current.text) { updated.text = incoming.text; updated.author = incoming.author; changed = true }
+        return changed ? { ...prev, [chatId]: updated } : prev
       }
-      // Newer message – preserve previous recentAuthors if incoming lacks them
-      if (!incoming.recentAuthors && current?.recentAuthors) {
-        incoming.recentAuthors = current.recentAuthors
-      }
+      // Newer message — preserve fields that incoming lacks
+      if (!incoming.recentAuthors && current?.recentAuthors) incoming.recentAuthors = current.recentAuthors
+      if (!incoming.text && current?.text) { incoming.text = current.text; incoming.author = current.author }
       return { ...prev, [chatId]: incoming }
     })
   }, [])

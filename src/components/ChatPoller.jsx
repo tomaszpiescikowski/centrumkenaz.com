@@ -72,17 +72,19 @@ export default function ChatPoller() {
       try {
         const result = await checkNewMessages(authFetchRef.current, sinceMap)
         for (const [chatId, data] of Object.entries(result)) {
-          // data is { latest: ISO, count: N, authors: [...] }
+          // data is { latest: ISO, count: N, authors: [...], text: str|null, author: str|null }
           const latestTs = typeof data === 'string' ? data : data.latest
           const count = typeof data === 'object' ? (data.count || 0) : 0
           const recentAuthors = typeof data === 'object' ? (data.authors || []) : []
+          const latestText = typeof data === 'object' ? (data.text ?? null) : null
+          const latestAuthor = typeof data === 'object' ? (data.author ?? null) : null
           if (authorOnlyChats.has(chatId)) {
             // Only update authors — don't update ts/count/pending for author-only fetches
             if (recentAuthors.length) {
-              setLatestMessageTime(chatId, { ts: snapshot[chatId]?.ts ?? latestTs, text: snapshot[chatId]?.text ?? null, author: snapshot[chatId]?.author ?? null, recentAuthors })
+              setLatestMessageTime(chatId, { ts: snapshot[chatId]?.ts ?? latestTs, text: snapshot[chatId]?.text ?? latestText, author: snapshot[chatId]?.author ?? latestAuthor, recentAuthors })
             }
           } else {
-            setLatestMessageTime(chatId, { ts: latestTs, text: null, author: null, recentAuthors })
+            setLatestMessageTime(chatId, { ts: latestTs, text: latestText, author: latestAuthor, recentAuthors })
             setUnreadCount(chatId, count)
             addPendingRefresh(chatId)
           }

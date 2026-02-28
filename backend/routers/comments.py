@@ -400,6 +400,22 @@ async def check_new_messages(
             if latest.tzinfo is None:
                 latest = latest.replace(tzinfo=timezone.utc)
 
+            # Fetch the single latest message (text + author) for preview
+            latest_msg_stmt = (
+                select(Comment.content, User.full_name)
+                .join(User, Comment.author_id == User.id)
+                .where(and_(
+                    Comment.resource_type == resource_type,
+                    Comment.resource_id == resource_id,
+                    Comment.is_deleted.is_(False),
+                ))
+                .order_by(Comment.created_at.desc())
+                .limit(1)
+            )
+            latest_msg_row = (await db.execute(latest_msg_stmt)).one_or_none()
+            latest_text = latest_msg_row[0] if latest_msg_row else None
+            latest_author = latest_msg_row[1] if latest_msg_row else None
+
             # Fetch up to 3 recent unique message authors for this chat
             authors_stmt = (
                 select(User.id, User.full_name, User.picture_url)
@@ -425,7 +441,13 @@ async def check_new_messages(
                         "picture_url": row[2],
                     })
 
-            result[chat_id] = {"latest": latest.isoformat(), "count": count, "authors": authors}
+            result[chat_id] = {
+                "latest": latest.isoformat(),
+                "count": count,
+                "authors": authors,
+                "text": latest_text,
+                "author": latest_author,
+            }
 
     return result
 
