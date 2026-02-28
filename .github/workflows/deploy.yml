@@ -371,6 +371,9 @@ jobs:
           DEFAULT_PAYMENT_URL=${{ vars.DEFAULT_PAYMENT_URL }}
           ROOT_ADMIN_EMAIL=${{ vars.ROOT_ADMIN_EMAIL }}
           DEBUG=${{ vars.DEBUG || 'false' }}
+          VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}
+          VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}
+          VAPID_SUBJECT=${{ vars.VAPID_SUBJECT || 'mailto:admin@kenaz.pl' }}
           DOTENV
           "
           ssh deploy-server "chmod 600 ${{ env.BACKEND_DIR }}/.env"
