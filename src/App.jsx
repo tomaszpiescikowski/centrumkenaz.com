@@ -10,6 +10,15 @@ import Home from './pages/public/Home'
 import CalendarPage from './pages/public/CalendarPage'
 import EventDetail from './pages/public/EventDetail'
 import AuthCallback from './pages/auth/AuthCallback'
+
+// Safety net: if nginx is not proxying /auth/google/callback → backend,
+// the SPA receives the raw Google OAuth params here. Re-route them straight
+// to /api/auth/google/callback which nginx always proxies via the /api/ block.
+function GoogleCallbackRedirect() {
+  const search = window.location.search
+  window.location.replace('/api/auth/google/callback' + search)
+  return null
+}
 import AdminEventCreate from './pages/admin/AdminEventCreate'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminPayments from './pages/admin/AdminPayments'
@@ -158,6 +167,7 @@ function App() {
                   </Route>
                   <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/auth/error" element={<AuthCallback />} />
+                  <Route path="/auth/google/callback" element={<GoogleCallbackRedirect />} />
                 </Routes>
               </div>
             </Layout>

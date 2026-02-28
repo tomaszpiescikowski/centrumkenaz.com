@@ -19,6 +19,7 @@ readonly APP_DIR="${APP_DIR:-/opt/kenaz}"
 readonly BACKEND_DIR="${BACKEND_DIR:-${APP_DIR}/backend}"
 readonly FRONTEND_DIR="${FRONTEND_DIR:-${APP_DIR}/dist}"
 readonly STATIC_DIR="${STATIC_DIR:-${APP_DIR}/static}"
+readonly NGINX_SNIPPET="${NGINX_SNIPPET:-/etc/nginx/snippets/kenaz-backend.conf}"
 readonly PYTHON_VERSION="${PYTHON_VERSION:-3.14}"
 
 # Functions
@@ -165,6 +166,14 @@ sync_files() {
     rsync -avz \
         -e "ssh ${SSH_KEY_OPT} -o StrictHostKeyChecking=accept-new" \
         public/static/ "${SSH_USER}@${SSH_HOST}:${STATIC_DIR}/"
+
+    # Sync nginx snippet
+    log_info "Syncing nginx backend-locations config..."
+    rsync -avz \
+        -e "ssh ${SSH_KEY_OPT} -o StrictHostKeyChecking=accept-new" \
+        nginx/backend-locations.conf "${SSH_USER}@${SSH_HOST}:/tmp/kenaz-backend-locations.conf"
+    ssh ${SSH_KEY_OPT} -o StrictHostKeyChecking=accept-new "${SSH_USER}@${SSH_HOST}" \
+        "sudo install -m 644 /tmp/kenaz-backend-locations.conf ${NGINX_SNIPPET}"
     
     log_success "Files synced successfully"
 }
