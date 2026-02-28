@@ -383,16 +383,8 @@ function ChatModal() {
                             <span className="cp-ev-ts">{timeLabel}</span>
                           </span>
 
-                          {/* Line 2: meta + today + avatars + badge / chevron */}
+                          {/* Line 2: avatars (left) + meta + today + badge / chevron */}
                           <span className="cp-ev-bottom">
-                            <span className="cp-ev-meta">
-                              {ev.city}
-                              {ev.city && evTime && <> &middot;</>}
-                              {evTime && <> {isToday ? evTime : formatDate(ev.startDateTime)}</>}
-                              {!ev.city && !evTime && formatDate(ev.startDateTime)}
-                            </span>
-                            {isToday && <span className="cp-ev-today">{t('comments.today')}</span>}
-                            {isTomorrow && <span className="cp-ev-tomorrow">{t('comments.tomorrow')}</span>}
                             {authors?.length > 0 && (
                               <span className="cp-ev-avs">
                                 {authors.slice(0, 3).map((a, i) => (
@@ -405,6 +397,14 @@ function ChatModal() {
                                 ))}
                               </span>
                             )}
+                            <span className="cp-ev-meta">
+                              {ev.city}
+                              {ev.city && evTime && <> &middot;</>}
+                              {evTime && <> {isToday ? evTime : formatDate(ev.startDateTime)}</>}
+                              {!ev.city && !evTime && formatDate(ev.startDateTime)}
+                            </span>
+                            {isToday && <span className="cp-ev-today">{t('comments.today')}</span>}
+                            {isTomorrow && <span className="cp-ev-tomorrow">{t('comments.tomorrow')}</span>}
                             {unread
                               ? <span className="cp-ev-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
                               : <span className="cp-ev-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
@@ -415,12 +415,9 @@ function ChatModal() {
                           {previewText && (
                             <span className={`cp-ev-preview${unread ? ' cp-ev-preview--bold' : ''}`}>
                               {authorShort && (
-                                <span className="cp-ev-preview-who">{authorShort}&nbsp;{t('comments.wroteMessage')}:&nbsp;</span>
+                                <><strong className="cp-ev-preview-name">{authorShort}</strong><em className="cp-ev-preview-verb">&nbsp;{t('comments.wroteMessage')}:</em>{' '}</>
                               )}
                               <span className="cp-ev-preview-text">{previewText}</span>
-                              {previewMsg?.ts && (
-                                <span className="cp-ev-preview-time">&nbsp;&middot;&nbsp;{formatRelativeTime(previewMsg.ts, locale)}</span>
-                              )}
                             </span>
                           )}
                         </button>

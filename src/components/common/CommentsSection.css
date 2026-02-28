@@ -2887,23 +2887,38 @@ img.cmt-av-img {
   padding-left: 1.4rem; /* align under title */
   line-height: 1.35;
 }
-.cp-ev-preview--bold {
+/* Author name: semi-bold (WhatsApp/Messenger pattern — name stands out, not full bold) */
+.cp-ev-preview-name {
+  font-weight: 600;
+  font-style: normal;
+  color: rgba(15,23,74,0.80);
+}
+.dark .cp-ev-preview-name {
+  color: rgba(255,253,245,0.72);
+}
+/* Verb "napisał wiadomość:" — italic and muted, visually secondary */
+.cp-ev-preview-verb {
+  font-weight: 400;
+  font-style: italic;
+  color: rgba(15,23,74,0.42);
+}
+.dark .cp-ev-preview-verb {
+  color: rgba(255,253,245,0.35);
+}
+/* Message body: regular weight */
+.cp-ev-preview-text {
+  font-weight: 400;
+}
+.cp-ev-preview--bold .cp-ev-preview-name {
+  color: rgba(15,23,74,0.92);
+}
+.cp-ev-preview--bold .cp-ev-preview-text {
   font-weight: 600;
   color: var(--txt, #0f174a);
-}
-.cp-ev-preview-who {
-  font-weight: 700;
-}
-.cp-ev-preview-text {
-  /* inline — inherits ellipsis from parent */
-}
-.cp-ev-preview-time {
-  font-size: 0.7rem;
-  opacity: 0.75;
 }
 .dark .cp-ev-preview {
   color: rgba(255,253,245,0.42);
 }
-.dark .cp-ev-preview--bold {
+.dark .cp-ev-preview--bold .cp-ev-preview-text {
   color: rgba(255,253,245,0.88);
 }
