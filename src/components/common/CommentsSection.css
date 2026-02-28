@@ -778,8 +778,9 @@ img.cmt-av-img {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(15, 23, 74, 0.40);
-  backdrop-filter: blur(4px);
+  /* Keep very light overlay — no backdrop-filter here so the panel's
+     own blur can reach through to the page content behind */
+  background: rgba(15, 23, 74, 0.18);
   padding: 0.75rem;
 }
 
@@ -788,7 +789,6 @@ img.cmt-av-img {
   .chat-modal-backdrop,
   .dark .chat-modal-backdrop {
     background: none;
-    backdrop-filter: none;
     padding: 0;
     align-items: flex-start;
     justify-content: flex-start;
@@ -796,7 +796,7 @@ img.cmt-av-img {
 }
 
 .dark .chat-modal-backdrop {
-  background: rgba(0, 0, 0, 0.60);
+  background: rgba(0, 0, 0, 0.30);
 }
 
 .chat-modal-panel {
@@ -807,11 +807,11 @@ img.cmt-av-img {
   border-radius: 1rem;
   display: flex;
   flex-direction: column;
-  background: var(--bg, rgba(255, 245, 225, 0.82));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(15, 23, 74, 0.12);
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+  background: rgba(255, 245, 225, 0.55);
+  backdrop-filter: blur(28px) saturate(1.6);
+  -webkit-backdrop-filter: blur(28px) saturate(1.6);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255,255,255,0.6);
   overflow: hidden;
 }
 
@@ -839,10 +839,11 @@ img.cmt-av-img {
 }
 
 .dark .chat-modal-panel {
-  background: var(--bg-dark, rgba(26, 26, 78, 0.85));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-color: rgba(255, 253, 245, 0.10);
+  background: rgba(20, 20, 65, 0.60);
+  backdrop-filter: blur(28px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  border-color: rgba(255, 253, 245, 0.15);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255,255,255,0.08);
 
   --b:    rgba(255, 253, 245, 0.10);
   --surf: rgba(26, 26, 78, 0.68);
@@ -1975,14 +1976,13 @@ img.cmt-av-img {
   --txt:   rgba(26, 26, 78, 0.92);
   --muted: rgba(26, 26, 78, 0.50);
   --b:     rgba(26, 26, 78, 0.09);
-  background: rgba(255, 245, 225, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  /* Mobile chat IS the page — no backdrop-filter (nothing behind to blur).
+     Use frosted look via semi-transparent bg + border */
+  background: rgba(255, 245, 225, 0.82);
+  -webkit-backdrop-filter: blur(0px);
 }
 .dark .cp-root {
-  background: rgba(26, 26, 78, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(18, 18, 52, 0.88);
   --txt:   rgba(255, 245, 225, 0.92);
   --muted: rgba(255, 245, 225, 0.44);
   --b:     rgba(255, 245, 225, 0.09);
@@ -1991,14 +1991,10 @@ img.cmt-av-img {
   --txt:   rgba(26, 26, 78, 0.92);
   --muted: rgba(26, 26, 78, 0.50);
   --b:     rgba(26, 26, 78, 0.09);
-  background: rgba(255, 245, 225, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 245, 225, 0.82);
 }
 .dark .chat-page-root {
-  background: rgba(26, 26, 78, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(18, 18, 52, 0.88);
   --txt:   rgba(255, 245, 225, 0.92);
   --muted: rgba(255, 245, 225, 0.44);
   --b:     rgba(255, 245, 225, 0.09);
