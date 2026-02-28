@@ -83,6 +83,11 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
   const isAdmin = user?.role === 'admin'
   const { pendingRefresh, clearPendingRefresh } = useChat()
 
+  // Use a ref so inline arrow-function props (onLatestMessage, onMarkRead) don't
+  // appear in useCallback dep arrays and cause infinite fetch loops.
+  const onLatestMessageRef = useRef(onLatestMessage)
+  useEffect(() => { onLatestMessageRef.current = onLatestMessage }, [onLatestMessage])
+
   const [comments, setComments] = useState([])
   const [generalComments, setGeneralComments] = useState([])
   const [loading, setLoading] = useState(true)
@@ -187,9 +192,9 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
                 return n
               }), 3000)
             }
-            if (onLatestMessage) {
+            if (onLatestMessageRef.current) {
               const latest = genuinelyNew[genuinelyNew.length - 1]
-              onLatestMessage({ ts: latest.created_at, text: latest.content, author: latest.author?.full_name ?? null, recentAuthors: null })
+              onLatestMessageRef.current({ ts: latest.created_at, text: latest.content, author: latest.author?.full_name ?? null, recentAuthors: null })
             }
           }
         }
@@ -207,7 +212,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
         oldestTs: ordered.length > 0 ? ordered[0].created_at : null,
         hasMore: data.length === PAGE_SIZE,
       })
-      if (onLatestMessage && ordered.length > 0) {
+      if (onLatestMessageRef.current && ordered.length > 0) {
         let latestTs = null
         let latestMsg = null
         // Collect recent unique authors (up to 3) from most-recent comments first
@@ -234,7 +239,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           }
         }
         if (latestMsg) {
-          onLatestMessage({ ...latestMsg, recentAuthors: recentAuthorsMap.size ? [...recentAuthorsMap.values()] : null })
+          onLatestMessageRef.current({ ...latestMsg, recentAuthors: recentAuthorsMap.size ? [...recentAuthorsMap.values()] : null })
         }
       }
     } catch {
@@ -242,7 +247,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
     } finally {
       setLoading(false)
     }
-  }, [resourceType, resourceId, authFetch, t, onLatestMessage, user])
+  }, [resourceType, resourceId, authFetch, t])
 
   const loadGeneralComments = useCallback(async () => {
     const wasPollRefresh = isPollRefreshRef.current
@@ -269,9 +274,9 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
                 return n
               }), 3000)
             }
-            if (onLatestMessage && chatId === 'general:global') {
+            if (onLatestMessageRef.current && chatId === 'general:global') {
               const latest = genuinelyNew[genuinelyNew.length - 1]
-              onLatestMessage({ ts: latest.created_at, text: latest.content, author: latest.author?.full_name ?? null })
+              onLatestMessageRef.current({ ts: latest.created_at, text: latest.content, author: latest.author?.full_name ?? null })
             }
           }
         }
@@ -288,7 +293,7 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
         oldestTs: orderedGeneral.length > 0 ? orderedGeneral[0].created_at : null,
         hasMore: data.length === PAGE_SIZE,
       })
-      if (onLatestMessage && chatId === 'general:global' && orderedGeneral.length > 0) {
+      if (onLatestMessageRef.current && chatId === 'general:global' && orderedGeneral.length > 0) {
         let latestTs = null
         let latestMsg = null
         const scanDates = (items) => {
@@ -301,12 +306,12 @@ function CommentsSection({ resourceType, resourceId, activeTab: externalTab, onT
           }
         }
         scanDates(orderedGeneral)
-        if (latestMsg) onLatestMessage(latestMsg)
+        if (latestMsg) onLatestMessageRef.current(latestMsg)
       }
     } catch {
       /* silent */
     }
-  }, [authFetch, onLatestMessage, chatId, user])
+  }, [authFetch, chatId])
 
   // Scroll messenger list to bottom
   const scrollToBottom = useCallback(() => {
