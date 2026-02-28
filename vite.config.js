@@ -18,6 +18,7 @@ export default defineConfig({
       includeAssets: [
         'static/pwa-192.png',
         'static/pwa-512.png',
+        'static/pwa-512-maskable.png',
         'static/apple-touch-180.png',
         'static/render.png',
       ],
@@ -51,7 +52,7 @@ export default defineConfig({
             purpose: 'any',
           },
           {
-            src: 'static/pwa-512.png',
+            src: 'static/pwa-512-maskable.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',
