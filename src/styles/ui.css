@@ -1,6 +1,6 @@
 @layer components {
   .page-shell {
-    @apply mx-auto w-full max-w-4xl px-5 py-4 sm:px-4 sm:py-6;
+    @apply mx-auto w-full max-w-4xl px-5 pt-4 pb-10 sm:px-4 sm:py-6;
     touch-action: pan-y;
   }
 

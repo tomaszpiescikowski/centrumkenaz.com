@@ -570,7 +570,7 @@ function Calendar({ className = '' }) {
             )}
 
             {selectedDayEvents.length > 0 && (
-              <div className="max-h-[55svh] divide-y divide-navy/10 overflow-y-auto dark:divide-cream/10 sm:max-h-none sm:flex-1">
+              <div className="max-h-[55svh] divide-y divide-navy/10 overflow-y-auto dark:divide-cream/10 sm:max-h-none sm:flex-1 pb-10 sm:pb-0">
                 {selectedDayEvents.map((eventItem) => {
                   const isRegistered = registeredEventIds.has(eventItem.id)
                   const availability = availabilityByEventId[eventItem.id] || null
