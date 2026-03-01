@@ -986,6 +986,7 @@
       "status": {
         "active": "Aktywny",
         "pending": "Oczekujący",
+        "pending_no_req": "Bez wniosku",
         "banned": "Zablokowany"
       },
       "role": {
@@ -1081,6 +1082,7 @@
       "status": {
         "active": "Aktywny",
         "pending": "Oczekujący",
+        "pending_no_req": "Bez wniosku",
         "banned": "Zablokowany"
       },
       "role": {

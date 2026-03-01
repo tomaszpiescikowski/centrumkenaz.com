@@ -2000,6 +2000,7 @@ class UserListItem(BaseModel):
     role: str
     account_status: str
     created_at: str | None = None
+    has_approval_request: bool = False
 
 
 @router.get("/users/all", response_model=list[UserListItem])
@@ -2009,9 +2010,11 @@ async def list_all_users(
 ) -> list[UserListItem]:
     """Return every user account ordered by creation date (newest first)."""
     result = await db.execute(
-        select(User).order_by(User.created_at.desc())
+        select(User)
+        .options(joinedload(User.approval_request))
+        .order_by(User.created_at.desc())
     )
-    users = result.scalars().all()
+    users = result.unique().scalars().all()
     return [
         UserListItem(
             id=str(u.id),
@@ -2021,6 +2024,7 @@ async def list_all_users(
             role=u.role.value if u.role else "guest",
             account_status=u.account_status.value if u.account_status else "pending",
             created_at=u.created_at.isoformat() if u.created_at else None,
+            has_approval_request=u.approval_request is not None,
         )
         for u in users
     ]

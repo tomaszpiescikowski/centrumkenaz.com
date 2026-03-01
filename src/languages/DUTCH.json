@@ -983,6 +983,7 @@
       "status": {
         "active": "Actief",
         "pending": "In behandeling",
+        "pending_no_req": "Geen verzoek",
         "banned": "Geblokkeerd"
       },
       "role": {
@@ -1052,6 +1053,7 @@
       "status": {
         "active": "Actief",
         "pending": "In behandeling",
+        "pending_no_req": "Geen verzoek",
         "banned": "Geblokkeerd"
       },
       "role": {

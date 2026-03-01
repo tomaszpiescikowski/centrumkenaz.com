@@ -13,15 +13,22 @@ function initials(name) {
 
 function StatusBadge({ status, t }) {
   const map = {
-    active:  'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-    pending: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
-    banned:  'bg-[#EB4731]/10 text-[#EB4731] dark:bg-[#EB4731]/20 dark:text-[#EB4731]',
+    active:           'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
+    pending:          'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
+    pending_no_req:   'bg-navy/8 text-navy/50 dark:bg-cream/8 dark:text-cream/50',
+    banned:           'bg-[#EB4731]/10 text-[#EB4731] dark:bg-[#EB4731]/20 dark:text-[#EB4731]',
   }
   return (
-    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide ${map[status] || map.pending}`}>
+    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide ${map[status] || map.pending_no_req}`}>
       {t(`admin.usersList.status.${status}`)}
     </span>
   )
+}
+
+/** Compute a display-level status that splits "pending" into two buckets. */
+function displayStatus(u) {
+  if (u.account_status === 'pending' && !u.has_approval_request) return 'pending_no_req'
+  return u.account_status
 }
 
 function RoleBadge({ role, t }) {
@@ -92,7 +99,8 @@ function AdminUsersList() {
       const matchesQuery = !q
         || (u.full_name || '').toLowerCase().includes(q)
         || (u.email || '').toLowerCase().includes(q)
-      const matchesStatus = statusFilter === 'all' || u.account_status === statusFilter
+      const ds = displayStatus(u)
+      const matchesStatus = statusFilter === 'all' || ds === statusFilter
       const isSubscriber = u.subscription_end_date && new Date(u.subscription_end_date) > now
       const matchesSubscriber = subscriberFilter === 'all'
         || (subscriberFilter === 'subscriber' && isSubscriber)
@@ -217,11 +225,12 @@ function AdminUsersList() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="ui-input ui-input-compact sm:w-44"
+          className="ui-input ui-input-compact sm:w-48"
         >
           <option value="all">{t('admin.usersList.filterAll')}</option>
           <option value="active">{t('admin.usersList.status.active')}</option>
           <option value="pending">{t('admin.usersList.status.pending')}</option>
+          <option value="pending_no_req">{t('admin.usersList.status.pending_no_req')}</option>
           <option value="banned">{t('admin.usersList.status.banned')}</option>
         </select>
         <select
@@ -267,7 +276,7 @@ function AdminUsersList() {
                         {u.full_name || t('admin.usersList.noName')}
                       </span>
                       <RoleBadge role={u.role} t={t} />
-                      <StatusBadge status={u.account_status} t={t} />
+                      <StatusBadge status={displayStatus(u)} t={t} />
                     </div>
                     <p className="text-xs text-navy/50 dark:text-cream/50 truncate">{u.email}</p>
                   </div>

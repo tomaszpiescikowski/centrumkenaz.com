@@ -983,6 +983,7 @@
       "status": {
         "active": "活跃",
         "pending": "待审核",
+        "pending_no_req": "?????????",
         "banned": "已封禁"
       },
       "role": {
@@ -1052,6 +1053,7 @@
       "status": {
         "active": "活跃",
         "pending": "待审核",
+        "pending_no_req": "?????????",
         "banned": "已封禁"
       },
       "role": {
