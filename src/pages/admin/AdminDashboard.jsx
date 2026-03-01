@@ -16,12 +16,12 @@ function AdminDashboard() {
     setSending(true)
     try {
       const result = await sendTestPush(authFetch)
-      if (result.status === 'no_subscriptions' || result.status === 'not_configured' || result.status === 'delivery_failed') {
-        showError(result.message)
+      if (result.status === 'sent') {
+        showSuccess(`🔔 ${result.message} Sprawdź powiadomienie systemowe.`)
       } else if (result.status === 'partial') {
         showError(`⚠️ ${result.message}`)
       } else {
-        showSuccess(`🔔 ${result.message} Sprawdź powiadomienie systemowe.`)
+        showError(result.message)
       }
     } catch (err) {
       showError('Nie udało się wysłać testu: ' + (err?.message || String(err)))

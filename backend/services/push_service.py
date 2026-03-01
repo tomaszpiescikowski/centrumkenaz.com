@@ -62,18 +62,51 @@ def _send_one(subscription_info: dict, payload: dict) -> None:
         )
         if status in (404, 410):
             raise _ExpiredSubscriptionError() from exc
-        raise
+        raise _PushSendError(str(exc), status=status, body=body) from exc
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("[push] Unexpected exception endpoint=%s", endpoint_short)
+        raise _PushSendError(str(exc), status=None, body="") from exc
 
 
 class _ExpiredSubscriptionError(Exception):
     pass
 
 
-def _empty_stats() -> dict[str, int]:
-    return {"attempted": 0, "delivered": 0, "expired": 0, "failed": 0}
+class _PushSendError(Exception):
+    def __init__(self, message: str, status: int | None = None, body: str = ""):
+        super().__init__(message)
+        self.status = status
+        self.body = body
 
 
-async def send_to_admins(db: AsyncSession, title: str, body: str, url: str = "/admin") -> dict[str, int]:
+def _empty_stats() -> dict:
+    return {
+        "attempted": 0,
+        "delivered": 0,
+        "expired": 0,
+        "failed": 0,
+        "failure_reasons": [],
+    }
+
+
+def _collect_failure_reason(stats: dict, err: _PushSendError) -> None:
+    reasons = stats.setdefault("failure_reasons", [])
+    status_key = err.status if err.status is not None else "unknown"
+    sample = (err.body or str(err)).replace("\n", " ").strip()[:220]
+    for item in reasons:
+        if item.get("status") == status_key and item.get("sample") == sample:
+            item["count"] = int(item.get("count", 0)) + 1
+            return
+    reasons.append(
+        {
+            "status": status_key,
+            "count": 1,
+            "sample": sample,
+        }
+    )
+
+
+async def send_to_admins(db: AsyncSession, title: str, body: str, url: str = "/admin") -> dict:
     """
     Send a push notification to every active admin push subscription.
 
@@ -99,7 +132,7 @@ async def send_to_admins(db: AsyncSession, title: str, body: str, url: str = "/a
     return await _dispatch(db, subscriptions, payload)
 
 
-async def send_to_user(db: AsyncSession, user_id: str, title: str, body: str, url: str = "/") -> dict[str, int]:
+async def send_to_user(db: AsyncSession, user_id: str, title: str, body: str, url: str = "/") -> dict:
     """Send a push notification to all subscriptions belonging to *user_id*."""
     settings = get_settings()
     if not settings.vapid_private_key:
@@ -116,7 +149,7 @@ async def send_to_user(db: AsyncSession, user_id: str, title: str, body: str, ur
     return await _dispatch(db, subscriptions, payload)
 
 
-async def send_to_all_active_users(db: AsyncSession, title: str, body: str, url: str = "/") -> dict[str, int]:
+async def send_to_all_active_users(db: AsyncSession, title: str, body: str, url: str = "/") -> dict:
     """Send a push notification to every stored subscription (all active users)."""
     settings = get_settings()
     if not settings.vapid_private_key:
@@ -136,7 +169,7 @@ async def send_event_push_to_all(
     scenario: str,
     params: dict[str, str],
     url: str = "/",
-) -> dict[str, int]:
+) -> dict:
     """
     Send a translated event push notification to every subscriber.
 
@@ -180,6 +213,10 @@ async def send_event_push_to_all(
         except _ExpiredSubscriptionError:
             expired_ids.append(sub.id)
             stats["expired"] += 1
+        except _PushSendError as exc:
+            stats["failed"] += 1
+            _collect_failure_reason(stats, exc)
+            logger.exception("[push] Failed to send event push to sub %s", sub.id)
         except Exception:  # noqa: BLE001
             stats["failed"] += 1
             logger.exception("[push] Failed to send event push to sub %s", sub.id)
@@ -200,7 +237,7 @@ async def send_event_push_to_user(
     scenario: str,
     params: dict[str, str],
     url: str = "/",
-) -> dict[str, int]:
+) -> dict:
     """
     Send a translated event push notification to a single user.
 
@@ -242,6 +279,10 @@ async def send_event_push_to_user(
         except _ExpiredSubscriptionError:
             expired_ids.append(sub.id)
             stats["expired"] += 1
+        except _PushSendError as exc:
+            stats["failed"] += 1
+            _collect_failure_reason(stats, exc)
+            logger.exception("[push] Failed to send event push to sub %s", sub.id)
         except Exception:  # noqa: BLE001
             stats["failed"] += 1
             logger.exception("[push] Failed to send event push to sub %s", sub.id)
@@ -255,7 +296,7 @@ async def send_event_push_to_user(
     return stats
 
 
-async def _dispatch(db: AsyncSession, subscriptions: list, payload: dict) -> dict[str, int]:
+async def _dispatch(db: AsyncSession, subscriptions: list, payload: dict) -> dict:
     """Dispatch push to a list of subscriptions, pruning expired ones."""
     loop = asyncio.get_running_loop()
     expired_ids: list[str] = []
@@ -274,6 +315,10 @@ async def _dispatch(db: AsyncSession, subscriptions: list, payload: dict) -> dic
         except _ExpiredSubscriptionError:
             expired_ids.append(sub.id)
             stats["expired"] += 1
+        except _PushSendError as exc:
+            stats["failed"] += 1
+            _collect_failure_reason(stats, exc)
+            logger.exception("[push] Failed to send push to sub %s", sub.id)
         except Exception:  # noqa: BLE001
             stats["failed"] += 1
             logger.exception("[push] Failed to send push to sub %s", sub.id)

@@ -7,10 +7,13 @@ GET  /push/vapid-public-key   – Public, returns VAPID public key for browser s
 POST /push/subscribe           – Save (or refresh) a push subscription (admin only).
 DELETE /push/subscribe         – Remove a push subscription (admin only).
 """
+import base64
 import uuid
 
+from cryptography.hazmat.primitives import serialization as crypto_serialization
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from py_vapid import Vapid
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -119,6 +122,36 @@ async def test_push(
     Send a test push notification to the requesting admin's own subscriptions.
     Returns diagnostic info so the caller knows what happened.
     """
+    settings = get_settings()
+    if not settings.vapid_private_key or not settings.vapid_public_key:
+        return {
+            "status": "not_configured",
+            "message": "Brak kluczy VAPID na backendzie (VAPID_PRIVATE_KEY / VAPID_PUBLIC_KEY).",
+            "sent": 0,
+        }
+
+    try:
+        vapid = Vapid.from_string(settings.vapid_private_key)
+        derived_public = base64.urlsafe_b64encode(
+            vapid.public_key.public_bytes(
+                crypto_serialization.Encoding.X962,
+                crypto_serialization.PublicFormat.UncompressedPoint,
+            )
+        ).rstrip(b"=").decode()
+    except Exception as exc:  # noqa: BLE001
+        return {
+            "status": "misconfigured_vapid",
+            "message": f"Nieprawidłowy VAPID_PRIVATE_KEY: {exc}",
+            "sent": 0,
+        }
+
+    if derived_public != settings.vapid_public_key:
+        return {
+            "status": "misconfigured_vapid",
+            "message": "Niespójna para kluczy VAPID (private/public nie pasują do siebie).",
+            "sent": 0,
+        }
+
     result = await db.execute(
         select(PushSubscription).where(PushSubscription.user_id == str(user.id))
     )
@@ -143,6 +176,16 @@ async def test_push(
     delivered = int(stats.get("delivered", 0))
     failed = int(stats.get("failed", 0))
     expired = int(stats.get("expired", 0))
+    failure_reasons = stats.get("failure_reasons", [])
+
+    reasons_suffix = ""
+    if failure_reasons:
+        samples = []
+        for item in failure_reasons[:3]:
+            samples.append(
+                f"status={item.get('status')} x{item.get('count')}: {item.get('sample')}"
+            )
+        reasons_suffix = " Powody: " + " | ".join(samples)
 
     if attempted == 0:
         return {
@@ -161,21 +204,24 @@ async def test_push(
             "message": (
                 "Nie udało się dostarczyć push. "
                 f"attempted={attempted}, failed={failed}, expired={expired}."
+                f"{reasons_suffix}"
             ),
             "sent": 0,
             "attempted": attempted,
             "delivered": delivered,
             "failed": failed,
             "expired": expired,
+            "failure_reasons": failure_reasons,
         }
 
     detail = f"attempted={attempted}, delivered={delivered}, failed={failed}, expired={expired}"
     return {
         "status": "sent" if failed == 0 and expired == 0 else "partial",
-        "message": f"Push dostarczony. {detail}",
+        "message": f"Push dostarczony. {detail}{reasons_suffix}",
         "sent": delivered,
         "attempted": attempted,
         "delivered": delivered,
         "failed": failed,
         "expired": expired,
+        "failure_reasons": failure_reasons,
     }
