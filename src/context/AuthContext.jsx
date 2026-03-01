@@ -89,8 +89,9 @@ export function AuthProvider({ children }) {
         logout()
       }
     } catch (error) {
-      console.error('Failed to refresh token:', error)
-      logout()
+      // Network error during token refresh — don't destroy the session.
+      // Tokens may still be valid once the server recovers.
+      console.error('Failed to refresh token (network error, tokens preserved):', error)
     }
   }, [logout, storeTokens])
 
@@ -116,8 +117,11 @@ export function AuthProvider({ children }) {
         if (logoutOnFailure) logout()
       }
     } catch (error) {
-      console.error('Failed to fetch user:', error)
-      if (logoutOnFailure) logout()
+      // Network errors (connection refused, timeout, server restart) must NOT
+      // destroy the session. The JWT tokens are still valid — the backend was
+      // just momentarily unavailable. Only deliberate HTTP auth failures (401,
+      // handled above) should log the user out.
+      console.error('Failed to fetch user (network error, tokens preserved):', error)
     } finally {
       setLoading(false)
     }
