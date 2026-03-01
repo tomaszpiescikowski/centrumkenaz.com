@@ -491,6 +491,7 @@
     "pushNotSupported": "Twoja przeglądarka nie obsługuje powiadomień push.",
     "pushDenied": "Powiadomienia zostały zablokowane w ustawieniach przeglądarki. Odblokuj je w ustawieniach witryny.",
     "pushSubscribed": "Powiadomienia włączone",
+    "pushClickToDisable": "kliknij aby wyłączyć",
     "pushUnsubscribe": "Wyłącz powiadomienia",
     "pushSubscribe": "Włącz powiadomienia push"
   },

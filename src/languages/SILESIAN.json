@@ -493,6 +493,7 @@
     "pushNotSupported": "Twoja przeglądarka niy obsługuje powiadomiyń push.",
     "pushDenied": "Powiadomiynia są zablokowane w ustawiyniach przeglōndarka.",
     "pushSubscribed": "Powiadomiynia włōnczone",
+    "pushClickToDisable": "kliknij coby wyłōnczyć",
     "pushUnsubscribe": "Wyłōncz powiadomiynia",
     "pushSubscribe": "Włōncz powiadomiynia push"
   },
