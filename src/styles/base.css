@@ -77,6 +77,17 @@ img, a, button {
   touch-action: pan-y;
 }
 
+/* Ensure iOS Safari passes vertical swipe gestures to the scroll container
+   instead of "absorbing" them on non-scrollable divs/sections. Without this,
+   touching a card and swiping up/down does nothing because the card has
+   touch-action:auto and iOS heuristically cancels the scroll. */
+.app-main section,
+.app-main aside,
+.app-main article,
+.app-main .page-shell {
+  touch-action: pan-y;
+}
+
 .app-shell,
 .app-main {
   width: 100%;
