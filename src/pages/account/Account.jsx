@@ -164,7 +164,7 @@ function Account({ darkMode, setDarkMode }) {
   }
 
   return (
-    <div className="page-shell flex flex-col gap-4 sm:gap-6">
+    <div className="page-shell flex h-full min-h-0 flex-col gap-4 sm:h-auto sm:overflow-visible sm:gap-6">
       <div className="shrink-0 flex items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-navy dark:text-cream">
@@ -183,7 +183,8 @@ function Account({ darkMode, setDarkMode }) {
         </button>
       </div>
 
-      <section className="shrink-0">
+      <div className="min-h-0 flex-1 overflow-y-auto pb-10 sm:overflow-visible sm:flex-none">
+      <section>
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
           <div className="xl:col-span-2 rounded-2xl border border-navy/10 bg-[rgba(255,251,235,0.82)] p-4 dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)]">
             <h2 className="mb-4 text-xl font-black text-navy dark:text-cream">
@@ -473,6 +474,7 @@ function Account({ darkMode, setDarkMode }) {
           </aside>
         </div>
       </section>
+      </div>
     </div>
   )
 }
