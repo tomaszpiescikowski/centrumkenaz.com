@@ -7,7 +7,6 @@ GET  /push/vapid-public-key   – Public, returns VAPID public key for browser s
 POST /push/subscribe           – Save (or refresh) a push subscription (admin only).
 DELETE /push/subscribe         – Remove a push subscription (admin only).
 """
-import base64
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -120,11 +119,8 @@ async def test_push(
     Send a test push notification to the requesting admin's own subscriptions.
     Returns diagnostic info so the caller knows what happened.
     """
-    from sqlalchemy import select
-    from models.push_subscription import PushSubscription as PS
-
     result = await db.execute(
-        select(PS).where(PS.user_id == str(user.id))
+        select(PushSubscription).where(PushSubscription.user_id == str(user.id))
     )
     subs = result.scalars().all()
 
@@ -135,15 +131,51 @@ async def test_push(
             "sent": 0,
         }
 
-    await push_service.send_to_user(
+    stats = await push_service.send_to_user(
         db,
         str(user.id),
         "\U0001f514 Test push",
         "Jeśli to widzisz, push działa poprawnie!",
         "/admin",
     )
+
+    attempted = int(stats.get("attempted", 0))
+    delivered = int(stats.get("delivered", 0))
+    failed = int(stats.get("failed", 0))
+    expired = int(stats.get("expired", 0))
+
+    if attempted == 0:
+        return {
+            "status": "not_configured",
+            "message": "Push nie został wysłany (sprawdź konfigurację VAPID po stronie backendu).",
+            "sent": 0,
+            "attempted": attempted,
+            "delivered": delivered,
+            "failed": failed,
+            "expired": expired,
+        }
+
+    if delivered == 0:
+        return {
+            "status": "delivery_failed",
+            "message": (
+                "Nie udało się dostarczyć push. "
+                f"attempted={attempted}, failed={failed}, expired={expired}."
+            ),
+            "sent": 0,
+            "attempted": attempted,
+            "delivered": delivered,
+            "failed": failed,
+            "expired": expired,
+        }
+
+    detail = f"attempted={attempted}, delivered={delivered}, failed={failed}, expired={expired}"
     return {
-        "status": "sent",
-        "message": f"Push wysłany do {len(subs)} subskrypcji.",
-        "sent": len(subs),
+        "status": "sent" if failed == 0 and expired == 0 else "partial",
+        "message": f"Push dostarczony. {detail}",
+        "sent": delivered,
+        "attempted": attempted,
+        "delivered": delivered,
+        "failed": failed,
+        "expired": expired,
     }

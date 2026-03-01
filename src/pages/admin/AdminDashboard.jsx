@@ -16,8 +16,10 @@ function AdminDashboard() {
     setSending(true)
     try {
       const result = await sendTestPush(authFetch)
-      if (result.status === 'no_subscriptions') {
+      if (result.status === 'no_subscriptions' || result.status === 'not_configured' || result.status === 'delivery_failed') {
         showError(result.message)
+      } else if (result.status === 'partial') {
+        showError(`⚠️ ${result.message}`)
       } else {
         showSuccess(`🔔 ${result.message} Sprawdź powiadomienie systemowe.`)
       }

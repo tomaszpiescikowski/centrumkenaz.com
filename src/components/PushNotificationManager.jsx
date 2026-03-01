@@ -3,19 +3,18 @@ import { useAuth } from '../context/AuthContext'
 import { usePushNotifications } from '../hooks/usePushNotifications'
 
 /**
- * Invisible component that automatically requests and registers a push
- * subscription for all logged-in active users (admins and members alike).
+ * Invisible component that silently re-syncs an existing push permission +
+ * subscription for logged-in active users.
  *
- * Mounted once at the top level in App.jsx.  The subscription is requested
- * silently on mount: if permission has already been granted the browser
- * doesn't show a prompt and we just re-register the current endpoint.
+ * Mounted once at the top level in App.jsx. If permission is already granted,
+ * we re-register the existing endpoint in backend DB without showing a prompt.
  * This keeps the subscription fresh across service worker updates.
  */
 function PushNotificationManager() {
   const { user, isAuthenticated, authFetch } = useAuth()
   const isActive = isAuthenticated && user?.account_status === 'active'
 
-  const { supported, permission, subscribed, subscribing, subscribe } = usePushNotifications({
+  const { supported, permission, subscribing, subscribe } = usePushNotifications({
     authFetch,
     isActive,
   })
@@ -25,7 +24,7 @@ function PushNotificationManager() {
 
   useEffect(() => {
     if (!supported || !isActive || attempted.current || subscribing) return
-    if (permission === 'denied') return
+    if (permission !== 'granted') return
 
     // Always attempt subscribe() regardless of current subscribed state.
     // subscribe() is idempotent – pushManager.subscribe() returns the existing
@@ -33,7 +32,7 @@ function PushNotificationManager() {
     // an upsert on the backend.  This ensures the backend DB stays in sync even
     // after a DB reset, a new deployment, or a failed previous attempt.
     attempted.current = true
-    subscribe()
+    subscribe({ requestPermission: false })
   }, [supported, isActive, permission, subscribing, subscribe])
 
   return null

@@ -69,7 +69,11 @@ class _ExpiredSubscriptionError(Exception):
     pass
 
 
-async def send_to_admins(db: AsyncSession, title: str, body: str, url: str = "/admin") -> None:
+def _empty_stats() -> dict[str, int]:
+    return {"attempted": 0, "delivered": 0, "expired": 0, "failed": 0}
+
+
+async def send_to_admins(db: AsyncSession, title: str, body: str, url: str = "/admin") -> dict[str, int]:
     """
     Send a push notification to every active admin push subscription.
 
@@ -80,7 +84,7 @@ async def send_to_admins(db: AsyncSession, title: str, body: str, url: str = "/a
     settings = get_settings()
     if not settings.vapid_private_key:
         logger.warning("[push] VAPID_PRIVATE_KEY not set – skipping push notification")
-        return
+        return _empty_stats()
 
     result = await db.execute(
         select(PushSubscription)
@@ -89,42 +93,42 @@ async def send_to_admins(db: AsyncSession, title: str, body: str, url: str = "/a
     )
     subscriptions = result.scalars().all()
     if not subscriptions:
-        return
+        return _empty_stats()
 
     payload = {"title": title, "body": body, "url": url, "tag": "kenaz-admin"}
-    await _dispatch(db, subscriptions, payload)
+    return await _dispatch(db, subscriptions, payload)
 
 
-async def send_to_user(db: AsyncSession, user_id: str, title: str, body: str, url: str = "/") -> None:
+async def send_to_user(db: AsyncSession, user_id: str, title: str, body: str, url: str = "/") -> dict[str, int]:
     """Send a push notification to all subscriptions belonging to *user_id*."""
     settings = get_settings()
     if not settings.vapid_private_key:
-        return
+        return _empty_stats()
 
     result = await db.execute(
         select(PushSubscription).where(PushSubscription.user_id == user_id)
     )
     subscriptions = result.scalars().all()
     if not subscriptions:
-        return
+        return _empty_stats()
 
     payload = {"title": title, "body": body, "url": url, "tag": f"kenaz-user-{user_id}"}
-    await _dispatch(db, subscriptions, payload)
+    return await _dispatch(db, subscriptions, payload)
 
 
-async def send_to_all_active_users(db: AsyncSession, title: str, body: str, url: str = "/") -> None:
+async def send_to_all_active_users(db: AsyncSession, title: str, body: str, url: str = "/") -> dict[str, int]:
     """Send a push notification to every stored subscription (all active users)."""
     settings = get_settings()
     if not settings.vapid_private_key:
-        return
+        return _empty_stats()
 
     result = await db.execute(select(PushSubscription))
     subscriptions = result.scalars().all()
     if not subscriptions:
-        return
+        return _empty_stats()
 
     payload = {"title": title, "body": body, "url": url, "tag": "kenaz-announcement"}
-    await _dispatch(db, subscriptions, payload)
+    return await _dispatch(db, subscriptions, payload)
 
 
 async def send_event_push_to_all(
@@ -132,7 +136,7 @@ async def send_event_push_to_all(
     scenario: str,
     params: dict[str, str],
     url: str = "/",
-) -> None:
+) -> dict[str, int]:
     """
     Send a translated event push notification to every subscriber.
 
@@ -141,7 +145,7 @@ async def send_event_push_to_all(
     """
     settings = get_settings()
     if not settings.vapid_private_key:
-        return
+        return _empty_stats()
 
     # Fetch subscriptions joined with owner's language preference
     result = await db.execute(
@@ -150,10 +154,12 @@ async def send_event_push_to_all(
     )
     rows = result.all()
     if not rows:
-        return
+        return _empty_stats()
 
     loop = asyncio.get_running_loop()
     expired_ids: list[str] = []
+    stats = _empty_stats()
+    stats["attempted"] = len(rows)
     logger.info("[push] event push '%s' dispatching to %d subscription(s)", scenario, len(rows))
 
     for sub, lang in rows:
@@ -170,9 +176,12 @@ async def send_event_push_to_all(
         }
         try:
             await loop.run_in_executor(None, _send_one, subscription_info, payload)
+            stats["delivered"] += 1
         except _ExpiredSubscriptionError:
             expired_ids.append(sub.id)
+            stats["expired"] += 1
         except Exception:  # noqa: BLE001
+            stats["failed"] += 1
             logger.exception("[push] Failed to send event push to sub %s", sub.id)
 
     for sid in expired_ids:
@@ -182,6 +191,7 @@ async def send_event_push_to_all(
     if expired_ids:
         await db.commit()
         logger.info("[push] Removed %d expired subscriptions", len(expired_ids))
+    return stats
 
 
 async def send_event_push_to_user(
@@ -190,7 +200,7 @@ async def send_event_push_to_user(
     scenario: str,
     params: dict[str, str],
     url: str = "/",
-) -> None:
+) -> dict[str, int]:
     """
     Send a translated event push notification to a single user.
 
@@ -198,7 +208,7 @@ async def send_event_push_to_user(
     """
     settings = get_settings()
     if not settings.vapid_private_key:
-        return
+        return _empty_stats()
 
     result = await db.execute(
         select(PushSubscription, User.preferred_language)
@@ -207,10 +217,12 @@ async def send_event_push_to_user(
     )
     rows = result.all()
     if not rows:
-        return
+        return _empty_stats()
 
     loop = asyncio.get_running_loop()
     expired_ids: list[str] = []
+    stats = _empty_stats()
+    stats["attempted"] = len(rows)
 
     for sub, lang in rows:
         title_str, body_str = get_push_strings(scenario, lang or "pl", params)
@@ -226,9 +238,12 @@ async def send_event_push_to_user(
         }
         try:
             await loop.run_in_executor(None, _send_one, subscription_info, payload)
+            stats["delivered"] += 1
         except _ExpiredSubscriptionError:
             expired_ids.append(sub.id)
+            stats["expired"] += 1
         except Exception:  # noqa: BLE001
+            stats["failed"] += 1
             logger.exception("[push] Failed to send event push to sub %s", sub.id)
 
     for sid in expired_ids:
@@ -237,12 +252,15 @@ async def send_event_push_to_user(
             await db.delete(sub_obj)
     if expired_ids:
         await db.commit()
+    return stats
 
 
-async def _dispatch(db: AsyncSession, subscriptions: list, payload: dict) -> None:
-    """Fire-and-forget push to a list of subscriptions, pruning expired ones."""
+async def _dispatch(db: AsyncSession, subscriptions: list, payload: dict) -> dict[str, int]:
+    """Dispatch push to a list of subscriptions, pruning expired ones."""
     loop = asyncio.get_running_loop()
     expired_ids: list[str] = []
+    stats = _empty_stats()
+    stats["attempted"] = len(subscriptions)
     logger.info("[push] Dispatching to %d subscription(s), payload title=%s", len(subscriptions), payload.get("title"))
 
     for sub in subscriptions:
@@ -252,9 +270,12 @@ async def _dispatch(db: AsyncSession, subscriptions: list, payload: dict) -> Non
         }
         try:
             await loop.run_in_executor(None, _send_one, subscription_info, payload)
+            stats["delivered"] += 1
         except _ExpiredSubscriptionError:
             expired_ids.append(sub.id)
+            stats["expired"] += 1
         except Exception:  # noqa: BLE001
+            stats["failed"] += 1
             logger.exception("[push] Failed to send push to sub %s", sub.id)
 
     # Clean up expired subscriptions
@@ -265,3 +286,4 @@ async def _dispatch(db: AsyncSession, subscriptions: list, payload: dict) -> Non
     if expired_ids:
         await db.commit()
         logger.info("Removed %d expired push subscriptions", len(expired_ids))
+    return stats

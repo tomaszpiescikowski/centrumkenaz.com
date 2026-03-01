@@ -46,12 +46,14 @@ export function usePushNotifications({ authFetch, isActive } = {}) {
     }).catch(() => {})
   }, [supported, isActive])
 
-  const subscribe = useCallback(async () => {
+  const subscribe = useCallback(async ({ requestPermission = true } = {}) => {
     if (!supported || !isActive || subscribing) return
     setSubscribing(true)
     setError(null)
     try {
-      const perm = await Notification.requestPermission()
+      const perm = requestPermission
+        ? await Notification.requestPermission()
+        : Notification.permission
       setPermission(perm)
       if (perm !== 'granted') return
 
@@ -64,10 +66,43 @@ export function usePushNotifications({ authFetch, isActive } = {}) {
       ])
 
       const vapidKey = await fetchVapidPublicKey()
-      const sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidKey),
-      })
+      const applicationServerKey = urlBase64ToUint8Array(vapidKey)
+
+      let sub = await reg.pushManager.getSubscription()
+
+      // Existing browser subscription may still be valid after backend resets.
+      // Re-saving keeps the DB in sync without forcing a new prompt.
+      if (sub) {
+        await savePushSubscription(authFetch, sub)
+        setSubscribed(true)
+        return
+      }
+
+      try {
+        sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey,
+        })
+      } catch (subscribeErr) {
+        // If a stale subscription exists under a different VAPID key,
+        // unsubscribe and retry once with the current key.
+        const msg = subscribeErr?.message || String(subscribeErr)
+        const vapidMismatch =
+          subscribeErr?.name === 'InvalidStateError' ||
+          msg.includes('applicationServerKey') ||
+          msg.includes('different applicationServerKey')
+
+        if (!vapidMismatch) throw subscribeErr
+
+        const staleSub = await reg.pushManager.getSubscription()
+        if (!staleSub) throw subscribeErr
+
+        await staleSub.unsubscribe()
+        sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey,
+        })
+      }
 
       await savePushSubscription(authFetch, sub)
       setSubscribed(true)

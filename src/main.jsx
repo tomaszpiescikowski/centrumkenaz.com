@@ -16,6 +16,14 @@ import { registerSW } from 'virtual:pwa-register'
 
 const intervalMS = 60 * 1000 // check every 60 seconds
 
+// Extra safety net: explicitly register /sw.js early.
+// PWABuilder and some headless checks can miss deferred registrations.
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch((err) => {
+    console.error('[PWA] direct SW register failed:', err)
+  })
+}
+
 const updateSW = registerSW({
   immediate: true,
   onRegisteredSW(swUrl, registration) {
