@@ -8,8 +8,15 @@ const getDevApiUrl = () => {
   return `http://${window.location.hostname}:8000`
 }
 
-export const API_URL = explicitApiUrl
-  ? explicitApiUrl.replace(/\/+$/, '')
+// Guard: if a VITE_API_URL containing "localhost" was accidentally baked into a
+// production build, ignore it and fall back to the safe relative "/api" path.
+const safeExplicitApiUrl =
+  !import.meta.env.DEV && explicitApiUrl && /localhost/i.test(explicitApiUrl)
+    ? null
+    : explicitApiUrl
+
+export const API_URL = safeExplicitApiUrl
+  ? safeExplicitApiUrl.replace(/\/+$/, '')
   : import.meta.env.DEV
     ? `${getDevApiUrl()}/api`
     : '/api'
