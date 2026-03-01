@@ -15,6 +15,7 @@ send_event_push_to_user(db, user_id, scenario, params, url)       – per-user t
 import asyncio
 import json
 import logging
+import re
 from functools import lru_cache
 
 from pywebpush import WebPushException, webpush
@@ -27,6 +28,24 @@ from models.user import User, UserRole
 from services.push_translations import get_push_strings
 
 logger = logging.getLogger(__name__)
+
+
+def _extract_webpush_status(exc: WebPushException) -> int | None:
+    """Best-effort status extraction from pywebpush exception."""
+    if getattr(exc, "response", None) is not None:
+        status = getattr(exc.response, "status_code", None)
+        if isinstance(status, int):
+            return status
+
+    # pywebpush sometimes includes HTTP code only in exception text.
+    msg = str(exc)
+    m = re.search(r"Push failed:\s*(\d{3})\b", msg, flags=re.IGNORECASE)
+    if m:
+        try:
+            return int(m.group(1))
+        except ValueError:
+            return None
+    return None
 
 
 def _normalize_vapid_subject(raw_subject: str | None) -> str | None:
@@ -91,8 +110,8 @@ def _send_one(subscription_info: dict, payload: dict) -> None:
         logger.info("[push] OK endpoint=%s", endpoint_short)
     except WebPushException as exc:
         # 410 Gone / 404 Not Found means the subscription is no longer valid
-        status = getattr(exc.response, "status_code", None) if exc.response else None
-        body = getattr(exc.response, "text", "") if exc.response else ""
+        status = _extract_webpush_status(exc)
+        body = getattr(exc.response, "text", "") if getattr(exc, "response", None) else str(exc)
         logger.error(
             "[push] WebPushException endpoint=%s status=%s body=%s",
             endpoint_short, status, body[:300],
