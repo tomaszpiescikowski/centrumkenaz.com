@@ -20,6 +20,7 @@ function PendingApproval() {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [adminMessage, setAdminMessage] = useState('')
   const [sending, setSending] = useState(false)
+  const [fieldHints, setFieldHints] = useState({})
   const FIRST_APPROVED_PLANS_KEY = 'approvedFirstPlanChoiceShown'
 
   const formatPhoneDisplay = (raw) => {
@@ -35,6 +36,7 @@ function PendingApproval() {
   const handlePhoneChange = (e) => {
     const digits = e.target.value.replace(/\D/g, '')
     setPhoneNumber(digits)
+    if (digits) setFieldHints((prev) => ({ ...prev, phone: undefined }))
   }
 
   useEffect(() => {
@@ -69,11 +71,20 @@ function PendingApproval() {
 
   const requestSubmitted = Boolean(user?.approval_request_submitted)
 
-  const isPhoneValid = phoneNumber.replace(/\D/g, '').length >= 6
-  const canSubmit = aboutMe.trim().length > 0 && interestTags.length > 0 && isPhoneValid
+  const phoneDigits = phoneNumber.replace(/\D/g, '')
+  const isPhoneValid = phoneCountryCode === '48' ? phoneDigits.length === 9 : phoneDigits.length >= 6
 
   const handleSubmitJoinRequest = async () => {
-    if (!canSubmit || sending) return
+    if (sending) return
+    const hints = {}
+    if (!aboutMe.trim()) hints.aboutMe = 'approval.fieldRequired'
+    if (interestTags.length === 0) hints.interestTags = 'approval.interestsRequired'
+    if (!isPhoneValid) hints.phone = 'approval.phoneInvalid'
+    if (Object.keys(hints).length > 0) {
+      setFieldHints(hints)
+      return
+    }
+    setFieldHints({})
     try {
       setSending(true)
       await submitJoinRequest(authFetch, {
@@ -142,12 +153,12 @@ function PendingApproval() {
                 value={formatPhoneDisplay(phoneNumber)}
                 onChange={handlePhoneChange}
                 maxLength={20}
-                className={`ui-input ui-input-compact flex-1${phoneNumber && !isPhoneValid ? ' ui-input-invalid' : ''}`}
+                className={`ui-input ui-input-compact flex-1${fieldHints.phone ? ' ui-input-invalid' : ''}`}
                 placeholder={t('approval.phonePlaceholder')}
               />
             </div>
-            {phoneNumber && !isPhoneValid && (
-              <p className="ui-field-hint mt-1">{t('approval.phoneInvalid')}</p>
+            {fieldHints.phone && (
+              <p className="ui-field-hint mt-1">{t(fieldHints.phone)}</p>
             )}
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -168,7 +179,17 @@ function PendingApproval() {
             <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
               {t('account.interests')}
             </p>
-            <InterestTagsPicker value={interestTags} onChange={setInterestTags} t={t} />
+            <InterestTagsPicker
+              value={interestTags}
+              onChange={(tags) => {
+                setInterestTags(tags)
+                if (tags.length > 0) setFieldHints((prev) => ({ ...prev, interestTags: undefined }))
+              }}
+              t={t}
+            />
+            {fieldHints.interestTags && (
+              <p className="ui-field-hint mt-1">{t(fieldHints.interestTags)}</p>
+            )}
           </div>
           <div>
             <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
@@ -176,12 +197,18 @@ function PendingApproval() {
             </p>
             <textarea
               value={aboutMe}
-              onChange={(e) => setAboutMe(e.target.value)}
+              onChange={(e) => {
+                setAboutMe(e.target.value)
+                if (e.target.value.trim()) setFieldHints((prev) => ({ ...prev, aboutMe: undefined }))
+              }}
               maxLength={800}
               rows={4}
-              className="ui-input ui-input-compact"
+              className={`ui-input ui-input-compact${fieldHints.aboutMe ? ' ui-input-invalid' : ''}`}
               placeholder={t('account.aboutMePlaceholder')}
             />
+            {fieldHints.aboutMe && (
+              <p className="ui-field-hint mt-1">{t(fieldHints.aboutMe)}</p>
+            )}
           </div>
           <div>
             <p className="mb-2 text-xs uppercase tracking-wide text-navy/50 dark:text-cream/50">
@@ -199,7 +226,7 @@ function PendingApproval() {
           <div className="flex items-center justify-end">
             <button
               type="button"
-              disabled={!canSubmit || sending}
+              disabled={sending}
               onClick={handleSubmitJoinRequest}
               className="btn-accent h-10 px-6 text-sm disabled:opacity-60"
             >
