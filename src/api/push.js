@@ -1,12 +1,29 @@
 import { API_URL } from './config'
 
+async function getErrorMessage(response, fallback) {
+  try {
+    const ct = response.headers.get('content-type') || ''
+    if (ct.includes('application/json')) {
+      const data = await response.json()
+      const detail = data?.message || data?.detail || data?.error
+      if (typeof detail === 'string' && detail.trim()) return detail
+    } else {
+      const text = await response.text()
+      if (text && text.trim()) return text.trim()
+    }
+  } catch {
+    // ignore parse errors and use fallback below
+  }
+  return `${fallback} (HTTP ${response.status})`
+}
+
 /**
  * Fetch the VAPID public key from the backend.
  * @returns {Promise<string>} base64url-encoded VAPID public key
  */
 export async function fetchVapidPublicKey() {
   const res = await fetch(`${API_URL}/push/vapid-public-key`)
-  if (!res.ok) throw new Error('Push notifications not available')
+  if (!res.ok) throw new Error(await getErrorMessage(res, 'Push notifications not available'))
   const data = await res.json()
   return data.public_key
 }
@@ -26,7 +43,7 @@ export async function savePushSubscription(authFetch, subscription) {
       keys: { p256dh: json.keys.p256dh, auth: json.keys.auth },
     }),
   })
-  if (!res.ok) throw new Error('Failed to save push subscription')
+  if (!res.ok) throw new Error(await getErrorMessage(res, 'Failed to save push subscription'))
 }
 
 /**
@@ -38,7 +55,7 @@ export async function savePushSubscription(authFetch, subscription) {
  */
 export async function sendTestPush(authFetch) {
   const res = await authFetch(`${API_URL}/push/test`, { method: 'POST' })
-  if (!res.ok) throw new Error('Test push failed')
+  if (!res.ok) throw new Error(await getErrorMessage(res, 'Test push failed'))
   return res.json()
 }
 
@@ -57,5 +74,5 @@ export async function deletePushSubscription(authFetch, subscription) {
       keys: { p256dh: json.keys.p256dh, auth: json.keys.auth },
     }),
   })
-  if (!res.ok) throw new Error('Failed to delete push subscription')
+  if (!res.ok) throw new Error(await getErrorMessage(res, 'Failed to delete push subscription'))
 }
