@@ -1126,7 +1126,7 @@
   },
   "auth": {
     "title": "Inloggen",
-    "subtitle": "Gebruik Google of je gebruikersnaam en wachtwoord.",
+    "subtitle": "Log in met Google om verder te gaan.",
     "modeLogin": "Inloggen",
     "modeRegister": "Account maken",
     "loginWithGoogle": "Doorgaan met Google",

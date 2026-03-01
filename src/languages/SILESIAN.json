@@ -1130,7 +1130,7 @@
   },
   "auth": {
     "title": "Zaloguj sie",
-    "subtitle": "Mōżesz użyć Google abo loginu i hasła.",
+    "subtitle": "Zaloguj sie bez Google, coby kōntynuować.",
     "modeLogin": "Logowanie",
     "modeRegister": "Nowe kōnto",
     "loginWithGoogle": "Kōntynuuj bez Google",

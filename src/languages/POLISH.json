@@ -1130,7 +1130,7 @@
   },
   "auth": {
     "title": "Zaloguj się",
-    "subtitle": "Wybierz Google albo login i hasło.",
+    "subtitle": "Zaloguj się przez Google, aby kontynuować.",
     "modeLogin": "Logowanie",
     "modeRegister": "Zarejestruj się",
     "loginWithGoogle": "Kontynuuj przez Google",

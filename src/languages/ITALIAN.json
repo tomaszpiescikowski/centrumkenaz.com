@@ -1126,7 +1126,7 @@
   },
   "auth": {
     "title": "Accedi",
-    "subtitle": "Usa Google oppure username e password.",
+    "subtitle": "Accedi con Google per continuare.",
     "modeLogin": "Accedi",
     "modeRegister": "Crea account",
     "loginWithGoogle": "Continua con Google",

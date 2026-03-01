@@ -1126,7 +1126,7 @@
   },
   "auth": {
     "title": "登录",
-    "subtitle": "可使用 Google 或账号密码。",
+    "subtitle": "使用 Google 登录以继续。",
     "modeLogin": "登录",
     "modeRegister": "创建账号",
     "loginWithGoogle": "使用 Google 继续",
