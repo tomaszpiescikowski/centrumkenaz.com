@@ -26,7 +26,6 @@
     "tagline": "Offline community. Beweging, verbinding en groei in één ritme.",
     "contactTitle": "Contact",
     "address": "Wyżyny 16, 61-654 Poznań, Poland",
-    "email": "[email protected]",
     "orgTitle": "Stichting",
     "legalName": "Fundacja Centrum Kenaz",
     "krs": "KRS 0001211548",
@@ -37,7 +36,6 @@
       "home": "Home",
       "calendar": "Kalender",
       "about": "Over Kenaz",
-      "shop": "Shop",
       "privacy": "Privacybeleid",
       "terms": "Voorwaarden",
       "membership": "Kenaz lidmaatschap"
@@ -493,6 +491,7 @@
     "pushNotSupported": "Uw browser ondersteunt geen push-meldingen.",
     "pushDenied": "Meldingen zijn geblokkeerd in uw browserinstellingen.",
     "pushSubscribed": "Meldingen ingeschakeld",
+    "pushClickToDisable": "klik om uit te schakelen",
     "pushUnsubscribe": "Meldingen uitschakelen",
     "pushSubscribe": "Push-meldingen inschakelen"
   },
@@ -1185,6 +1184,7 @@
     "tabGeneral": "Mededelingen",
     "placeholderGeneral": "Schrijf een mededeling...",
     "announcementsReadOnly": "Alleen admins kunnen mededelingen plaatsen",
+    "notRegisteredReadOnly": "Alleen geregistreerde deelnemers kunnen in de evenementchat schrijven",
     "emptyGeneral": "Nog geen mededelingen.",
     "chatTitle": "Chat",
     "chatBubble": "Chat",

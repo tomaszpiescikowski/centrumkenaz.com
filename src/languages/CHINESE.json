@@ -26,7 +26,6 @@
     "tagline": "线下社群。运动、连接与成长同频。",
     "contactTitle": "联系方式",
     "address": "Wyżyny 16, 61-654 Poznań, Poland",
-    "email": "[email protected]",
     "orgTitle": "基金会",
     "legalName": "Fundacja Centrum Kenaz",
     "krs": "KRS 0001211548",
@@ -37,7 +36,6 @@
       "home": "首页",
       "calendar": "日历",
       "about": "关于 Kenaz",
-      "shop": "商店",
       "privacy": "隐私政策",
       "terms": "服务条款",
       "membership": "Kenaz 会员"
@@ -493,6 +491,7 @@
     "pushNotSupported": "您的浏览器不支持Push通知。",
     "pushDenied": "推送通知已在浏览器设置中被屏蔽，请在网站设置中解除。",
     "pushSubscribed": "推送已开启",
+    "pushClickToDisable": "点击关闭",
     "pushUnsubscribe": "关闭通知",
     "pushSubscribe": "开启Push通知"
   },
@@ -1185,6 +1184,7 @@
     "tabGeneral": "公告",
     "placeholderGeneral": "写公告...",
     "announcementsReadOnly": "只有管理员可以发布公告",
+    "notRegisteredReadOnly": "只有已报名的参与者才能在活动聊天中发言",
     "emptyGeneral": "暂无公告。",
     "chatTitle": "聊天",
     "chatBubble": "聊天",

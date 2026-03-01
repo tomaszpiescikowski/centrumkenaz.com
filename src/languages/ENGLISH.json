@@ -26,7 +26,6 @@
     "tagline": "Offline community. Movement, connection, growth in one rhythm.",
     "contactTitle": "Contact",
     "address": "Wyżyny 16, 61-654 Poznań, Poland",
-    "email": "[email protected]",
     "orgTitle": "Foundation",
     "legalName": "Fundacja Centrum Kenaz",
     "krs": "KRS 0001211548",
@@ -37,7 +36,6 @@
       "home": "Home",
       "calendar": "Calendar",
       "about": "About Kenaz",
-      "shop": "Shop",
       "privacy": "Privacy policy",
       "terms": "Terms",
       "membership": "Kenaz Membership"
@@ -493,6 +491,7 @@
     "pushNotSupported": "Your browser does not support push notifications.",
     "pushDenied": "Notifications are blocked in your browser settings. Unblock them in site settings.",
     "pushSubscribed": "Notifications enabled",
+    "pushClickToDisable": "click to disable",
     "pushUnsubscribe": "Disable notifications",
     "pushSubscribe": "Enable push notifications"
   },
