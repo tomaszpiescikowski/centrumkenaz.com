@@ -164,8 +164,8 @@ function Account({ darkMode, setDarkMode }) {
   }
 
   return (
-    <div className="page-shell flex flex-col gap-4 sm:gap-6">
-      <div className="flex items-start justify-between gap-3">
+    <div className="page-shell flex h-full min-h-0 flex-col gap-4 overflow-y-auto overscroll-contain touch-pan-y sm:gap-6">
+      <div className="shrink-0 flex items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-navy dark:text-cream">
             {t('account.title')}
