@@ -282,12 +282,17 @@ async def google_calendar_connect(
 @router.get("/google/callback", dependencies=[Depends(auth_callback_rate_limit)])
 async def google_callback(
     request: Request,
-    code: str = Query(..., min_length=1),
+    code: str = Query(default=""),
     state: str = Query(default=""),
+    error: str = Query(default=""),
     db: AsyncSession = Depends(get_db),
 ) -> RedirectResponse:
     """
     Handle the Google OAuth callback and issue JWT tokens.
+
+    When Google returns an ``error`` param (e.g. ``access_denied`` when the
+    user clicks Cancel on the consent screen) the endpoint redirects back to
+    the frontend error page instead of returning a 422 JSON response.
 
     When ``state`` starts with ``cc:`` this is a calendar-connect flow:
     the code is exchanged for tokens, the calendar tokens are saved to
@@ -297,6 +302,13 @@ async def google_callback(
     Otherwise this is a standard login flow: creates/updates the user
     and redirects to the frontend with fresh access and refresh tokens.
     """
+    # Google returned an error (e.g. user clicked Cancel → access_denied).
+    # Redirect gracefully instead of letting FastAPI raise a 422.
+    if error or not code:
+        reason = error or "Authentication cancelled"
+        await log_action(action="USER_LOGIN_GOOGLE_CANCELLED", ip=_get_request_ip(request), reason=reason)
+        return RedirectResponse(url=f"{settings.frontend_url}/auth/error?message={reason}")
+
     auth_service = AuthService(db)
 
     # ── Calendar-connect path ───────────────────────────────────────────────
