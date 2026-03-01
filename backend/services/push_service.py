@@ -16,7 +16,6 @@ import asyncio
 import json
 import logging
 import re
-from functools import lru_cache
 
 from pywebpush import WebPushException, webpush
 from sqlalchemy import select
@@ -70,7 +69,6 @@ def _normalize_vapid_subject(raw_subject: str | None) -> str | None:
     return None
 
 
-@lru_cache(maxsize=1)
 def _get_vapid_claims() -> dict | None:
     """Return VAPID claims dict, or None when VAPID is not configured."""
     settings = get_settings()
