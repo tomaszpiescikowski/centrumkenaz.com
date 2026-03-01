@@ -19,7 +19,12 @@ precacheAndRoute(self.__WB_MANIFEST)
 cleanupOutdatedCaches()
 
 // ── SPA navigation fallback (serve index.html for unknown paths) ──────────────
-const BACKEND_PATHS = /^\/(api\/|uploads\/|health|docs|redoc|openapi)/
+// auth/google/callback must go directly to nginx (which proxies to FastAPI) so
+// the OAuth authorization code is exchanged only once. If the SW serves
+// index.html here instead, the SPA's GoogleCallbackRedirect also hits the
+// backend — the same one-time code gets sent to Google twice → invalid_grant.
+const BACKEND_PATHS = /^\/(api\/|uploads\/|health|docs|redoc|openapi|auth\/google\/callback)/
+
 
 registerRoute(
   new NavigationRoute(createHandlerBoundToURL('index.html'), {

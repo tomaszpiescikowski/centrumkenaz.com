@@ -200,7 +200,14 @@ class AuthService:
                     "redirect_uri": settings.google_redirect_uri,
                 },
             )
-            response.raise_for_status()
+            if not response.is_success:
+                error_body = response.text
+                logger.error(
+                    "Google token exchange failed: status=%s body=%s",
+                    response.status_code,
+                    error_body[:500],
+                )
+                response.raise_for_status()
             return response.json()
 
     async def get_google_user_info(self, access_token: str) -> dict:
