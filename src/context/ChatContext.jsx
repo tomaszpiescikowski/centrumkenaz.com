@@ -47,6 +47,7 @@ function ChatProvider({ children }) {
     eventId: null,
     eventTitle: null,
     eventData: null,   // full normalized event object when in event view
+    isRegistered: null, // null = unknown (e.g. from ChatPage list), true/false from EventDetail
   })
 
   const [lastReadTimestamps, setLastReadTimestamps] = useState(loadLastRead)
@@ -105,11 +106,11 @@ function ChatProvider({ children }) {
 
   const openChat = useCallback((opts = {}) => {
     if (opts.eventId) {
-      setChatState({ open: true, view: 'event', eventId: opts.eventId, eventTitle: opts.eventTitle || null })
+      setChatState({ open: true, view: 'event', eventId: opts.eventId, eventTitle: opts.eventTitle || null, eventData: null, isRegistered: opts.isRegistered ?? null })
     } else if (opts.view === 'events') {
-      setChatState({ open: true, view: 'events', eventId: null, eventTitle: null })
+      setChatState({ open: true, view: 'events', eventId: null, eventTitle: null, eventData: null, isRegistered: null })
     } else {
-      setChatState({ open: true, view: 'general', eventId: null, eventTitle: null })
+      setChatState({ open: true, view: 'general', eventId: null, eventTitle: null, eventData: null, isRegistered: null })
     }
   }, [])
 
@@ -124,6 +125,7 @@ function ChatProvider({ children }) {
       eventId: opts.eventId ?? null,
       eventTitle: opts.eventTitle ?? null,
       eventData: opts.eventData ?? null,
+      isRegistered: opts.isRegistered ?? null,
     }))
   }, [])
 

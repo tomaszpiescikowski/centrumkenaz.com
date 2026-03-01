@@ -56,7 +56,7 @@ function ChatPage() {
 
   const isPendingApproval = isAuthenticated && user?.account_status !== 'active'
   const {
-    view, eventId, eventTitle, eventData,
+    view, eventId, eventTitle, eventData, isRegistered,
     navigateChat,
     markAsRead, hasUnread, unreadCounts, setLatestMessageTime, latestMessages,
     setRegisteredEvents,
@@ -135,7 +135,8 @@ function ChatPage() {
   }, [view, eventId, markAsRead])
 
   const handleEventClick = (ev) => {
-    navigateChat('event', { eventId: ev.id, eventTitle: ev.title, eventData: ev })
+    // Events in the list are always ones the user is registered to
+    navigateChat('event', { eventId: ev.id, eventTitle: ev.title, eventData: ev, isRegistered: true })
   }
 
   const handleGoToEvent = () => {
@@ -480,6 +481,7 @@ function ChatPage() {
             messengerLayout
             chatId={`event:${eventId}`}
             onLatestMessage={(msg) => setLatestMessageTime(`event:${eventId}`, msg)}
+            isRegistered={isRegistered ?? undefined}
           />
         )}
       </div>

@@ -948,7 +948,7 @@ function EventDetail() {
             <button
               type="button"
               onClick={() => {
-                openChat({ eventId: event.id, eventTitle: event.title })
+                openChat({ eventId: event.id, eventTitle: event.title, isRegistered })
                 if (window.innerWidth < 640) navigate('/chat')
               }}
               className="ev-chat-open-btn sm:hidden"
