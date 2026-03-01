@@ -13,7 +13,6 @@ const MOBILE_APP_SHELL_PATHS = new Set([
   '/calendar',
   '/chat',
   '/panel',
-  '/me',
   '/plans',
   '/pending-approval',
 ])
