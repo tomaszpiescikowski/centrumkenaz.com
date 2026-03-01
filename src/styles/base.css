@@ -94,8 +94,11 @@ img, a, button {
   max-width: 100%;
 }
 
-.app-shell,
-.app-main {
+/* Only clip horizontal overflow on the outer shell – do NOT apply to
+   .app-main because on mobile it is the vertical scroll container
+   (h-[100svh] overflow-y-auto).  iOS Safari breaks y-scrolling when
+   overflow-x:clip is combined with overflow-y:auto on the same element. */
+.app-shell {
   overflow-x: hidden;
   overflow-x: clip;
 }
