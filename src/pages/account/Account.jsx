@@ -11,7 +11,7 @@ import CitySelector from '../../components/controls/CitySelector'
 import AuthGateCard from '../../components/ui/AuthGateCard'
 
 function Account({ darkMode, setDarkMode }) {
-  const { user, isAuthenticated, authFetch, login, logout, fetchUser, accessToken, connectGoogleCalendar } = useAuth()
+  const { user, isAuthenticated, authFetch, login, logout, fetchUser, accessToken, connectGoogleCalendar, loading: authLoading } = useAuth()
   const { t } = useLanguage()
   const { showError, showSuccess } = useNotification()
   const navigate = useNavigate()
@@ -24,7 +24,7 @@ function Account({ darkMode, setDarkMode }) {
   // so has_google_calendar flips to true, then clean the URL.
   useEffect(() => {
     if (searchParams.get('calendar') === 'connected') {
-      fetchUser()
+      fetchUser(accessToken)
       showSuccess(t('account.calendarConnected') || 'Połączono z Google Calendar')
       navigate('/me', { replace: true })
     }
@@ -139,6 +139,14 @@ function Account({ darkMode, setDarkMode }) {
   }
 
   const aboutMeChanged = aboutMe.trim() !== originalAboutMe.trim()
+
+  if (authLoading) {
+    return (
+      <div className="page-shell flex items-center justify-center min-h-[40vh]">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-navy dark:border-cream" />
+      </div>
+    )
+  }
 
   if (!isAuthenticated) {
     return (

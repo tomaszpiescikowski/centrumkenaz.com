@@ -16,6 +16,7 @@ from services.auth_service import (
     AuthService,
     AuthValidationError,
 )
+from services.registration_service import RegistrationService
 from services.email_service import (
     EmailTemplate,
     generate_reset_token,
@@ -320,6 +321,13 @@ async def google_callback(
                 raise ValueError("User not found")
             tokens = await auth_service.exchange_code_for_tokens(code)
             await auth_service.update_google_tokens(user, tokens)
+            # Retroactively sync any confirmed future registrations that were
+            # created before the user granted calendar access.
+            try:
+                reg_service = RegistrationService(db)
+                await reg_service.sync_existing_registrations_to_calendar(user)
+            except Exception:
+                logger.exception("Calendar connect: retroactive sync failed for user %s", user_id)
             await log_action(
                 action="USER_CALENDAR_CONNECTED",
                 user_email=user.email,

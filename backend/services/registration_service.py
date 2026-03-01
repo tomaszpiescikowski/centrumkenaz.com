@@ -1161,6 +1161,50 @@ class RegistrationService:
         await self.db.commit()
         await self.db.refresh(registration)
 
+    async def sync_existing_registrations_to_calendar(self, user: User) -> int:
+        """
+        Retroactively add confirmed future registrations to Google Calendar.
+
+        Called immediately after a user grants Google Calendar access so that
+        registrations made before the grant are synced.  Only confirmed
+        registrations for future occurrences that do not yet have a
+        calendar_event_id are processed.
+
+        Returns the number of registrations submitted to the calendar API.
+        """
+        if not user.google_refresh_token:
+            return 0
+
+        today = datetime.utcnow().date()
+        stmt = (
+            select(Registration)
+            .where(
+                Registration.user_id == str(user.id),
+                Registration.status == RegistrationStatus.CONFIRMED.value,
+                Registration.calendar_event_id.is_(None),
+                Registration.occurrence_date >= today,
+            )
+        )
+        result = await self.db.execute(stmt)
+        registrations = result.scalars().all()
+
+        synced = 0
+        for reg in registrations:
+            try:
+                await self._maybe_add_to_google_calendar(reg)
+                synced += 1
+            except Exception:
+                logger.exception(
+                    "GCal retroactive sync: failed for registration %s", reg.id
+                )
+        logger.info(
+            "GCal retroactive sync: synced %d/%d registrations for user %s",
+            synced,
+            len(registrations),
+            user.id,
+        )
+        return synced
+
     async def cancel_registration(
         self,
         registration_id: str,
