@@ -181,19 +181,24 @@ export function AuthProvider({ children }) {
     const isPwa = window.navigator.standalone === true ||
       window.matchMedia('(display-mode: standalone)').matches
 
-    if (isPwa) {
-      // In standalone/PWA mode on iOS, a full-page navigation to an external domain
-      // (accounts.google.com) leaves the app and opens Safari — the OAuth callback
-      // then stores tokens in Safari's isolated localStorage, never in the PWA.
-      // Fix: open OAuth in a popup window; AuthCallback.jsx will postMessage the tokens
-      // back here so the PWA receives them without ever leaving the app.
+    // On iOS, window.open() from a PWA creates a separate Safari browser tab with
+    // its own isolated localStorage. The OAuth callback completes in that Safari tab,
+    // tokens land in Safari's localStorage (NOT the PWA's), and window.opener is null
+    // across the PWA→Safari boundary so the postMessage flow never fires. The PWA
+    // stays on /login indefinitely.
+    // Fix: on iOS always use full-page navigation. iOS 14.5+ correctly returns to the
+    // PWA context after the OAuth redirect, so localStorage is shared and tokens
+    // persist in the PWA. The popup+postMessage flow is only needed on Android Chrome
+    // PWA where full-page navigation would leave the app context.
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent)
+
+    if (isPwa && !isIOS) {
+      // Android Chrome PWA: open OAuth in a popup; AuthCallback.jsx will postMessage
+      // the tokens back here so the PWA receives them without ever leaving the app.
       const popup = window.open(`${API_URL}/auth/google/login`, '_blank')
 
       if (!popup) {
-        // Popup was blocked by the browser (common on Android Chrome PWA).
-        // Fall back to full-page navigation — works correctly in Android Chrome,
-        // and on iOS the freshly-stored tokens survive the redirect so the user
-        // will be authenticated when AuthContext initialises on the landing page.
+        // Popup was blocked — fall back to full-page navigation.
         window.location.href = `${API_URL}/auth/google/login`
         return
       }

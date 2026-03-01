@@ -30,16 +30,12 @@ function AuthCallback() {
 
       let userData = null
       if (accessToken && refreshToken) {
-        // If we were opened as a popup from a PWA loginWithGoogle() call, postMessage the tokens
-        // back to the opener instead of storing them here (which would put them in Safari's
-        // isolated localStorage, not the PWA's). The opener's handler stores tokens and navigates.
-        // Only do this when running in standalone/PWA mode — if the opener exists but the app
-        // is a regular browser tab (window.opener may be set e.g. when the tab was opened from
-        // another page via a link), fall through to the normal auth flow instead of getting
-        // stuck after window.close() silently fails.
-        const isPwa = window.navigator.standalone === true ||
-          window.matchMedia('(display-mode: standalone)').matches
-        if (isPwa && window.opener && !window.opener.closed) {
+        // If this tab was opened as a popup by loginWithGoogle() (Android Chrome PWA flow),
+        // postMessage the tokens back to the opener so the PWA receives them in its own
+        // localStorage. We do NOT require isPwa here — the popup's callback tab is a regular
+        // browser context, not standalone. Only same-origin postMessage is used, so openers
+        // from other origins are harmless (window.location.origin target filters them out).
+        if (window.opener && !window.opener.closed) {
           try {
             window.opener.postMessage(
               { type: 'kenaz_auth_callback', access_token: accessToken, refresh_token: refreshToken },
