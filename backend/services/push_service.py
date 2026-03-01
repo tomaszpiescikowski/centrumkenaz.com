@@ -29,18 +29,55 @@ from services.push_translations import get_push_strings
 logger = logging.getLogger(__name__)
 
 
+def _normalize_vapid_subject(raw_subject: str | None) -> str | None:
+    """Normalize VAPID subject claim to a valid URI value."""
+    if raw_subject is None:
+        return None
+    subject = raw_subject.strip()
+    if not subject:
+        return None
+
+    if subject.startswith("mailto:"):
+        email = subject[len("mailto:"):].strip()
+        return f"mailto:{email}" if "@" in email else None
+
+    if subject.startswith("https://") or subject.startswith("http://"):
+        return subject
+
+    # Accept plain email in env and normalize it automatically.
+    if "@" in subject:
+        return f"mailto:{subject}"
+
+    return None
+
+
 @lru_cache(maxsize=1)
 def _get_vapid_claims() -> dict | None:
     """Return VAPID claims dict, or None when VAPID is not configured."""
     settings = get_settings()
-    if not settings.vapid_private_key or not settings.vapid_subject:
+    if not settings.vapid_private_key:
         return None
-    return {"sub": settings.vapid_subject}
+    subject = _normalize_vapid_subject(settings.vapid_subject)
+    if not subject:
+        logger.error(
+            "[push] Invalid VAPID_SUBJECT=%r. Expected e.g. 'mailto:admin@example.com'.",
+            settings.vapid_subject,
+        )
+        return None
+    return {"sub": subject}
 
 
 def _send_one(subscription_info: dict, payload: dict) -> None:
     """Blocking call – run inside a thread executor."""
     settings = get_settings()
+    vapid_claims = _get_vapid_claims()
+    if not vapid_claims:
+        raise _PushSendError(
+            "Invalid VAPID_SUBJECT. Set VAPID_SUBJECT to e.g. 'mailto:admin@centrumkenaz.com'.",
+            status=None,
+            body="",
+        )
+
     endpoint_short = subscription_info.get("endpoint", "?")[:80]
     logger.info("[push] Sending to endpoint=%s", endpoint_short)
     try:
@@ -48,7 +85,7 @@ def _send_one(subscription_info: dict, payload: dict) -> None:
             subscription_info=subscription_info,
             data=json.dumps(payload),
             vapid_private_key=settings.vapid_private_key,
-            vapid_claims=_get_vapid_claims(),
+            vapid_claims=vapid_claims,
             ttl=86400,
         )
         logger.info("[push] OK endpoint=%s", endpoint_short)

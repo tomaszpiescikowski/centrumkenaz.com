@@ -41,6 +41,22 @@ class PushSubscribeRequest(BaseModel):
     keys: PushSubscriptionKeys
 
 
+def _normalize_vapid_subject(raw_subject: str | None) -> str | None:
+    if raw_subject is None:
+        return None
+    subject = raw_subject.strip()
+    if not subject:
+        return None
+    if subject.startswith("mailto:"):
+        email = subject[len("mailto:"):].strip()
+        return f"mailto:{email}" if "@" in email else None
+    if subject.startswith("https://") or subject.startswith("http://"):
+        return subject
+    if "@" in subject:
+        return f"mailto:{subject}"
+    return None
+
+
 # ──────────────────────────────────────────────────────────────────────────────
 # Endpoints
 # ──────────────────────────────────────────────────────────────────────────────
@@ -127,6 +143,17 @@ async def test_push(
         return {
             "status": "not_configured",
             "message": "Brak kluczy VAPID na backendzie (VAPID_PRIVATE_KEY / VAPID_PUBLIC_KEY).",
+            "sent": 0,
+        }
+
+    normalized_subject = _normalize_vapid_subject(settings.vapid_subject)
+    if not normalized_subject:
+        return {
+            "status": "misconfigured_vapid",
+            "message": (
+                "Nieprawidłowy VAPID_SUBJECT. Ustaw np. "
+                "'mailto:admin@centrumkenaz.com'."
+            ),
             "sent": 0,
         }
 
