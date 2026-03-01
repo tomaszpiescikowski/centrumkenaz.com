@@ -2,9 +2,9 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import FeedbackModal from '../ui/FeedbackModal'
 import { useLanguage } from '../../context/LanguageContext'
 
-const STORAGE_KEY = 'kenaz.feedbackBtn.pos.v3'
-const BTN_W = 136 // approximate pill width
-const BTN_H = 48  // pill height + tail
+const STORAGE_KEY = 'kenaz.feedbackBtn.pos.v4'
+const BTN_W = 44 // round button width
+const BTN_H = 44 // round button height
 const MARGIN = 12
 
 function getDefaultPos() {
@@ -150,37 +150,11 @@ function DraggableFeedbackButton() {
         onClick={handleClick}
         aria-label={t('feedback.button')}
         style={{ left: pos.left, top: pos.top, touchAction: 'none' }}
-        className="fixed z-[60] select-none cursor-grab active:cursor-grabbing"
+        className="sm:hidden fixed z-[60] select-none cursor-grab active:cursor-grabbing flex items-center justify-center rounded-full bg-amber-500 text-white shadow-lg p-2.5 transition-shadow hover:shadow-xl active:scale-95"
       >
-        {/* Speech bubble body */}
-        <div className="relative flex items-center gap-1.5 rounded-2xl bg-amber-500 px-3 py-2 text-white shadow-lg transition-shadow hover:shadow-xl">
-          {/* Lightbulb icon */}
-          <svg className="h-[18px] w-[18px] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-          </svg>
-          <span className="text-xs font-semibold leading-none">{t('feedback.button')}</span>
-          {/* Speech bubble tail — points UP on mobile (button at top), DOWN on desktop (button at bottom) */}
-          {/* Mobile: tail at top pointing up */}
-          <span
-            aria-hidden="true"
-            className="absolute sm:hidden -top-[7px] right-4 h-0 w-0"
-            style={{
-              borderLeft: '6px solid transparent',
-              borderRight: '6px solid transparent',
-              borderBottom: '7px solid #f59e0b',
-            }}
-          />
-          {/* Desktop: tail at bottom pointing down */}
-          <span
-            aria-hidden="true"
-            className="hidden sm:block absolute -bottom-[7px] left-4 h-0 w-0"
-            style={{
-              borderLeft: '6px solid transparent',
-              borderRight: '6px solid transparent',
-              borderTop: '7px solid #f59e0b',
-            }}
-          />
-        </div>
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
       </button>
       <FeedbackModal open={open} onClose={() => setOpen(false)} />
     </>
