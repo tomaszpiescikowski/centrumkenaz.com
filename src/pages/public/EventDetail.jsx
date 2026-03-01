@@ -845,52 +845,6 @@ function EventDetail() {
               </a>
             )}
 
-            {/* Cancellation deadline info */}
-            {(() => {
-              if (!occurrenceStart || isPast) return null
-              // Also hide if the event has already ended
-              const occurrenceEnd = event.endDateTime ? new Date(event.endDateTime) : null
-              if (occurrenceEnd && occurrenceEnd < new Date()) return null
-              const cutoffHours = event.cancelCutoffHours || 24
-              const deadlineMs = occurrenceStart.getTime() - cutoffHours * 3600000
-              const deadline = new Date(deadlineMs)
-              const now = new Date()
-              const remaining = deadlineMs - now.getTime()
-              const canCancel = remaining > 0
-
-              if (canCancel) {
-                const totalMin = Math.floor(remaining / 60000)
-                const days = Math.floor(totalMin / 1440)
-                const hrs = Math.floor((totalMin % 1440) / 60)
-                const mins = totalMin % 60
-                const parts = []
-                if (days > 0) parts.push(`${days}${t('common.days')}`)
-                if (hrs > 0) parts.push(`${hrs}${t('common.hours')}`)
-                if (days === 0 && mins > 0) parts.push(`${mins}${t('common.minutes')}`)
-                const timeStr = parts.join(' ')
-
-                const isUrgent = remaining < 24 * 3600000
-
-                return (
-                  <div className={`ev-cancel-info ev-cancel-open ${isUrgent ? 'ev-cancel-urgent' : ''}`}>
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>{t('event.cancellationTimeRemaining', { time: timeStr })}</span>
-                  </div>
-                )
-              }
-
-              return (
-                <div className="ev-cancel-info ev-cancel-closed">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span>{t('event.cancellationExpired')}</span>
-                </div>
-              )
-            })()}
-
             {/* Tags */}
             <div className="ev-tags">
               <span className={`ev-tag ${availabilityTag.cls}`}>
