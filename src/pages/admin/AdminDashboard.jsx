@@ -15,10 +15,14 @@ function AdminDashboard() {
   const handleTestPush = useCallback(async () => {
     setSending(true)
     try {
-      await sendTestPush(authFetch)
-      showSuccess('🔔 Test push wysłany! Sprawdź powiadomienie w przeglądarce.')
+      const result = await sendTestPush(authFetch)
+      if (result.status === 'no_subscriptions') {
+        showError(result.message)
+      } else {
+        showSuccess(`🔔 ${result.message} Sprawdź powiadomienie systemowe.`)
+      }
     } catch (err) {
-      showError('Nie udało się wysłać testu. Sprawdź czy masz aktywną subskrypcję push.')
+      showError('Nie udało się wysłać testu: ' + (err?.message || String(err)))
     } finally {
       setSending(false)
     }

@@ -111,21 +111,39 @@ async def unsubscribe(
         await db.commit()
 
 
-@router.post("/test", status_code=204)
+@router.post("/test")
 async def test_push(
     user: AdminUser,
     db: AsyncSession = Depends(get_db),
-) -> None:
+) -> dict:
     """
     Send a test push notification to the requesting admin's own subscriptions.
-
-    Useful for verifying that VAPID keys, pywebpush, and the browser
-    service worker are all wired up correctly.
+    Returns diagnostic info so the caller knows what happened.
     """
+    from sqlalchemy import select
+    from models.push_subscription import PushSubscription as PS
+
+    result = await db.execute(
+        select(PS).where(PS.user_id == str(user.id))
+    )
+    subs = result.scalars().all()
+
+    if not subs:
+        return {
+            "status": "no_subscriptions",
+            "message": f"Brak subskrypcji push dla użytkownika {user.email}. Wejdź na /me i kliknij 'Włącz powiadomienia push'.",
+            "sent": 0,
+        }
+
     await push_service.send_to_user(
         db,
         str(user.id),
         "\U0001f514 Test push",
-        "Je\u015bli to widzisz, push dzia\u0142a poprawnie!",
+        "Jeśli to widzisz, push działa poprawnie!",
         "/admin",
     )
+    return {
+        "status": "sent",
+        "message": f"Push wysłany do {len(subs)} subskrypcji.",
+        "sent": len(subs),
+    }

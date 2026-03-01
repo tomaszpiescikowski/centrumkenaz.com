@@ -32,11 +32,14 @@ export async function savePushSubscription(authFetch, subscription) {
 /**
  * Send a test push notification to the currently logged-in admin's
  * own subscriptions. Useful for verifying the whole push pipeline.
+ * Returns diagnostic info from the backend.
  * @param {Function} authFetch
+ * @returns {Promise<{status: string, message: string, sent: number}>}
  */
 export async function sendTestPush(authFetch) {
   const res = await authFetch(`${API_URL}/push/test`, { method: 'POST' })
   if (!res.ok) throw new Error('Test push failed')
+  return res.json()
 }
 
 /**
