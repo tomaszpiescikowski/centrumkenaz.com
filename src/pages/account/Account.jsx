@@ -318,6 +318,51 @@ function Account({ darkMode, setDarkMode }) {
                   )}
                 </div>
 
+                {pushSupported && (
+                  <div className="pt-1 border-t border-navy/8 dark:border-cream/8">
+                    <p className="mb-1.5 text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40">
+                      {t('account.pushNotifications') || 'Powiadomienia push'}
+                    </p>
+                    {pushError && (
+                      <div className="mb-2 rounded-xl border border-red-300/40 bg-red-50/80 px-3 py-2 text-xs text-red-800 dark:border-red-500/30 dark:bg-red-900/20 dark:text-red-300">
+                        <span className="font-semibold">Błąd: </span>{pushError}
+                      </div>
+                    )}
+                    {pushPermission === 'denied' ? (
+                      <div className="flex w-full items-center gap-2.5 rounded-xl border border-red-300/40 bg-red-50/80 px-4 py-2.5 text-sm font-semibold text-red-800 dark:border-red-500/30 dark:bg-red-900/20 dark:text-red-300">
+                        <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                        </svg>
+                        {t('account.pushDenied') || 'Zablokowane w ustawieniach przeglądarki'}
+                      </div>
+                    ) : pushSubscribed ? (
+                      <button
+                        type="button"
+                        onClick={pushUnsubscribe}
+                        className="flex w-full items-center gap-2.5 rounded-xl border border-green-500/30 bg-green-50 px-4 py-2.5 text-sm font-semibold text-green-800 transition-colors hover:border-green-500/50 hover:bg-green-100/80 dark:border-green-400/30 dark:bg-green-900/20 dark:text-green-300 dark:hover:border-green-400/50"
+                      >
+                        <svg className="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-2.83-2h5.66A3 3 0 0110 18z" />
+                        </svg>
+                        {t('account.pushSubscribed') || 'Powiadomienia włączone'}
+                        <span className="ml-auto text-xs font-normal opacity-60">{t('account.pushClickToDisable') || 'kliknij aby wyłączyć'}</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={pushSubscribe}
+                        disabled={pushSubscribing}
+                        className="flex w-full items-center gap-2.5 rounded-xl border border-navy/10 bg-cream px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:border-navy/20 hover:bg-navy/5 disabled:opacity-60 dark:border-cream/15 dark:bg-navy dark:text-cream dark:hover:border-cream/25"
+                      >
+                        <svg className="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-2.83-2h5.66A3 3 0 0110 18z" />
+                        </svg>
+                        {pushSubscribing ? (t('common.loading') || '…') : (t('account.pushSubscribe') || 'Włącz powiadomienia push')}
+                      </button>
+                    )}
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <div>
                     <p className="mb-2 text-[11px] font-medium tracking-[0.03em] text-navy/40 dark:text-cream/40">
@@ -361,59 +406,6 @@ function Account({ darkMode, setDarkMode }) {
               </div>
             </div>
           </div>
-
-          <aside className="flex flex-col rounded-2xl border border-navy/10 bg-[rgba(255,251,235,0.82)] p-4 dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)]">
-            <h3 className="text-lg font-black text-navy dark:text-cream">
-              {t('account.pushNotifications') || 'Powiadomienia push'}
-            </h3>
-            <p className="mt-1 text-sm text-navy/70 dark:text-cream/70">
-              {t('account.pushNotificationsDesc') || 'Otrzymuj powiadomienia o nowych wydarzeniach i zapisach.'}
-            </p>
-
-            <div className="mt-4 space-y-3">
-              {!pushSupported ? (
-                <p className="text-sm text-navy/60 dark:text-cream/50">
-                  {t('account.pushNotSupported') || 'Twoja przeglądarka nie obsługuje powiadomień push.'}
-                </p>
-              ) : pushPermission === 'denied' ? (
-                <div className="rounded-xl border border-red-300/40 bg-red-50/80 px-3 py-2.5 text-sm text-red-800 dark:border-red-500/30 dark:bg-red-900/20 dark:text-red-300">
-                  {t('account.pushDenied') || 'Powiadomienia zostały zablokowane w ustawieniach przeglądarki.'}
-                </div>
-              ) : pushSubscribed ? (
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 rounded-xl border border-green-500/30 bg-green-50 px-4 py-2.5 text-sm font-semibold text-green-800 dark:border-green-400/30 dark:bg-green-900/20 dark:text-green-300">
-                    <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                    {t('account.pushSubscribed') || 'Powiadomienia włączone'}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={pushUnsubscribe}
-                    className="w-full rounded-xl border border-navy/15 bg-cream px-4 py-2 text-sm font-semibold text-navy/70 transition-colors hover:border-navy/25 hover:text-navy dark:border-cream/15 dark:bg-navy dark:text-cream/70 dark:hover:border-cream/25 dark:hover:text-cream"
-                  >
-                    {t('account.pushUnsubscribe') || 'Wyłącz powiadomienia'}
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {pushError && (
-                    <div className="rounded-xl border border-red-300/40 bg-red-50/80 px-3 py-2.5 text-xs text-red-800 dark:border-red-500/30 dark:bg-red-900/20 dark:text-red-300">
-                      <span className="font-semibold">Błąd: </span>{pushError}
-                    </div>
-                  )}
-                  <button
-                    type="button"
-                    onClick={pushSubscribe}
-                    disabled={pushSubscribing}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-navy/15 bg-cream px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:border-navy/25 hover:bg-navy/5 disabled:opacity-60 dark:border-cream/15 dark:bg-navy dark:text-cream dark:hover:border-cream/25"
-                  >
-                    🔔 {pushSubscribing ? (t('common.loading') || '…') : (t('account.pushSubscribe') || 'Włącz powiadomienia push')}
-                  </button>
-                </div>
-              )}
-            </div>
-          </aside>
 
           <aside className="flex flex-col rounded-2xl border border-navy/10 bg-[rgba(255,251,235,0.82)] p-4 dark:border-cream/15 dark:bg-[rgba(15,23,74,0.68)]">
             <h3 className="text-lg font-black text-navy dark:text-cream">
